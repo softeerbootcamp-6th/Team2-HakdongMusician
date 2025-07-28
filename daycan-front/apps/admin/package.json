@@ -12,7 +12,8 @@
   "dependencies": {
     "@daycan/ui": "workspace:*",
     "react": "catalog:react19",
-    "react-dom": "catalog:react19"
+    "react-dom": "catalog:react19",
+    "@tanstack/react-query": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
