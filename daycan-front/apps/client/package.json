@@ -13,7 +13,8 @@
     "@daycan/ui": "workspace:*",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "@tanstack/react-query": "catalog:"
+    "@tanstack/react-query": "catalog:",
+    "@vanilla-extract/css": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
@@ -26,7 +27,8 @@
     "globals": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "@vanilla-extract/vite-plugin": "catalog:"
   },
   "compilerOptions": {
     "baseUrl": ".",

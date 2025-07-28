@@ -21,6 +21,9 @@ catalogs:
     '@vanilla-extract/css':
       specifier: ^1.15.2
       version: 1.17.4
+    '@vanilla-extract/recipes':
+      specifier: ^0.5.7
+      version: 0.5.7
     '@vanilla-extract/vite-plugin':
       specifier: ^5.1.0
       version: 5.1.1
@@ -99,6 +102,9 @@ importers:
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.83.0(react@19.1.0)
+      '@vanilla-extract/css':
+        specifier: 'catalog:'
+        version: 1.17.4
       react:
         specifier: catalog:react19
         version: 19.1.0
@@ -115,6 +121,9 @@ importers:
       '@types/react-dom':
         specifier: catalog:react19
         version: 19.1.6(@types/react@19.1.8)
+      '@vanilla-extract/vite-plugin':
+        specifier: 'catalog:'
+        version: 5.1.1(@types/node@24.1.0)(vite@5.1.4(@types/node@24.1.0))
       '@vitejs/plugin-react':
         specifier: 'catalog:'
         version: 4.7.0(vite@5.1.4(@types/node@24.1.0))
@@ -148,6 +157,9 @@ importers:
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.83.0(react@19.1.0)
+      '@vanilla-extract/css':
+        specifier: 'catalog:'
+        version: 1.17.4
       react:
         specifier: catalog:react19
         version: 19.1.0
@@ -164,6 +176,9 @@ importers:
       '@types/react-dom':
         specifier: catalog:react19
         version: 19.1.6(@types/react@19.1.8)
+      '@vanilla-extract/vite-plugin':
+        specifier: 'catalog:'
+        version: 5.1.1(@types/node@24.1.0)(vite@5.1.4(@types/node@24.1.0))
       '@vitejs/plugin-react':
         specifier: 'catalog:'
         version: 4.7.0(vite@5.1.4(@types/node@24.1.0))
@@ -236,6 +251,9 @@ importers:
       '@vanilla-extract/css':
         specifier: 'catalog:'
         version: 1.17.4
+      '@vanilla-extract/recipes':
+        specifier: 'catalog:'
+        version: 0.5.7(@vanilla-extract/css@1.17.4)
       react:
         specifier: catalog:react19
         version: 19.1.0
@@ -857,6 +875,11 @@ packages:
 
   '@vanilla-extract/private@1.0.9':
     resolution: {integrity: sha512-gT2jbfZuaaCLrAxwXbRgIhGhcXbRZCG3v4TTUnjw0EJ7ArdBRxkq4msNJkbuRkCgfIK5ATmprB5t9ljvLeFDEA==}
+
+  '@vanilla-extract/recipes@0.5.7':
+    resolution: {integrity: sha512-Fvr+htdyb6LVUu+PhH61UFPhwkjgDEk8L4Zq9oIdte42sntpKrgFy90MyTRtGwjVALmrJ0pwRUVr8UoByYeW8A==}
+    peerDependencies:
+      '@vanilla-extract/css': ^1.0.0
 
   '@vanilla-extract/vite-plugin@5.1.1':
     resolution: {integrity: sha512-Nd1worqkHrd8XED4ZAA7Wmkd3pCqCwpmzCBVF8v6T1BSLHGXQE5HYflVgygw0CsIAbFRMS6zQBIk4F4/r/YKIw==}
@@ -2496,6 +2519,10 @@ snapshots:
       - supports-color
 
   '@vanilla-extract/private@1.0.9': {}
+
+  '@vanilla-extract/recipes@0.5.7(@vanilla-extract/css@1.17.4)':
+    dependencies:
+      '@vanilla-extract/css': 1.17.4
 
   '@vanilla-extract/vite-plugin@5.1.1(@types/node@24.1.0)(vite@5.1.4(@types/node@24.1.0))':
     dependencies:
