@@ -1,7 +1,3 @@
 {
-  "extends": "../../packages/typescript-config/vite-app.json",
-  "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo"
-  },
-  "include": ["src", "vite.config.ts"]
+  "extends": "../../packages/typescript-config/vite-app.json"
 }
