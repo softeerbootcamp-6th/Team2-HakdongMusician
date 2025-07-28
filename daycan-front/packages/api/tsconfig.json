@@ -1,0 +1,11 @@
+{
+  "extends": "@daycan/typescript-config/react-library.json",
+  "include": ["."],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
