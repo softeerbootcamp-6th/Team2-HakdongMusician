@@ -173,8 +173,8 @@ $RECYCLE.BIN/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+!daycan-back/api/src/main/**/build/
+!daycan-back/api/src/test/**/build/
 
 ### VS Code ###
 .vscode/

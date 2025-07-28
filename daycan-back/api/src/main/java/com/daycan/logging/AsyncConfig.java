@@ -1,4 +1,4 @@
-package com.tmp.boiler.logging;
+package com.daycan.logging;
 
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Configuration;

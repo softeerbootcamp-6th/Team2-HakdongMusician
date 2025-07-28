@@ -1,4 +1,4 @@
-package com.tmp.boiler.logging;
+package com.daycan.logging;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;

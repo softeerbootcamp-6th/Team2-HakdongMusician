@@ -1,4 +1,4 @@
-package com.tmp.boiler.logging;
+package com.daycan.logging;
 
 import java.util.Map;
 import org.slf4j.MDC;

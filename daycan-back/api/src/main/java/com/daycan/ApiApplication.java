@@ -1,4 +1,4 @@
-package com.daycan.api;
+package com.daycan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

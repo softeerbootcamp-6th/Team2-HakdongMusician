@@ -1,4 +1,4 @@
-package com.tmp.boiler.logging;
+package com.daycan.logging;
 
 /**
  * MDC에서 사용하는 키 정의
