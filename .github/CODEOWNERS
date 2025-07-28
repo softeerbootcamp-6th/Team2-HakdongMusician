@@ -1,0 +1,4 @@
+# CODEOWNERS
+# backend 디렉토리는 백엔드 팀이 담당
+/daycan-back/               @genius00hwan @mekind
+
