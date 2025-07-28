@@ -1,5 +1,5 @@
 {
-  "name": "@repo/ui",
+  "name": "@daycan/ui",
   "version": "0.0.0",
   "exports": {
     ".": "./index.ts",
@@ -18,8 +18,8 @@
   "devDependencies": {
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@daycan/eslint-config": "workspace:*",
+    "@daycan/typescript-config": "workspace:*",
     "eslint": "^8.57.0",
     "typescript": "5.5.4"
   }
