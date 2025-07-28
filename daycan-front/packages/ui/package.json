@@ -9,7 +9,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "lint": "eslint \"**/*.ts\""
+    "lint": "eslint \"**/*.ts\"",
+    "build": "vite build"
   },
   "peerDependencies": {
     "@vanilla-extract/css": "catalog:",
@@ -22,6 +23,10 @@
     "@daycan/eslint-config": "workspace:*",
     "@daycan/typescript-config": "workspace:*",
     "eslint": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "vite-plugin-dts": "catalog:",
+    "@vanilla-extract/vite-plugin": "catalog:"
   }
 }
