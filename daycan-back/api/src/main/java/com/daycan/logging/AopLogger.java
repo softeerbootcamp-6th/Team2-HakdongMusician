@@ -25,7 +25,7 @@ public class AopLogger {
    * com.daycan.api 하위의 모든 클래스와 메소드를 타겟으로 지정한다.
    * TODO: 프로젝트 패키징 구성 후 경로 재정의 하기.
    */
-  @Pointcut("execution(* com.daycan.api..*.*(..))")
+  @Pointcut("execution(* com.daycan..*.*(..))")
   public void serviceAdvice() {}
 
   /**
@@ -34,7 +34,7 @@ public class AopLogger {
    * repository 패키지 내의 모든 클래스와 메소드를 타겟으로 지정한다.
    * TODO: 프로젝트 패키징 구성 후 경로 재정의 하기.
    */
-  @Pointcut("execution(* com.daycan.api..repository.*.*(..))")
+  @Pointcut("execution(* com.daycan..repository.*.*(..))")
   public void repositoryAdvice() {}
 
 
