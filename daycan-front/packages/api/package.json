@@ -1,0 +1,25 @@
+{
+  "name": "@daycan/api",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "lint": "eslint \"src/**/*.ts\"",
+    "build": "vite build"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "catalog:"
+  },
+  "dependencies": {
+    "axios": "catalog:"
+  },
+  "devDependencies": {
+    "@daycan/eslint-config": "workspace:*",
+    "@daycan/typescript-config": "workspace:*",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
