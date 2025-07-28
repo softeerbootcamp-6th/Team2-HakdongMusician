@@ -1,3 +1,63 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# =========================
+# catalog: 목적별 라이브러리 모음
+# =========================
+catalog:
+  # 각 package.json 에서 "catalog:" 와 같이 사용 가능
+
+  # 빌드 관련 라이브러리
+  eslint: ^9.32.0
+  turbo: ^2.5.4
+  prettier: ^3.2.5
+  typescript: 5.5.4
+  vite: 5.1.4
+  "@vitejs/plugin-react": ^4.6.0
+  "vite-plugin-dts": ^4.5.4
+
+  # 린팅 관련 라이브러리
+  typescript-eslint: ^8.35.1
+  eslint-config-prettier: ^9.1.0
+  "@typescript-eslint/eslint-plugin": ^8.35.1
+  "@typescript-eslint/parser": ^8.35.1
+  "@eslint/js": "^9.30.1"
+  "eslint-plugin-react-hooks": "^5.2.0"
+  "eslint-plugin-react-refresh": "^0.4.20"
+
+  # UI 관련 라이브러리
+  "@vanilla-extract/css": ^1.15.2
+  "@vanilla-extract/vite-plugin": ^5.1.0
+
+  # API 관련 라이브러리
+  "@tanstack/react-query": ^5.83.0
+  "axios": ^1.6.8
+
+  # 기타 라이브러리
+  "globals": ^16.3.0
+
+# =========================
+# catalogs: React 버전별 번들
+# =========================
+catalogs:
+  # 각 package.json 에서 "catalog:react17" 와 같이 사용 가능
+  react17:
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    "@types/react": ^17.0.2
+    "@types/react-dom": ^17.0.2
+
+  # 각 package.json 에서 "catalog:react18" 와 같이 사용 가능
+  react18:
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    "@types/react": ^18.0.1
+    "@types/react-dom": ^18.0.1
+
+  # 각 package.json 에서 "catalog:react19" 와 같이 사용 가능
+  react19:
+    react: ^19.1.0
+    react-dom: ^19.1.0
+    "@types/react": ^19.0.1
+    "@types/react-dom": ^19.0.1
