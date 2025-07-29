@@ -12,6 +12,7 @@ import {
 } from "@daycan/ui";
 import { useState } from "react";
 import { useToast } from "@daycan/ui";
+
 export const TypoTest = () => {
   const [toggle, setToggle] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -241,6 +242,7 @@ export const TypoTest = () => {
           BottomSheet
         </Body>
       </BottomSheet>
+
     </div>
   );
 };
