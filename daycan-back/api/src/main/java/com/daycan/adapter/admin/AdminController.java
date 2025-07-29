@@ -1,4 +1,4 @@
-package com.daycan.controller;
+package com.daycan.adapter.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
