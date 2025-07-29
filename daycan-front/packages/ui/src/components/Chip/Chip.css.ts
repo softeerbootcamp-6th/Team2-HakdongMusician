@@ -37,31 +37,31 @@ export const chip = recipe({
       unselected: {
         backgroundColor: COLORS.white,
       },
-      yellow_200: {
+      yellow200: {
         backgroundColor: COLORS.yellow[200],
       },
-      blue_200: {
+      blue200: {
         backgroundColor: COLORS.blue[200],
       },
-      red_200: {
+      red200: {
         backgroundColor: COLORS.red[200],
       },
-      green_200: {
+      green200: {
         backgroundColor: COLORS.green[200],
       },
-      gray_200: {
+      gray200: {
         backgroundColor: COLORS.gray[200],
       },
-      gray_600: {
+      gray600: {
         backgroundColor: COLORS.gray[600],
       },
-      red_500: {
+      red500: {
         backgroundColor: COLORS.red[500],
       },
-      blue_500: {
+      blue500: {
         backgroundColor: COLORS.blue[500],
       },
-      green_500: {
+      green500: {
         backgroundColor: COLORS.green[500],
       },
 
@@ -78,7 +78,7 @@ export const chip = recipe({
         padding: '6px 16px',
         borderRadius: '8px',
       },
-      btnXsmallPadding: {
+      btnXsmall: {
         padding: '4px 10px',
         borderRadius: '4px',
       },
@@ -118,7 +118,7 @@ export const chip = recipe({
             width:'61px',
             height:'32px',
         },
-        btnXsmall: {
+        btnXsmall:{
             width:'64px',
             height:'28px',
         },
@@ -153,7 +153,7 @@ export const chip = recipe({
             justifyContent: 'center',
             paddingRight: '12px',
         },
-        none:{justifyContent: 'center'}
+        none:{}
     }
   },
   defaultVariants: {

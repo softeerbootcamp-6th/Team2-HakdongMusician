@@ -15,7 +15,7 @@ export const Chip = ({
   color,
   size,
   padding,
-  flexRule = 'spaceBetween',
+  flexRule,
   ...props
 }: ChipProps) => {
 
