@@ -1,4 +1,4 @@
-package com.daycan.logging;
+package com.daycan.common.logging;
 
 import java.util.Map;
 import org.slf4j.MDC;
