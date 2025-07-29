@@ -15,3 +15,6 @@ export * from "./Toast ";
 export * from "./Modal";
 export * from "./BottomSheet";
 export * from "./Chip";
+export * from "./Icon";
+export * from "./Button";
+export * from "./CircularProgress";
