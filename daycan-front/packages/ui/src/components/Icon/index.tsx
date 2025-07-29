@@ -1,0 +1,40 @@
+import { defaultIconSize, iconMap } from "./index.types";
+
+export interface IconProps {
+  name: keyof typeof iconMap;
+  className?: string;
+  size?: number;
+  color?: string;
+  onClick?: () => void;
+}
+
+/**
+ * 아이콘 컴포넌트입니다.
+ * @param name - 아이콘 이름 (iconMap 참고)
+ * @param size - 아이콘 크기
+ * @param color - 아이콘 색상
+ * @param onClick - 아이콘 클릭 이벤트
+ * @param className - 아이콘 클래스명
+ * @returns 아이콘 컴포넌트
+ * @author 홍규진
+ */
+
+export const Icon = ({
+  name,
+  size = defaultIconSize,
+  color = "currentColor",
+  onClick,
+  className,
+}: IconProps) => {
+  const SvgIcon = iconMap[name];
+  if (!SvgIcon) return null;
+  return (
+    <SvgIcon
+      width={size}
+      height={size}
+      fill={color}
+      onClick={onClick}
+      className={className}
+    />
+  );
+};
