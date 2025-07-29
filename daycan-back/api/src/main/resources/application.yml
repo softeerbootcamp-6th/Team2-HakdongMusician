@@ -1,0 +1,44 @@
+springdoc:
+  openapi:
+    title: "👵🏻Daycan API"
+    version: "v1.0.0"
+    description: "Daycan API 문서입니다. ..."
+  packages-to-scan: com.daycan
+
+  group-configs:
+    - group: public
+      display-name: 사용자 API
+      paths-to-match: /**
+      paths-to-exclude:
+        - /admin/**
+    - group: admin
+      display-name: 관리자 API
+      paths-to-match: /admin/**
+
+  show-actuator: false
+  use-management-port: false
+  cache:
+    disabled: false
+
+  swagger-ui:
+    enabled: true
+    path: /docs                  # 기본은 /swagger-ui.html 또는 /swagger-ui/index.html
+    # 하나의 스펙을 강제로 바라보게:
+    # url: /v3/api-docs.yaml
+
+    urlsPrimaryName: public
+
+    # UI 품질/편의
+    operationsSorter: alpha
+    tagsSorter: alpha
+    docExpansion: list
+    displayRequestDuration: true
+    displayOperationId: false
+    deepLinking: true
+    tryItOutEnabled: true
+    filter: true                # true/문자열(필터 표현식)
+    defaultModelsExpandDepth: 0  # 모델 패널 접기
+    defaultModelExpandDepth: 1
+    defaultModelRendering: example   # example | model
+    persistAuthorization: true       # 브라우저 새로고침에도 토큰 보존
+    disable-swagger-default-url: false
