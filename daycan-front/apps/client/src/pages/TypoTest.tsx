@@ -78,7 +78,7 @@ export const TypoTest = () => {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <Button withIcon size="large" variant="primary">
+        <Button size="large" variant="primary">
           <Body type="medium" weight={600} color={COLORS.gray[900]}>
             Button
           </Body>
@@ -89,7 +89,7 @@ export const TypoTest = () => {
             Button
           </Body>
         </Button>
-        <Button withIcon variant="error" size="large">
+        <Button variant="error" size="large">
           <Body type="medium" weight={600} color={COLORS.gray[900]}>
             Button
           </Body>
@@ -105,7 +105,7 @@ export const TypoTest = () => {
             Button
           </Body>
         </Button>
-        <Button size="small" variant="error" withIcon>
+        <Button size="small" variant="error">
           <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
             Button
           </Body>
@@ -121,19 +121,25 @@ export const TypoTest = () => {
             Button
           </Body>
         </Button>
-        <Button size="small" variant="error" withIcon>
+        <Button size="small" variant="error">
           <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
             Button
           </Body>
           <Icon name="warningFilled" color={COLORS.gray[900]} size={16} />
         </Button>
-        <Button size="small" variant="error" withIcon>
+        <Button size="small" variant="error">
           <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
             삭제
           </Body>
           <Icon name="warningFilled" color={COLORS.gray[900]} size={16} />
         </Button>
-        <Button size="small" variant="unEmphasized" withIcon>
+        <Button size="small" variant="unEmphasized">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            날짜
+          </Body>
+          <Icon name="calendar" color={COLORS.black} size={16} />
+        </Button>
+        <Button size="fullWidth" variant="unEmphasized">
           <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
             날짜
           </Body>

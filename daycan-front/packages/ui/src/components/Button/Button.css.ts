@@ -4,6 +4,12 @@ import { COLORS } from "../../styles";
 
 export const button = recipe({
   base: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+
     height: "auto",
     borderRadius: 8,
     border: "none",
@@ -12,17 +18,6 @@ export const button = recipe({
   },
 
   variants: {
-    withIcon: {
-      true: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 10,
-      },
-      false: {},
-    },
-
     variant: {
       primary: {
         backgroundColor: COLORS.primary[300],
@@ -63,11 +58,15 @@ export const button = recipe({
         height: 36,
         gap: 4,
       },
+
+      fullWidth: {
+        width: "100%",
+        height: 48,
+      },
     },
   },
 
   defaultVariants: {
-    withIcon: false,
     variant: "primary",
     size: "large",
   },

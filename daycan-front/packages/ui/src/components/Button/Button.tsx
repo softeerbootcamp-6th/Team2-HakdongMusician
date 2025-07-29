@@ -7,7 +7,6 @@ export type ButtonProps = PropsWithChildren<
 >;
 
 export const Button = ({
-  withIcon,
   variant,
   size,
 
@@ -15,10 +14,7 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <button
-      className={classNames(button({ withIcon, variant, size }))}
-      {...props}
-    >
+    <button className={classNames(button({ variant, size }))} {...props}>
       {children}
     </button>
   );
