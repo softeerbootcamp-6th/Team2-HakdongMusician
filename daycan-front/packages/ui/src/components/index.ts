@@ -14,3 +14,4 @@ export * from "./Toggle";
 export * from "./Toast ";
 export * from "./Modal";
 export * from "./BottomSheet";
+export * from "./Chip";
