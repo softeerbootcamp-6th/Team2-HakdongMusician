@@ -39,10 +39,10 @@ export const ChipTest = () => {
         gap: "16px",
         justifyContent: "center"  
       }}>
-        <Chip color="selected" size="btnXsmall" padding="btnXsmallPadding" flexRule="center">
+        <Chip color="selected" size="btnXsmall" padding="btnXsmall" flexRule="center">
           <Body type="xsmall" weight={500} color={COLORS.gray[700]}>일반식</Body>
         </Chip>
-        <Chip color="unselected" size="btnXsmall" padding="btnXsmallPadding" flexRule="center">
+        <Chip color="unselected" size="btnXsmall" padding="btnXsmall" flexRule="center">
           <Body type="xsmall" weight={600} color={COLORS.gray[500]}>죽</Body>
         </Chip>
       </div>
@@ -111,22 +111,22 @@ export const ChipTest = () => {
         gap: "16px",
         justifyContent: "center"
       }}>
-        <Chip color="gray_200" size="small" padding="small">
+        <Chip color="gray200" size="small" padding="small">
           <Body type="xsmall" weight={500} color={COLORS.gray[500]}>label</Body>
         </Chip>
-        <Chip color="yellow_200" size="small" padding="small">
+        <Chip color="yellow200" size="small" padding="small">
           <Body type="xsmall" weight={500} color={COLORS.yellow[500]}>label</Body>
         </Chip>
-        <Chip color="red_200" size="small" padding="small">
+        <Chip color="red200" size="small" padding="small">
           <Body type="xsmall" weight={500} color={COLORS.red[500]}>label</Body>
         </Chip>
-        <Chip color="blue_200" size="small" padding="small">
+        <Chip color="blue200" size="small" padding="small">
           <Body type="xsmall" weight={500} color={COLORS.blue[500]}>label</Body>
         </Chip>
-        <Chip color="green_200" size="small" padding="small">
+        <Chip color="green200" size="small" padding="small">
           <Body type="xsmall" weight={500} color={COLORS.green[500]}>label</Body>
         </Chip>
-        <Chip color="gray_600" size="small" padding="small">
+        <Chip color="gray600" size="small" padding="small">
           <Body type="xsmall" weight={500} color={COLORS.gray[300]}>label</Body>
         </Chip>
       </div>
@@ -138,22 +138,22 @@ export const ChipTest = () => {
         gap: "16px",
         justifyContent: "center"
       }}>
-        <Chip color="gray_200" size="medium" padding="medium">
+        <Chip color="gray200" size="medium" padding="medium">
           <Body type="small" weight={500} color={COLORS.gray[500]}>label</Body>
         </Chip>
-        <Chip color="yellow_200" size="medium" padding="medium">
+        <Chip color="yellow200" size="medium" padding="medium">
           <Body type="small" weight={500} color={COLORS.yellow[500]}>label</Body>
         </Chip>
-        <Chip color="red_200" size="medium" padding="medium">
+        <Chip color="red200" size="medium" padding="medium">
           <Body type="small" weight={500} color={COLORS.red[500]}>label</Body>
         </Chip>
-        <Chip color="blue_200" size="medium" padding="medium">
+        <Chip color="blue200" size="medium" padding="medium">
           <Body type="small" weight={500} color={COLORS.blue[500]}>label</Body>
         </Chip>
-        <Chip color="green_200" size="medium" padding="medium">
+        <Chip color="green200" size="medium" padding="medium">
           <Body type="small" weight={500} color={COLORS.green[500]}>label</Body>
         </Chip>
-        <Chip color="red_500" size="medium" padding="medium">
+        <Chip color="red500" size="medium" padding="medium">
           <Body type="small" weight={500} color={COLORS.white}>label</Body>
         </Chip>
       </div>
@@ -165,13 +165,13 @@ export const ChipTest = () => {
         gap: "16px",
         justifyContent: "center"
       }}>
-        <Chip color="red_500" size="mediumLong" padding="mediumLong">
+        <Chip color="red500" size="mediumLong" padding="mediumLong">
           <Body type="small" weight={500} color={COLORS.white}>삭제</Body>
         </Chip>
-        <Chip color="green_500" size="mediumLong" padding="mediumLong">
+        <Chip color="green500" size="mediumLong" padding="mediumLong">
           <Body type="small" weight={500} color={COLORS.white}>수정</Body>
         </Chip>
-        <Chip color="blue_500" size="mediumLong" padding="mediumLong">
+        <Chip color="blue500" size="mediumLong" padding="mediumLong">
           <Body type="small" weight={500} color={COLORS.gray[200]}>수정사항 저장</Body>
         </Chip>
       </div>
