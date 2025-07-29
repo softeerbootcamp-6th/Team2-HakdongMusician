@@ -9,7 +9,8 @@
   "devDependencies": {
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "turbo": "catalog:"
+    "turbo": "catalog:",
+    "vite-plugin-svgr": "catalog:"
   },
   "packageManager": "pnpm@9.5.0",
   "name": "daycan-front"

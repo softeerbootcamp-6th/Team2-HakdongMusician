@@ -1,5 +1,12 @@
 import { COLORS } from "@daycan/ui";
-import { Body, Display, Heading } from "@daycan/ui";
+import {
+  Body,
+  Button,
+  CircularProgress,
+  Display,
+  Heading,
+  Icon,
+} from "@daycan/ui";
 export const TypoTest = () => {
   return (
     <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
@@ -68,6 +75,90 @@ export const TypoTest = () => {
         <Body type="small" weight={400} color={COLORS.gray[50]}>
           Body-small-400
         </Body>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Button size="large" variant="primary">
+          <Body type="medium" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+          <Icon name="plus" color={COLORS.gray[900]} size={24} />
+        </Button>
+        <Button variant="unEmphasized" size="large">
+          <Body type="medium" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+        </Button>
+        <Button variant="error" size="large">
+          <Body type="medium" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+          <Icon name="plus" color={COLORS.gray[900]} size={24} />
+        </Button>
+        <Button variant="disabled" size="large">
+          <Body type="medium" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+        </Button>
+        <Button size="small" variant="primary">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+        </Button>
+        <Button size="small" variant="error">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+          <Icon name="warningFilled" color={COLORS.gray[900]} size={16} />
+        </Button>
+        <Button size="small" variant="disabled">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+        </Button>
+        <Button size="small" variant="primary">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+        </Button>
+        <Button size="small" variant="error">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            Button
+          </Body>
+          <Icon name="warningFilled" color={COLORS.gray[900]} size={16} />
+        </Button>
+        <Button size="small" variant="error">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            삭제
+          </Body>
+          <Icon name="warningFilled" color={COLORS.gray[900]} size={16} />
+        </Button>
+        <Button size="small" variant="unEmphasized">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            날짜
+          </Body>
+          <Icon name="calendar" color={COLORS.black} size={16} />
+        </Button>
+        <Button size="fullWidth" variant="unEmphasized">
+          <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+            날짜
+          </Body>
+          <Icon name="calendar" color={COLORS.black} size={16} />
+        </Button>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <CircularProgress value={0} max={4} />
+        <CircularProgress value={1} max={4} />
+        <CircularProgress value={2} max={4} />
+        <CircularProgress value={3} max={4} />
+        <CircularProgress value={4} max={4} />
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <CircularProgress value={0} max={4} size="large" />
+        <CircularProgress value={1} max={4} size="large" />
+        <CircularProgress value={2} max={4} size="large" />
+        <CircularProgress value={3} max={4} size="large" />
+        <CircularProgress value={4} max={4} size="large" />
       </div>
     </div>
   );

@@ -3,18 +3,10 @@ import { classNames } from "@/utils";
 import { display, type DisplayVariants } from "./Display.css";
 
 export type DisplayProps = PropsWithChildren<
-  HTMLAttributes<HTMLHeadingElement> &
-    DisplayVariants & {
-      color?: string;
-    }
+  HTMLAttributes<HTMLHeadingElement> & DisplayVariants
 >;
 
-export const Display: React.FC<DisplayProps> = ({
-  type,
-  color,
-  children,
-  ...props
-}) => {
+export const Display = ({ type, color, children, ...props }: DisplayProps) => {
   return (
     <h1
       className={classNames(display({ type }))}

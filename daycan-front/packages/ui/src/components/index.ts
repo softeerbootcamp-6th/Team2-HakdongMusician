@@ -7,3 +7,6 @@
 export * from "./Display";
 export * from "./Heading";
 export * from "./Body";
+export * from "./Icon";
+export * from "./Button";
+export * from "./CircularProgress";
