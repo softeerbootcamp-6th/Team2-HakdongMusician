@@ -1,11 +1,10 @@
 import {recipe , RecipeVariants} from '@vanilla-extract/recipes';
 import {COLORS} from '@/styles/colors';
-import { b } from 'node_modules/vite/dist/node/types.d-jgA8ss1A';
 
 export const chip = recipe({
   base: {
     fontFamily: 'Pretendard',
-    display: 'inline-flex',
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '4px',
@@ -75,35 +74,35 @@ export const chip = recipe({
     },
     // 크기 variant
     padding: {
-      btn_de: {
+      btnDefaultPadding: {
         padding: '6px 16px',
         borderRadius: '8px',
       },
-      btn_xs: {
+      btnXsmallPadding: {
         padding: '4px 10px',
         borderRadius: '4px',
       },
-      btn_filter_s: {
+      btnFilterSmall: {
         padding: '6px 16px',
         borderRadius: '8px',
       },
-      btn_filter_m: {
+      btnFilterMedium: {
         padding: '4px 10px',
         borderRadius: '8px',
       },
-      btn_filter_l: {
+      btnFilterLarge: {
         padding: '12px 24px',
         borderRadius: '13.5px',
       },
-      s: {
+      small: {
         padding: '2px 6px',
         borderRadius: '4px',
       },
-      m:{
+      medium:{
         padding: '4px 8px',
         borderRadius: '4px',
       },
-      ml:{
+      mediumLong:{
         padding: '4px 16px',
         borderRadius: '4px',
       },
@@ -115,23 +114,23 @@ export const chip = recipe({
       
     },
     size:{
-        btn_default: {
+        btnDefault: {
             width:'61px',
             height:'32px',
         },
-        btn_xsmall:{
+        btnXsmall: {
             width:'64px',
             height:'28px',
         },
-        filter_small:{
+        filterSmall:{
             width:'73px',
             height:'32px',
         },
-        filter_medium:{
+        filterMedium:{
             width:'71px',
             height:'31px',
         },
-        filter_large:{
+        filterLarge:{
             width:'240px',
             height:'56px',
         },
@@ -143,16 +142,25 @@ export const chip = recipe({
             width:'49x',
             height:'31px',
         },
-        medium_long:{
+        mediumLong:{
         },
-
-
+    },
+    flexRule:{
+        spaceBetween: {
+            justifyContent: 'space-between',
+        },
+        center: {
+            justifyContent: 'center',
+            paddingRight: '12px',
+        },
+        none:{justifyContent: 'center'}
     }
   },
   defaultVariants: {
     color: 'default',
-    size: 'btn_default',
-    padding: 'btn_de',
+    size: 'btnDefault',
+    padding: 'btnDefaultPadding',
+    flexRule: 'none',
   }
 });
 

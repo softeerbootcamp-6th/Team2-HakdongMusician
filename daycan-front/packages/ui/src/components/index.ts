@@ -18,3 +18,4 @@ export * from "./Chip";
 export * from "./Icon";
 export * from "./Button";
 export * from "./CircularProgress";
+export * from "./Chip";

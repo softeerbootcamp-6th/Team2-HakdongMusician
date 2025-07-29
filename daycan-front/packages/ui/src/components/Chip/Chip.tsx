@@ -5,7 +5,6 @@ import { chip, type ChipVariants } from "./Chip.css";
 export type ChipProps = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & 
   ChipVariants & {
-    rightIcon?: React.ReactNode;
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   }
 >;
@@ -13,10 +12,10 @@ export type ChipProps = PropsWithChildren<
 export const Chip = ({
   onClick,
   children,
-  rightIcon,
   color,
   size,
   padding,
+  flexRule = 'spaceBetween',
   ...props
 }: ChipProps) => {
 
@@ -27,13 +26,13 @@ export const Chip = ({
           color, 
           size, 
           padding,
+          flexRule
         }), 
       )}
       onClick={onClick}
       {...props}
     >
-      {children || children}
-      {/* {rightIcon && 아이콘} */}
+      {children}
     </div>
   );
 };
