@@ -1,4 +1,4 @@
-package com.daycan.logging;
+package com.daycan.common.logging;
 
 
 import jakarta.servlet.http.HttpServletRequest;
