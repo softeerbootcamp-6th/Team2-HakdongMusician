@@ -1,4 +1,4 @@
-package com.daycan.logging;
+package com.daycan.common.logging;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

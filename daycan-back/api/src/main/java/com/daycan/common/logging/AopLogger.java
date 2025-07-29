@@ -1,4 +1,4 @@
-package com.daycan.logging;
+package com.daycan.common.logging;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

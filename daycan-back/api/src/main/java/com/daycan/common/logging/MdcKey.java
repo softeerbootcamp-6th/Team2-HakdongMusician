@@ -1,4 +1,4 @@
-package com.daycan.logging;
+package com.daycan.common.logging;
 
 /**
  * MDC에서 사용하는 키 정의
