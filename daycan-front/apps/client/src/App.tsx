@@ -1,11 +1,7 @@
 import { TypoTest } from "@/pages/TypoTest";
 
 function App() {
-  return (
-    <>
-      <TypoTest />
-    </>
-  );
+  return <TypoTest />;
 }
 
 export default App;
