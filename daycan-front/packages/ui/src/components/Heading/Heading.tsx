@@ -3,18 +3,10 @@ import { classNames } from "@/utils";
 import { heading, type HeadingVariants } from "./Heading.css";
 
 export type HeadingProps = PropsWithChildren<
-  HTMLAttributes<HTMLHeadingElement> &
-    HeadingVariants & {
-      color?: string;
-    }
+  HTMLAttributes<HTMLHeadingElement> & HeadingVariants
 >;
 
-export const Heading: React.FC<HeadingProps> = ({
-  type,
-  color,
-  children,
-  ...props
-}) => {
+export const Heading = ({ type, color, children, ...props }: HeadingProps) => {
   return (
     <h1
       className={classNames(heading({ type }))}
