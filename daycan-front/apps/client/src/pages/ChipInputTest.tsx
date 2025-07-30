@@ -1,7 +1,8 @@
-import { Body, Chip, Icon } from "@daycan/ui";
+import { Body, Button, Chip, Icon } from "@daycan/ui";
 import { COLORS } from "@daycan/ui";
+import { Input } from "@daycan/ui";
 
-export const ChipTest = () => {
+export const ChipInputTest = () => {
   return (
     <div style={{ 
       backgroundColor: COLORS.gray[100],
@@ -9,7 +10,17 @@ export const ChipTest = () => {
       display: "flex", 
       flexDirection: "column", 
       gap: "24px",
-      maxWidth: "1200px",
+      margin: "0 auto"
+    }}>
+      <h2>Chip 컴포넌트 테스트</h2>
+
+      {/* Basic Chip Variants */}
+    <div style={{ 
+      backgroundColor: COLORS.gray[100],
+      padding: "20px", 
+      display: "flex", 
+      flexDirection: "column", 
+      gap: "24px",
       margin: "0 auto"
     }}>
       <h2>Chip 컴포넌트 테스트</h2>
@@ -198,6 +209,53 @@ export const ChipTest = () => {
           <Body type="small" color={COLORS.gray[400]}>해당 없음</Body>
         </Chip>
       </div>
+      
+    </div>
+
+    <div style={{ 
+      backgroundColor: COLORS.gray[100],
+    }}>
+      <h2>Input 컴포넌트 테스트</h2>
+      <Input variant="pcInputFile">
+        <Body type="large" weight={600} color={COLORS.gray[800]}>
+          label
+        </Body>
+        <Button variant="primary" size="small">등록</Button>
+      </Input>
+      <Input variant="pcInputFile">
+        <Body type="large" weight={600} color={COLORS.gray[800]}>
+          label
+        </Body>
+        <Button variant="error" size="small">삭제</Button>
+      </Input>
+      <Input variant="moTextField">
+        <Body type="medium" weight={500} color={COLORS.gray[800]}>
+          label
+        </Body>
+      </Input>
+      <Input variant="pcTextFieldLarge">
+        <Body type="medium" weight={500} color={COLORS.gray[800]}>
+          label
+        </Body>
+      </Input>
+      <Input variant="pcTextField">
+        <Body type="medium" weight={500} color={COLORS.gray[800]}>
+          label
+        </Body>
+      </Input>
+      <Input variant="textSearch" flexRule="none">
+        <Icon name="search" size={16} color={COLORS.gray[500]} stroke={COLORS.gray[500]} />
+        <Body type="medium" weight={500} color={COLORS.gray[800]}>
+          label
+        </Body>
+      </Input>
+      <Input variant="allTextFieldSmall" flexRule="center">
+        <Body type="medium" weight={500} color={COLORS.gray[800]}>
+          label
+        </Body>
+      </Input>
+    </div>
+
     </div>
   );
 };
