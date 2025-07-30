@@ -11,15 +11,17 @@
   },
   "dependencies": {
     "@daycan/ui": "workspace:*",
+    "@tanstack/react-query": "catalog:",
+    "@vanilla-extract/css": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "@tanstack/react-query": "catalog:",
-    "@vanilla-extract/css": "catalog:"
+    "react-router-dom": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
+    "@vanilla-extract/vite-plugin": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "eslint": "catalog:",
     "eslint-plugin-react-hooks": "catalog:",
@@ -27,8 +29,7 @@
     "globals": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
-    "vite": "catalog:",
-    "@vanilla-extract/vite-plugin": "catalog:"
+    "vite": "catalog:"
   },
   "compilerOptions": {
     "baseUrl": ".",
