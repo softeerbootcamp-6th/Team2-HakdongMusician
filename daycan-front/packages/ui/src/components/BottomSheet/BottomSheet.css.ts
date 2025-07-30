@@ -69,3 +69,7 @@ export const handle = style({
   borderRadius: "2px",
   margin: "0 auto 16px",
 });
+
+export const hidden = style({
+  display: "none",
+});

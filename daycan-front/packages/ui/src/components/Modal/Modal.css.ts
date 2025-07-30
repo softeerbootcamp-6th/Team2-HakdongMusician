@@ -8,6 +8,10 @@ export const overlayStyle = style({
   zIndex: 1000,
 });
 
+export const hidden = style({
+  display: "none",
+});
+
 export const titleStyle = style({
   fontSize: "16px",
   fontWeight: "600",
