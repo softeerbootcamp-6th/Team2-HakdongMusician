@@ -216,7 +216,7 @@ export const TypoTest = () => {
       </div>
       <BottomSheet
         title="BottomSheet"
-        size="large"
+        // size="large"
         isOpen={isBottomSheetOpen}
         onClose={() => setIsBottomSheetOpen(false)}
       >
