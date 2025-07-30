@@ -15,7 +15,9 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@vanilla-extract/recipes": "catalog:"
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@vanilla-extract/recipes": "catalog:",
+    "react-toastify": "^11.0.5"
   },
   "peerDependencies": {
     "@vanilla-extract/css": "catalog:",
@@ -23,15 +25,15 @@
     "react-dom": "catalog:react19"
   },
   "devDependencies": {
-    "@types/react": "catalog:react19",
-    "@types/react-dom": "catalog:react19",
     "@daycan/eslint-config": "workspace:*",
     "@daycan/typescript-config": "workspace:*",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "@vanilla-extract/vite-plugin": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "eslint": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "@vitejs/plugin-react": "catalog:",
-    "vite-plugin-dts": "catalog:",
-    "@vanilla-extract/vite-plugin": "catalog:"
+    "vite-plugin-dts": "catalog:"
   }
 }

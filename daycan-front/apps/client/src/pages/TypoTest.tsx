@@ -6,8 +6,18 @@ import {
   Display,
   Heading,
   Icon,
+  Modal,
+  BottomSheet,
+  Toggle,
 } from "@daycan/ui";
+import { useState } from "react";
+import { useToast } from "@daycan/ui";
+
 export const TypoTest = () => {
+  const [toggle, setToggle] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const { showToast } = useToast();
   return (
     <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -160,6 +170,79 @@ export const TypoTest = () => {
         <CircularProgress value={3} max={4} size="large" />
         <CircularProgress value={4} max={4} size="large" />
       </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Toggle checked={toggle} onChange={setToggle} />
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Button
+          onClick={() =>
+            showToast({
+              data: {
+                message: "안뇽 난 PC 토스트 조금 더 크지 ㅋ",
+                variant: "pc",
+                type: "success",
+              },
+            })
+          }
+        >
+          Show Toast
+        </Button>
+        <Button
+          onClick={() =>
+            showToast({
+              data: {
+                message: "안뇽 난 모바일 토스트",
+                variant: "mobile",
+                type: "info",
+              },
+            })
+          }
+        >
+          Show Toast Mobile
+        </Button>
+        <Button onClick={() => setIsModalOpen(true)}>Open Modal</Button>
+        <Modal
+          title="Modal"
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <Body type="medium" weight={600} color={COLORS.gray[900]}>
+            Modal
+          </Body>
+        </Modal>
+        <Button onClick={() => setIsBottomSheetOpen(true)}>
+          Open BottomSheet
+        </Button>
+      </div>
+      <BottomSheet
+        title="BottomSheet"
+        size="large"
+        isOpen={isBottomSheetOpen}
+        onClose={() => setIsBottomSheetOpen(false)}
+      >
+        <Body type="medium" weight={600} color={COLORS.gray[900]}>
+          BottomSheet
+        </Body>
+        <Body type="medium" weight={600} color={COLORS.gray[900]}>
+          BottomSheet
+        </Body>
+        <Body type="medium" weight={600} color={COLORS.gray[900]}>
+          BottomSheet
+        </Body>
+        <Body type="medium" weight={600} color={COLORS.gray[900]}>
+          BottomSheet
+        </Body>
+        <Body type="medium" weight={600} color={COLORS.gray[900]}>
+          BottomSheet
+        </Body>{" "}
+        <Body type="medium" weight={600} color={COLORS.gray[900]}>
+          BottomSheet
+        </Body>
+        <Body type="medium" weight={600} color={COLORS.gray[900]}>
+          BottomSheet
+        </Body>
+      </BottomSheet>
+
     </div>
   );
 };
