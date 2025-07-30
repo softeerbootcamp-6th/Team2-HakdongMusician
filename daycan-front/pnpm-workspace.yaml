@@ -38,6 +38,7 @@ catalog:
 
   # 기타 라이브러리
   "globals": ^16.3.0
+  "react-router-dom": ^7.7.1
 
 # =========================
 # catalogs: React 버전별 번들
