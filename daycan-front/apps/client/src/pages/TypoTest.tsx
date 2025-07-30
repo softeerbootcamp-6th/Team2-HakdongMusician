@@ -19,7 +19,7 @@ export const TypoTest = () => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const { showToast } = useToast();
   return (
-    <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <Display type="large" style={{ background: COLORS.primary.gradient }}>
           Display-Gradient-Test
@@ -216,7 +216,6 @@ export const TypoTest = () => {
       </div>
       <BottomSheet
         title="BottomSheet"
-        size="large"
         isOpen={isBottomSheetOpen}
         onClose={() => setIsBottomSheetOpen(false)}
       >
