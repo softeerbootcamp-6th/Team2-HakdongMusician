@@ -1,13 +1,13 @@
 import { TypoTest } from "@/pages/TypoTest";
 import { ToastContainer } from "@daycan/ui";
-import { ChipTest } from "./pages/ChipTest";
+import { ChipInputTest } from "./pages/ChipInputTest";
 
 function App() {
   return (
     <>
       <TypoTest />
       <ToastContainer />
-      <ChipTest />
+      <ChipInputTest />
     </>
   );
 
