@@ -10,3 +10,7 @@ export * from "./Body";
 export * from "./Icon";
 export * from "./Button";
 export * from "./CircularProgress";
+export * from "./Toggle";
+export * from "./Toast ";
+export * from "./Modal";
+export * from "./BottomSheet";
