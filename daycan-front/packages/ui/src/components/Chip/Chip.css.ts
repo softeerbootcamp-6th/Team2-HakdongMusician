@@ -16,62 +16,9 @@ export const chip = recipe({
     fontStyle: 'normal',
     cursor: 'pointer',
     border: 'none',
-
     boxSizing: 'border-box',    
   },
   variants: {
-    // 색상/스타일 variant
-    color: {
-      default: {
-        backgroundColor: COLORS.gray[600],
-      },
-      primary: {
-        backgroundColor: COLORS.gray[500],
-      },
-      secondary: {
-        backgroundColor: COLORS.white,
-      },
-      selected: {
-        backgroundColor: COLORS.gray[50],
-      },
-      unselected: {
-        backgroundColor: COLORS.white,
-      },
-      yellow200: {
-        backgroundColor: COLORS.yellow[200],
-      },
-      blue200: {
-        backgroundColor: COLORS.blue[200],
-      },
-      red200: {
-        backgroundColor: COLORS.red[200],
-      },
-      green200: {
-        backgroundColor: COLORS.green[200],
-      },
-      gray200: {
-        backgroundColor: COLORS.gray[200],
-      },
-      gray600: {
-        backgroundColor: COLORS.gray[600],
-      },
-      red500: {
-        backgroundColor: COLORS.red[500],
-      },
-      blue500: {
-        backgroundColor: COLORS.blue[500],
-      },
-      green500: {
-        backgroundColor: COLORS.green[500],
-      },
-
-      transparent: {
-        backgroundColor: 'transparent',
-        color: '#374151',
-        border: '1px solid #e5e7eb',
-        boxShadow: 'none',
-      }
-    },
     // 크기 variant
     padding: {
       btnDefaultPadding: {
@@ -110,8 +57,6 @@ export const chip = recipe({
         padding: '4px 16px',
         borderRadius: '4px',
       }
-
-      
     },
     size:{
         btnDefault: {
@@ -157,7 +102,6 @@ export const chip = recipe({
     }
   },
   defaultVariants: {
-    color: 'default',
     size: 'btnDefault',
     padding: 'btnDefaultPadding',
     flexRule: 'none',

@@ -6,16 +6,17 @@ export type ChipProps = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & 
   ChipVariants & {
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+    backgroundColor?: string;
   }
 >;
 
 export const Chip = ({
   onClick,
   children,
-  color,
   size,
   padding,
   flexRule,
+  backgroundColor,
   ...props
 }: ChipProps) => {
 
@@ -23,12 +24,12 @@ export const Chip = ({
     <div
       className={classNames(
         chip({ 
-          color, 
           size, 
           padding,
           flexRule
         }), 
       )}
+      style={{ backgroundColor }}
       onClick={onClick}
       {...props}
     >
