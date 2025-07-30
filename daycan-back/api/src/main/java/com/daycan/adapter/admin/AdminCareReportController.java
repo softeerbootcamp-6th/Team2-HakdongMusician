@@ -18,4 +18,6 @@ public class AdminCareReportController {
   public ApiResponse<CareReportCountResponse> getCareReportCount() {
     return ApiResponse.onSuccess(new CareReportCountResponse(5, 2));
   }
+
+  
 }
