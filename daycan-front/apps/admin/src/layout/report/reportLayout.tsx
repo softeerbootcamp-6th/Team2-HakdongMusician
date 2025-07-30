@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import {
   container,
+  sidebarWrapper,
   sidebar,
   reportSectionWrapper,
   reportSection,
@@ -14,9 +15,11 @@ import {
 export const ReportLayout = () => {
   return (
     <div className={container}>
-      <aside className={sidebar}>
-        {/* Sidebar content (ex. navigation) */}
-      </aside>
+      <div className={sidebarWrapper}>
+        <div className={sidebar}>
+          <h2>하이 사이드바</h2>
+        </div>
+      </div>
       <div className={reportSectionWrapper}>
         <main className={reportSection}>
           <Outlet />
