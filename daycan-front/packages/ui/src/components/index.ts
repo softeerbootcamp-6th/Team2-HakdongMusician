@@ -20,3 +20,4 @@ export * from "./Button";
 export * from "./CircularProgress";
 export * from "./Chip";
 export * from "./Input";
+export * from "./Segment";

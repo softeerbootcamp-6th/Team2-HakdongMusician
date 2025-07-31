@@ -15,42 +15,49 @@ export const input = recipe({
   },
   variants: {
     variant: {
-      pcInputFile: {
+      white: {
         backgroundColor: COLORS.white,
+      },
+      grayLight: {
+        backgroundColor: COLORS.gray[50],
+      },
+    },
+    size: {
+      pcInputFile: {
         padding: '12px 24px',
         width: '668px',
         height: '56px',
       },
       moTextField: {
-        backgroundColor: COLORS.gray[50],
         padding: '16px 20px',
         width: '358px',
         height: '56px',
       },
       pcTextField: {
-        backgroundColor: COLORS.white,
         padding: '0px 12px',
         width: '300px',
         height: '42px',
       },
       pcTextFieldLarge: {
-        backgroundColor: COLORS.gray[50],
         padding: '16px 24px',
         width: '532px',
         height: '64px',
       },
       textSearch: {
-        backgroundColor: COLORS.white,
         padding: '6px 12px',
         width: '256px',
         height: '40px',
       },
       allTextFieldSmall: {
-        backgroundColor: COLORS.white,
         padding: '0px 12px',
         width: '86px',
         height: '32px',
       },
+      // 모바일에서 사용을 하기 어려운 경우 직접 width, height를 지정해서 사용을 위한 full size
+      full: {
+        width: '100%',
+        height: '100%',
+      }
     },
     flexRule: {
       center: {
@@ -59,11 +66,12 @@ export const input = recipe({
       spaceBetween: {
         justifyContent: 'space-between',
       },
-      none:{}
+      none: {}
     },
   },
   defaultVariants: {
-    variant: 'pcTextField',
+    variant: 'white',
+    size: 'full',
     flexRule: 'spaceBetween',
   },
 });
