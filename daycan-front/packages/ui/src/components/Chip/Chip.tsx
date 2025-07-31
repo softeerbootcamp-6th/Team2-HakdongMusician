@@ -5,33 +5,20 @@ import { CustomWidthHeightType } from "@/utils";
 
 export type ChipProps = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & 
-  ChipVariants & CustomWidthHeightType & {
-    backgroundColor?: string;
-  }
+  ChipVariants & CustomWidthHeightType 
 >;
 
 export const Chip = ({
   onClick,
   children,
-  size,
-  padding,
   flexRule,
-  backgroundColor,
-  selected,
   ...props
 }: ChipProps) => {
 
   return (
     <div
-      className={classNames(
-        chip({ 
-          size, 
-          padding,
-          flexRule,
-          selected,
-        }), 
+      className={classNames(chip({ flexRule }), 
       )}
-      style={{ backgroundColor, width: props.customWidth, height: props.customHeight }}
       onClick={onClick}
       {...props}
     >
