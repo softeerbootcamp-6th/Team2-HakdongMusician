@@ -1,14 +1,14 @@
-import { TypoTest } from "@/pages/TypoTest";
 import { ToastContainer } from "@daycan/ui";
-import { ChipInputTest } from "./pages/ChipInputTest";
+import { TypoTest } from "./pages/TypoTest";
+import Router from "./router/Route";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <TypoTest />
+    <BrowserRouter>
+      <Router />
       <ToastContainer />
-      <ChipInputTest />
-    </>
+    </BrowserRouter>
   );
 
 }
