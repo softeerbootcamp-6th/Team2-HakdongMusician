@@ -163,6 +163,9 @@ importers:
 
   apps/client:
     dependencies:
+      '@daycan/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@daycan/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -3388,7 +3391,6 @@ snapshots:
   delayed-stream@1.0.0: {}
 
   detect-node-es@1.1.0: {}
-
 
   dot-case@3.0.4:
     dependencies:
