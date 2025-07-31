@@ -5,6 +5,7 @@ import {
   animateDown,
   title as titleStyle,
   content,
+  hidden,
 } from "./BottomSheet.css";
 import { ReactNode, useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -48,6 +49,10 @@ export const BottomSheet = ({
         <Dialog.Overlay className={overlay} />
         <Dialog.Content className={classNames(bottomSheetBase, animationClass)}>
           {title && <Dialog.Title className={titleStyle}>{title}</Dialog.Title>}
+          <Dialog.DialogDescription className={hidden}>
+            hiddenDescription
+          </Dialog.DialogDescription>
+
           <div className={content}>{children}</div>
         </Dialog.Content>
       </Dialog.Portal>
