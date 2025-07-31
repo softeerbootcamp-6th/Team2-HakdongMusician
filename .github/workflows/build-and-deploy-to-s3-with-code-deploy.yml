@@ -1,0 +1,188 @@
+name: Build and Deploy to S3 with CodeDeploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET: ${{ secrets.S3_BUCKET }}                    # S3 버킷명
+  CODEDEPLOY_APP: ${{ secrets.CODEDEPLOY_APP }}          # 기존에 생성된 CodeDeploy 애플리케이션명
+  CODEDEPLOY_GROUP: ${{ secrets.CODEDEPLOY_GROUP }}      # 기존에 생성된 CodeDeploy 배포 그룹명
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    # daycan-back 디렉토리에서 작업 (루트 Gradle 프로젝트)
+    defaults:
+      run:
+        working-directory: daycan-back/api
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Amazon Corretto 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: |
+          if [ -f gradlew ]; then
+            chmod +x gradlew
+            echo "✅ Made gradlew executable"
+          else
+            echo "❌ gradlew not found in current directory"
+            exit 1
+          fi
+
+      - name: Build with Gradle
+        run: |
+          echo "🔨 Building Spring Boot application (api module)..."
+          ./gradlew clean bootJar
+          echo "✅ Build completed successfully!"
+
+      - name: Check build artifacts
+        run: |
+          echo "📦 Checking build artifacts..."
+          ls -la build/libs/
+          JAR_FILE=$(ls -t build/libs/*.jar | grep -v 'plain.jar' | head -n 1)
+          if [ -z "$JAR_FILE" ]; then
+            echo "❌ No JAR file found!"
+            exit 1
+          fi
+          echo "✅ Found JAR file: $JAR_FILE"
+          JAR_SIZE=$(du -h "$JAR_FILE" | cut -f1)
+          echo "📏 JAR file size: $JAR_SIZE"
+
+      - name: Prepare CodeDeploy bundle
+        run: |
+          echo "📋 Preparing CodeDeploy deployment bundle..."
+          # 타임스탬프와 커밋 해시로 고유한 배포 ID 생성
+          TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
+          COMMIT_HASH=${GITHUB_SHA::7}
+          JAR_FILE=$(ls -t build/libs/*.jar | grep -v 'plain.jar' | head -n 1)
+          
+          # 배포 번들 디렉토리 생성
+          mkdir -p deployment-bundle/app
+          mkdir -p deployment-bundle/scripts
+          
+          # JAR 파일을 app.jar로 복사
+          cp "$JAR_FILE" deployment-bundle/app/app.jar
+          echo "✅ Copied JAR file to deployment bundle"
+          
+          # appspec.yml과 scripts 복사 (상위 디렉토리에서)
+          cp ../appspec.yml deployment-bundle/
+          cp -r ../scripts/* deployment-bundle/scripts/
+          echo "✅ Copied appspec.yml and scripts"
+          
+          # 스크립트에 실행 권한 부여
+          chmod +x deployment-bundle/scripts/*.sh
+          
+          # 배포 번들 압축
+          BUNDLE_NAME="daycan-back-${TIMESTAMP}-${COMMIT_HASH}.zip"
+          cd deployment-bundle
+          zip -r "../$BUNDLE_NAME" .
+          cd ..
+          
+          echo "UPLOAD_FILE=$BUNDLE_NAME" >> $GITHUB_ENV
+          echo "S3_KEY=deploy/daycan-back/$BUNDLE_NAME" >> $GITHUB_ENV
+          echo "DEPLOYMENT_ID=${TIMESTAMP}-${COMMIT_HASH}" >> $GITHUB_ENV
+          echo "✅ CodeDeploy bundle prepared: $BUNDLE_NAME"
+
+      # 테스트용: Access Key 방식 (운영환경에서는 OIDC 권장)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload deployment bundle to S3
+        run: |
+          echo "📤 Uploading deployment bundle to S3..."
+          aws s3 cp "$UPLOAD_FILE" "s3://${S3_BUCKET}/${S3_KEY}"
+          echo "✅ Successfully uploaded to: s3://${S3_BUCKET}/${S3_KEY}"
+          
+          # 업로드 확인
+          aws s3 ls "s3://${S3_BUCKET}/${S3_KEY}" --human-readable
+
+      - name: Create CodeDeploy deployment
+        id: deploy
+        run: |
+          echo "🚀 Creating CodeDeploy deployment..."
+          DEPLOYMENT_ID_RESULT=$(aws deploy create-deployment \
+            --application-name "${CODEDEPLOY_APP}" \
+            --deployment-group-name "${CODEDEPLOY_GROUP}" \
+            --revision "revisionType=S3,s3Location={bucket=${S3_BUCKET},key=${S3_KEY},bundleType=zip}" \
+            --description "Deploy ${GITHUB_SHA} from ${GITHUB_REF_NAME} (${DEPLOYMENT_ID})" \
+            --query "deploymentId" --output text)
+          
+          echo "CODEDEPLOY_ID=$DEPLOYMENT_ID_RESULT" | tee -a $GITHUB_ENV
+          echo "deployment_id=$DEPLOYMENT_ID_RESULT" >> $GITHUB_OUTPUT
+          echo "✅ CodeDeploy deployment created: $DEPLOYMENT_ID_RESULT"
+
+      - name: Wait for deployment to complete
+        run: |
+          set -e
+          CODEDEPLOY_ID="${CODEDEPLOY_ID:?missing}"
+          echo "⏳ Waiting for CodeDeploy deployment: $CODEDEPLOY_ID"
+          
+          # 최대 20분 대기 (120 * 10s)
+          for i in $(seq 1 120); do
+            STATUS=$(aws deploy get-deployment --deployment-id "$CODEDEPLOY_ID" \
+              --query "deploymentInfo.status" --output text)
+            echo "[$i/120] Deployment Status: $STATUS"
+            
+            case "$STATUS" in
+              Succeeded)
+                echo "🎉 Deployment completed successfully!"
+                exit 0
+                ;;
+              Failed|Stopped)
+                echo "❌ Deployment $STATUS"
+                echo "📋 Deployment details:"
+                aws deploy get-deployment --deployment-id "$CODEDEPLOY_ID" \
+                  --query "deploymentInfo.errorInformation" --output table || true
+                exit 1
+                ;;
+              *)
+                sleep 10
+                ;;
+            esac
+          done
+          
+          echo "⏰ Timeout waiting for deployment to complete"
+          exit 1
+
+      - name: Deployment summary
+        if: always()
+        run: |
+          echo "🎯 Deployment Summary:"
+          echo "- Application: ${CODEDEPLOY_APP}"
+          echo "- Deployment Group: ${CODEDEPLOY_GROUP}"
+          echo "- Deployment ID: ${CODEDEPLOY_ID:-N/A}"
+          echo "- S3 Bundle: s3://${S3_BUCKET}/${S3_KEY}"
+          echo "- Build Time: $(date)"
+          echo "- Commit: ${GITHUB_SHA}"
+          echo "- Branch: ${GITHUB_REF_NAME}"
+
+      - name: Show deployment details on failure
+        if: failure()
+        run: |
+          if [ -n "${CODEDEPLOY_ID:-}" ]; then
+            echo "🔍 Deployment failure details:"
+            aws deploy get-deployment --deployment-id "$CODEDEPLOY_ID" || true
+            
+            echo "📜 Recent deployment events:"
+            aws deploy list-deployment-instances --deployment-id "$CODEDEPLOY_ID" \
+              --query "instancesList" --output table || true
+          fi
+
