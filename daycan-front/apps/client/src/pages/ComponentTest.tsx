@@ -1,17 +1,23 @@
 import { Body, Button, Chip, Icon } from "@daycan/ui";
 import { COLORS } from "@daycan/ui";
-import { Input } from "@daycan/ui";
+import { Input, Segment } from "@daycan/ui";
+import { useState } from "react";
 
-export const ChipInputTest = () => {
+export const ComponentTest = () => {
+  const [selectedFood, setSelectedFood] = useState("일반식");
+  const [selectedPeriod, setSelectedPeriod] = useState("1주");
+
   return (
     <div style={{ 
-      backgroundColor: COLORS.gray[100],
+      backgroundColor: COLORS.gray[200],
       padding: "20px", 
       display: "flex", 
       flexDirection: "column", 
       gap: "24px",
       margin: "0 auto"
     }}>
+      
+
       <h2>Chip 컴포넌트 테스트</h2>
 
       {/* Basic Chip Variants */}
@@ -215,46 +221,111 @@ export const ChipInputTest = () => {
     <div style={{ 
       backgroundColor: COLORS.gray[100],
     }}>
-      <h2>Input 컴포넌트 테스트</h2>
-      <Input variant="pcInputFile">
+      <h2>Input 컴포넌트 테스트 (새로운 variant/size 구조)</h2>
+      
+      {/* PC Input File - White background */}
+      <Input variant="white" size="pcInputFile">
         <Body type="large" weight={600} color={COLORS.gray[800]}>
           label
         </Body>
         <Button variant="primary" size="small">등록</Button>
       </Input>
-      <Input variant="pcInputFile">
+      
+      <Input variant="white" size="pcInputFile">
         <Body type="large" weight={600} color={COLORS.gray[800]}>
           label
         </Body>
         <Button variant="error" size="small">삭제</Button>
       </Input>
-      <Input variant="moTextField">
+      
+      {/* Mobile Text Field - Gray background */}
+      <Input variant="grayLight" size="moTextField">
         <Body type="medium" weight={500} color={COLORS.gray[800]}>
           label
         </Body>
       </Input>
-      <Input variant="pcTextFieldLarge">
+      
+      {/* PC Text Field Large - Gray background */}
+      <Input variant="grayLight" size="pcTextFieldLarge">
         <Body type="medium" weight={500} color={COLORS.gray[800]}>
           label
         </Body>
       </Input>
-      <Input variant="pcTextField">
+      
+      {/* PC Text Field - White background */}
+      <Input variant="white" size="pcTextField">
         <Body type="medium" weight={500} color={COLORS.gray[800]}>
           label
         </Body>
       </Input>
-      <Input variant="textSearch" flexRule="none">
+      
+      {/* Text Search - White background */}
+      <Input variant="white" size="textSearch" flexRule="none">
         <Icon name="search" size={16} color={COLORS.gray[500]} stroke={COLORS.gray[500]} />
         <Body type="medium" weight={500} color={COLORS.gray[800]}>
           label
         </Body>
       </Input>
-      <Input variant="allTextFieldSmall" flexRule="center">
+      
+      {/* Small Text Field - White background */}
+      <Input variant="white" size="allTextFieldSmall" flexRule="center">
         <Body type="medium" weight={500} color={COLORS.gray[800]}>
           label
         </Body>
       </Input>
+      
+      {/* Full size with custom dimensions */}
+      <Input variant="white" size="full" flexRule="center" style={{ width: '1100px', height: '56px' }}>
+        <Body type="medium" weight={500} color={COLORS.gray[800]}>
+          label
+        </Body>
+      </Input>
+      
+      {/* 같은 size, 다른 variant 비교 */}
+      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+        <Input variant="white" size="pcTextField">
+          <Body type="medium" weight={500} color={COLORS.gray[800]}>화이트</Body>
+        </Input>
+        <Input variant="grayLight" size="pcTextField">
+          <Body type="medium" weight={500} color={COLORS.gray[800]}>그레이</Body>
+        </Input>
+      </div>
     </div>
+    {/* Segment 컴포넌트 테스트 */}
+      <div style={{ 
+        padding: "20px",
+        borderRadius: "12px",
+        display: "flex", 
+        flexDirection: "column", 
+        gap: "24px",
+      }}>
+        <h2>Segment 컴포넌트 테스트</h2>
+        
+        {/* SegmentItem 사용 (기본) */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "250px" }}>
+          <h3>음식 타입 선택 (SegmentItem 사용)</h3>
+          <Segment
+            options={["일반식", "죽", "유동식"]}
+            value={selectedFood}
+            onChange={setSelectedFood}
+            variant="default"
+            useChip={true}
+          />
+        </div>
+
+        {/* Chip 사용 */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "250px" }}>
+          <h3>기간 선택 (Chip 사용)</h3>
+          <Segment
+            options={["1주", "1개월", "6개월"]}
+            value={selectedPeriod}
+            onChange={setSelectedPeriod}
+            variant="default"
+            useChip={false}
+          />
+        </div>
+
+      </div>
 
     </div>
   );
