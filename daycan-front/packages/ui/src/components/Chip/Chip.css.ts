@@ -99,7 +99,17 @@ export const chip = recipe({
             paddingRight: '12px',
         },
         none:{}
-    }
+    },
+    selected: {
+      true: {
+        backgroundColor: COLORS.gray[600],
+        color: COLORS.gray[100],
+      },
+      false: {
+        backgroundColor: COLORS.gray[50],
+        color: COLORS.gray[500],
+      },
+    },
   },
   defaultVariants: {
     size: 'btnDefault',
