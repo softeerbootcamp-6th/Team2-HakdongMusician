@@ -5,3 +5,4 @@
  */
 export * from "./getColorValue";
 export * from "./classNames";
+export * from "./customWidthHeightType";
