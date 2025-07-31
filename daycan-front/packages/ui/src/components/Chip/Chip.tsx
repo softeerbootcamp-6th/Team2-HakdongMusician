@@ -1,11 +1,11 @@
 import React, { PropsWithChildren, HTMLAttributes } from 'react';
 import { classNames } from "@/utils";
 import { chip, type ChipVariants } from "./Chip.css";
+import { CustomWidthHeightType } from "@/utils";
 
 export type ChipProps = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & 
-  ChipVariants & {
-    onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  ChipVariants & CustomWidthHeightType & {
     backgroundColor?: string;
   }
 >;
@@ -17,6 +17,7 @@ export const Chip = ({
   padding,
   flexRule,
   backgroundColor,
+  selected,
   ...props
 }: ChipProps) => {
 
@@ -26,10 +27,11 @@ export const Chip = ({
         chip({ 
           size, 
           padding,
-          flexRule
+          flexRule,
+          selected,
         }), 
       )}
-      style={{ backgroundColor }}
+      style={{ backgroundColor, width: props.customWidth, height: props.customHeight }}
       onClick={onClick}
       {...props}
     >
