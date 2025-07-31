@@ -1,13 +1,17 @@
 import { recipe, RecipeVariants } from '@vanilla-extract/recipes';
+// import { style } from '@vanilla-extract/css';
 import { COLORS } from '@/styles/colors';
+import { style } from '@vanilla-extract/css';
 
 export const segment = recipe({
   base: {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderRadius: '12px',
+    backgroundColor: COLORS.gray[100],
+    borderRadius: '110px',
     boxSizing: 'border-box',
+    width: '100%',
+    height: '100%',
   },
   variants: {
     variant: {
@@ -20,19 +24,31 @@ export const segment = recipe({
         alignItems: 'stretch',
       },
     },
-    useChip: {
-      true: {
-        gap: '8px',
+    type: {
+      default: {
+        maxWidth: '358px',
+        maxHeight: '40px',
       },
-      false: {
-        gap: '0px',
+      compact: {
+        maxWidth: '280px',
+        maxHeight: '32px',
+        backgroundColor: 'transparent',
       },
     },
   },
   defaultVariants: {
     variant: 'default',
-    useChip: true,
+    type: 'default',
   },
+});
+
+
+export const segmentDivider = style({
+    width: '1px',
+    height: '24px',
+    transition: 'background-color 0.2s ease',
+    alignSelf: 'center',
+    backgroundColor: COLORS.gray[400],
 });
 
 export type SegmentVariants = RecipeVariants<typeof segment>;
