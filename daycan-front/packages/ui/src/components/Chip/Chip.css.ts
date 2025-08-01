@@ -9,6 +9,7 @@ export const chip = recipe({
     justifyContent: 'center',
     gap: '4px',
     fontSize: '13px',
+    padding: '2px 6px',
     fontWeight: 500,
     color: COLORS.gray[100],
     backgroundColor: COLORS.gray[600],
