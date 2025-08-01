@@ -1,5 +1,6 @@
 package com.daycan.application.member.dto.report;
 
+import com.daycan.application.member.dto.report.entry.CardFooter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "식사 지원 응답")
@@ -10,20 +11,18 @@ public record MealSupportResponse(
     String lunch,
     @Schema(description = "저녁 식사 내용 (null 가능)")
     String dinner,
-    @Schema(description = "점수")
-    int score,
-    @Schema(description = "추가 메모 (null 가능, 예: \"식사량이 부족함\" 등)")
-    String additionalNot
+    @Schema(description = "점수와 메모, 카드 밑에 들어감")
+    CardFooter cardFooter
 ) {
 
 
   public static MealSupportResponse of(
-      String breakfast,
-      String lunch,
-      String dinner,
-      int score,
-      String additionalNote
+      String breakfast, String lunch,
+      String dinner, CardFooter cardFooter
   ) {
-    return new MealSupportResponse(breakfast, lunch, dinner, score, additionalNote);
+    return new MealSupportResponse(
+        breakfast, lunch,
+        dinner, cardFooter
+    );
   }
 }
