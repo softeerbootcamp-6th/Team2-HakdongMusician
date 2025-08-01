@@ -28,4 +28,11 @@ public class AdminCareSheetController {
     // file을 바로 다운로드?
     return ApiResponse.onSuccess("https://cdn.example.com/excel/care_report_공단제출용.xlsx");
   }
+
+  @GetMapping("")
+  @Operation(summary = "기록지 관리 페이지", description = "기록지 관리 페이지를 조회합니다.")
+  public ApiResponse<String> getCareSheetManagementPage() {
+    // 실제로는 HTML 페이지를 반환해야 하지만, 여기서는 URL을 반환하는 것으로 대체합니다.
+    return ApiResponse.onSuccess("https://www.daycan.com/admin/care-sheet");
+  }
 }
