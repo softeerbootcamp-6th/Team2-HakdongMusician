@@ -18,7 +18,7 @@ export const sidebar = style({
   width: "100%",
   height: "100%",
   margin: "0 auto",
-  padding: "0 24px",
+
   boxSizing: "border-box",
 
   maxWidth: "256px",
