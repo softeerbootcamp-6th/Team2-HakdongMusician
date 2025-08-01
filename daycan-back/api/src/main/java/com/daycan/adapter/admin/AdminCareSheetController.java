@@ -3,11 +3,15 @@ package com.daycan.adapter.admin;
 import com.daycan.application.admin.dto.UrlResponse;
 import com.daycan.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController()
 @RequestMapping("/admin/care-sheet")
@@ -19,17 +23,17 @@ public class AdminCareSheetController {
   public ApiResponse<UrlResponse> downloadCareReportFile(
       @RequestParam(required = true) String year,
       @RequestParam(required = true) String month) {
-    // file을 바로 다운로드?
+    // TODO presigned URL 생성 후 반환
     return ApiResponse.onSuccess(
         new UrlResponse("https://cdn.example.com/excel/care_report_공단제출용.xlsx"));
   }
 
-  @GetMapping("")
-  @Operation(summary = "기록지 관리 페이지", description = "기록지 관리 페이지를 조회합니다.")
-  public ApiResponse<UrlResponse> getCareSheetManagementPage() {
-    // 실제로는 HTML 페이지를 반환해야 하지만, 여기서는 URL을 반환하는 것으로 대체합니다.
-    return ApiResponse.onSuccess(
-        new UrlResponse("https://www.daycan.com/admin/care-sheet")
-    );
+  @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(summary = "사진으로 등록", description = "이미지 파일(.jpg, .jpeg, .png)을 업로드하여 수급자를 일괄 등록합니다. 최대 10개까지")
+  public ApiResponse<Void> createMemberFromExcel(
+      @Parameter(description = "이미지 파일 여러 개(.jpg, .jpeg, .png)", required = true)
+      @RequestParam("file") MultipartFile[] files) {
+    // TODO: 10개 제한
+    return ApiResponse.OK;
   }
 }
