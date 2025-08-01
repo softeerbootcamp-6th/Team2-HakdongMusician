@@ -8,11 +8,7 @@ export type DisplayProps = PropsWithChildren<
 
 export const Display = ({ type, color, children, ...props }: DisplayProps) => {
   return (
-    <h1
-      className={classNames(display({ type }))}
-      style={{ color: color ? color : undefined }}
-      {...props}
-    >
+    <h1 className={classNames(display({ type }))} {...props}>
       {children}
     </h1>
   );
