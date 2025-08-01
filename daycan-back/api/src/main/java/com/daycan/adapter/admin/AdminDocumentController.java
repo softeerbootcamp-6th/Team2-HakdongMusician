@@ -1,7 +1,11 @@
 package com.daycan.adapter.admin;
 
+import com.daycan.application.admin.dto.CareReportCountResponse;
+import com.daycan.application.admin.dto.CareSheetCountResponse;
+import com.daycan.application.admin.dto.DocumentCountResponse;
 import com.daycan.application.admin.dto.DocumentStatusResponse;
 import com.daycan.application.admin.dto.DocumentStatusResponse.CareSheetStatusResponse;
+import com.daycan.common.response.ApiResponse;
 import com.daycan.domain.enums.CareReportStatus;
 import com.daycan.domain.enums.CareSheetStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,5 +51,16 @@ public class AdminDocumentController {
   ) {
     //
     return mockDocumentStatus;
+  }
+
+  @GetMapping("/count")
+  @Operation(summary = "기록지/리포트 카운트 조회", description = "미완료된 기록지/리포트 수와 지연된 기록지/리포트 수를 조회합니다. (어드민 페이지 사이드 바)")
+  public ApiResponse<DocumentCountResponse> getCareReportCount() {
+    return ApiResponse.onSuccess(
+        new DocumentCountResponse(
+            new CareReportCountResponse(5, 2),
+            new CareSheetCountResponse(5, 2)
+        )
+    );
   }
 }
