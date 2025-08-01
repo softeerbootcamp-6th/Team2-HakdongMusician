@@ -1,12 +1,10 @@
-import { COLORS } from "@daycan/ui";
 import { style } from "@vanilla-extract/css";
 
 export const layout = style({
-  minHeight: "100vh",
-  backgroundColor: COLORS.gray[900],
+  minHeight: "100dvh",
   display: "flex",
   width: "100%",
-  maxWidth: 360,
+  maxWidth: "390px",
   flexDirection: "column",
   alignItems: "center",
   padding: "0px 16px",
@@ -23,10 +21,8 @@ export const wrapper = style({
 });
 
 export const container = style({
-  maxWidth: 420,
   width: "100%",
   margin: "0 auto",
-
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

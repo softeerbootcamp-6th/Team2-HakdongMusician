@@ -24,6 +24,9 @@ import {
   ResetIcon,
   DownloadIcon,
   CircleCheckIcon,
+  FullLogo32Icon,
+  FullLogo40Icon,
+  SmallLogoIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -56,4 +59,7 @@ export const iconMap = {
   reset: ResetIcon,
   download: DownloadIcon,
   circleCheck: CircleCheckIcon,
+  fullLogo32: FullLogo32Icon,
+  fullLogo40: FullLogo40Icon,
+  smallLogo: SmallLogoIcon,
 };
