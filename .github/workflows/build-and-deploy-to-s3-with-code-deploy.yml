@@ -3,6 +3,8 @@ name: Build and Deploy to S3 with CodeDeploy
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'daycan-back/**'
 
 permissions:
   contents: read
@@ -18,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # daycan-back 디렉토리에서 작업 (루트 Gradle 프로젝트)
+    # TODO: daycan-back 디렉토리에서 멀티모듈로 작업하는 방법으로 전환
     defaults:
       run:
         working-directory: daycan-back/api
@@ -43,24 +46,12 @@ jobs:
             exit 1
           fi
 
+      # TODO:테스트 단계 추가
       - name: Build with Gradle
         run: |
           echo "🔨 Building Spring Boot application (api module)..."
           ./gradlew clean bootJar
           echo "✅ Build completed successfully!"
-
-      - name: Check build artifacts
-        run: |
-          echo "📦 Checking build artifacts..."
-          ls -la build/libs/
-          JAR_FILE=$(ls -t build/libs/*.jar | grep -v 'plain.jar' | head -n 1)
-          if [ -z "$JAR_FILE" ]; then
-            echo "❌ No JAR file found!"
-            exit 1
-          fi
-          echo "✅ Found JAR file: $JAR_FILE"
-          JAR_SIZE=$(du -h "$JAR_FILE" | cut -f1)
-          echo "📏 JAR file size: $JAR_SIZE"
 
       - name: Prepare CodeDeploy bundle
         run: |
@@ -110,9 +101,6 @@ jobs:
           echo "📤 Uploading deployment bundle to S3..."
           aws s3 cp "$UPLOAD_FILE" "s3://${S3_BUCKET}/${S3_KEY}"
           echo "✅ Successfully uploaded to: s3://${S3_BUCKET}/${S3_KEY}"
-          
-          # 업로드 확인
-          aws s3 ls "s3://${S3_BUCKET}/${S3_KEY}" --human-readable
 
       - name: Create CodeDeploy deployment
         id: deploy
@@ -129,41 +117,7 @@ jobs:
           echo "deployment_id=$DEPLOYMENT_ID_RESULT" >> $GITHUB_OUTPUT
           echo "✅ CodeDeploy deployment created: $DEPLOYMENT_ID_RESULT"
 
-      - name: Wait for deployment to complete
-        run: |
-          set -e
-          CODEDEPLOY_ID="${CODEDEPLOY_ID:?missing}"
-          echo "⏳ Waiting for CodeDeploy deployment: $CODEDEPLOY_ID"
-          
-          # 최대 20분 대기 (120 * 10s)
-          for i in $(seq 1 120); do
-            STATUS=$(aws deploy get-deployment --deployment-id "$CODEDEPLOY_ID" \
-              --query "deploymentInfo.status" --output text)
-            echo "[$i/120] Deployment Status: $STATUS"
-            
-            case "$STATUS" in
-              Succeeded)
-                echo "🎉 Deployment completed successfully!"
-                exit 0
-                ;;
-              Failed|Stopped)
-                echo "❌ Deployment $STATUS"
-                echo "📋 Deployment details:"
-                aws deploy get-deployment --deployment-id "$CODEDEPLOY_ID" \
-                  --query "deploymentInfo.errorInformation" --output table || true
-                exit 1
-                ;;
-              *)
-                sleep 10
-                ;;
-            esac
-          done
-          
-          echo "⏰ Timeout waiting for deployment to complete"
-          exit 1
-
       - name: Deployment summary
-        if: always()
         run: |
           echo "🎯 Deployment Summary:"
           echo "- Application: ${CODEDEPLOY_APP}"
@@ -173,16 +127,4 @@ jobs:
           echo "- Build Time: $(date)"
           echo "- Commit: ${GITHUB_SHA}"
           echo "- Branch: ${GITHUB_REF_NAME}"
-
-      - name: Show deployment details on failure
-        if: failure()
-        run: |
-          if [ -n "${CODEDEPLOY_ID:-}" ]; then
-            echo "🔍 Deployment failure details:"
-            aws deploy get-deployment --deployment-id "$CODEDEPLOY_ID" || true
-            
-            echo "📜 Recent deployment events:"
-            aws deploy list-deployment-instances --deployment-id "$CODEDEPLOY_ID" \
-              --query "instancesList" --output table || true
-          fi
 
