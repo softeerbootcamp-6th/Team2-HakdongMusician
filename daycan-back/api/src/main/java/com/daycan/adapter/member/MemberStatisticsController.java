@@ -52,7 +52,7 @@ public class MemberStatisticsController {
       summary = "통합 점수(Overall) 구간 평균",
       description = "startDate~endDate 구간의 평균 통합 점수를 반환합니다."
   )
-  @GetMapping("/overall/{startDate}/{endDate}/average")
+  @GetMapping("/overall/from/{startDate}/to/{endDate}/average")
   public ResponseWrapper<Double> getOverallAverage(
       @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
       @PathVariable
@@ -73,7 +73,7 @@ public class MemberStatisticsController {
       summary = "통합 점수(Overall) 일자별 조회",
       description = "startDate~endDate 구간의 일자별 통합 점수와 평균을 반환합니다."
   )
-  @GetMapping("/overall/{startDate}/{endDate}")
+  @GetMapping("/overall/from/{startDate}/to/{endDate}")
   public ResponseWrapper<HealthStatisticsEntry> getOverallByDate(
       @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
       @PathVariable
@@ -105,7 +105,7 @@ public class MemberStatisticsController {
           - 6달·1년 : 월별 대표값(평균)으로 요약
           """
   )
-  @GetMapping("/vitals/{startDate}/{endDate}")
+  @GetMapping("/vitals/from/{startDate}/to/{endDate}")
   public ResponseWrapper<MemberStatisticsResponse> getVitals(
       @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
       @PathVariable
