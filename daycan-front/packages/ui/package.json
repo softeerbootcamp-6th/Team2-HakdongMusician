@@ -17,7 +17,8 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
     "@vanilla-extract/recipes": "catalog:",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "lottie-web": "^5.13.0"
   },
   "peerDependencies": {
     "@vanilla-extract/css": "catalog:",

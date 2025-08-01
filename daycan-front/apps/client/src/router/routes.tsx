@@ -1,4 +1,4 @@
-import { TypoTest } from "@/pages/TypoTest";
+import { ToReportPage, LoginPage, MainPage } from "@/pages";
 import { MobileLayout } from "../layout";
 
 export type TRoutes = {
@@ -18,12 +18,17 @@ export const routes: TRoutes[] = [
     children: [
       {
         path: "",
-        element: <div>HomePage</div>, // => 여기 Outlet으로 렌더됨
+        element: <MainPage />,
       },
       {
-        path: "test",
-        element: <TypoTest />,
+        path: "to-report",
+        element: <ToReportPage />,
       },
+      {
+        path: "login",
+        element: <LoginPage />, // => 여기 Outlet으로 렌더됨
+      },
+
       {
         path: "*",
         element: <div>NotFound</div>,

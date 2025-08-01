@@ -3,7 +3,8 @@ import { defaultIconSize, iconMap } from "./index.types";
 export interface IconProps {
   name: keyof typeof iconMap;
   className?: string;
-  size?: number;
+  width?: number;
+  height?: number;
   color?: string;
   stroke?: string;
   onClick?: () => void;
@@ -23,7 +24,8 @@ export interface IconProps {
 
 export const Icon = ({
   name,
-  size = defaultIconSize,
+  width = defaultIconSize,
+  height = defaultIconSize,
   color = "currentColor",
   stroke = 'none',
   onClick,
@@ -33,8 +35,8 @@ export const Icon = ({
   if (!SvgIcon) return null;
   return (
     <SvgIcon
-      width={size}
-      height={size}
+      width={width}
+      height={height}
       fill={color}
       stroke={stroke}
       onClick={onClick}

@@ -43,6 +43,7 @@ export { default as AddPhotoIcon } from "./svg/add-photo.svg";
 // 로고 아이콘들
 export { default as FullLogo32Icon } from "./svg/full-logo-32.svg";
 export { default as FullLogo40Icon } from "./svg/full-logo-40.svg";
+export { default as SmallLogoIcon } from "./svg/small-logo.svg";
 
 // 사용자 아이콘들
 export { default as ElderIcon } from "./svg/elder.svg";

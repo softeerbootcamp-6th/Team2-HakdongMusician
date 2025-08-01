@@ -29,10 +29,22 @@ export const heading = recipe({
         fontSize: 22,
       },
     },
+    weight: {
+      600: {
+        fontWeight: 600,
+      },
+      500: {
+        fontWeight: 500,
+      },
+      400: {
+        fontWeight: 400,
+      },
+    },
   },
 
   defaultVariants: {
     type: "medium",
+    weight: 600,
   },
 });
 

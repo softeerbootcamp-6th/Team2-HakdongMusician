@@ -1,6 +1,6 @@
 //공통 responseDTO
 export type TGetResponse<T> = {
-  code: number;
+  status: number;
   message: string;
   result: T;
 };
