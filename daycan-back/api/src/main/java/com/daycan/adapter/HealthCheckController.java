@@ -1,6 +1,6 @@
 package com.daycan.adapter;
 
-import com.daycan.common.response.ApiResponse;
+import com.daycan.common.response.ResponseWrapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthCheckController {
 
   @GetMapping("")
-  public ApiResponse<Void> getCareReportCount() {
-    return ApiResponse.OK;
+  public ResponseWrapper<Void> check() {
+    return ResponseWrapper.onSuccess(null);
   }
 }

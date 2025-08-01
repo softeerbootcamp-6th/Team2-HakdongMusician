@@ -2,11 +2,14 @@ package com.daycan.adapter.admin;
 
 import com.daycan.application.admin.dto.MemberRequest;
 import com.daycan.application.common.dto.MemberResponse;
-import com.daycan.common.response.ApiResponse;
+import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.enums.Gender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -67,26 +70,28 @@ public class AdminMemberController {
 
   @GetMapping("")
   @Operation(summary = "수급자 목록 조회", description = "성별, 장기요양등급, 이름으로 필터링하여 수급자 목록을 조회합니다.")
-  public ApiResponse<List<MemberResponse>> getMemberList(
+  public ResponseWrapper<List<MemberResponse>> getMemberList(
       @Parameter(description = "성별 (MALE, FEMALE)", example = "MALE") @RequestParam(required = false) Gender gender,
 
-      @Parameter(description = "장기요양등급 (1~5등급)", example = "3") @RequestParam(required = false) Integer careGrade,
+      @Parameter(description = "장기요양등급 (1~5등급)", example = "3") @RequestParam(required = false)
+      @Valid @Min(1) @Max(5)
+      Integer careGrade,
 
       @Parameter(description = "고령자 이름 (부분 검색 가능)", example = "홍길동") @RequestParam(required = false) String name) {
-    return ApiResponse.onSuccess(mockMemberList);
+    return ResponseWrapper.onSuccess(mockMemberList);
   }
 
   @PostMapping("")
   @Operation(summary = "수급자 등록", description = "새로운 수급자를 등록합니다.")
-  public ApiResponse<Void> createMember(@RequestBody MemberRequest memberRequest) {
-    return ApiResponse.onSuccess(null);
+  public ResponseWrapper<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
+    return ResponseWrapper.onSuccess(null);
   }
 
   @PostMapping(value = "/excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(summary = "엑셀로 수급자 일괄 등록", description = "엑셀 파일(.xlsx, .xls)을 업로드하여 수급자를 일괄 등록합니다.")
-  public ApiResponse<List<MemberResponse>> createMemberFromExcel(
+  public ResponseWrapper<List<MemberResponse>> createMemberFromExcel(
       @Parameter(description = "엑셀 파일 (.xlsx, .xls)", required = true) @RequestParam("file") MultipartFile file) {
-    return ApiResponse.onSuccess(mockMemberList);
+    return ResponseWrapper.onSuccess(mockMemberList);
   }
 
 }
