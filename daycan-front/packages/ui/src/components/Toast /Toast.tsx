@@ -43,7 +43,12 @@ export const Toast = ({ data }: ToastProps) => {
   return (
     <div className={toast({ variant })}>
       <div className={toastIcon}>
-        <Icon name={getIconName()} size={24} color={COLORS.primary[300]} />
+        <Icon
+          name={getIconName()}
+          width={24}
+          height={24}
+          color={COLORS.primary[300]}
+        />
       </div>
       <Body type="medium" weight={600} color={getTextColor()}>
         {data?.message}
