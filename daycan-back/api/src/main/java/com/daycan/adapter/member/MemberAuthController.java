@@ -3,7 +3,7 @@ package com.daycan.adapter.member;
 import com.daycan.application.common.dto.LoginRequest;
 import com.daycan.application.common.dto.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import com.daycan.common.response.ApiResponse;
+import com.daycan.common.response.ResponseWrapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +22,10 @@ public class MemberAuthController {
       summary = "Member Auth Login",
       description = "보호자 계정 로그인 API 입니다."
   )
-  public ApiResponse<LoginResponse> login(
+  public ResponseWrapper<LoginResponse> login(
       @RequestBody LoginRequest loginRequest
   ) {
-    return ApiResponse.onSuccess(
+    return ResponseWrapper.onSuccess(
         LoginResponse.of(
             "mockAccessToken",
             "mockRefreshToken"
@@ -38,9 +38,9 @@ public class MemberAuthController {
       summary = "Member Auth Logout",
       description = "보호자 계정 로그아웃 API 입니다."
   )
-  public ApiResponse<Void> logout() {
+  public ResponseWrapper<Void> logout() {
 
-    return ApiResponse.onSuccess(null);
+    return ResponseWrapper.onSuccess(null);
   }
 
   @PostMapping("/reissue")
@@ -48,8 +48,8 @@ public class MemberAuthController {
       summary = "Member Auth Reissue",
       description = "보호자 계정 토큰 재발급 API 입니다."
   )
-  public ApiResponse<LoginResponse> reissue(){
-    return ApiResponse.onSuccess(
+  public ResponseWrapper<LoginResponse> reissue(){
+    return ResponseWrapper.onSuccess(
         LoginResponse.of(
             "mockAccessToken",
             "mockRefreshToken"
