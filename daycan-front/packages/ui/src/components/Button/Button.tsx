@@ -1,10 +1,9 @@
 import type { HTMLAttributes, PropsWithChildren } from "react";
 import { classNames } from "../../utils";
 import { button, type ButtonVariants } from "./Button.css";
-import { CustomWidthHeightType } from "@/utils";
 
 export type ButtonProps = PropsWithChildren<
-  HTMLAttributes<HTMLButtonElement> & ButtonVariants & CustomWidthHeightType
+  HTMLAttributes<HTMLButtonElement> & ButtonVariants
 >;
 
 export const Button = ({
@@ -16,7 +15,6 @@ export const Button = ({
 }: ButtonProps) => {
   return (
     <button className={classNames(button({ variant, size }))} 
-    style={{ width: props.customWidth, height: props.customHeight }}
     {...props}>
       {children}
     </button>
