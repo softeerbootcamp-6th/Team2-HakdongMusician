@@ -1,6 +1,6 @@
 import { Body, COLORS, Icon } from "@daycan/ui";
 import { menuItemHeader } from "./MenuItemHeader.css";
-import { type PageKey } from "../Sidebar/Sidebar";
+import { type PageKey } from "../Sidebar/hooks";
 
 interface MenuItemHeaderProps {
   pageKey: PageKey;
@@ -20,25 +20,12 @@ export const MenuItemHeader = ({
   const color = isSelected ? COLORS.primary[300] : COLORS.gray[500];
 
   return (
-    <div
-      className={menuItemHeader}
-      onClick={() => onClick(pageKey)}
-    >
-      <Icon
-        name={iconName}
-        width={36}
-        height={36}
-        color={color}
-      />
+    <div className={menuItemHeader} onClick={() => onClick(pageKey)}>
+      <Icon name={iconName} width={36} height={36} color={color} />
       <Body type="large" color={color}>
         {label}
       </Body>
-      <Icon
-        name="arrowRight"
-        width={16}
-        height={16}
-        stroke={color}
-      />
+      <Icon name="arrowRight" width={16} height={16} stroke={color} />
     </div>
   );
 };
