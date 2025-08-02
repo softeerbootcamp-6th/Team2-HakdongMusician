@@ -53,12 +53,3 @@ export const menuItem = style({
   gap: "8px",
   width: "132px",
 });
-
-export const menuItemHeader = style({
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "row",
-  gap: "8px",
-});
-
-export const menuItemHeaderSelected = style({});
