@@ -15,9 +15,11 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <button className={classNames(button({ variant, size }))} 
-    style={{ width: props.customWidth, height: props.customHeight }}
-    {...props}>
+    <button
+      className={classNames(button({ variant, size }))}
+      style={{ width: props.customWidth, height: props.customHeight }}
+      {...props}
+    >
       {children}
     </button>
   );
