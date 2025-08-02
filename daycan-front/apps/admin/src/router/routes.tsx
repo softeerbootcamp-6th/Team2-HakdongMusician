@@ -1,4 +1,5 @@
 import { MainLayout, ReportLayout } from "../layout";
+import { LoginPage } from "../pages";
 
 export type TRoutes = {
   path: string;
@@ -28,6 +29,16 @@ export const routes: TRoutes[] = [
       {
         path: "",
         element: <div>ReportPage</div>, // => 여기 Outlet으로 렌더됨
+      },
+    ],
+  },
+  {
+    path: "/login",
+    layout: <LoginPage />,
+    children: [
+      {
+        path: "",
+        element: <LoginPage />,
       },
     ],
   },
