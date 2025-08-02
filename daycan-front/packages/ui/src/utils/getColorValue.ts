@@ -37,7 +37,7 @@ export const getDimColor = (dimKey: DimKey): string => {
 // 칩 색상 가져오기
 export const getChipColor = (
   color: ChipColorKey,
-  shade: ChipShadeKey
+  shade: ChipShadeKey,
 ): string => {
   return COLORS[color][shade];
 };

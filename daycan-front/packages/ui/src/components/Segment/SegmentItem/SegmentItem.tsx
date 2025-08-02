@@ -1,8 +1,9 @@
-import React, { HTMLAttributes } from 'react';
-import { classNames } from '@/utils';
-import { segmentItem, type SegmentItemVariants } from './SegmentItem.css';
+import React, { HTMLAttributes } from "react";
+import { classNames } from "@/utils";
+import { segmentItem, type SegmentItemVariants } from "./SegmentItem.css";
 
-export type SegmentItemProps = HTMLAttributes<HTMLDivElement> & SegmentItemVariants;
+export type SegmentItemProps = HTMLAttributes<HTMLDivElement> &
+  SegmentItemVariants;
 
 /**
  * @param selected - 현재 선택된 상태
