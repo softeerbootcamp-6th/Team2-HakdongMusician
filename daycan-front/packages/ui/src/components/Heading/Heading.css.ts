@@ -30,6 +30,9 @@ export const heading = recipe({
       },
     },
     weight: {
+      700: {
+        fontWeight: 700,
+      },
       600: {
         fontWeight: 600,
       },
