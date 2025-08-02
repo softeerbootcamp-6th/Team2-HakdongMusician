@@ -1,12 +1,10 @@
-import React, { PropsWithChildren, HTMLAttributes } from 'react';
+import React, { PropsWithChildren, HTMLAttributes } from "react";
 import { classNames } from "@/utils";
-import { input, type InputVariants } from "./Input.css"; 
+import { input, type InputVariants } from "./Input.css";
 import { CustomWidthHeightType } from "@/utils";
 
 export type InputProps = PropsWithChildren<
-  HTMLAttributes<HTMLDivElement> & 
-  InputVariants & 
-  CustomWidthHeightType 
+  HTMLAttributes<HTMLDivElement> & InputVariants & CustomWidthHeightType
 >;
 
 /* 
@@ -22,21 +20,17 @@ export type InputProps = PropsWithChildren<
 */
 
 export const Input = ({
-    onClick,
-    variant,
-    size,
-    flexRule,
-    children,
-    className,
-    ...props
+  onClick,
+  variant,
+  size,
+  flexRule,
+  children,
+  className,
+  ...props
 }: InputProps) => {
-
   return (
     <div
-      className={classNames(
-        input({ variant, size, flexRule }), 
-        className
-      )}
+      className={classNames(input({ variant, size, flexRule }), className)}
       style={{ width: props.customWidth, height: props.customHeight }}
       onClick={onClick}
       {...props}

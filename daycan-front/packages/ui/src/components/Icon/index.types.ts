@@ -27,6 +27,8 @@ import {
   FullLogo32Icon,
   FullLogo40Icon,
   SmallLogoIcon,
+  ElderIcon,
+  WorkerIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -62,4 +64,6 @@ export const iconMap = {
   fullLogo32: FullLogo32Icon,
   fullLogo40: FullLogo40Icon,
   smallLogo: SmallLogoIcon,
+  elder: ElderIcon,
+  worker: WorkerIcon,
 };

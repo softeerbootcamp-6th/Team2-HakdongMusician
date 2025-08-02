@@ -41,7 +41,7 @@ export const CircularProgress = ({
           <circle
             className={classNames(
               circularProgressCircle,
-              circularProgressTrack
+              circularProgressTrack,
             )}
             cx={radius}
             cy={radius}
@@ -50,7 +50,7 @@ export const CircularProgress = ({
           <circle
             className={classNames(
               circularProgressCircle,
-              circularProgressIndicator
+              circularProgressIndicator,
             )}
             cx={radius}
             cy={radius}

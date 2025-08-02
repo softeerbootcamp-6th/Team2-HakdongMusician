@@ -1,18 +1,15 @@
-import React, { PropsWithChildren, HTMLAttributes } from 'react';
+import React, { PropsWithChildren, HTMLAttributes } from "react";
 import { classNames } from "@/utils";
 import { segment, type SegmentVariants, segmentDivider } from "./Segment.css";
-import { SegmentItem } from './SegmentItem';
-
-
-
+import { SegmentItem } from "./SegmentItem";
 
 export type SegmentProps = PropsWithChildren<
-  HTMLAttributes<HTMLDivElement> & 
-  SegmentVariants & {
-    options: string[];
-    value: string;
-    onSegmentChange: (val: string) => void;
-  }
+  HTMLAttributes<HTMLDivElement> &
+    SegmentVariants & {
+      options: string[];
+      value: string;
+      onSegmentChange: (val: string) => void;
+    }
 >;
 
 export const Segment = ({
@@ -25,22 +22,19 @@ export const Segment = ({
   ...props
 }: SegmentProps) => {
   return (
-    <div
-      className={classNames(segment({ variant, type }))}
-      {...props}
-    >
+    <div className={classNames(segment({ variant, type }))} {...props}>
       {options.map((option: string, index: number) => {
         const { isSelected, shouldShowDivider } = getSegmentItemState(
           option,
           index,
           options,
           value,
-          type
+          type,
         );
 
         return (
           <>
-            <SegmentItem 
+            <SegmentItem
               key={option}
               type={type}
               selected={isSelected}
@@ -48,7 +42,9 @@ export const Segment = ({
             >
               {option}
             </SegmentItem>
-            {shouldShowDivider && <div className={classNames(segmentDivider)} />}
+            {shouldShowDivider && (
+              <div className={classNames(segmentDivider)} />
+            )}
           </>
         );
       })}
@@ -62,16 +58,18 @@ const getSegmentItemState = (
   index: number,
   options: string[],
   value: string,
-  type?: string
+  type?: string,
 ) => {
   const isSelected = value === option;
-  const isNextSelected = index < options.length - 1 && value === options[index + 1];
-  
+  const isNextSelected =
+    index < options.length - 1 && value === options[index + 1];
+
   // 구분선 표시 조건들을 명확하게 분리
   const isNotLastItem = index < options.length - 1;
-  const isDefaultType = type === 'default';
+  const isDefaultType = type === "default";
   const shouldHideDivider = isSelected || isNextSelected;
-  const shouldShowDivider = isDefaultType && isNotLastItem && !shouldHideDivider;
+  const shouldShowDivider =
+    isDefaultType && isNotLastItem && !shouldHideDivider;
 
   return {
     isSelected,

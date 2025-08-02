@@ -12,7 +12,7 @@ import type { TGetResponse } from "./types";
  */
 export async function get<T>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   try {
     const response = await instance.get<TGetResponse<T>>(url, config);
@@ -33,7 +33,7 @@ export async function get<T>(
 export async function post<T>(
   url: string,
   data?: any,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   try {
     const response = await instance.post<TGetResponse<T>>(url, data, config);
@@ -54,7 +54,7 @@ export async function post<T>(
 export async function put<T>(
   url: string,
   data?: any,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   try {
     const response = await instance.put<TGetResponse<T>>(url, data, config);
@@ -73,7 +73,7 @@ export async function put<T>(
  */
 export async function del<T>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   try {
     const response = await instance.delete<TGetResponse<T>>(url, config);
@@ -94,7 +94,7 @@ export async function del<T>(
 export async function patch<T>(
   url: string,
   data?: any,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   try {
     const response = await instance.patch<TGetResponse<T>>(url, data, config);
