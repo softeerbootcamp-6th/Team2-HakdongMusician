@@ -28,7 +28,7 @@ import {
   FullLogo40Icon,
   SmallLogoIcon,
   ElderIcon,
-  WorkerIcon
+  WorkerIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;

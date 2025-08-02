@@ -8,9 +8,11 @@ export type HeadingProps = PropsWithChildren<
 
 export const Heading = ({ type, children, color, ...props }: HeadingProps) => {
   return (
-    <h1 className={classNames(heading({ type }))} 
-        style={{ color: color ? color : undefined }}
-    {...props}>
+    <h1
+      className={classNames(heading({ type }))}
+      style={{ color: color ? color : undefined }}
+      {...props}
+    >
       {children}
     </h1>
   );

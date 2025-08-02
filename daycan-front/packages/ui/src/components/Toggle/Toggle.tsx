@@ -21,7 +21,6 @@ export const Toggle = ({
   className,
   ...props
 }: ToggleProps) => {
-    
   const handleClick = () => {
     if (!disabled && onChange) {
       onChange(!checked);
@@ -42,7 +41,7 @@ export const Toggle = ({
         <div
           className={classNames(
             toggleSlider,
-            checked ? toggleSliderChecked : undefined
+            checked ? toggleSliderChecked : undefined,
           )}
         />
       </button>
