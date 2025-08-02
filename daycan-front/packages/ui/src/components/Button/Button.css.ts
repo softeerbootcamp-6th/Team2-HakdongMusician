@@ -18,7 +18,7 @@ export const button = recipe({
   },
 
   variants: {
-     variant: {
+    variant: {
       primary: {
         backgroundColor: COLORS.primary[300],
         color: COLORS.gray[900],

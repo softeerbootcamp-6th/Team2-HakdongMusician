@@ -1,3 +1,4 @@
+import { type PropsWithChildren, type HTMLAttributes, useState } from "react";
 import {
   sidebarContent,
   sidebarHeader,
@@ -78,8 +79,7 @@ export const Sidebar = () => {
                   backgroundColor: COLORS.gray[600],
                   padding: "2px 6px",
                 }}
-                round="s"
-              >
+                round="s">
                 <Body type="xsmall" color={COLORS.gray[300]}>
                   {SIDEBAR_TEXTS.SENDING_REQUIRED}
                 </Body>
