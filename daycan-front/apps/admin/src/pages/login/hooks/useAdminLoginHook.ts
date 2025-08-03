@@ -31,7 +31,10 @@ const initialState: AdminLoginState = {
 };
 
 // 리듀서 함수
-const adminLoginReducer = (state: AdminLoginState, action: AdminLoginAction): AdminLoginState => {
+const adminLoginReducer = (
+  state: AdminLoginState,
+  action: AdminLoginAction,
+): AdminLoginState => {
   switch (action.type) {
     case "SET_EMAIL":
       return {
@@ -113,9 +116,12 @@ export const useAdminLoginHook = () => {
     }
 
     dispatch({ type: "CLEAR_ERROR_MESSAGE" });
-    
+
     // 여기에 실제 로그인 API 호출 로직을 추가할 수 있습니다
-    console.log("센터종사자 로그인 시도:", { email: state.email, password: state.password });
+    console.log("센터종사자 로그인 시도:", {
+      email: state.email,
+      password: state.password,
+    });
   };
 
   const setIsChecked = (value: boolean) => {

@@ -90,18 +90,24 @@ export const LoginPage = () => {
 
         {/* 체크박스 및 링크 */}
         <div className={checkContainer}>
-          <div className={forgotPassword} onClick={() => setIsChecked(!isChecked)}>
-            <Icon 
-              name="circleCheck" 
-              width={16} 
-              height={16} 
+          <div
+            className={forgotPassword}
+            onClick={() => setIsChecked(!isChecked)}
+          >
+            <Icon
+              name="circleCheck"
+              width={16}
+              height={16}
               color={isChecked ? COLORS.gray[900] : COLORS.gray[100]}
             />
             <Body type="small" weight={400} style={{ color: COLORS.gray[700] }}>
               로그인 상태 유지
             </Body>
           </div>
-          <div onClick={() => setIsModalOpen(true)} style={{ cursor: "pointer" }}>
+          <div
+            onClick={() => setIsModalOpen(true)}
+            style={{ cursor: "pointer" }}
+          >
             <Body type="small" weight={400} style={{ color: COLORS.gray[700] }}>
               아이디・비밀번호 찾기
             </Body>
@@ -118,7 +124,9 @@ export const LoginPage = () => {
             weight={400}
             style={{ color: COLORS.primary[300] }}
           >
-            <a href="/login/guest" style={{ color: COLORS.gray[800] }}>보호자 로그인 바로가기</a>
+            <a href="/login/guest" style={{ color: COLORS.gray[800] }}>
+              보호자 로그인 바로가기
+            </a>
           </Body>
         </div>
       </div>

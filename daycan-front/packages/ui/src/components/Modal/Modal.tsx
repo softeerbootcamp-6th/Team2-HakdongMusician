@@ -1,7 +1,13 @@
 // packages/ui/src/components/Modal/Modal.tsx
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { overlayStyle, contentStyle, titleStyle, hidden, type ContentVariants  } from "./Modal.css";
+import {
+  overlayStyle,
+  contentStyle,
+  titleStyle,
+  hidden,
+  type ContentVariants,
+} from "./Modal.css";
 import { ReactNode } from "react";
 
 export type ModalProps = ContentVariants & {
@@ -19,7 +25,9 @@ export const Modal = ({ isOpen, onClose, position, children }: ModalProps) => {
       <Dialog.DialogDescription className={hidden}>
         hiddenDescription
       </Dialog.DialogDescription>
-      <Dialog.Content className={contentStyle({ position })}>{children}</Dialog.Content>
+      <Dialog.Content className={contentStyle({ position })}>
+        {children}
+      </Dialog.Content>
     </Dialog.Root>
   );
 };

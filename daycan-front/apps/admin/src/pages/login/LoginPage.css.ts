@@ -84,7 +84,7 @@ export const AreYouGuest = style({
 export const checkContainer = style({
   display: "flex",
   justifyContent: "space-between",
-    alignItems: "center",
+  alignItems: "center",
   margin: "12px 93px 0px 93px",
   width: "532px",
 });
