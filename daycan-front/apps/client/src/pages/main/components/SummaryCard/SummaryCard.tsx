@@ -106,7 +106,19 @@ export const SummaryCard = ({
             </Body>
           </div>
           <div className={semiCircularGaugeContainer}>
-            <SemiCircularGaugeChart value={gaugeValue} />
+            <SemiCircularGaugeChart
+              value={gaugeValue}
+              width={150}
+              height={100}
+              fontType="large"
+              fontStyle={{
+                position: "absolute",
+                left: "50%",
+                bottom: "50%",
+                transform: "translate(-50%, 120%)",
+                color: COLORS.red[500],
+              }}
+            />
           </div>
         </div>
       </div>

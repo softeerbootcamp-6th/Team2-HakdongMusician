@@ -1,0 +1,1 @@
+export { UpDownIcon } from "./UpDownIcon";

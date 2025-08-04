@@ -10,7 +10,7 @@ import { Body, Button, Chip, COLORS, Heading, Icon } from "@daycan/ui";
 import { MenuItemHeader } from "../MenuItemHeader/MenuItemHeader";
 import { useSidebar } from "./useSidebar";
 import { PAGE_KEYS, SIDEBAR_TEXTS } from "@/constants/sidebar.ts";
-import { ICON_NAMES } from "@/constants/iconNames.ts";
+import { ICON_NAMES } from "@/constants/iconNames";
 
 export const Sidebar = () => {
   const { handleMenuClick, isMenuSelected, count, handleNewRecordClick } =
