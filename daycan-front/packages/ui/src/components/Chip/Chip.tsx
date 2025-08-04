@@ -7,10 +7,16 @@ export type ChipProps = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & ChipVariants & CustomWidthHeightType
 >;
 
-export const Chip = ({ onClick, children, flexRule, ...props }: ChipProps) => {
+export const Chip = ({
+  onClick,
+  children,
+  flexRule,
+  round,
+  ...props
+}: ChipProps) => {
   return (
     <div
-      className={classNames(chip({ flexRule }))}
+      className={classNames(chip({ flexRule, round }))}
       onClick={onClick}
       {...props}
     >

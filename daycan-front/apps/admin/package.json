@@ -17,6 +17,9 @@
     "react-dom": "catalog:react19",
     "react-router-dom": "catalog:"
   },
+  "peerDependencies": {
+    "@vanilla-extract/recipes": "catalog:"
+  },
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@types/react": "catalog:react19",

@@ -33,7 +33,7 @@ const initialState: AdminLoginState = {
 // 리듀서 함수
 const adminLoginReducer = (
   state: AdminLoginState,
-  action: AdminLoginAction,
+  action: AdminLoginAction
 ): AdminLoginState => {
   switch (action.type) {
     case "SET_EMAIL":

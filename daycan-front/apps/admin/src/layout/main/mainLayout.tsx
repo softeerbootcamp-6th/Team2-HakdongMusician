@@ -6,6 +6,7 @@ import {
   mainSection,
   sidebarWrapper,
 } from "./mainLayout.css";
+import { Sidebar } from "@/components/Sidebar";
 
 /**
  * 메인 레이아웃입니다. 최소 너비 및 높이를 기준으로 레이아웃을 구성합니다.
@@ -16,7 +17,7 @@ export const MainLayout = () => {
     <div className={container}>
       <div className={sidebarWrapper}>
         <div className={sidebar}>
-          <h2>하이 사이드바</h2>
+          <Sidebar />
         </div>
       </div>
       <div className={mainSectionWrapper}>
