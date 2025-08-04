@@ -1,4 +1,4 @@
-import { LoginLayout } from "@/layout/login/LoginLayout";
+import { LoginLayout } from "@/layout/login";
 import { MainLayout, ReportLayout } from "../layout";
 import { LoginPage } from "../pages";
 
