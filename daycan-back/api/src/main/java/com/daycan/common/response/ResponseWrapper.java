@@ -8,12 +8,6 @@ public record ResponseWrapper<T>(
     String message,
     T result
 ) {
-  public static final ResponseWrapper<Void> OK = new ResponseWrapper<>(
-      SuccessStatus.OK.getHttpStatus().value(),
-      SuccessStatus.OK.getMessage(),
-      null
-  );
-
   public static <T> ResponseWrapper<T> onSuccess(T result) {
     return new ResponseWrapper<>(
         SuccessStatus.OK.getHttpStatus().value(),

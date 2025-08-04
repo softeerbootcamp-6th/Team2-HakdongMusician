@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CareSheetStatus {
+  NOT_APPLICABLE("해당없음"),
   PENDING("작성 전"),
   DONE("작성 완료");
 

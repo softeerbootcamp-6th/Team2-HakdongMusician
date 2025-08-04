@@ -1,7 +1,7 @@
 springdoc:
   openapi:
     info:
-      title: "👵🏻Daycan API"
+      title: "👵🏻 Daycan API"
       version: "v1.0.0"
       description: "Daycan API 문서입니다. ..."
   packages-to-scan: com.daycan
