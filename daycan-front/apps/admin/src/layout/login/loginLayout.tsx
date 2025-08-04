@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { container, section } from "./loginLayout.css";
+import { container, section } from "./LoginLayout.css";
 import { Footer } from "@/components/Footer";
 
 export const LoginLayout = () => {
