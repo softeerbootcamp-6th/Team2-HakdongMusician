@@ -10,7 +10,7 @@ export const queryClient = new QueryClient();
 export const useCustomMutation = (
   mutationKey: unknown[],
   invalidateQueries: unknown[],
-  mutationFn: () => Promise<any>,
+  mutationFn: () => Promise<any>
 ) => {
   const { mutate, isPending, error } = useMutation({
     mutationKey: mutationKey,

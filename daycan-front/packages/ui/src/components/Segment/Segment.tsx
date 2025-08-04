@@ -29,7 +29,7 @@ export const Segment = ({
           index,
           options,
           value,
-          type,
+          type
         );
 
         return (
@@ -58,7 +58,7 @@ const getSegmentItemState = (
   index: number,
   options: string[],
   value: string,
-  type?: string,
+  type?: string
 ) => {
   const isSelected = value === option;
   const isNextSelected =

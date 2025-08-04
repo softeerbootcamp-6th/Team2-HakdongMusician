@@ -8,5 +8,5 @@ import { THEME } from "@daycan/ui";
 createRoot(document.getElementById("root")!).render(
   <div className={THEME}>
     <App />
-  </div>,
+  </div>
 );

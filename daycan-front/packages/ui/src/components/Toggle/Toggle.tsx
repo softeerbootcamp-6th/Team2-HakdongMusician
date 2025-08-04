@@ -41,7 +41,7 @@ export const Toggle = ({
         <div
           className={classNames(
             toggleSlider,
-            checked ? toggleSliderChecked : undefined,
+            checked ? toggleSliderChecked : undefined
           )}
         />
       </button>

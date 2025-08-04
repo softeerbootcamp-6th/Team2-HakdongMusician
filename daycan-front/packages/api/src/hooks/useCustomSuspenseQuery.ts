@@ -8,7 +8,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
  */
 export const useCustomSuspenseQuery = <T>(
   queryKey: unknown[],
-  queryFn: () => Promise<T>,
+  queryFn: () => Promise<T>
 ) => {
   const { data, error, refetch } = useSuspenseQuery<T>({
     queryKey: queryKey,

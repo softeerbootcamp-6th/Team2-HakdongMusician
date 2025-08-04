@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
  */
 export const useCustomQuery = <T>(
   queryKey: unknown[],
-  queryFn: () => Promise<T>,
+  queryFn: () => Promise<T>
 ) => {
   const { data, isLoading, error, refetch } = useQuery<T>({
     queryKey: queryKey,

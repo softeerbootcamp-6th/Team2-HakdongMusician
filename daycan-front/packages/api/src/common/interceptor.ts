@@ -34,6 +34,6 @@ export const applyDevLoggingInterceptor = (instance: AxiosInstance) => {
         }
       }
       return Promise.reject(error);
-    },
+    }
   );
 };

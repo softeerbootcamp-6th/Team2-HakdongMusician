@@ -1,6 +1,5 @@
 import { style } from "@vanilla-extract/css";
 import { COLORS } from "../../styles";
-import { recipe, RecipeVariants } from "@vanilla-extract/recipes";
 
 export const overlayStyle = style({
   position: "fixed",

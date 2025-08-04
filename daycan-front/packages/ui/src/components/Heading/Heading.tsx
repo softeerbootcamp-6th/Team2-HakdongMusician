@@ -11,7 +11,8 @@ export const Heading = ({ type, children, color, ...props }: HeadingProps) => {
     <h1
       className={classNames(heading({ type }))}
       style={{ color: color ? color : undefined }}
-      {...props}>
+      {...props}
+    >
       {children}
     </h1>
   );
