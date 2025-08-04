@@ -1,7 +1,7 @@
 package com.daycan.common.exception.handler;
 
 import com.daycan.common.exception.ApplicationException;
-import com.daycan.common.response.ApiResponse;
+import com.daycan.common.response.ResponseWrapper;
 import com.daycan.common.response.status.CommonErrorStatus;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
@@ -20,12 +20,12 @@ public class GlobalExceptionHandler {
    * 비즈니스 예외 처리 (대부분 4xx)
    */
   @ExceptionHandler(ApplicationException.class)
-  public ResponseEntity<ApiResponse<Object>> handleApplicationException(ApplicationException ex) {
+  public ResponseEntity<ResponseWrapper<Object>> handleApplicationException(ApplicationException ex) {
     log.error("[ApplicationException] {} - {}", ex.getErrorStatus(), ex.getMessage(), ex);
 
     return ResponseEntity
         .status(ex.getErrorStatus().getHttpStatus())
-        .body(ApiResponse.onFailure(ex.getErrorStatus(), ex.getData()));
+        .body(ResponseWrapper.onFailure(ex.getErrorStatus(), ex.getData()));
   }
 
   /**
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
    * 모든 제약조건(@Min, @Max, @Pattern, 커스텀 @Constraint 등)을 이곳에서 처리합니다.
    */
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<ApiResponse<Object>> handleConstraintViolationException(
+  public ResponseEntity<ResponseWrapper<Object>> handleConstraintViolationException(
       ConstraintViolationException ex
   ) {
     List<String> errors = ex.getConstraintViolations().stream()
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
    * 커스텀 validation 어노테이션(@MyCustomConstraint 등)도 포함됩니다.
    */
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ApiResponse<Object>> handleValidationException(
+  public ResponseEntity<ResponseWrapper<Object>> handleValidationException(
       MethodArgumentNotValidException ex
   ) {
     List<String> errors = ex.getBindingResult().getFieldErrors().stream()
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
    * 그 외 처리하지 못한 예외 (서버 내부 오류)
    */
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ApiResponse<Object>> handleException(Exception ex) {
+  public ResponseEntity<ResponseWrapper<Object>> handleException(Exception ex) {
     log.error("[UnhandledException] {}", ex.getMessage(), ex);
     return buildErrorResponse(CommonErrorStatus.INTERNAL_ERROR, null);
   }
@@ -75,12 +75,12 @@ public class GlobalExceptionHandler {
   /**
    * 에러 상태에 맞춰 ResponseEntity<ApiResponse>를 생성합니다.
    */
-  private ResponseEntity<ApiResponse<Object>> buildErrorResponse(
+  private ResponseEntity<ResponseWrapper<Object>> buildErrorResponse(
       CommonErrorStatus status,
       Object data
   ) {
     return ResponseEntity
         .status(status.getHttpStatus())
-        .body(ApiResponse.onFailure(status, data));
+        .body(ResponseWrapper.onFailure(status, data));
   }
 }
