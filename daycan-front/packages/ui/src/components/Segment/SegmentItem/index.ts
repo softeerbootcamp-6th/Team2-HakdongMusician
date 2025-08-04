@@ -1,1 +1,1 @@
-export * from './SegmentItem';
+export * from "./SegmentItem";
