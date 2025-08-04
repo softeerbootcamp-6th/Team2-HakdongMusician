@@ -8,3 +8,4 @@ export { HighlightingHeading } from "./HighlightingHeading";
 export { SemiCircularGaugeChart } from "./SemiCircularGaugeChart";
 export { Footer } from "./Footer/Footer";
 export { Header } from "./Header/Header";
+export { UpDownIcon } from "./UpDownIcon";
