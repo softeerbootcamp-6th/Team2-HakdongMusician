@@ -27,7 +27,7 @@ export const Icon = ({
   width = defaultIconSize,
   height = defaultIconSize,
   color = "currentColor",
-  stroke = 'none',
+  stroke = "none",
   onClick,
   className,
 }: IconProps) => {
