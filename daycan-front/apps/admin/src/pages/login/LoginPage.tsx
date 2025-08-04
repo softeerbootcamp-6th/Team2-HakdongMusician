@@ -55,7 +55,7 @@ export const LoginPage = () => {
             <Input
               type="text"
               variant="grayLight"
-              InputSize="pcTextFieldLarge"
+              inputSize="pcTextFieldLarge"
               placeholder="아이디"
               value={email}
               onChange={handleEmailChange}
@@ -66,7 +66,7 @@ export const LoginPage = () => {
             <Input
               type="password"
               variant="grayLight"
-              InputSize="pcTextFieldLarge"
+              inputSize="pcTextFieldLarge"
               placeholder="비밀번호"
               value={password}
               onChange={handlePasswordChange}
