@@ -1,15 +1,17 @@
 import { Body, COLORS, Icon } from "@daycan/ui";
-import { menuItemHeader } from "./MenuItemHeader.css";
+import {
+  menuItemHeader,
+  type MenuItemHeaderVariants,
+} from "./MenuItemHeader.css";
 import { type PageKey } from "@/constants/sidebar.ts";
-import { type IconName } from "@/constants/iconnames";
+import { type IconName } from "@/constants/iconNames";
 
-interface MenuItemHeaderProps {
+type MenuItemHeaderProps = {
   pageKey: PageKey;
   iconName: IconName;
   label: string;
-  isSelected: boolean;
   onClick: (pageKey: PageKey) => void;
-}
+} & MenuItemHeaderVariants;
 
 export const MenuItemHeader = ({
   pageKey,
@@ -21,7 +23,10 @@ export const MenuItemHeader = ({
   const color = isSelected ? COLORS.primary[300] : COLORS.gray[500];
 
   return (
-    <div className={menuItemHeader} onClick={() => onClick(pageKey)}>
+    <div
+      className={menuItemHeader({ isSelected })}
+      onClick={() => onClick(pageKey)}
+    >
       <Icon name={iconName} width={36} height={36} color={color} />
       <Body type="large" color={color}>
         {label}
