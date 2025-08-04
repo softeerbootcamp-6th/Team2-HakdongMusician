@@ -14,6 +14,7 @@
     "@daycan/ui": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "@vanilla-extract/css": "catalog:",
+    "framer-motion": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-router-dom": "catalog:",

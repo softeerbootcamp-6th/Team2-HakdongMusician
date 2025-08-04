@@ -7,3 +7,4 @@
 export { LoginPage } from "./login";
 export { ToReportPage } from "./to-report";
 export { MainPage } from "./main";
+export { ReportPage } from "./report";

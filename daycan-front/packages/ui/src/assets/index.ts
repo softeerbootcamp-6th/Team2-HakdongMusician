@@ -48,3 +48,9 @@ export { default as SmallLogoIcon } from "./svg/small-logo.svg";
 // 사용자 아이콘들
 export { default as ElderIcon } from "./svg/elder.svg";
 export { default as WorkerIcon } from "./svg/worker.svg";
+export { default as HealthIcon } from "./svg/health.svg";
+export { default as MealIcon } from "./svg/meal.svg";
+export { default as StampGoodIcon } from "./svg/stamp-good.svg";
+export { default as StampBadIcon } from "./svg/stamp-bad.svg";
+export { default as BrainIcon } from "./svg/brain.svg";
+export { default as ActivityIcon } from "./svg/activity.svg";

@@ -1,4 +1,4 @@
-import { ToReportPage, LoginPage, MainPage } from "@/pages";
+import { ToReportPage, LoginPage, MainPage, ReportPage } from "@/pages";
 import { MobileLayout } from "../layout";
 
 export type TRoutes = {
@@ -27,6 +27,10 @@ export const routes: TRoutes[] = [
       {
         path: "login",
         element: <LoginPage />, // => 여기 Outlet으로 렌더됨
+      },
+      {
+        path: "report",
+        element: <ReportPage />,
       },
 
       {

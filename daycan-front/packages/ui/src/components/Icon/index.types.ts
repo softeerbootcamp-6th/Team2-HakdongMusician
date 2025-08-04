@@ -29,6 +29,12 @@ import {
   SmallLogoIcon,
   ElderIcon,
   WorkerIcon,
+  HealthIcon,
+  MealIcon,
+  StampGoodIcon,
+  StampBadIcon,
+  BrainIcon,
+  ActivityIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -66,4 +72,10 @@ export const iconMap = {
   smallLogo: SmallLogoIcon,
   elder: ElderIcon,
   worker: WorkerIcon,
+  health: HealthIcon,
+  meal: MealIcon,
+  stampGood: StampGoodIcon,
+  stampBad: StampBadIcon,
+  brain: BrainIcon,
+  activity: ActivityIcon,
 };
