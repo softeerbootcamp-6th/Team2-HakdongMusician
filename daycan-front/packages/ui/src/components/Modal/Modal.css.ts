@@ -19,37 +19,18 @@ export const titleStyle = style({
   color: COLORS.gray[900],
 });
 
-export const contentStyle = recipe({
-  base: {
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    backgroundColor: COLORS.white,
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-    padding: "24px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-    minWidth: "300px",
-    zIndex: 1001,
-  },
-  variants: {
-    position: {
-      middle: {
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      },
-      top: {
-        top: "10%",
-      },
-    },
-  },
-  defaultVariants: {
-    position: "middle",
-  },
+export const contentStyle = style({
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: COLORS.white,
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px",
+  padding: "24px",
+  borderRadius: "8px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+  minWidth: "300px",
+  zIndex: 1001,
 });
-
-export type ContentVariants = RecipeVariants<typeof contentStyle>;

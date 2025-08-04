@@ -1,23 +1,17 @@
 // packages/ui/src/components/Modal/Modal.tsx
 
 import * as Dialog from "@radix-ui/react-dialog";
-import {
-  overlayStyle,
-  contentStyle,
-  titleStyle,
-  hidden,
-  type ContentVariants,
-} from "./Modal.css";
+import { overlayStyle, contentStyle, titleStyle, hidden } from "./Modal.css";
 import { ReactNode } from "react";
 
-export type ModalProps = ContentVariants & {
+export type ModalProps = {
   title?: string;
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
 };
 
-export const Modal = ({ isOpen, onClose, position, children }: ModalProps) => {
+export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Overlay className={overlayStyle} />
@@ -25,9 +19,7 @@ export const Modal = ({ isOpen, onClose, position, children }: ModalProps) => {
       <Dialog.DialogDescription className={hidden}>
         hiddenDescription
       </Dialog.DialogDescription>
-      <Dialog.Content className={contentStyle({ position })}>
-        {children}
-      </Dialog.Content>
+      <Dialog.Content className={contentStyle}>{children}</Dialog.Content>
     </Dialog.Root>
   );
 };
