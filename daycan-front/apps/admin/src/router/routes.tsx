@@ -1,3 +1,4 @@
+import { LoginLayout } from "@/layout/login/loginLayout";
 import { MainLayout, ReportLayout } from "../layout";
 import { LoginPage } from "../pages";
 
@@ -34,7 +35,7 @@ export const routes: TRoutes[] = [
   },
   {
     path: "/login",
-    layout: <LoginPage />,
+    layout: <LoginLayout />,
     children: [
       {
         path: "",
