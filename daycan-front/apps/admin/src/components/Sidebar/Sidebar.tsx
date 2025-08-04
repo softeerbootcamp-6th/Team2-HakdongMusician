@@ -10,6 +10,7 @@ import { Body, Button, Chip, COLORS, Heading, Icon } from "@daycan/ui";
 import { MenuItemHeader } from "../MenuItemHeader/MenuItemHeader";
 import { useSidebar } from "./useSidebar";
 import { PAGE_KEYS, SIDEBAR_TEXTS } from "@/constants/sidebar.ts";
+import { ICON_NAMES } from "@/constants/iconNames.ts";
 
 export const Sidebar = () => {
   const { handleMenuClick, isMenuSelected, count, handleNewRecordClick } =
@@ -36,7 +37,7 @@ export const Sidebar = () => {
           <div className={menuItemWrapper}>
             <MenuItemHeader
               pageKey={PAGE_KEYS.RECORD_SHEET}
-              iconName="record"
+              iconName={ICON_NAMES.RECORD}
               label={PAGE_KEYS.RECORD_SHEET}
               isSelected={isMenuSelected(PAGE_KEYS.RECORD_SHEET)}
               onClick={handleMenuClick}
@@ -68,7 +69,7 @@ export const Sidebar = () => {
           <div className={menuSectionTitle}>
             <MenuItemHeader
               pageKey={PAGE_KEYS.REPORT_SENDING}
-              iconName="report"
+              iconName={ICON_NAMES.REPORT}
               label={PAGE_KEYS.REPORT_SENDING}
               isSelected={isMenuSelected(PAGE_KEYS.REPORT_SENDING)}
               onClick={handleMenuClick}
@@ -112,14 +113,14 @@ export const Sidebar = () => {
           <div className={menuItemWrapper}>
             <MenuItemHeader
               pageKey={PAGE_KEYS.RECIPIENT}
-              iconName="elder"
+              iconName={ICON_NAMES.ELDER}
               label={PAGE_KEYS.RECIPIENT}
               isSelected={isMenuSelected(PAGE_KEYS.RECIPIENT)}
               onClick={handleMenuClick}
             />
             <MenuItemHeader
               pageKey={PAGE_KEYS.STAFF}
-              iconName="worker"
+              iconName={ICON_NAMES.WORKER}
               label={PAGE_KEYS.STAFF}
               isSelected={isMenuSelected(PAGE_KEYS.STAFF)}
               onClick={handleMenuClick}
