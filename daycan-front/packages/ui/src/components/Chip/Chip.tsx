@@ -18,8 +18,7 @@ export const Chip = ({
     <div
       className={classNames(chip({ flexRule, round }))}
       onClick={onClick}
-      {...props}
-    >
+      {...props}>
       {children}
     </div>
   );
