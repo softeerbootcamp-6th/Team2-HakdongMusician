@@ -1,4 +1,3 @@
-import { type PropsWithChildren, type HTMLAttributes, useState } from "react";
 import {
   sidebarContent,
   sidebarHeader,
@@ -9,10 +8,11 @@ import {
 } from "./Sidebar.css";
 import { Body, Button, Chip, COLORS, Heading, Icon } from "@daycan/ui";
 import { MenuItemHeader } from "../MenuItemHeader/MenuItemHeader";
-import { useSidebar } from "./hooks";
+import { useSidebar } from "./useSidebar";
+import { PAGE_KEYS, SIDEBAR_TEXTS } from "@/constants/sidebar.ts";
 
 export const Sidebar = () => {
-  const { handleMenuClick, isMenuSelected, PAGE_KEYS, SIDEBAR_TEXTS, count } =
+  const { handleMenuClick, isMenuSelected, count, handleNewRecordClick } =
     useSidebar();
 
   return (
@@ -79,7 +79,8 @@ export const Sidebar = () => {
                   backgroundColor: COLORS.gray[600],
                   padding: "2px 6px",
                 }}
-                round="s">
+                round="s"
+              >
                 <Body type="xsmall" color={COLORS.gray[300]}>
                   {SIDEBAR_TEXTS.SENDING_REQUIRED}
                 </Body>
@@ -127,7 +128,11 @@ export const Sidebar = () => {
         </div>
 
         {/* 새 기록지 작성 버튼 */}
-        <Button size="fullWidth" variant="primary">
+        <Button
+          size="fullWidth"
+          variant="primary"
+          onClick={handleNewRecordClick}
+        >
           <Icon name="plus" width={24} height={24} />
           <Body type="xsmall">{SIDEBAR_TEXTS.NEW_RECORD_BUTTON}</Body>
         </Button>

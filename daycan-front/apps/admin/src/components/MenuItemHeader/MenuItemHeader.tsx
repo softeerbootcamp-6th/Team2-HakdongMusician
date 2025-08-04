@@ -1,10 +1,11 @@
 import { Body, COLORS, Icon } from "@daycan/ui";
 import { menuItemHeader } from "./MenuItemHeader.css";
-import { type PageKey } from "../Sidebar/hooks";
+import { type PageKey } from "@/constants/sidebar.ts";
+import { type IconName } from "@/constants/iconnames";
 
 interface MenuItemHeaderProps {
   pageKey: PageKey;
-  iconName: "record" | "report" | "elder" | "worker";
+  iconName: IconName;
   label: string;
   isSelected: boolean;
   onClick: (pageKey: PageKey) => void;
