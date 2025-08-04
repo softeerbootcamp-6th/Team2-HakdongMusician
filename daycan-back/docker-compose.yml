@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0.43
+    platform: linux/arm64/v8
+    container_name: daycan-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: daycan_admin
+      MYSQL_DATABASE: daycan
+      MYSQL_USER: daycan
+      MYSQL_PASSWORD: daycan
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  mysql_data:
