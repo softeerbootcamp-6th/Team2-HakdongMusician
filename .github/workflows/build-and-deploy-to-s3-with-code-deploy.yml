@@ -88,12 +88,10 @@ jobs:
           echo "DEPLOYMENT_ID=${TIMESTAMP}-${COMMIT_HASH}" >> $GITHUB_ENV
           echo "✅ CodeDeploy bundle prepared: $BUNDLE_NAME"
 
-      # 테스트용: Access Key 방식 (운영환경에서는 OIDC 권장)
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload deployment bundle to S3
@@ -127,4 +125,3 @@ jobs:
           echo "- Build Time: $(date)"
           echo "- Commit: ${GITHUB_SHA}"
           echo "- Branch: ${GITHUB_REF_NAME}"
-
