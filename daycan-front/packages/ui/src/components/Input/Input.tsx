@@ -16,7 +16,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & InputVariants;
 
 export const Input = ({
   variant,
-  InputSize,
+  inputSize,
   flexRule,
   type,
   className,
@@ -26,7 +26,7 @@ export const Input = ({
   return (
     <input
       type={type}
-      className={classNames(input({ variant, InputSize, flexRule }), className)}
+      className={classNames(input({ variant, inputSize, flexRule }), className)}
       placeholder={placeholder}
       {...props}
     />
