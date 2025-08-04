@@ -56,6 +56,7 @@ export const inputGroup = style({
 
 export const input = style({
   borderRadius: "8px",
+  padding: "16px 24px",
   transition: "all 0.2s ease-in-out",
   boxSizing: "border-box",
   border: "none",

@@ -1,19 +1,17 @@
-import { Body, Heading, Icon, COLORS, Button } from "@daycan/ui";
+import { Body, Heading, Icon, COLORS, Button, Input } from "@daycan/ui";
 import {
   loginContainer,
   loginCard,
   form,
   inputGroup,
-  input,
   forgotPassword,
   AreYouGuest,
   loginHeader,
   checkContainer,
   headerContent,
 } from "./LoginPage.css";
-import { Footer } from "./components/Footer";
 import { useAdminLoginHook } from "./hooks";
-import { ForgotCredentialsModal } from "./components";
+import { ForgotCredentialsModal } from "./components/ForgotCredentialsModal";
 export const LoginPage = () => {
   const {
     isFilled,
@@ -54,20 +52,22 @@ export const LoginPage = () => {
         {/* 로그인 폼 */}
         <form className={form} onSubmit={handleLogin}>
           <div className={inputGroup}>
-            <input
+            <Input
               type="text"
-              className={input}
-              placeholder="admin@daycan.com"
+              variant="grayLight"
+              InputSize="pcTextFieldLarge"
+              placeholder="아이디"
               value={email}
               onChange={handleEmailChange}
             />
           </div>
 
           <div className={inputGroup}>
-            <input
+            <Input
               type="password"
-              className={input}
-              placeholder="비밀번호를 입력하세요"
+              variant="grayLight"
+              InputSize="pcTextFieldLarge"
+              placeholder="비밀번호"
               value={password}
               onChange={handlePasswordChange}
             />
@@ -130,9 +130,6 @@ export const LoginPage = () => {
           </Body>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
 
       {/* 계정 정보 찾기 모달 */}
       <ForgotCredentialsModal
