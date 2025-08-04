@@ -22,7 +22,7 @@ export const input = recipe({
         backgroundColor: COLORS.gray[50],
       },
     },
-    size: {
+    InputSize: {
       pcInputFile: {
         padding: "12px 24px",
         width: "668px",
@@ -71,7 +71,7 @@ export const input = recipe({
   },
   defaultVariants: {
     variant: "white",
-    size: "full",
+    InputSize: "full",
     flexRule: "spaceBetween",
   },
 });
