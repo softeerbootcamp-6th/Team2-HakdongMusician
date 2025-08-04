@@ -7,10 +7,11 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & InputVariants;
 /* 
     Input 컴포넌트입니다.
     @param variant - Input 배경색 스타일 (white, grayLight)
-    @param size - Input 크기 및 패딩
-    @param flexRule - Flexbox 정렬 규칙 (사용하지 않음)
-    @param className - 추가 클래스명
-    @returns Input 컴포넌트
+    @param inputSize - Input 크기 스타일 
+    @param flexRule - Input 내부 요소 정렬 스타일 (center, spaceBetween, none)
+    @param type - Input 타입 (text, password 등)
+    @param className - 추가적인 클래스 이름
+    @param placeholder - Input 플레이스홀더 텍스트
     @author 소보길
 */
 
