@@ -5,6 +5,7 @@ export const header = style({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  width: "100%",
   padding: "20px",
   backgroundColor: COLORS.white,
   borderBottom: `1px solid ${COLORS.gray[200]}`,

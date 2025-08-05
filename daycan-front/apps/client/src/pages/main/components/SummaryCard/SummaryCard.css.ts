@@ -6,7 +6,7 @@ export const container = style({
   maxWidth: "358px",
   height: "100%",
   boxSizing: "border-box",
-  padding: "16px",
+  padding: "8px",
 });
 
 export const summarySection = style({
@@ -18,7 +18,7 @@ export const summarySection = style({
 
 export const healthSummary = style({
   width: "100%",
-  maxWidth: "358px",
+  maxWidth: "360px",
   boxSizing: "border-box",
   backgroundColor: COLORS.white,
   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",

@@ -1,5 +1,11 @@
-import { ToReportPage, LoginPage, MainPage, ReportPage } from "@/pages";
-import { MobileLayout } from "../layout";
+import {
+  ToDailyReportPage,
+  LoginPage,
+  MainPage,
+  DailyReportPage,
+  ReportsPage,
+} from "@/pages";
+import { MainLayout, MobileLayout } from "@/layout";
 
 export type TRoutes = {
   path: string;
@@ -14,25 +20,34 @@ export type TRoutes = {
 export const routes: TRoutes[] = [
   {
     path: "/",
-    layout: <MobileLayout />,
+    layout: <MainLayout />,
     children: [
       {
         path: "",
         element: <MainPage />,
       },
+    ],
+  },
+  {
+    path: "/",
+    layout: <MobileLayout />,
+    children: [
       {
-        path: "to-report",
-        element: <ToReportPage />,
+        path: "to-daily-report",
+        element: <ToDailyReportPage />,
       },
       {
         path: "login",
         element: <LoginPage />, // => 여기 Outlet으로 렌더됨
       },
       {
-        path: "report",
-        element: <ReportPage />,
+        path: "daily-report",
+        element: <DailyReportPage />,
       },
-
+      {
+        path: "reports",
+        element: <ReportsPage />,
+      },
       {
         path: "*",
         element: <div>NotFound</div>,
