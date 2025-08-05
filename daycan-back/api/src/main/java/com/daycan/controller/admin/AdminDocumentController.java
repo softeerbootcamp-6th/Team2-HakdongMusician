@@ -46,7 +46,7 @@ public class AdminDocumentController {
           ))
   );
 
-  @GetMapping("status")
+  @GetMapping("/status")
   @Operation(summary = "기록지, 리포트 상태 조회", description = "page마다 10개의 기록지와 리포트 상태를 조회합니다. 1페이지부터 시작합니다.")
   public List<DocumentStatusResponse> getDocumentStatusList(
       @Parameter(description = "페이지", example = "1") @RequestParam(required = true) int page

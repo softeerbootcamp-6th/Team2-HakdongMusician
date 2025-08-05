@@ -9,11 +9,6 @@ import lombok.Builder;
 @Builder
 @Schema(description = "건강 지원 응답")
 public record HealthSupportResponse(
-    /**
-     * key: "혈압"
-     * value: "120/80 mmHg"
-     * warning: optional
-     */
     @Schema(description = "혈압 기록")
     BloodPressureEntry bloodPressureEntry,
     @Schema(description = "체온 기록")
