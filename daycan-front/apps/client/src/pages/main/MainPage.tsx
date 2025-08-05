@@ -5,16 +5,12 @@ import {
   InfoModal,
   Greeting,
 } from "./components";
-import { Footer, Header } from "@/components";
 import { container } from "./MainPage.css";
 
 export const MainPage = () => {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   return (
     <div className={container}>
-      {/* 헤더 */}
-      <Header />
-
       {/* 000 보호자님 리포트가 도착했어요! */}
       <Greeting parentName="홍큐티빠티스껄" isReportArrived={true} />
 
@@ -31,9 +27,6 @@ export const MainPage = () => {
 
       {/* 기록 확인하기 */}
       <RecordCheckCard />
-
-      {/* 푸터 */}
-      <Footer />
 
       <InfoModal
         isOpen={isInfoModalOpen}
