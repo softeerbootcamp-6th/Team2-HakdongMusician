@@ -7,5 +7,4 @@ export const greeting = style({
   height: "300px",
   width: "100%",
   boxSizing: "border-box",
-  padding: "10px",
 });
