@@ -19,10 +19,7 @@ public class SwaggerConfiguration {
             .description("Daycan API 명세입니다."))
         .servers(List.of(
             new Server().url("https://api.daycan.site").description("Production Server"),
-            new Server().url("http://localhost:8080").description("Local Server"),
-            new Server().url(
-                    "https://753dec0f745e.ngrok-free.app")
-                .description("Ngrok Server")
+            new Server().url("http://localhost:8080").description("Local Server")
         ));
   }
 }

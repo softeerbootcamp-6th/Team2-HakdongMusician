@@ -1,15 +1,12 @@
 package com.daycan.domain.entity;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -117,7 +114,4 @@ public class CareSheet {
   @JoinColumn(name = "document_id")
   private List<AiComment> aiComments;
 
-  @ManyToMany
-  @JoinTable(mappedBy = "care_sheet_id")
-  private List<PersonalActivity> personalActivities;
 }
