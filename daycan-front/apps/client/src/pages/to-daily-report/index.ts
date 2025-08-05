@@ -4,4 +4,4 @@
  * 해당 페이지에서는 packages/ui 의 LottieAnimation 컴포넌트를 사용합니다.
  * @author 홍규진
  */
-export { ToReportPage } from "./ToReportPage";
+export { ToDailyReportPage } from "./ToDailyReportPage";

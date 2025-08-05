@@ -3,11 +3,11 @@ import {
   container,
   animationContainer,
   textContainer,
-} from "./ToReportPage.css";
+} from "./ToDailyReportPage.css";
 import envelopeOpeningAnimation from "@/assets/animations/envelope-opening-final.json";
 import { useToReportHook } from "./hooks";
 
-export const ToReportPage = () => {
+export const ToDailyReportPage = () => {
   const { handleAnimationComplete } = useToReportHook();
 
   return (
