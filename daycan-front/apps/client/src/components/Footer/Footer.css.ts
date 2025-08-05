@@ -3,6 +3,7 @@ import { style } from "@vanilla-extract/css";
 
 export const footer = style({
   backgroundColor: COLORS.gray[100],
+  width: "100%",
   padding: "20px",
   borderTop: `1px solid ${COLORS.gray[200]}`,
 });

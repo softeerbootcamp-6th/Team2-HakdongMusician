@@ -16,9 +16,12 @@
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
+    "@types/react-datepicker": "^7.0.0",
     "@vanilla-extract/recipes": "catalog:",
-    "react-toastify": "^11.0.5",
-    "lottie-web": "^5.13.0"
+    "date-fns": "^4.1.0",
+    "lottie-web": "^5.13.0",
+    "react-datepicker": "^8.4.0",
+    "react-toastify": "^11.0.5"
   },
   "peerDependencies": {
     "@vanilla-extract/css": "catalog:",

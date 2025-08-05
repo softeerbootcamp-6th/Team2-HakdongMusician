@@ -16,13 +16,13 @@ export const Greeting = ({ parentName, isReportArrived }: GreetingProps) => {
       className={greeting}
       style={{
         backgroundImage: `url(${isReportArrived ? envelopeImage : openedEnvelopeImage})`,
-        backgroundSize: "cover",
+        backgroundSize: "contain",
         backgroundPosition: "bottom",
         backgroundRepeat: "no-repeat",
       }}
       onClick={() => {
         if (isReportArrived) {
-          navigate("/to-report");
+          navigate("/to-daily-report");
         }
       }}
     >

@@ -15,6 +15,8 @@ export { default as ArrowDownIcon } from "./svg/arrow-down.svg";
 export { default as ArrowRightIcon } from "./svg/arrow-right.svg";
 export { default as UpIcon } from "./svg/up.svg";
 export { default as DownIcon } from "./svg/down.svg";
+export { default as ChevronLeftIcon } from "./svg/chevron-left.svg";
+export { default as ChevronRightIcon } from "./svg/chevron-right.svg";
 
 // 상태 아이콘들
 export { default as GoodIcon } from "./svg/good.svg";

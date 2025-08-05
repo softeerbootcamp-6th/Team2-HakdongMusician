@@ -2,7 +2,9 @@ import { cardsContainer, card, recordsSection } from "./RecordCheckCard.css";
 import reportFolder from "@/assets/png/report_folder.png";
 import reportGraph from "@/assets/png/change_graph.png";
 import { Body, COLORS, Heading } from "@daycan/ui";
+import { useNavigate } from "react-router-dom";
 export const RecordCheckCard = () => {
+  const navigate = useNavigate();
   return (
     <div className={recordsSection}>
       <Heading type="xsmall" weight={600} color={COLORS.gray[800]}>
@@ -19,6 +21,7 @@ export const RecordCheckCard = () => {
             backgroundPosition: "bottom",
             backgroundRepeat: "no-repeat",
           }}
+          onClick={() => navigate("/reports")}
         >
           <Body type="small" weight={600} color={COLORS.gray[900]}>
             리포트 모아보기
