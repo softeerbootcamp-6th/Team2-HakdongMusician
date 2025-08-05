@@ -1,5 +1,6 @@
 import { COLORS } from "@daycan/ui";
 import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 
 export const container = style({
   display: "flex",
@@ -10,16 +11,36 @@ export const container = style({
   justifyContent: "start",
   backgroundColor: COLORS.white,
   padding: "16px 20px",
+  borderRadius: 16,
   boxSizing: "border-box",
 });
 
-export const healthIndexHeader = style({
+export const healthIndexHeader = recipe({
+  base: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "start",
+    alignSelf: "start",
+    gap: 8,
+  },
+  variants: {
+    isDropdown: {
+      true: {
+        cursor: "pointer",
+        userSelect: "none",
+      },
+      false: {},
+    },
+  },
+});
+
+export const arrowIconContainer = style({
   display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  alignSelf: "start",
-  gap: 8,
+  alignItems: "end",
+  justifyContent: "end",
+  flex: 1,
 });
 
 export const indexChartDescription = style({
@@ -71,4 +92,39 @@ export const indexValue = style({
 
 export const indexDescription = style({
   marginTop: 18,
+});
+
+export const dropdownContent = recipe({
+  base: {
+    overflow: "hidden",
+    transition: "max-height 0.3s ease-out, opacity 0.3s ease-out",
+  },
+  variants: {
+    isExpanded: {
+      true: {
+        maxHeight: "1000px",
+        opacity: "1",
+      },
+      false: {
+        maxHeight: "0",
+        opacity: "0",
+      },
+    },
+  },
+});
+
+export const arrowIcon = recipe({
+  base: {
+    transition: "transform 0.3s ease",
+  },
+  variants: {
+    isExpanded: {
+      true: {
+        transform: "rotate(180deg)",
+      },
+      false: {
+        transform: "rotate(0deg)",
+      },
+    },
+  },
 });

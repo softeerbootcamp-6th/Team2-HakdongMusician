@@ -9,48 +9,44 @@ import {
 
 interface IndexColumnProps {
   icon: React.ReactNode;
-  title: string;
-  description: string;
-  specificDescription?: string;
-  warningDescription?: string;
+  column: {
+    key: string;
+    value: string;
+    specificDescription?: string;
+    warningDescription?: string;
+  };
 }
 
-export const IndexColumn = ({
-  icon,
-  title,
-  description,
-  specificDescription,
-  warningDescription,
-}: IndexColumnProps) => {
+export const IndexColumn = ({ icon, column }: IndexColumnProps) => {
   return (
     <>
       <div className={indexColumn}>
         <div className={indexColumnIconTitleContainer}>
           {icon}
           <Body type="medium" weight={600}>
-            {title}
+            {column.key}
           </Body>
         </div>
         <div className={indexColumnDescriptionContainer}>
           <div
             className={
-              warningDescription
+              column.warningDescription
                 ? indexColumnDescriptionWarning
                 : indexColumnDescription
             }
           >
             <Body type="medium" weight={400} color={COLORS.gray[800]}>
-              {description}
+              {column.value}
             </Body>
           </div>
-          {specificDescription && (
+          {column.specificDescription && (
             <Body type="xsmall" weight={400} color={COLORS.gray[800]}>
-              {specificDescription}
+              {column.specificDescription}
             </Body>
           )}
-          {warningDescription && (
+          {column.warningDescription && (
             <Body type="xsmall" weight={400} color={COLORS.red[500]}>
-              {warningDescription}
+              {column.warningDescription}
             </Body>
           )}
         </div>

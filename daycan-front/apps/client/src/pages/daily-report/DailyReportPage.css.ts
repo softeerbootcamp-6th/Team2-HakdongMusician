@@ -7,7 +7,7 @@ export const container = style({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-
+  overflow: "hidden",
   width: "100%",
   height: "100%",
 });

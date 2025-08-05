@@ -9,41 +9,38 @@ import {
 
 interface IndexRowProps {
   icon: React.ReactNode;
-  title: string;
-  description: string;
-  warningDescription?: string;
+  row: {
+    key: string;
+    value: string;
+    warningDescription?: string;
+  };
 }
 
-export const IndexRow = ({
-  icon,
-  title,
-  description,
-  warningDescription,
-}: IndexRowProps) => {
+export const IndexRow = ({ icon, row }: IndexRowProps) => {
   return (
     <>
       <div className={indexRow}>
         <div className={indexRowIconTitleContainer}>
           {icon}
           <Body type="medium" weight={600}>
-            {title}
+            {row.key}
           </Body>
         </div>
         <div className={indexRowDescriptionContainer}>
           <div
             className={
-              warningDescription
+              row.warningDescription
                 ? indexRowDescriptionWarning
                 : indexRowDescription
             }
           >
             <Body type="medium" weight={400} color={COLORS.gray[800]}>
-              {description}
+              {row.value}
             </Body>
           </div>
-          {warningDescription && (
+          {row.warningDescription && (
             <Body type="xsmall" weight={400} color={COLORS.red[500]}>
-              {warningDescription}
+              {row.warningDescription}
             </Body>
           )}
         </div>
