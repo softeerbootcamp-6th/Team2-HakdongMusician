@@ -2,9 +2,9 @@ package com.daycan.auth.security.filter;
 
 import com.daycan.auth.model.AuthPrincipal;
 import com.daycan.auth.service.AuthService;
-import com.daycan.auth.exception.AuthException;
 import com.daycan.auth.dto.LoginRequest;
 import com.daycan.auth.dto.LoginResponse;
+import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.common.response.status.AuthErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,7 +54,7 @@ public class LoginFilter implements Filter {
       /* 4. 성공 응답 */
       writeJson(res, HttpServletResponse.SC_OK, ResponseWrapper.onSuccess(tokens));
 
-    } catch (AuthException e) {                       // 인증 오류
+    } catch (ApplicationException e) {                       // 인증 오류
       writeJson(res, e.getErrorStatus().getHttpStatus().value(),
           ResponseWrapper.onFailure(e.getErrorStatus(), e.getMessage()));
 

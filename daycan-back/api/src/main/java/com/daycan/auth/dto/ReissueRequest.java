@@ -1,3 +1,5 @@
 package com.daycan.auth.dto;
 
-public record ReissueRequest(String refreshToken) {}
+public record ReissueRequest(String refreshToken) {
+
+}

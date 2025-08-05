@@ -30,8 +30,8 @@ public class BannedToken {
   private Instant expiredAt;               // 만료 시각
 
   public BannedToken(String token, TokenType type, Instant expiredAt) {
-    this.token     = token;
-    this.type      = type;
+    this.token = token;
+    this.type = type;
     this.expiredAt = expiredAt;
   }
 

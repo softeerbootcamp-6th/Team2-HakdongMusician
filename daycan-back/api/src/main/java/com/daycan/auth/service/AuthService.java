@@ -1,6 +1,5 @@
 package com.daycan.auth.service;
 
-import com.daycan.auth.exception.AuthException;
 import com.daycan.auth.model.AuthPrincipal;
 import com.daycan.auth.model.CenterPrincipal;
 import com.daycan.auth.model.MemberPrincipal;
@@ -10,7 +9,9 @@ import com.daycan.auth.repository.RefreshTokenRepository;
 import com.daycan.auth.entity.RefreshToken;
 import com.daycan.auth.dto.Token;
 import com.daycan.auth.security.JwtTokenProvider;
+import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
+import jakarta.security.auth.message.AuthException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,14 +49,14 @@ public class AuthService {
       case CENTER -> {
         Center c = centerMap.get(username);
         if (c == null || !verifyPassword(rawPw, c.getPassword())) {
-          throw new AuthException(AuthErrorStatus.INVALID_CREDENTIAL);
+          throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
         }
         yield new CenterPrincipal(c.getUsername());
       }
       case MEMBER -> {
         Member m = memberMap.get(username);
         if (m == null || !verifyPassword(rawPw, m.getPassword())) {
-          throw new AuthException(AuthErrorStatus.INVALID_CREDENTIAL);
+          throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
         }
         yield new MemberPrincipal(m.getUsername());
       }
@@ -89,10 +90,10 @@ public class AuthService {
   public LoginResponse reissue(String refreshToken, String oldAccessToken) {
 
     RefreshToken saved = refreshTokenRepository.findByToken(refreshToken)
-        .orElseThrow(() -> new AuthException(AuthErrorStatus.BLACKLISTED_TOKEN));
+        .orElseThrow(() -> new ApplicationException(AuthErrorStatus.BLACKLISTED_TOKEN));
 
     if (saved.isExpired()) {
-      throw new AuthException(AuthErrorStatus.EXPIRED_TOKEN);
+      throw new ApplicationException(AuthErrorStatus.EXPIRED_TOKEN);
     }
 
     AuthPrincipal principal = loadByUserId(saved.getUserId());
@@ -118,7 +119,7 @@ public class AuthService {
   public AuthPrincipal loadByUserId(String sub) {
     String[] parts = sub.split(":");
     if (parts.length != 2) {
-      throw new AuthException(AuthErrorStatus.MALFORMED_TOKEN);
+      throw new ApplicationException(AuthErrorStatus.MALFORMED_TOKEN);
     }
 
     UserType type = UserType.from(parts[0]);
@@ -128,14 +129,14 @@ public class AuthService {
       case CENTER -> {
         Center c = centerMap.get(username);
         if (c == null) {
-          throw new AuthException(AuthErrorStatus.USER_NOT_FOUND);
+          throw new ApplicationException(AuthErrorStatus.USER_NOT_FOUND);
         }
         yield new CenterPrincipal(c.getUsername());
       }
       case MEMBER -> {
         Member m = memberMap.get(username);
         if (m == null) {
-          throw new AuthException(AuthErrorStatus.USER_NOT_FOUND);
+          throw new ApplicationException(AuthErrorStatus.USER_NOT_FOUND);
         }
         yield new MemberPrincipal(m.getUsername());
       }

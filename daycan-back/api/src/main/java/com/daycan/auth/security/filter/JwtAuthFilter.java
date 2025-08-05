@@ -5,7 +5,7 @@ import com.daycan.auth.model.TokenType;
 import com.daycan.auth.service.AuthService;
 import com.daycan.auth.service.BlacklistService;
 import com.daycan.auth.security.JwtTokenProvider;
-import com.daycan.auth.exception.AuthException;
+import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.common.response.status.AuthErrorStatus;
 import com.daycan.common.response.status.ErrorStatus;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthFilter implements Filter {
 
   private final JwtTokenProvider jwtTokenProvider;
-  private final AuthService authService;          // ◀  주입
+  private final AuthService authService;          //  주입
   private final BlacklistService blacklistService;
   private final ObjectMapper     objectMapper;
 
@@ -51,11 +51,11 @@ public class JwtAuthFilter implements Filter {
     try {
       /* 1. 블랙리스트 확인 */
       if (blacklistService.isBlacklisted(rawToken, TokenType.ACCESS))
-        throw new AuthException(AuthErrorStatus.BLACKLISTED_TOKEN);
+        throw new ApplicationException(AuthErrorStatus.BLACKLISTED_TOKEN);
 
       /* 2. 구조·서명 검증 */
       if (!jwtTokenProvider.validate(rawToken))
-        throw new AuthException(AuthErrorStatus.INVALID_SIGNATURE);
+        throw new ApplicationException(AuthErrorStatus.INVALID_SIGNATURE);
 
       /* 3. 주체(subject) → AuthPrincipal 복원 */
       String        subject    = jwtTokenProvider.parseSubject(rawToken);   // "CENTER:123456"
@@ -67,7 +67,7 @@ public class JwtAuthFilter implements Filter {
 
       chain.doFilter(request, response);
 
-    } catch (AuthException e) {                    // 토큰 관련 예외
+    } catch (ApplicationException e) {                    // 토큰 관련 예외
       handleError(res, e.getErrorStatus(), e.getMessage());
 
     } catch (Exception e) {                        // 기타 예외

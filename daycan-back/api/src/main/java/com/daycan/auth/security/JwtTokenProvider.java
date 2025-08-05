@@ -1,7 +1,7 @@
 package com.daycan.auth.security;
 
-import com.daycan.auth.exception.AuthException;
 import com.daycan.auth.dto.Token;
+import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
 
 import io.jsonwebtoken.*;
@@ -60,9 +60,9 @@ public class JwtTokenProvider {
           .getBody()
           .getSubject();
     } catch (ExpiredJwtException e) {
-      throw new AuthException(AuthErrorStatus.EXPIRED_TOKEN);
+      throw new ApplicationException(AuthErrorStatus.EXPIRED_TOKEN);
     } catch (JwtException | IllegalArgumentException e) {
-      throw new AuthException(AuthErrorStatus.MALFORMED_TOKEN);
+      throw new ApplicationException(AuthErrorStatus.MALFORMED_TOKEN);
     }
   }
 

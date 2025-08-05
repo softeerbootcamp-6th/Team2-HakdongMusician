@@ -1,8 +1,8 @@
 package com.daycan.auth.security.resolver;
 
-import com.daycan.auth.exception.AuthException;
 import com.daycan.auth.model.AuthPrincipal;
 import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
@@ -32,7 +32,7 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
     AuthPrincipal principal = (AuthPrincipal) request.getAttribute("principal");
 
     if (principal == null) {
-      throw new AuthException(AuthErrorStatus.INVALID_CREDENTIAL);
+      throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
     }
 
     return principal;

@@ -1,6 +1,7 @@
 package com.daycan.auth.model;
 
 public class MemberPrincipal extends AuthPrincipal {
+
   public MemberPrincipal(String username) {
     this.username = username;
     this.role = "MEMBER";
