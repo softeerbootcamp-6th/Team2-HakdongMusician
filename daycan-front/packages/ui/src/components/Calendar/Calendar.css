@@ -1,0 +1,162 @@
+/* Calendar 컴포넌트 스타일 */
+.calendar-container {
+  width: 100%;
+
+  align-self: center;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-title {
+  color: #111827;
+}
+
+.calendar-icon {
+  color: #9ca3af;
+}
+
+.custom-date-picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.calendar-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.daycan-calendar {
+  width: 100%;
+  align-self: center;
+  border: none;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.daycan-calendar .react-datepicker__header {
+  background-color: #ffffff;
+  border-bottom: none;
+  padding: 0;
+}
+
+.daycan-calendar .react-datepicker__month-container {
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.daycan-calendar .react-datepicker__day-names {
+  background-color: #ffffff;
+  border-bottom: none;
+  margin: 0;
+}
+
+.daycan-calendar .react-datepicker__day-name {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  margin: 0;
+}
+
+.daycan-calendar .react-datepicker__day {
+  color: #111827;
+  font-size: 16px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  margin: 0;
+  border-radius: 50% !important;
+  border: none !important;
+  background-color: transparent;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.daycan-calendar .react-datepicker__day:hover {
+  background-color: #f3f4f6;
+}
+
+.daycan-calendar .react-datepicker__day--outside-month {
+  color: #d1d5db;
+}
+
+.daycan-calendar .daycan-selected {
+  background-color: #ffe54f !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  border-radius: 50% !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.daycan-calendar .daycan-today {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+  border-radius: 50% !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.daycan-calendar .react-datepicker__navigation {
+  top: 10px;
+}
+
+.daycan-calendar .react-datepicker__navigation--previous {
+  left: 10px;
+}
+
+.daycan-calendar .react-datepicker__navigation--next {
+  right: 10px;
+}
+
+.daycan-calendar .react-datepicker__navigation-icon {
+  border-color: #6b7280;
+}
+
+.daycan-calendar .react-datepicker__month-dropdown-container {
+  background-color: #ffffff;
+}
+
+.daycan-calendar .react-datepicker__year-dropdown-container {
+  background-color: #ffffff;
+}
+
+/* 커스텀 헤더 스타일 */
+.calendar-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.calendar-nav-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 32px;
+  color: #6b7280;
+}
+
+.calendar-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.calendar-month-year {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
