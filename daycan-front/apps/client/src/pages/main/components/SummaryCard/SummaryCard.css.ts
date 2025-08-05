@@ -6,7 +6,7 @@ export const container = style({
   maxWidth: "358px",
   height: "100%",
   boxSizing: "border-box",
-  padding: "8px",
+  padding: "8px 0px",
 });
 
 export const summarySection = style({

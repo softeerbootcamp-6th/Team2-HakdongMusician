@@ -40,6 +40,7 @@ export const RecordCheckCard = () => {
             backgroundPosition: "bottom",
             backgroundRepeat: "no-repeat",
           }}
+          onClick={() => navigate("/statistics")}
         >
           <Body type="small" weight={600} color={COLORS.gray[900]}>
             변화 그래프
