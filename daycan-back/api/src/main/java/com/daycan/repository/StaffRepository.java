@@ -24,6 +24,4 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
       @Param("name") String name);
 
   Optional<Staff> findByIdAndOrganizationId(Long id, String organizationId);
-
-  boolean existsByUsernameAndOrganizationId(String username, String organizationId);
 }
