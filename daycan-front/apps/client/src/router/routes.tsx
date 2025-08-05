@@ -4,8 +4,9 @@ import {
   MainPage,
   DailyReportPage,
   ReportsPage,
+  StatisticsPage,
 } from "@/pages";
-import { MainLayout, MobileLayout } from "@/layout";
+import { MainLayout, MobileLayout, LoginLayout } from "@/layout";
 
 export type TRoutes = {
   path: string;
@@ -37,10 +38,6 @@ export const routes: TRoutes[] = [
         element: <ToDailyReportPage />,
       },
       {
-        path: "login",
-        element: <LoginPage />, // => 여기 Outlet으로 렌더됨
-      },
-      {
         path: "daily-report",
         element: <DailyReportPage />,
       },
@@ -49,8 +46,22 @@ export const routes: TRoutes[] = [
         element: <ReportsPage />,
       },
       {
+        path: "statistics",
+        element: <StatisticsPage />,
+      },
+      {
         path: "*",
         element: <div>NotFound</div>,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    layout: <LoginLayout />,
+    children: [
+      {
+        path: "",
+        element: <LoginPage />,
       },
     ],
   },

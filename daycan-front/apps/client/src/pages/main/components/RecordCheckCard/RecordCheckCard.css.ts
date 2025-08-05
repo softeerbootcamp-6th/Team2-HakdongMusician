@@ -4,7 +4,7 @@ import { style } from "@vanilla-extract/css";
 export const recordsSection = style({
   width: "100%",
   maxWidth: "358px",
-  padding: "16px",
+  padding: "16px 0px",
   boxSizing: "border-box",
   display: "flex",
   flexDirection: "column",

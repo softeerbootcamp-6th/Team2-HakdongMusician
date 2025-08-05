@@ -73,6 +73,7 @@ export const forgotPassword = style({
 });
 
 export const footer = style({
+  width: "100%",
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
@@ -81,8 +82,6 @@ export const footer = style({
 
   position: "absolute",
   bottom: "70px",
-  left: "0",
-  right: "0",
 });
 
 export const footerLink = style({

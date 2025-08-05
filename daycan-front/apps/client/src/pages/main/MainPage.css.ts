@@ -4,6 +4,6 @@ import { COLORS } from "@daycan/ui";
 export const container = style({
   display: "flex",
   flexDirection: "column",
-  padding: "16px 12px",
+  padding: "16px 0px",
   backgroundColor: COLORS.gray[50],
 });
