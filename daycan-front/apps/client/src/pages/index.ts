@@ -5,6 +5,7 @@
  * @author 홍규진
  */
 export { LoginPage } from "./login";
-export { ToReportPage } from "./to-report";
+export { ToDailyReportPage } from "./to-daily-report";
 export { MainPage } from "./main";
-export { ReportPage } from "./report";
+export { DailyReportPage } from "./daily-report";
+export { ReportsPage } from "./reports";
