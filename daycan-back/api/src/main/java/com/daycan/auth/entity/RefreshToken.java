@@ -1,4 +1,4 @@
-package com.daycan.auth.token;
+package com.daycan.auth.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

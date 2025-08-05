@@ -1,10 +1,9 @@
-package com.daycan.auth.bean;
+package com.daycan.auth.service;
 
-import com.daycan.auth.TokenType;
+import com.daycan.auth.model.TokenType;
 import com.daycan.auth.repository.BannedTokenRepository;
-import com.daycan.auth.token.BannedToken;
+import com.daycan.auth.entity.BannedToken;
 import jakarta.transaction.Transactional;
-import java.time.Duration;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

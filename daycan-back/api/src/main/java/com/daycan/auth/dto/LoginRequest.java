@@ -1,6 +1,6 @@
-package com.daycan.auth.payload;
+package com.daycan.auth.dto;
 
-import com.daycan.auth.UserType;
+import com.daycan.auth.model.UserType;
 
 public record LoginRequest(
     String username,

@@ -1,11 +1,13 @@
 package com.daycan.auth;
 
 import com.daycan.auth.annotation.AuthenticatedUser;
-import com.daycan.auth.bean.AuthService;
-import com.daycan.auth.bean.JwtTokenProvider;
-import com.daycan.auth.bean.TokenService;
-import com.daycan.auth.payload.LoginResponse;
-import com.daycan.auth.payload.ReissueRequest;
+import com.daycan.auth.model.AuthPrincipal;
+import com.daycan.auth.model.UserType;
+import com.daycan.auth.service.AuthService;
+import com.daycan.auth.security.JwtTokenProvider;
+import com.daycan.auth.service.TokenService;
+import com.daycan.auth.dto.LoginResponse;
+import com.daycan.auth.dto.ReissueRequest;
 import com.daycan.common.response.ResponseWrapper;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

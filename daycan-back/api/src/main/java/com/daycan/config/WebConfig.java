@@ -1,6 +1,6 @@
 package com.daycan.config;
 
-import com.daycan.auth.bean.AuthenticatedUserArgumentResolver;
+import com.daycan.auth.security.resolver.AuthenticatedUserArgumentResolver;
 import com.daycan.common.logging.MdcLoggingInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

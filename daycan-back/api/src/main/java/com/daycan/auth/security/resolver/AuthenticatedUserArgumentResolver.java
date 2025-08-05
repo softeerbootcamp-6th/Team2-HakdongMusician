@@ -1,7 +1,7 @@
-package com.daycan.auth.bean;
+package com.daycan.auth.security.resolver;
 
-import com.daycan.auth.AuthException;
-import com.daycan.auth.AuthPrincipal;
+import com.daycan.auth.exception.AuthException;
+import com.daycan.auth.model.AuthPrincipal;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.common.response.status.AuthErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;

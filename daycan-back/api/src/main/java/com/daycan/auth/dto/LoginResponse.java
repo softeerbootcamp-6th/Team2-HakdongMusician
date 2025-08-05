@@ -1,4 +1,4 @@
-package com.daycan.auth.payload;
+package com.daycan.auth.dto;
 
 public record LoginResponse(
     String accessToken,

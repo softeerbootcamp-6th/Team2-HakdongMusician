@@ -1,11 +1,11 @@
-package com.daycan.auth.filter;
+package com.daycan.auth.security.filter;
 
-import com.daycan.auth.AuthPrincipal;
-import com.daycan.auth.TokenType;
-import com.daycan.auth.bean.AuthService;
-import com.daycan.auth.bean.BlacklistService;
-import com.daycan.auth.bean.JwtTokenProvider;
-import com.daycan.auth.AuthException;
+import com.daycan.auth.model.AuthPrincipal;
+import com.daycan.auth.model.TokenType;
+import com.daycan.auth.service.AuthService;
+import com.daycan.auth.service.BlacklistService;
+import com.daycan.auth.security.JwtTokenProvider;
+import com.daycan.auth.exception.AuthException;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.common.response.status.AuthErrorStatus;
 import com.daycan.common.response.status.ErrorStatus;

@@ -1,4 +1,4 @@
-package com.daycan.auth;
+package com.daycan.auth.model;
 
 public class CenterPrincipal extends AuthPrincipal {
   public CenterPrincipal(String username) {

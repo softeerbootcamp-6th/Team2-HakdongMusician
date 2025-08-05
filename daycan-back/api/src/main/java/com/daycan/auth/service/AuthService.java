@@ -1,14 +1,15 @@
-package com.daycan.auth.bean;
+package com.daycan.auth.service;
 
-import com.daycan.auth.AuthException;
-import com.daycan.auth.AuthPrincipal;
-import com.daycan.auth.CenterPrincipal;
-import com.daycan.auth.MemberPrincipal;
-import com.daycan.auth.UserType;
-import com.daycan.auth.payload.LoginResponse;
+import com.daycan.auth.exception.AuthException;
+import com.daycan.auth.model.AuthPrincipal;
+import com.daycan.auth.model.CenterPrincipal;
+import com.daycan.auth.model.MemberPrincipal;
+import com.daycan.auth.model.UserType;
+import com.daycan.auth.dto.LoginResponse;
 import com.daycan.auth.repository.RefreshTokenRepository;
-import com.daycan.auth.token.RefreshToken;
-import com.daycan.auth.token.Token;
+import com.daycan.auth.entity.RefreshToken;
+import com.daycan.auth.dto.Token;
+import com.daycan.auth.security.JwtTokenProvider;
 import com.daycan.common.response.status.AuthErrorStatus;
 import java.time.Instant;
 import java.util.HashMap;

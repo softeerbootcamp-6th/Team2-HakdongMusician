@@ -1,5 +1,6 @@
-package com.daycan.auth;
+package com.daycan.auth.model;
 
+import com.daycan.auth.exception.AuthException;
 import com.daycan.common.response.status.AuthErrorStatus;
 
 public enum UserType {

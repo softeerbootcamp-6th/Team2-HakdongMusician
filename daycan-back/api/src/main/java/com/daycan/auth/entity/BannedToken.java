@@ -1,6 +1,6 @@
-package com.daycan.auth.token;
+package com.daycan.auth.entity;
 
-import com.daycan.auth.TokenType;
+import com.daycan.auth.model.TokenType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

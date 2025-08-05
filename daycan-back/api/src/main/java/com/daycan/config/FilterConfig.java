@@ -1,10 +1,10 @@
 package com.daycan.config;
 
-import com.daycan.auth.bean.AuthService;
-import com.daycan.auth.bean.BlacklistService;
-import com.daycan.auth.bean.JwtTokenProvider;
-import com.daycan.auth.filter.JwtAuthFilter;
-import com.daycan.auth.filter.LoginFilter;
+import com.daycan.auth.service.AuthService;
+import com.daycan.auth.service.BlacklistService;
+import com.daycan.auth.security.JwtTokenProvider;
+import com.daycan.auth.security.filter.JwtAuthFilter;
+import com.daycan.auth.security.filter.LoginFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

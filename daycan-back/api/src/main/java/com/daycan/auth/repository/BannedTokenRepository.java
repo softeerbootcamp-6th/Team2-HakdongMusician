@@ -1,7 +1,7 @@
 package com.daycan.auth.repository;
 
-import com.daycan.auth.TokenType;
-import com.daycan.auth.token.BannedToken;
+import com.daycan.auth.model.TokenType;
+import com.daycan.auth.entity.BannedToken;
 import java.time.Instant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
