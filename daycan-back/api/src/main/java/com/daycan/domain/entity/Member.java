@@ -69,7 +69,7 @@ public class Member {
   @Column(name = "organization_id", length = 11, nullable = false)
   private String organizationId;
 
-  @Column(name = "password", length = 20, nullable = false)
+  @Column(name = "password", length = 100, nullable = false)
   private String password;
 
   @Column(name = "created_at", updatable = false)

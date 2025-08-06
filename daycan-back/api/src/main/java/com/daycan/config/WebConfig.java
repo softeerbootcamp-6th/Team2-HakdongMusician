@@ -16,10 +16,10 @@ public class WebConfig implements WebMvcConfigurer {
 
   private final AuthenticatedUserArgumentResolver resolver;
 
-  @Override
-  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-    resolvers.add(resolver);
-  }
+//  @Override
+//  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+//    resolvers.add(resolver);
+//  }
    @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(new MdcLoggingInterceptor());

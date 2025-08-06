@@ -15,4 +15,7 @@ public class MemberReportFacade {
   private final AiCommentService aiCommentService;
   private final ProgramService programService;
   private final PersonalProgramService personalProgramService;
+
+  // 건강
+  // ai comment 2,3 개 식사
 }
