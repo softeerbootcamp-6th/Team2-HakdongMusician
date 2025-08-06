@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface StaffRepository extends JpaRepository<Staff, Long> {
 
   @Query("SELECT s FROM Staff s WHERE s.organizationId = :organizationId " +
-      "AND (:role IS NULL OR s.role = :role) " +
+      "AND (:role IS NULL OR s.staffRole = :staffRole) " +
       "AND (:gender IS NULL OR s.gender = :gender) " +
       "AND (:name IS NULL OR s.name LIKE %:name%)")
   List<Staff> findByOrganizationIdWithFilters(

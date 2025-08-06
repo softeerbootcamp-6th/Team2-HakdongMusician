@@ -6,7 +6,8 @@ import com.daycan.domain.entity.Program;
 import com.daycan.domain.entity.CareSheet;
 import com.daycan.domain.entity.PersonalProgram;
 import com.daycan.domain.enums.ActivityScore;
-import com.daycan.repository.PersonalActivityRepository;
+import com.daycan.repository.PersonalProgramRepository;
+import com.daycan.repository.ProgramRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,23 +17,23 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PersonalActivityService {
+public class PersonalProgramService {
 
-  private final PersonalActivityRepository personalActivityRepository;
-  private final ActivityService activityService;
+  private final PersonalProgramRepository personalProgramRepository;
+  private final ProgramRepository programRepository;
 
   /**
    * 모든 개인 활동 조회
    */
   public List<PersonalProgram> getAllPersonalActivities() {
-    return personalActivityRepository.findAll();
+    return personalProgramRepository.findAll();
   }
 
   /**
    * ID로 개인 활동 조회
    */
   public PersonalProgram getPersonalActivityById(Long id) {
-    return personalActivityRepository.findById(id)
+    return personalProgramRepository.findById(id)
         .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
   }
 
@@ -40,37 +41,38 @@ public class PersonalActivityService {
    * CareSheet ID로 개인 활동 목록 조회
    */
   public List<PersonalProgram> getPersonalActivitiesByCareSheetId(Long careSheetId) {
-    return personalActivityRepository.findByCareSheetId(careSheetId);
+    return personalProgramRepository.findByCareSheetId(careSheetId);
   }
 
   /**
    * Activity ID로 개인 활동 목록 조회
    */
-  public List<PersonalProgram> getPersonalActivitiesByActivityId(Long activityId) {
-    return personalActivityRepository.findByActivityId(activityId);
+  public List<PersonalProgram> getPersonalActivitiesByActivityId(Long programId) {
+    return personalProgramRepository.findByProgramId(programId);
   }
 
   /**
    * 특정 점수 범위의 개인 활동 조회
    */
   public List<PersonalProgram> getPersonalActivitiesByScores(List<ActivityScore> scores) {
-    return personalActivityRepository.findByScoreIn(scores);
+    return personalProgramRepository.findByScoreIn(scores);
   }
 
   /**
    * CareSheet와 Activity로 개인 활동 조회
    */
   public List<PersonalProgram> getPersonalActivitiesByCareSheetAndActivity(Long careSheetId, Long activityId) {
-    return personalActivityRepository.findByCareSheetIdAndActivityId(careSheetId, activityId);
+    return personalProgramRepository.findByCareSheetIdAndProgramId(careSheetId, activityId);
   }
 
   /**
    * 새로운 개인 활동 생성
    */
   @Transactional
-  public PersonalProgram createPersonalActivity(CareSheet careSheet, Long activityId,
+  public PersonalProgram createPersonalActivity(CareSheet careSheet, Long programId,
       ActivityScore score, String personalNote) {
-    Program program = activityService.getActivityById(activityId);
+    Program program = programRepository.findById(programId)
+        .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
 
     PersonalProgram personalProgram = PersonalProgram.builder()
         .careSheet(careSheet)
@@ -79,7 +81,7 @@ public class PersonalActivityService {
         .personalNote(personalNote)
         .build();
 
-    return personalActivityRepository.save(personalProgram);
+    return personalProgramRepository.save(personalProgram);
   }
 
   /**
@@ -97,7 +99,7 @@ public class PersonalActivityService {
         .personalNote(personalNote != null ? personalNote : existingActivity.getPersonalNote())
         .build();
 
-    return personalActivityRepository.save(updatedActivity);
+    return personalProgramRepository.save(updatedActivity);
   }
 
   /**
@@ -105,10 +107,10 @@ public class PersonalActivityService {
    */
   @Transactional
   public void deletePersonalActivity(Long id) {
-    if (!personalActivityRepository.existsById(id)) {
+    if (!personalProgramRepository.existsById(id)) {
       throw new ApplicationException(CommonErrorStatus.NOT_FOUND);
     }
-    personalActivityRepository.deleteById(id);
+    personalProgramRepository.deleteById(id);
   }
 
   /**
@@ -117,6 +119,6 @@ public class PersonalActivityService {
   @Transactional
   public void deletePersonalActivitiesByCareSheetId(Long careSheetId) {
     List<PersonalProgram> personalActivities = getPersonalActivitiesByCareSheetId(careSheetId);
-    personalActivityRepository.deleteAll(personalActivities);
+    personalProgramRepository.deleteAll(personalActivities);
   }
 }

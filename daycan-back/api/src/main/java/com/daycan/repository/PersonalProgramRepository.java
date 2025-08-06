@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PersonalActivityRepository extends JpaRepository<PersonalProgram, Long> {
+public interface PersonalProgramRepository extends JpaRepository<PersonalProgram, Long> {
 
   /**
    * CareSheet ID로 개인 활동 조회
@@ -19,10 +19,10 @@ public interface PersonalActivityRepository extends JpaRepository<PersonalProgra
   List<PersonalProgram> findByCareSheetId(@Param("careSheetId") Long careSheetId);
 
   /**
-   * Activity ID로 개인 활동 조회
+   * Program ID로 개인 활동 조회
    */
-  @Query("SELECT pa FROM PersonalProgram pa WHERE pa.activity.id = :activityId")
-  List<PersonalProgram> findByActivityId(@Param("activityId") Long activityId);
+  @Query("SELECT pa FROM PersonalProgram pa WHERE pa.program.id = :programId")
+  List<PersonalProgram> findByProgramId(@Param("programId") Long programId);
 
   /**
    * 특정 점수 이상의 개인 활동 조회
@@ -30,9 +30,9 @@ public interface PersonalActivityRepository extends JpaRepository<PersonalProgra
   List<PersonalProgram> findByScoreIn(List<ActivityScore> scores);
 
   /**
-   * CareSheet와 Activity로 개인 활동 조회
+   * CareSheet와 Program의 개인 활동 조회
    */
-  @Query("SELECT pa FROM PersonalProgram pa WHERE pa.careSheet.id = :careSheetId AND pa.activity.id = :activityId")
-  List<PersonalProgram> findByCareSheetIdAndActivityId(@Param("careSheetId") Long careSheetId,
-      @Param("activityId") Long activityId);
+  @Query("SELECT pa FROM PersonalProgram pa WHERE pa.careSheet.id = :careSheetId AND pa.program.id = :activityId")
+  List<PersonalProgram> findByCareSheetIdAndProgramId(@Param("careSheetId") Long careSheetId,
+      @Param("programId") Long programId);
 }
