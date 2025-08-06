@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 
-public enum Role {
+public enum StaffRole {
   DIRECTOR("센터장", "ROLE_DIRECTOR"),
   SOCIAL_WORKER("사회복지사", "ROLE_SOCIAL_WORKER"),
   CAREGIVER("요양보호사", "ROLE_CAREGIVER");
@@ -13,7 +13,7 @@ public enum Role {
   private final String kor;        // 한글 표시용
   private final String authority;  // Spring Security 권한명 등
 
-  Role(String kor, String authority) {
+  StaffRole(String kor, String authority) {
     this.kor = kor;
     this.authority = authority;
   }
@@ -22,7 +22,7 @@ public enum Role {
    * 역직렬화: 코드(DIRECTOR) 또는 한글(센터장) 모두 허용
    */
   @JsonCreator
-  public static Role from(Object value) {
+  public static StaffRole from(Object value) {
     if (value == null) {
       return null;
     }

@@ -2,7 +2,7 @@ package com.daycan.dto.admin.response;
 
 
 import com.daycan.domain.enums.Gender;
-import com.daycan.domain.enums.Role;
+import com.daycan.domain.enums.StaffRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 
@@ -22,7 +22,7 @@ public record AdminStaffResponse(
     Gender gender,
 
     @Schema(description = "역할(권한)", example = "CENTER_ADMIN")
-    Role role,
+    StaffRole staffRole,
 
     @Schema(description = "생년월일", example = "1985-03-15")
     LocalDate birthDate,

@@ -1,16 +1,20 @@
 package com.daycan.controller.admin;
 
-import com.daycan.common.annotations.CenterPrinciple;
+import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
 import com.daycan.dto.admin.response.DocumentCountResponse;
 import com.daycan.dto.admin.response.DocumentStatusResponse;
 import com.daycan.service.DocumentService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +38,8 @@ public class AdminDocumentController {
   @GetMapping("/count")
   @Operation(summary = "기록지/리포트 카운트 조회", description = "미완료된 기록지/리포트 수와 지연된 기록지/리포트 수를 조회합니다. (어드민 페이지 사이드 바)")
   public ResponseWrapper<DocumentCountResponse> getDocumentCount(
-      @CenterPrinciple Center center) {
+      @AuthenticatedUser CenterDetails centerDetails) {
+    Center center = centerDetails.getCenter();
     return ResponseWrapper.onSuccess(documentService.getDocumentCount(center.getOrganizationId()));
   }
 }

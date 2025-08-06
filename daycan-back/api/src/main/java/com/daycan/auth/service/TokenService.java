@@ -1,6 +1,6 @@
 package com.daycan.auth.service;
 
-import com.daycan.auth.model.AuthPrincipal;
+import com.daycan.auth.model.UserDetails;
 import com.daycan.auth.model.TokenType;
 import com.daycan.auth.dto.LoginResponse;
 import com.daycan.auth.repository.RefreshTokenRepository;
@@ -9,7 +9,6 @@ import com.daycan.auth.dto.Token;
 import com.daycan.auth.security.JwtTokenProvider;
 import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
-import jakarta.security.auth.message.AuthException;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,9 +40,9 @@ public class TokenService {
       throw new ApplicationException(AuthErrorStatus.INVALID_SIGNATURE);
     }
 
-    /* 3. subject → AuthPrincipal 복원 */
+    /* 3. subject → UserDetails 복원 */
     String subject = jwtTokenProvider.parseSubject(rawRefreshToken);
-    AuthPrincipal principal = authService.loadByUserId(subject);
+    UserDetails principal = authService.loadByUserId(subject);
 
     /* 4. 기존 토큰 무효화 ― DB 삭제 + 블랙리스트 */
     refreshTokenRepository.delete(saved);

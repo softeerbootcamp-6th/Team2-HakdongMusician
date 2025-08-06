@@ -1,8 +1,8 @@
 package com.daycan.auth.service;
 
-import com.daycan.auth.model.AuthPrincipal;
-import com.daycan.auth.model.CenterPrincipal;
-import com.daycan.auth.model.MemberPrincipal;
+import com.daycan.auth.model.UserDetails;
+import com.daycan.auth.model.CenterDetails;
+import com.daycan.auth.model.MemberDetails;
 import com.daycan.auth.model.UserType;
 import com.daycan.auth.dto.LoginResponse;
 import com.daycan.auth.repository.RefreshTokenRepository;
@@ -11,12 +11,11 @@ import com.daycan.auth.dto.Token;
 import com.daycan.auth.security.JwtTokenProvider;
 import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
-import jakarta.security.auth.message.AuthException;
+import com.daycan.domain.entity.Center;
+import com.daycan.domain.entity.Member;
+import com.daycan.repository.CenterRepository;
+import com.daycan.repository.MemberRepository;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,44 +28,39 @@ public class AuthService {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final RefreshTokenRepository refreshTokenRepository;
+  private final CenterRepository centerRepository;
+  private final MemberRepository memberRepository;
 
-  /* ----------------------------------------------------------------
-     데모용 인-메모리 계정 DB
-     ---------------------------------------------------------------- */
-  private final Map<String, Center> centerMap = new HashMap<>();
-  private final Map<String, Member> memberMap = new HashMap<>();
 
-  {
-    centerMap.put("123456", new Center("123456", hashPassword("1234")));
-    memberMap.put("AA123", new Member("AA123", hashPassword("abcd")));
-  }
-
-  /* ================================================================
-     1) 로그인
-     ================================================================ */
-  public AuthPrincipal authenticate(String username, String rawPw, UserType userType) {
+  // 1) 로그인
+  public UserDetails authenticate(String username, String rawPw, UserType userType) {
     return switch (userType) {
       case CENTER -> {
-        Center c = centerMap.get(username);
-        if (c == null || !verifyPassword(rawPw, c.getPassword())) {
+        Center center = centerRepository.findByUsername(username)
+            .orElseThrow(() -> new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL));
+
+        if (!verifyPassword(rawPw, center.getPassword())) {
           throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
         }
-        yield new CenterPrincipal(c.getUsername());
+
+        yield new CenterDetails(center);
       }
+
       case MEMBER -> {
-        Member m = memberMap.get(username);
-        if (m == null || !verifyPassword(rawPw, m.getPassword())) {
+        Member member = memberRepository.findByUsername(username)
+            .orElseThrow(() -> new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL));
+
+        if (!verifyPassword(rawPw, member.getPassword())) {
           throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
         }
-        yield new MemberPrincipal(m.getUsername());
+
+        yield new MemberDetails(member);
       }
     };
   }
 
-  /* ================================================================
-     2) 토큰 발급  (▶  RefreshToken 저장 or 갱신)
-     ================================================================ */
-  public LoginResponse issueTokens(AuthPrincipal principal) {
+  // 2) 토큰 발급  (RefreshToken 저장 or 갱신)
+  public LoginResponse issueTokens(UserDetails principal) {
 
     Token access = jwtTokenProvider.createAccessToken(principal.getUniqueIdentifier());
     Token refresh = jwtTokenProvider.createRefreshToken(principal.getUniqueIdentifier());
@@ -83,10 +77,7 @@ public class AuthService {
 
     return new LoginResponse(access.value(), refresh.value());
   }
-
-  /* ================================================================
-     3) 토큰 재발급 (RTR)  –  token 컬럼으로 조회!
-     ================================================================ */
+  // 3) 토큰 재발급 (RTR)  –  token 컬럼으로 조회
   public LoginResponse reissue(String refreshToken, String oldAccessToken) {
 
     RefreshToken saved = refreshTokenRepository.findByToken(refreshToken)
@@ -96,27 +87,25 @@ public class AuthService {
       throw new ApplicationException(AuthErrorStatus.EXPIRED_TOKEN);
     }
 
-    AuthPrincipal principal = loadByUserId(saved.getUserId());
+    UserDetails principal = loadByUserId(saved.getUserId());
 
-    // ① 기존 RefreshToken 폐기
+    // 기존 RefreshToken 폐기
     refreshTokenRepository.delete(saved);
 
-    // ② (선택) 기존 AccessToken 블랙리스트 처리
-    //    blacklistService.blacklist(oldAccessToken, TokenType.ACCESS);
+//    // (선택) 기존 AccessToken 블랙리스트 처
+//    blacklistService.blacklist(oldAccessToken, TokenType.ACCESS);
 
-    // ③ 새 토큰 발급 & 저장
+    // 새 토큰 발급 & 저장
     return issueTokens(principal);
   }
 
-  /* ================================================================
-     4) 헬퍼
-     ================================================================ */
-  public AuthPrincipal parse(String token) {
+  // 4) 헬퍼
+  public UserDetails parse(String token) {
     String subject = jwtTokenProvider.parseSubject(token);
     return loadByUserId(subject);
   }
 
-  public AuthPrincipal loadByUserId(String sub) {
+  public UserDetails loadByUserId(String sub) {
     String[] parts = sub.split(":");
     if (parts.length != 2) {
       throw new ApplicationException(AuthErrorStatus.MALFORMED_TOKEN);
@@ -127,43 +116,21 @@ public class AuthService {
 
     return switch (type) {
       case CENTER -> {
-        Center c = centerMap.get(username);
-        if (c == null) {
-          throw new ApplicationException(AuthErrorStatus.USER_NOT_FOUND);
-        }
-        yield new CenterPrincipal(c.getUsername());
+        Center center = centerRepository.findByUsername(username)
+            .orElseThrow(() -> new ApplicationException(AuthErrorStatus.USER_NOT_FOUND));
+        yield new CenterDetails(center);
       }
+
       case MEMBER -> {
-        Member m = memberMap.get(username);
-        if (m == null) {
-          throw new ApplicationException(AuthErrorStatus.USER_NOT_FOUND);
-        }
-        yield new MemberPrincipal(m.getUsername());
+        Member member = memberRepository.findByUsername(username)
+            .orElseThrow(() -> new ApplicationException(AuthErrorStatus.USER_NOT_FOUND));
+        yield new MemberDetails(member);
       }
     };
   }
 
-  private String hashPassword(String raw) {
-    return BCrypt.hashpw(raw, BCrypt.gensalt());
-  }
 
   private boolean verifyPassword(String raw, String hashed) {
     return BCrypt.checkpw(raw, hashed);
-  }
-
-  @Getter
-  @AllArgsConstructor
-  static class Center {
-
-    String username;
-    String password;
-  }
-
-  @Getter
-  @AllArgsConstructor
-  static class Member {
-
-    String username;
-    String password;
   }
 }

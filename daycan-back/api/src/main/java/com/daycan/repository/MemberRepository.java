@@ -59,8 +59,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
   /**
    * 센터 내에서 특정 회원 조회 (소프트 삭제 제외)
    */
-  Optional<Member> findByUsernameAndOrganizationIdAndDeletedAtIsNull(String username,
-      String organizationId);
+  Optional<Member> findByUsername(String username);
 
   /**
    * 센터별 회원명으로 검색
