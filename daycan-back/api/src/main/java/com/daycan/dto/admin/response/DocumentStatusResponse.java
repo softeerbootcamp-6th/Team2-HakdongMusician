@@ -3,11 +3,11 @@ package com.daycan.dto.admin.response;
 import com.daycan.domain.enums.CareReportStatus;
 import com.daycan.domain.enums.CareSheetStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDate;
 
 public record DocumentStatusResponse(
     @Schema(description = "생성 날짜", example = "5")
-    Date createdAt,
+    LocalDate createdAt,
     @Schema(description = "기록지 정보", example = "5")
     CareSheetStatusResponse careSheet,
     @Schema(description = "리포트 정보", example = "5")
