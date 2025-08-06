@@ -23,3 +23,4 @@ export * from "./Input";
 export * from "./Segment";
 export * from "./LottieAnimation";
 export * from "./Calendar";
+export * from "./HightlightingHeading";
