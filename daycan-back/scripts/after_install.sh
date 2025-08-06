@@ -5,15 +5,7 @@ set -euo pipefail
 chown -R daycan:daycan /opt/daycan
 chmod -R 755 /opt/daycan/scripts
 
-# 환경파일(없으면 기본값만)
-if [ ! -f /etc/daycan/daycan.env ]; then
-  cat >/etc/daycan/daycan.env <<'EOF'
-SPRING_PROFILES_ACTIVE=develop
-DAYCAN_PORT=8080
-JAVA_OPTS="-Xms512m -Xmx1024m"
-# LOGGING_FILE_NAME=/opt/daycan/logs/app.log   # 파일 로깅 원하면 주석 해제
-EOF
-fi
+cp /opt/daycan/daycan.env /etc/daycan/daycan.env
 chmod 640 /etc/daycan/daycan.env
 chown root:daycan /etc/daycan/daycan.env
 

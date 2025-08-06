@@ -2,7 +2,7 @@ name: Build and Deploy to S3 with CodeDeploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "back-develop" ]
     paths:
       - 'daycan-back/**'
 
@@ -53,6 +53,16 @@ jobs:
           ./gradlew clean bootJar
           echo "✅ Build completed successfully!"
 
+      - name: Make daycan.env file
+        run: |
+          echo "🔨 Making daycan.env file..."
+          echo "DB_URL=${{ secrets.DB_URL }}" >> daycan.env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> daycan.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> daycan.env
+          echo "SPRING_PROFILES_ACTIVE=develop" >> daycan.env
+          echo "DAYCAN_PORT=8080" >> daycan.env
+          echo "✅ daycan.env file created successfully!"
+
       - name: Prepare CodeDeploy bundle
         run: |
           echo "📋 Preparing CodeDeploy deployment bundle..."
@@ -71,6 +81,7 @@ jobs:
           
           # appspec.yml과 scripts 복사 (상위 디렉토리에서)
           cp ../appspec.yml deployment-bundle/
+          cp ../daycan.env deployment-bundle/
           cp -r ../scripts/* deployment-bundle/scripts/
           echo "✅ Copied appspec.yml and scripts"
           

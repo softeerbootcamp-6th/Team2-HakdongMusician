@@ -5,6 +5,9 @@ files:
     destination: /opt/daycan/app
   - source: scripts/
     destination: /opt/daycan/scripts
+  - source: daycan.env
+    destination: /opt/daycan/
+
 permissions:
   - object: /opt/daycan
     owner: root
