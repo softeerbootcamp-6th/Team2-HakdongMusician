@@ -52,7 +52,7 @@ public class MemberReportController {
   )
   @GetMapping("/{date}")
   public ResponseWrapper<FullReportDto> getReport(
-//      @AuthenticatedUser MemberDetails memberDetails,
+      @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
