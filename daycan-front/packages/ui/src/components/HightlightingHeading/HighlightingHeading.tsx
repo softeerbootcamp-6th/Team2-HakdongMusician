@@ -1,4 +1,5 @@
-import { COLORS, Heading } from "@daycan/ui";
+import { COLORS } from "@/styles";
+import { Heading } from "../Heading";
 import { highlightingHeading, highlighter } from "./HighlightingHeading.css";
 
 interface HighlightingHeadingProps {
