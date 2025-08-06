@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 
 @Schema(description = "관리자 정보 응답")
-public record AdminResponse(
+public record AdminStaffResponse(
 
     @Schema(description = "관리자 ID (PK)", example = "123")
     Long id,
@@ -31,10 +31,8 @@ public record AdminResponse(
     String phoneNumber,
 
     @Schema(description = "프로필 이미지 URL", example = "https://cdn.example.com/avatar/ADMIN_123.png")
-    String avatarUrl,
+    String avatarUrl
 
-    @Schema(description = "로그인 사용자명", example = "hongadmin")
-    String username
 ) {
 
 }
