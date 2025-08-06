@@ -1,2 +1,3 @@
-export * from "./main/mainLayout";
-export * from "./report/reportLayout";
+export * from "./main";
+export * from "./report";
+export * from "./mobile";
