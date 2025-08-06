@@ -14,8 +14,8 @@ import {
 } from "./ElderPage.css.ts";
 import { FilterSearchbar } from "@/components/FilterSearchbar/FilterSearchbar.tsx";
 import { DataRow } from "@/components/DataRow/index.ts";
-import { Dropdown } from "@/components/DropdownPanel/DropdownPanel.tsx";
-import { DropdownChip } from "@/components/DropdownChip";
+import { DropDown } from "@/components/DropDownPanel/DropDownPanel.tsx";
+import { DropDownChip } from "@/components/DropDownChip/index.ts";
 import { ELDER_HEADERS, ELDER_COLUMNS } from "@/constants/elderList.ts";
 import { API_ELDER_DUMMY_DATA } from "@/constants/elderDummyData.ts";
 import { type MemberResponse } from "@/types";
@@ -102,20 +102,20 @@ export const ElderPage = () => {
           <div className={Divider} />
           {/* 필터링 chips */}
           <div className={elderFilter}>
-            <DropdownChip
+            <DropDownChip
               label="장기요양등급"
               isOpen={dropdownStates.careGrade}
               onClick={() => toggleDropdown("careGrade")}
             >
-              <Dropdown />
-            </DropdownChip>
-            <DropdownChip
+              <DropDown />
+            </DropDownChip>
+            <DropDownChip
               label="성별"
               isOpen={dropdownStates.gender}
               onClick={() => toggleDropdown("gender")}
             >
-              <Dropdown />
-            </DropdownChip>
+              <DropDown />
+            </DropDownChip>
           </div>
         </div>
         <div className={elderSearch}>

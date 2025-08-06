@@ -1,1 +1,1 @@
-export { DropdownChip } from "./DropdownChip";
+export { DropDownChip } from "./DropDownChip.tsx";

@@ -9,7 +9,7 @@ interface DropdownChipProps {
   style?: React.CSSProperties;
 }
 
-export const DropdownChip = ({
+export const DropDownChip = ({
   label,
   isOpen,
   onClick,
