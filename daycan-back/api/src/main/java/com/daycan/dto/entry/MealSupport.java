@@ -1,6 +1,5 @@
-package com.daycan.dto.admin.entry;
+package com.daycan.dto.entry;
 
-import com.daycan.dto.entry.MealEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;

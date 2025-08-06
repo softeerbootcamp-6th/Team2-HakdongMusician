@@ -41,10 +41,11 @@ public class MemberReportController {
    * 0. 공통 응답
    *------------------------------------------------------------------*/
   @Operation(
-      summary = "리포트 공통 응답",
+      summary = "리포트 전체 응답",
       description = """
           모든 리포트 조회 API는 공통적으로 ResponseWrapper를 사용하여 응답합니다.
           성공 시, data 필드에 리포트 내용을 담아 반환합니다.
+          인지 program, 건강 program이 여러개인 경우 점수는 분야별로 평균이 계산됩니다.
           """
   )
   @GetMapping("/{date}")
