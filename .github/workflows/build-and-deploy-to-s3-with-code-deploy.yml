@@ -54,6 +54,7 @@ jobs:
           echo "✅ Build completed successfully!"
 
       - name: Make daycan.env file
+        working-directory: daycan-back
         run: |
           echo "🔨 Making daycan.env file..."
           echo "DB_URL=${{ secrets.DB_URL }}" >> daycan.env
@@ -64,6 +65,7 @@ jobs:
           echo "✅ daycan.env file created successfully!"
 
       - name: Prepare CodeDeploy bundle
+        working-directory: daycan-back/api
         run: |
           echo "📋 Preparing CodeDeploy deployment bundle..."
           # 타임스탬프와 커밋 해시로 고유한 배포 ID 생성
