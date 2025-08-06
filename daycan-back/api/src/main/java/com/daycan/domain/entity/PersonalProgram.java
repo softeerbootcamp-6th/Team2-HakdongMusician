@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "personal_activity")
-public class PersonalActivity {
+@Table(name = "personal_program")
+public class PersonalProgram {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class PersonalActivity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "activity_id", nullable = false)
-  private Activity activity;
+  private Program program;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)

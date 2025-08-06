@@ -1,6 +1,6 @@
 package com.daycan.auth.security.filter;
 
-import com.daycan.auth.model.AuthPrincipal;
+import com.daycan.auth.model.UserDetails;
 import com.daycan.auth.service.AuthService;
 import com.daycan.auth.dto.LoginRequest;
 import com.daycan.auth.dto.LoginResponse;
@@ -44,7 +44,7 @@ public class LoginFilter implements Filter {
       LoginRequest login = objectMapper.readValue(req.getInputStream(), LoginRequest.class);
 
       /* 2. 인증 */
-      AuthPrincipal principal = authService.authenticate(
+      UserDetails principal = authService.authenticate(
           login.username(), login.password(), login.userType());
 
       /* 3. 토큰 발급 */
@@ -55,8 +55,8 @@ public class LoginFilter implements Filter {
       writeJson(res, HttpServletResponse.SC_OK, ResponseWrapper.onSuccess(tokens));
 
     } catch (ApplicationException e) {                       // 인증 오류
-      writeJson(res, e.getErrorStatus().getHttpStatus().value(),
-          ResponseWrapper.onFailure(e.getErrorStatus(), e.getMessage()));
+      writeJson(res, e.getStatus().getHttpStatus().value(),
+          ResponseWrapper.onFailure(e.getStatus(), e.getMessage()));
 
     } catch (Exception e) {                           // 기타 예외
       writeJson(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

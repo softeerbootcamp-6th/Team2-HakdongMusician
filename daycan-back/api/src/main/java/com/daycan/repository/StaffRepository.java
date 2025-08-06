@@ -2,7 +2,7 @@ package com.daycan.repository;
 
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;
-import com.daycan.domain.enums.Role;
+import com.daycan.domain.enums.StaffRole;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +19,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
       "AND (:name IS NULL OR s.name LIKE %:name%)")
   List<Staff> findByOrganizationIdWithFilters(
       @Param("organizationId") String organizationId,
-      @Param("role") Role role,
+      @Param("staffRole") StaffRole staffRole,
       @Param("gender") Gender gender,
       @Param("name") String name);
 

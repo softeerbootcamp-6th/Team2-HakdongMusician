@@ -1,7 +1,7 @@
 package com.daycan.dto.admin.request;
 
 import com.daycan.domain.enums.Gender;
-import com.daycan.domain.enums.Role;
+import com.daycan.domain.enums.StaffRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ public record AdminStaffRequest(
 
     @Schema(description = "성별", example = "MALE", requiredMode = RequiredMode.REQUIRED) Gender gender,
 
-    @Schema(description = "역할(권한)", example = "CENTER_ADMIN", requiredMode = RequiredMode.REQUIRED) Role role,
+    @Schema(description = "역할(권한)", example = "CENTER_ADMIN", requiredMode = RequiredMode.REQUIRED) StaffRole staffRole,
 
     @Schema(description = "생년월일", example = "1985-03-15", requiredMode = RequiredMode.REQUIRED) LocalDate birthDate,
 

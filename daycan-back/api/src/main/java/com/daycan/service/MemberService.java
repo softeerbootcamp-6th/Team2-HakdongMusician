@@ -2,6 +2,7 @@ package com.daycan.service;
 
 import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.PageResponse;
+import com.daycan.common.response.status.CenterErrorStatus;
 import com.daycan.common.response.status.CommonErrorStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.enums.Gender;
@@ -48,7 +49,8 @@ public class MemberService {
   /**
    * 센터별 회원 목록 조회 (필터링 지원, 페이징)
    */
-  public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(String organizationId, Gender gender,
+  public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(String organizationId,
+      Gender gender,
       Integer careLevel, String name, Pageable pageable) {
     try {
       Page<Member> memberPage = memberRepository.findByOrganizationIdWithFilters(
@@ -75,9 +77,9 @@ public class MemberService {
    */
   public AdminMemberResponse getMemberById(String username, String organizationId) {
     try {
-      Member member = memberRepository.findByUsernameAndOrganizationIdAndDeletedAtIsNull(username,
-          organizationId)
+      Member member = memberRepository.findByUsername(username)
           .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
+      // organizationId 체크
 
       return convertToAdminMemberResponse(member);
 
@@ -138,9 +140,8 @@ public class MemberService {
   public AdminMemberResponse updateMember(String username, MemberRequest memberRequest,
       String organizationId) {
     try {
-      Member existingMember = memberRepository
-          .findByUsernameAndOrganizationIdAndDeletedAtIsNull(username, organizationId)
-          .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
+      Member existingMember =
+          getMemberByUsernameAndOrganizationId(username, organizationId);
 
       // 엔티티 업데이트 (Setter 사용)
       existingMember.setName(memberRequest.name());
@@ -175,9 +176,8 @@ public class MemberService {
   @Transactional
   public void deleteMember(String username, String organizationId) {
     try {
-      Member member = memberRepository.findByUsernameAndOrganizationIdAndDeletedAtIsNull(username,
-          organizationId)
-          .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
+      Member member =
+          getMemberByUsernameAndOrganizationId(username, organizationId);
 
       member.setDeletedAt(LocalDateTime.now());
       memberRepository.save(member);
@@ -195,6 +195,16 @@ public class MemberService {
    */
   public long getMemberCount(String organizationId) {
     return memberRepository.countByOrganizationIdAndDeletedAtIsNull(organizationId);
+  }
+
+  private Member getMemberByUsernameAndOrganizationId(String username, String organizationId) {
+    return memberRepository.findByUsername(username)
+        .filter(m -> m.getOrganizationId().equals(organizationId))
+        .orElseThrow(() -> new ApplicationException(
+            memberRepository.findByUsername(username).isEmpty()
+                ? CommonErrorStatus.NOT_FOUND
+                : CenterErrorStatus.MEMBER_NOT_ALLOWED
+        ));
   }
 
   /**

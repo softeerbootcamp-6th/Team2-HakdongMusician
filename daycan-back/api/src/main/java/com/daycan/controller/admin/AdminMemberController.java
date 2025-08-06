@@ -1,6 +1,7 @@
 package com.daycan.controller.admin;
 
-import com.daycan.common.annotations.CenterPrinciple;
+import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.PageResponse;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
@@ -41,11 +42,12 @@ public class AdminMemberController {
   @GetMapping("")
   @Operation(summary = "수급자 목록 조회", description = "성별, 장기요양등급, 이름으로 필터링하여 수급자 목록을 조회합니다.")
   public ResponseWrapper<PageResponse<List<AdminMemberResponse>>> getMemberList(
-      @CenterPrinciple Center center,
+      @AuthenticatedUser CenterDetails centerDetails,
       @Parameter(description = "성별 (MALE, FEMALE)", example = "MALE") @RequestParam(required = false) Gender gender,
       @Parameter(description = "장기요양등급 (1~5등급)", example = "3") @RequestParam(required = false) @Valid @Min(1) @Max(5) Integer careLevel,
       @Parameter(description = "수급자 이름 (부분 검색 가능)", example = "홍길동") @RequestParam(required = false) String name,
       @ParameterObject Pageable pageable) {
+    Center center = centerDetails.getCenter();
 
     PageResponse<List<AdminMemberResponse>> memberList = memberService.getMemberListWithPaging(
         center.getOrganizationId(), gender, careLevel, name, pageable);
@@ -56,8 +58,10 @@ public class AdminMemberController {
   @GetMapping("/{username}")
   @Operation(summary = "수급자 상세 조회", description = "특정 수급자의 상세 정보를 조회합니다.")
   public ResponseWrapper<AdminMemberResponse> getMemberById(
-      @CenterPrinciple Center center,
+      @AuthenticatedUser CenterDetails centerDetails,
       @Parameter(description = "장기요양인정번호", example = "AA1234567") @PathVariable String username) {
+    Center center = centerDetails.getCenter();
+
     AdminMemberResponse member = memberService.getMemberById(
         username,
         center.getOrganizationId());
@@ -67,8 +71,10 @@ public class AdminMemberController {
   @PostMapping("")
   @Operation(summary = "수급자 등록", description = "새로운 수급자를 등록합니다.")
   public ResponseWrapper<AdminMemberResponse> createMember(
-      @CenterPrinciple Center center,
+      @AuthenticatedUser CenterDetails centerDetails,
       @RequestBody @Valid MemberRequest memberRequest) {
+    Center center = centerDetails.getCenter();
+
     AdminMemberResponse newMember = memberService.createMember(memberRequest,
         center.getOrganizationId());
     return ResponseWrapper.onSuccess(newMember);
@@ -77,9 +83,11 @@ public class AdminMemberController {
   @PutMapping("/{username}")
   @Operation(summary = "수급자 정보 수정", description = "기존 수급자의 정보를 수정합니다.")
   public ResponseWrapper<AdminMemberResponse> updateMember(
-      @CenterPrinciple Center center,
+      @AuthenticatedUser CenterDetails centerDetails,
       @Parameter(description = "장기요양인정번호", example = "AA1234567") @PathVariable String username,
       @RequestBody @Valid MemberRequest memberRequest) {
+    Center center = centerDetails.getCenter();
+
     AdminMemberResponse updatedMember = memberService.updateMember(username, memberRequest,
         center.getOrganizationId());
     return ResponseWrapper.onSuccess(updatedMember);
@@ -88,17 +96,21 @@ public class AdminMemberController {
   @DeleteMapping("/{username}")
   @Operation(summary = "수급자 삭제", description = "특정 수급자를 삭제합니다.")
   public ResponseWrapper<Void> deleteMember(
-      @CenterPrinciple Center center,
+      @AuthenticatedUser CenterDetails centerDetails,
       @Parameter(description = "장기요양인정번호", example = "AA1234567") @PathVariable String username) {
+    Center center = centerDetails.getCenter();
+
     memberService.deleteMember(username, center.getOrganizationId());
     return ResponseWrapper.onSuccess(null);
   }
 
   @PostMapping(value = "/excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(summary = "엑셀로 수급자 일괄 등록", description = "엑셀 파일(.xlsx, .xls)을 업로드하여 수급자를 일괄 등록합니다.")
+  @Deprecated
   public ResponseWrapper<List<AdminMemberResponse>> createMemberFromExcel(
-      @CenterPrinciple Center center,
+      @AuthenticatedUser CenterDetails centerDetails,
       @Parameter(description = "엑셀 파일 (.xlsx, .xls)", required = true) @RequestParam("file") MultipartFile file) {
+    Center center = centerDetails.getCenter();
     // TODO: 엑셀 파일 파싱 및 일괄 등록 로직 구현 필요
     List<AdminMemberResponse> memberList = memberService.getMemberList(center.getOrganizationId(),
         null, null, null);

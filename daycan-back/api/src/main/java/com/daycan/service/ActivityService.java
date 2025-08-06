@@ -2,7 +2,7 @@ package com.daycan.service;
 
 import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
-import com.daycan.domain.entity.Activity;
+import com.daycan.domain.entity.Program;
 import com.daycan.repository.ActivityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,14 +20,14 @@ public class ActivityService {
   /**
    * 모든 활동 조회 (이름순)
    */
-  public List<Activity> getAllActivities() {
+  public List<Program> getAllActivities() {
     return activityRepository.findAllByOrderByName();
   }
 
   /**
    * ID로 활동 조회
    */
-  public Activity getActivityById(Long id) {
+  public Program getActivityById(Long id) {
     return activityRepository.findById(id)
         .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
   }
@@ -35,14 +35,14 @@ public class ActivityService {
   /**
    * 활동명으로 검색
    */
-  public List<Activity> searchActivitiesByName(String name) {
+  public List<Program> searchActivitiesByName(String name) {
     return activityRepository.findByNameContaining(name);
   }
 
   /**
    * 속성으로 활동 검색
    */
-  public List<Activity> searchActivitiesByAttribute(String attribute) {
+  public List<Program> searchActivitiesByAttribute(String attribute) {
     return activityRepository.findByAttributeContaining(attribute);
   }
 
@@ -50,29 +50,29 @@ public class ActivityService {
    * 새로운 활동 생성
    */
   @Transactional
-  public Activity createActivity(String name, String attribute) {
-    Activity activity = Activity.builder()
+  public Program createActivity(String name, String attribute) {
+    Program program = Program.builder()
         .name(name)
         .attribute(attribute)
         .build();
 
-    return activityRepository.save(activity);
+    return activityRepository.save(program);
   }
 
   /**
    * 활동 정보 수정
    */
   @Transactional
-  public Activity updateActivity(Long id, String name, String attribute) {
-    Activity existingActivity = getActivityById(id);
+  public Program updateActivity(Long id, String name, String attribute) {
+    Program existingProgram = getActivityById(id);
 
-    Activity updatedActivity = Activity.builder()
-        .id(existingActivity.getId())
-        .name(name != null ? name : existingActivity.getName())
-        .attribute(attribute != null ? attribute : existingActivity.getAttribute())
+    Program updatedProgram = Program.builder()
+        .id(existingProgram.getId())
+        .name(name != null ? name : existingProgram.getName())
+        .attribute(attribute != null ? attribute : existingProgram.getAttribute())
         .build();
 
-    return activityRepository.save(updatedActivity);
+    return activityRepository.save(updatedProgram);
   }
 
   /**

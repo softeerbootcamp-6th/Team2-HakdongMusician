@@ -1,5 +1,7 @@
 package com.daycan.controller.member;
 
+import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.auth.model.MemberDetails;
 import com.daycan.dto.FullReportDto;
 import com.daycan.dto.ReportEntry;
 import com.daycan.dto.member.report.ProgramSupportResponse;
@@ -47,6 +49,7 @@ public class MemberReportController {
   )
   @GetMapping("/{date}")
   public ResponseWrapper<FullReportDto> getReport(
+      @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -109,6 +112,7 @@ public class MemberReportController {
           """
   )
   @GetMapping("/{date}/meal")
+  @Deprecated
   public ResponseWrapper<MealSupportResponse> getMealSupportReport(
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
@@ -136,6 +140,7 @@ public class MemberReportController {
           """
   )
   @GetMapping("/{date}/health")
+  @Deprecated
   public ResponseWrapper<HealthSupportResponse> getHealthSupportReport(
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
@@ -164,6 +169,7 @@ public class MemberReportController {
           """
   )
   @GetMapping("/{date}/program")
+  @Deprecated
   public ResponseWrapper<List<ProgramSupportResponse>> getActivitySupportReport(
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable

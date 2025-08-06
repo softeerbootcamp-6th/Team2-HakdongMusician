@@ -2,9 +2,9 @@ package com.daycan.service;
 
 import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
-import com.daycan.domain.entity.Activity;
+import com.daycan.domain.entity.Program;
 import com.daycan.domain.entity.CareSheet;
-import com.daycan.domain.entity.PersonalActivity;
+import com.daycan.domain.entity.PersonalProgram;
 import com.daycan.domain.enums.ActivityScore;
 import com.daycan.repository.PersonalActivityRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +24,14 @@ public class PersonalActivityService {
   /**
    * 모든 개인 활동 조회
    */
-  public List<PersonalActivity> getAllPersonalActivities() {
+  public List<PersonalProgram> getAllPersonalActivities() {
     return personalActivityRepository.findAll();
   }
 
   /**
    * ID로 개인 활동 조회
    */
-  public PersonalActivity getPersonalActivityById(Long id) {
+  public PersonalProgram getPersonalActivityById(Long id) {
     return personalActivityRepository.findById(id)
         .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
   }
@@ -39,28 +39,28 @@ public class PersonalActivityService {
   /**
    * CareSheet ID로 개인 활동 목록 조회
    */
-  public List<PersonalActivity> getPersonalActivitiesByCareSheetId(Long careSheetId) {
+  public List<PersonalProgram> getPersonalActivitiesByCareSheetId(Long careSheetId) {
     return personalActivityRepository.findByCareSheetId(careSheetId);
   }
 
   /**
    * Activity ID로 개인 활동 목록 조회
    */
-  public List<PersonalActivity> getPersonalActivitiesByActivityId(Long activityId) {
+  public List<PersonalProgram> getPersonalActivitiesByActivityId(Long activityId) {
     return personalActivityRepository.findByActivityId(activityId);
   }
 
   /**
    * 특정 점수 범위의 개인 활동 조회
    */
-  public List<PersonalActivity> getPersonalActivitiesByScores(List<ActivityScore> scores) {
+  public List<PersonalProgram> getPersonalActivitiesByScores(List<ActivityScore> scores) {
     return personalActivityRepository.findByScoreIn(scores);
   }
 
   /**
    * CareSheet와 Activity로 개인 활동 조회
    */
-  public List<PersonalActivity> getPersonalActivitiesByCareSheetAndActivity(Long careSheetId, Long activityId) {
+  public List<PersonalProgram> getPersonalActivitiesByCareSheetAndActivity(Long careSheetId, Long activityId) {
     return personalActivityRepository.findByCareSheetIdAndActivityId(careSheetId, activityId);
   }
 
@@ -68,31 +68,31 @@ public class PersonalActivityService {
    * 새로운 개인 활동 생성
    */
   @Transactional
-  public PersonalActivity createPersonalActivity(CareSheet careSheet, Long activityId,
+  public PersonalProgram createPersonalActivity(CareSheet careSheet, Long activityId,
       ActivityScore score, String personalNote) {
-    Activity activity = activityService.getActivityById(activityId);
+    Program program = activityService.getActivityById(activityId);
 
-    PersonalActivity personalActivity = PersonalActivity.builder()
+    PersonalProgram personalProgram = PersonalProgram.builder()
         .careSheet(careSheet)
-        .activity(activity)
+        .program(program)
         .score(score)
         .personalNote(personalNote)
         .build();
 
-    return personalActivityRepository.save(personalActivity);
+    return personalActivityRepository.save(personalProgram);
   }
 
   /**
    * 개인 활동 수정
    */
   @Transactional
-  public PersonalActivity updatePersonalActivity(Long id, ActivityScore score, String personalNote) {
-    PersonalActivity existingActivity = getPersonalActivityById(id);
+  public PersonalProgram updatePersonalActivity(Long id, ActivityScore score, String personalNote) {
+    PersonalProgram existingActivity = getPersonalActivityById(id);
 
-    PersonalActivity updatedActivity = PersonalActivity.builder()
+    PersonalProgram updatedActivity = PersonalProgram.builder()
         .id(existingActivity.getId())
         .careSheet(existingActivity.getCareSheet())
-        .activity(existingActivity.getActivity())
+        .program(existingActivity.getProgram())
         .score(score != null ? score : existingActivity.getScore())
         .personalNote(personalNote != null ? personalNote : existingActivity.getPersonalNote())
         .build();
@@ -116,7 +116,7 @@ public class PersonalActivityService {
    */
   @Transactional
   public void deletePersonalActivitiesByCareSheetId(Long careSheetId) {
-    List<PersonalActivity> personalActivities = getPersonalActivitiesByCareSheetId(careSheetId);
+    List<PersonalProgram> personalActivities = getPersonalActivitiesByCareSheetId(careSheetId);
     personalActivityRepository.deleteAll(personalActivities);
   }
 }
