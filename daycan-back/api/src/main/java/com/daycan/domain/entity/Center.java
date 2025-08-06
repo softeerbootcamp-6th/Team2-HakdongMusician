@@ -5,10 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "center")
 public class Center {
 
@@ -41,6 +47,6 @@ public class Center {
   @Column(name = "username", length = 20)
   private String username;
 
-  @Column(name = "password", length = 20)
+  @Column(name = "password", length = 100)
   private String password;
 }
