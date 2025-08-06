@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@daycan/hooks": "workspace:*",
     "@daycan/ui": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "@vanilla-extract/css": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
+    "react-hook-form": "^7.62.0",
     "react-router-dom": "catalog:"
   },
   "peerDependencies": {
