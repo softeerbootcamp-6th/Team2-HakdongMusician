@@ -44,6 +44,8 @@ dependencies {
     // ssh 터널링을 위한 의존성
     implementation 'com.github.mwiede:jsch:0.2.16'
 
+    // my sql JSON 타입
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.9.4'
 
 }
 

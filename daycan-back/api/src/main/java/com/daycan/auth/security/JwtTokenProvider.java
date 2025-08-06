@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
 
   /* ---------------- 상수 ---------------- */
-  private static final long ACCESS_TOKEN_EXPIRATION_MS  = 1_000 * 60 * 15;            // 15분
+  private static final long ACCESS_TOKEN_EXPIRATION_MS  = 1_000 * 60 * 15;         // 15분
   private static final long REFRESH_TOKEN_EXPIRATION_MS = 1_000 * 60 * 60 * 24 * 14; // 14일
   private static final String SECRET_KEY = "very-secret-and-secure-jwt-key-please-change-it!!!";
 
@@ -69,7 +69,6 @@ public class JwtTokenProvider {
   /* =================================================
      3) 만료일 확인
      ================================================= */
-  public Date getExpiry(Token token)        { return token.expiry(); }
   public Date getExpiry(String rawToken) {
     return Jwts.parserBuilder()
         .setSigningKey(key)

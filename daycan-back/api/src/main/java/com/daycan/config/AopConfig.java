@@ -1,4 +1,4 @@
-package com.daycan.common.logging;
+package com.daycan.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;

@@ -16,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "vital")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

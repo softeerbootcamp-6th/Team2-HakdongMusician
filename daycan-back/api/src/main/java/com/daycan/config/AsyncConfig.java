@@ -1,5 +1,6 @@
-package com.daycan.common.logging;
+package com.daycan.config;
 
+import com.daycan.common.logging.MdcCopyTaskDecorator;
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
