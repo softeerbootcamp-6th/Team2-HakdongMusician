@@ -21,11 +21,11 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(ApplicationException.class)
   public ResponseEntity<ResponseWrapper<Object>> handleApplicationException(ApplicationException ex) {
-    log.error("[ApplicationException] {} - {}", ex.getErrorStatus(), ex.getMessage(), ex);
+    log.error("[ApplicationException] {} - {}", ex.getStatus(), ex.getMessage(), ex);
 
     return ResponseEntity
-        .status(ex.getErrorStatus().getHttpStatus())
-        .body(ResponseWrapper.onFailure(ex.getErrorStatus(), ex.getData()));
+        .status(ex.getStatus().getHttpStatus())
+        .body(ResponseWrapper.onFailure(ex.getStatus(), ex.getData()));
   }
 
   /**

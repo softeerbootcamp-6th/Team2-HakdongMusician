@@ -1,5 +1,7 @@
 package com.daycan.controller.member;
 
+import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.auth.model.MemberDetails;
 import com.daycan.dto.NumberValue;
 import com.daycan.dto.member.statistics.HealthStatisticsEntry;
 import com.daycan.dto.member.statistics.MemberStatisticsResponse;
@@ -37,6 +39,7 @@ public class MemberStatisticsController {
   )
   @GetMapping("/overall/{date}")
   public ResponseWrapper<NumberValue> getOverallScore(
+      @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-08-01", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
@@ -54,6 +57,7 @@ public class MemberStatisticsController {
   )
   @GetMapping("/overall/from/{startDate}/to/{endDate}/average")
   public ResponseWrapper<Double> getOverallAverage(
+      @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
@@ -75,6 +79,8 @@ public class MemberStatisticsController {
   )
   @GetMapping("/overall/from/{startDate}/to/{endDate}")
   public ResponseWrapper<HealthStatisticsEntry> getOverallByDate(
+      @AuthenticatedUser MemberDetails memberDetails,
+
       @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
@@ -107,6 +113,7 @@ public class MemberStatisticsController {
   )
   @GetMapping("/vitals/from/{startDate}/to/{endDate}")
   public ResponseWrapper<MemberStatisticsResponse> getVitals(
+      @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)

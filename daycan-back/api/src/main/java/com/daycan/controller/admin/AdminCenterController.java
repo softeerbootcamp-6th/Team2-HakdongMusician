@@ -1,7 +1,8 @@
 package com.daycan.controller.admin;
 
 
-import com.daycan.common.annotations.CenterPrinciple;
+import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
 import com.daycan.dto.admin.response.CenterResponse;
@@ -22,8 +23,9 @@ public class AdminCenterController {
 
   @GetMapping("/me")
   public ResponseWrapper<CenterResponse> getMemberList(
-      @CenterPrinciple Center center
+      @AuthenticatedUser CenterDetails centerDetails
   ) {
+    Center center = centerDetails.getCenter();
     CenterResponse centerResponse = centerService.getCenterInfo(center.getOrganizationId());
     return ResponseWrapper.onSuccess(centerResponse);
   }

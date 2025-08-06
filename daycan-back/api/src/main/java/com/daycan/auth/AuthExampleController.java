@@ -1,7 +1,7 @@
 package com.daycan.auth;
 
 import com.daycan.auth.annotation.AuthenticatedUser;
-import com.daycan.auth.model.AuthPrincipal;
+import com.daycan.auth.model.UserDetails;
 import com.daycan.auth.model.UserType;
 import com.daycan.auth.service.AuthService;
 import com.daycan.auth.security.JwtTokenProvider;
@@ -35,7 +35,7 @@ public class AuthExampleController {
   public ResponseWrapper<LoginResponse> mockLogin() {
 
     // ① 사용자 인증
-    AuthPrincipal principal =
+    UserDetails principal =
         authService.authenticate("123456", "1234", UserType.CENTER);
 
     // ② Access / Refresh 토큰 한 번에 발급 & 저장
@@ -49,7 +49,7 @@ public class AuthExampleController {
      ------------------------------------------------------------- */
   @SecurityRequirement(name = "Authorization")
   @GetMapping("/me")
-  public ResponseWrapper<String> getMyInfo(@AuthenticatedUser AuthPrincipal principal) {
+  public ResponseWrapper<String> getMyInfo(@AuthenticatedUser UserDetails principal) {
 
     String msg = "Hello %s (%s)".formatted(
         principal.getUsername(), principal.getUserType());

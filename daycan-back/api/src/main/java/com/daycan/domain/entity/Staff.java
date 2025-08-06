@@ -1,7 +1,7 @@
 package com.daycan.domain.entity;
 
 import com.daycan.domain.enums.Gender;
-import com.daycan.domain.enums.Role;
+import com.daycan.domain.enums.StaffRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,7 +35,7 @@ public class Staff {
   private Gender gender;
 
   @Enumerated(EnumType.STRING)
-  private Role role;
+  private StaffRole staffRole;
 
   private LocalDate birthDate;
 

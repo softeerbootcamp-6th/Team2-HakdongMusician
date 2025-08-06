@@ -31,11 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminCareReportController {
 
   /**
-   * get: 리포트 리스트 조회 api - 리포트 상태별로 조회(검토 완료, 검토 대기, 생성 중, 생성 불가) (중복선택 가능) - sort by (날짜 오름, 내림 차순)
-   * 가능 (default: 내림차순) - 고령자 이름으로 검색 가능
-   * <p>
-   * get: 리포트 상세 조회 api
-   * <p>
    * post: 생성 된 리포트 검토 api
    * <p>
    * post: 검토 된 리포트 전송 api (시간 파라미터로 추가하고 없으면 즉시 전송)

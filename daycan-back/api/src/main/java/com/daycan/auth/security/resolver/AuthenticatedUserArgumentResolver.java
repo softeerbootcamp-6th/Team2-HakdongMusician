@@ -1,6 +1,6 @@
 package com.daycan.auth.security.resolver;
 
-import com.daycan.auth.model.AuthPrincipal;
+import com.daycan.auth.model.UserDetails;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
@@ -15,10 +15,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
 
+  private static final String USER_DETAILS_ATTRIBUTE = "userDetails";
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
     return parameter.hasParameterAnnotation(AuthenticatedUser.class)
-        && AuthPrincipal.class.isAssignableFrom(parameter.getParameterType());
+        && UserDetails.class.isAssignableFrom(parameter.getParameterType());
   }
 
   @Override
@@ -29,13 +30,20 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
       WebDataBinderFactory binderFactory
   ) {
     HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-    AuthPrincipal principal = (AuthPrincipal) request.getAttribute("principal");
+    Object attribute = request.getAttribute(USER_DETAILS_ATTRIBUTE);
 
-    if (principal == null) {
+    if (!(attribute instanceof UserDetails principal)) {
       throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
     }
 
-    return principal;
+    Class<?> requiredType = parameter.getParameterType();
+
+    if (!requiredType.isInstance(principal)) {
+      throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
+    }
+
+    return requiredType.cast(principal);
   }
+
 }
 

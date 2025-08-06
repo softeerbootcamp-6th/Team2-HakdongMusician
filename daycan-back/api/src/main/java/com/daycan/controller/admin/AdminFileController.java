@@ -22,6 +22,7 @@ public class AdminFileController {
       summary = "S3 이미지 업로드",
       description = "Mock S3에 이미지를 업로드하는 척 하고, 가짜 URL을 반환합니다."
   )
+  @Deprecated
   public ResponseWrapper<S3Response> uploadFiles(
       @Parameter(
           description = "multipart/form-data 형식의 이미지 리스트. key는 files입니다.",

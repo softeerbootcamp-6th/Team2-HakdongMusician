@@ -4,7 +4,7 @@ import com.daycan.common.exception.ApplicationException;
 import com.daycan.common.response.status.StaffErrorStatus;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;
-import com.daycan.domain.enums.Role;
+import com.daycan.domain.enums.StaffRole;
 import com.daycan.dto.admin.request.AdminStaffRequest;
 import com.daycan.dto.admin.response.AdminStaffResponse;
 import com.daycan.repository.StaffRepository;
@@ -21,9 +21,10 @@ public class StaffService {
 
   private final StaffRepository staffRepository;
 
-  public List<AdminStaffResponse> getStaffList(String organizationId, Role role, Gender gender,
+  public List<AdminStaffResponse> getStaffList(String organizationId, StaffRole staffRole, Gender gender,
       String name) {
-    List<Staff> staffList = staffRepository.findByOrganizationIdWithFilters(organizationId, role,
+    List<Staff> staffList = staffRepository.findByOrganizationIdWithFilters(organizationId,
+        staffRole,
         gender, name);
 
     return staffList.stream()
@@ -45,7 +46,7 @@ public class StaffService {
         null,
         adminStaffRequest.name(),
         adminStaffRequest.gender(),
-        adminStaffRequest.role(),
+        adminStaffRequest.staffRole(),
         adminStaffRequest.birthDate(),
         adminStaffRequest.phoneNumber(),
         adminStaffRequest.avatarUrl(),
@@ -69,7 +70,7 @@ public class StaffService {
         staff.getId(),
         adminStaffRequest.name(),
         adminStaffRequest.gender(),
-        adminStaffRequest.role(),
+        adminStaffRequest.staffRole(),
         adminStaffRequest.birthDate(),
         adminStaffRequest.phoneNumber(),
         adminStaffRequest.avatarUrl(),
@@ -96,7 +97,7 @@ public class StaffService {
         staff.getOrganizationId(),
         staff.getName(),
         staff.getGender(),
-        staff.getRole(),
+        staff.getStaffRole(),
         staff.getBirthDate(),
         staff.getPhoneNumber(),
         staff.getAvatarUrl()
