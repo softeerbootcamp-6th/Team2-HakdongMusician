@@ -1,4 +1,4 @@
-package com.daycan.dto.admin.entry;
+package com.daycan.dto.entry;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;

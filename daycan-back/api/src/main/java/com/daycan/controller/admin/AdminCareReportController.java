@@ -4,6 +4,7 @@ import com.daycan.common.response.ResponseWrapper;
 import com.daycan.dto.FullReportDto;
 import com.daycan.dto.ReportEntry;
 import com.daycan.dto.admin.request.ReportQueryParameters;
+import com.daycan.dto.admin.request.ReportReviewRequest;
 import com.daycan.dto.admin.response.CareReportMetaResponse;
 import com.daycan.common.response.PageResponse;
 import com.daycan.domain.enums.CareReportStatus;
@@ -22,6 +23,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminCareReportController {
 
   /**
-   * post: 생성 된 리포트 검토 api
-   * <p>
    * post: 검토 된 리포트 전송 api (시간 파라미터로 추가하고 없으면 즉시 전송)
    */
 
@@ -79,8 +80,9 @@ public class AdminCareReportController {
     List<ReportEntry> mealEntries = List.of(
         new ReportEntry("아침", "밥, 김치", null, null),
         new ReportEntry("점심", "불고기, 나물", null, null),
-        new ReportEntry("저녁", "죽", "소화불량 우려", "식욕 저하로 죽 섭취")
+        new ReportEntry("저녁", "죽", null, null)
     );
+    // warning, additionalInfo must be null for meal entries
 
     List<ReportEntry> healthEntries = List.of(
         new ReportEntry("혈압", "120/80 mmHg", null, null),
@@ -91,7 +93,7 @@ public class AdminCareReportController {
     List<ReportEntry> physicalEntries = List.of(
         new ReportEntry("노래 부르기 활동", "노래 부르기는 기분 전환과 정서적 안정, 인지 능력 향상에 도움이 되는 활동이에요.", null,
             "좋아하는 노래가 나오자 밝은 표정으로 따라 부르며 즐겁게 참여하셨어요!")
-        , new ReportEntry("스트레칭", "신체 건강 유지에 도움", "김동성 할아버지께서는 매일 아침 산책을 즐기십니다.", null)
+        , new ReportEntry("스트레칭", "신체 건강 유지에 도움", null, "김동성 할아버지께서는 매일 아침 산책을 즐기십니다.")
     );
 
     List<ReportEntry> cognitiveEntries = List.of(
@@ -122,4 +124,54 @@ public class AdminCareReportController {
     return ResponseWrapper.onSuccess(response);
   }
 
+  /**
+   * 생성된 리포트 검토(수정) API
+   * <pre>
+   * ⟶ 리포트 조회 → 검토 후 수정된 리포트 전송
+   * ⟶ 수정 사항이 없으면 조회된 값 그대로 전송
+   * ⟶ 전송 시 CareReportStatus.REVIEWED 로 상태 변경
+   * </pre>
+   *
+   * @param reportId 검토 대상 리포트 PK
+   * @param request  수정‧검토 내용
+   * @return 성공 시 200 OK / body: { "success": true, "data": null }
+   */
+  @Operation(
+      summary = "리포트 검토(수정)",
+      description = """
+          생성된 리포트를 검토 후 수정합니다.
+          - 수정이 필요 없는 항목은 null 또는 빈 리스트를 보내면 기존 값을 유지합니다.
+          - 요청이 완료되면 리포트 상태는 REVIEWED 로 변경됩니다.
+          """
+  )
+  @PutMapping("/{reportId}/review")
+  public ResponseWrapper<Void> reviewReport(
+      @PathVariable Long reportId,
+      @Valid @RequestBody ReportReviewRequest request
+  ) {
+    /* body 에도 reportId 가 포함돼 있으므로 불일치 방지용 체크 */
+//    if (!reportId.equals(request.reportId())) {
+//      throw new IllegalArgumentException("PathVariable reportId 와 body 의 reportId 가 다릅니다.");
+//    }
+
+    return ResponseWrapper.onSuccess(null);
+  }
+
+  @Operation(
+      summary = "리포트 전송 api",
+      description = """
+          검토 완료된 리포트를 전송합니다.
+          - 전송 시 CareReportStatus.SENT 로 상태 변경됩니다.
+          - time 파라미터를 주지 않으면 전송 시간은 현재 시간으로 설정됩니다.
+          """
+  )
+  @PutMapping("/{reportId}/send")
+  public ResponseWrapper<Void> sendReport(
+      @PathVariable Long reportId,
+      @Parameter(description = "전송 시간 (ISO 8601 형식, 예: 2025-07-31T10:00:00Z)")
+      @RequestBody(required = false) String time
+  ) {
+
+    return ResponseWrapper.onSuccess(null);
+  }
 }

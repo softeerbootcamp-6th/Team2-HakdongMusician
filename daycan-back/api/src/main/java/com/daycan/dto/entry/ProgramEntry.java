@@ -1,4 +1,4 @@
-package com.daycan.dto.admin.entry;
+package com.daycan.dto.entry;
 
 import com.daycan.domain.enums.ProgramEvaluation;
 import com.daycan.domain.enums.ProgramType;

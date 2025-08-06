@@ -1,7 +1,5 @@
-package com.daycan.dto.admin.entry;
+package com.daycan.dto.entry;
 
-import com.daycan.dto.entry.BloodPressureEntry;
-import com.daycan.dto.entry.TemperatureEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;

@@ -1,9 +1,9 @@
 package com.daycan.dto.admin.response;
 
-import com.daycan.dto.admin.entry.CognitiveEntry;
-import com.daycan.dto.admin.entry.HealthCareEntry;
-import com.daycan.dto.admin.entry.PhysicalEntry;
-import com.daycan.dto.admin.entry.RecoveryProgramEntry;
+import com.daycan.dto.entry.CognitiveEntry;
+import com.daycan.dto.entry.HealthCareEntry;
+import com.daycan.dto.entry.PhysicalEntry;
+import com.daycan.dto.entry.RecoveryProgramEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
