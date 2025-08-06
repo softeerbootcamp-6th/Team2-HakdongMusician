@@ -18,9 +18,7 @@ export const sidebar = style({
   width: "100%",
   height: "100%",
   margin: "0 auto",
-
   boxSizing: "border-box",
-
   maxWidth: "256px",
   backgroundColor: COLORS.gray[300],
 });
@@ -37,6 +35,6 @@ export const mainSection = style({
   backgroundColor: COLORS.gray[50],
   maxWidth: "1256px",
   padding: "0 84px",
-  margin: "0 auto 0 0 ",
+  margin: "0 auto 0 0",
   boxSizing: "border-box",
 });

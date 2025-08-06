@@ -26,7 +26,6 @@ export const chip = recipe({
       },
       center: {
         justifyContent: "center",
-        paddingRight: "12px",
       },
       none: {},
     },
