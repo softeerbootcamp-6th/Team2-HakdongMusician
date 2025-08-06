@@ -14,6 +14,4 @@ public record MemberStatisticsResponse(
     HealthStatisticsEntry defecationCountValues,
     @Schema(description = "소변 횟수 통계")
     HealthStatisticsEntry urinationCountValues
-) {
-
-}
+) { }

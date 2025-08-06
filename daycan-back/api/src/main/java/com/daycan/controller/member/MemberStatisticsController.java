@@ -3,15 +3,18 @@ package com.daycan.controller.member;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.MemberDetails;
 import com.daycan.dto.NumberValue;
-import com.daycan.dto.member.statistics.HealthStatisticsEntry;
+
+import com.daycan.dto.member.statistics.DailyHealthStatisticsEntry;
 import com.daycan.dto.member.statistics.MemberStatisticsResponse;
 import com.daycan.common.response.ResponseWrapper;
+import com.daycan.dto.member.statistics.MonthlyHealthStatisticsEntry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -74,86 +77,91 @@ public class MemberStatisticsController {
    * 3. 구간별 일자 Overall Score + 평균
    *------------------------------------------------------------------*/
   @Operation(
-      summary = "통합 점수(Overall) 일자별 조회",
-      description = "startDate~endDate 구간의 일자별 통합 점수와 평균을 반환합니다."
-  )
-  @GetMapping("/overall/from/{startDate}/to/{endDate}")
-  public ResponseWrapper<HealthStatisticsEntry> getOverallByDate(
-      @AuthenticatedUser MemberDetails memberDetails,
-
-      @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
-      @PathVariable
-      @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
-      LocalDate startDate,
-      @Parameter(description = "조회 종료일 (yyyy-MM-dd)", example = "2024-07-07", required = true)
-      @PathVariable
-      @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
-      LocalDate endDate
-  ) {
-    // mock
-    return ResponseWrapper.onSuccess(
-        new HealthStatisticsEntry(
-            Map.of(startDate, 81, startDate.plusDays(1), 82),
-            81.5
-        )
-    );
-  }
-
-  /*--------------------------------------------------------------------
-   * 4. Vitals 통계 (체온·혈압·배변·배뇨 등)
-   *------------------------------------------------------------------*/
-  @Operation(
-      summary = "바이탈(Vitals) 통계 조회",
+      summary     = "바이탈(Vitals) 일별 조회",
       description = """
-          startDate~endDate 구간의 체온·혈압·배변·배뇨 등 바이탈 데이터를
-          일자별 값과 평균으로 반환합니다.
-          - 1주·1달 : 일자별 전체 데이터
-          - 6달·1년 : 월별 대표값(평균)으로 요약
-          """
+        startDate~endDate 구간의 체온·혈압·배변·배뇨 데이터를
+        일자별 값과 평균으로 반환합니다.
+        """
   )
   @GetMapping("/vitals/from/{startDate}/to/{endDate}")
   public ResponseWrapper<MemberStatisticsResponse> getVitals(
       @AuthenticatedUser MemberDetails memberDetails,
-      @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01", required = true)
-      @PathVariable
-      @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
+      @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01")
+      @PathVariable @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
       LocalDate startDate,
-      @Parameter(description = "조회 종료일 (yyyy-MM-dd)", example = "2024-07-07", required = true)
-      @PathVariable
-      @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
+      @Parameter(description = "조회 종료일 (yyyy-MM-dd)", example = "2024-07-07")
+      @PathVariable @Valid @NotNull @DateTimeFormat(iso = ISO.DATE)
       LocalDate endDate
   ) {
-    // mock 데이터
-    HealthStatisticsEntry temperatureValues = new HealthStatisticsEntry(
-        Map.of(startDate, 36.5, startDate.plusDays(1), 36.7),
-        36.6
-    );
-    HealthStatisticsEntry bloodPressureDiastolicValues = new HealthStatisticsEntry(
-        Map.of(startDate, 75, startDate.plusDays(1), 77),
-        76.0
-    );
-    HealthStatisticsEntry bloodPressureSystolicValues = new HealthStatisticsEntry(
-        Map.of(startDate, 120, startDate.plusDays(1), 122),
-        121.0
-    );
-    HealthStatisticsEntry defecationCountValues = new HealthStatisticsEntry(
-        Map.of(startDate, 1, startDate.plusDays(1), 2),
-        1.5
-    );
-    HealthStatisticsEntry urinationCountValues = new HealthStatisticsEntry(
-        Map.of(startDate, 5, startDate.plusDays(1), 6),
-        5.5
-    );
+    /* mock */
+    DailyHealthStatisticsEntry temperatureValues = new DailyHealthStatisticsEntry(
+        Map.of(startDate, 36.5, startDate.plusDays(1), 36.7), 36.6);
 
-    return ResponseWrapper.onSuccess(
-        new MemberStatisticsResponse(
-            temperatureValues,
-            bloodPressureDiastolicValues,
-            bloodPressureSystolicValues,
-            defecationCountValues,
-            urinationCountValues
-        )
-    );
+    DailyHealthStatisticsEntry bloodPressureDiastolicValues = new DailyHealthStatisticsEntry(
+        Map.of(startDate, 75, startDate.plusDays(1), 77), 76.0);
+
+    DailyHealthStatisticsEntry bloodPressureSystolicValues = new DailyHealthStatisticsEntry(
+        Map.of(startDate, 120, startDate.plusDays(1), 122), 121.0);
+
+    DailyHealthStatisticsEntry defecationCountValues = new DailyHealthStatisticsEntry(
+        Map.of(startDate, 1, startDate.plusDays(1), 2), 1.5);
+
+    DailyHealthStatisticsEntry urinationCountValues = new DailyHealthStatisticsEntry(
+        Map.of(startDate, 5, startDate.plusDays(1), 6), 5.5);
+
+    return ResponseWrapper.onSuccess(new MemberStatisticsResponse(
+        temperatureValues,
+        bloodPressureDiastolicValues,
+        bloodPressureSystolicValues,
+        defecationCountValues,
+        urinationCountValues
+    ));
   }
+
+  /* ------------------------------------------------------------------
+   * 월별 통계
+   * ------------------------------------------------------------------ */
+  @Operation(
+      summary     = "바이탈(Vitals) 월별 통계 조회",
+      description = """
+        startMonth~endMonth 구간의 체온·혈압·배변·배뇨 데이터를
+        월별 값과 평균으로 반환합니다.
+        """
+  )
+  @GetMapping("/vitals/from/{startMonth}/to/{endMonth}")
+  public ResponseWrapper<MemberStatisticsResponse> getMonthlyVitals(
+      @AuthenticatedUser MemberDetails memberDetails,
+      @Parameter(description = "조회 시작월 (yyyy-MM)", example = "2024-02")
+      @PathVariable @Valid @NotNull @DateTimeFormat(pattern = "yyyy-MM")
+      YearMonth startMonth,
+      @Parameter(description = "조회 종료월 (yyyy-MM)", example = "2024-07")
+      @PathVariable @Valid @NotNull @DateTimeFormat(pattern = "yyyy-MM")
+      YearMonth endMonth
+  ) {
+    /* mock */
+    MonthlyHealthStatisticsEntry temperatureValues = new MonthlyHealthStatisticsEntry(
+        Map.of(startMonth, 36.4, startMonth.plusMonths(1), 36.6), 36.5);
+
+    MonthlyHealthStatisticsEntry bloodPressureDiastolicValues = new MonthlyHealthStatisticsEntry(
+        Map.of(startMonth, 76, startMonth.plusMonths(1), 78), 77.0);
+
+    MonthlyHealthStatisticsEntry bloodPressureSystolicValues = new MonthlyHealthStatisticsEntry(
+        Map.of(startMonth, 121, startMonth.plusMonths(1), 123), 122.0);
+
+    MonthlyHealthStatisticsEntry defecationCountValues = new MonthlyHealthStatisticsEntry(
+        Map.of(startMonth, 45, startMonth.plusMonths(1), 48), 46.5);
+
+    MonthlyHealthStatisticsEntry urinationCountValues = new MonthlyHealthStatisticsEntry(
+        Map.of(startMonth, 155, startMonth.plusMonths(1), 160), 157.5);
+
+    return ResponseWrapper.onSuccess(new MemberStatisticsResponse(
+        temperatureValues,
+        bloodPressureDiastolicValues,
+        bloodPressureSystolicValues,
+        defecationCountValues,
+        urinationCountValues
+    ));
+  }
+
 
 }
