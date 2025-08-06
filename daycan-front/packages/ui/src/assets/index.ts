@@ -8,6 +8,7 @@ export { default as SearchIcon } from "./svg/search.svg";
 export { default as EditIcon } from "./svg/edit.svg";
 export { default as ResetIcon } from "./svg/reset.svg";
 export { default as DownloadIcon } from "./svg/donwload.svg";
+export { default as LocationIcon } from "./svg/location.svg";
 
 // 화살표 아이콘들
 export { default as ArrowUpIcon } from "./svg/arrow-up.svg";
