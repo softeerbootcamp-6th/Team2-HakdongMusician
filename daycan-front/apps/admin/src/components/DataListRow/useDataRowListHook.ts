@@ -3,29 +3,35 @@ import {
   convertApiToElderMember,
   convertApiToGuardian,
 } from "@/utils/dataParser";
-import type { MemberResponse, ElderInfo, Guardian } from "@/types/elder.ts";
+import type {
+  AdminMemberAndGuardianResponse,
+  MemberInfo,
+  GuardianInfo,
+} from "@/types/member";
 
-export const useDataRow = ({
-  apiMember,
+export const useDataListRow = ({
+  apiData,
   index,
   onDetailClick,
 }: {
-  apiMember: MemberResponse;
+  apiData: AdminMemberAndGuardianResponse;
   index: number;
-  onDetailClick?: (member: MemberResponse) => void;
+  onDetailClick?: (member: AdminMemberAndGuardianResponse) => void;
 }) => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const animationDuration = 400; // 애니메이션 지속 시간 (ms)
 
   // API 데이터를 화면용 데이터로 변환
-  const member: ElderInfo = convertApiToElderMember(apiMember, index);
-  const guardian: Guardian = convertApiToGuardian(apiMember);
+  const member: MemberInfo = convertApiToElderMember(apiData, index);
+  const guardian: GuardianInfo = convertApiToGuardian(apiData);
 
-  // 데이터에서 값 가져오기
-  const getFieldValue = (field: string): string => {
-    const value = (member as any)[field];
-    return value ? String(value) : "";
+  // 상세 컨테이너의 상태를 결정하는 함수
+  const getDetailContainerState = (): "default" | "open" | "closed" => {
+    if (isClosing) return "closed";
+    if (isDetailOpen) return "open";
+    return "default";
   };
 
   const handleDetailClick = () => {
@@ -40,17 +46,17 @@ export const useDataRow = ({
         setIsDetailOpen(false);
         setIsClosing(false);
         setIsAnimating(false);
-      }, 400);
+      }, animationDuration);
     } else {
       // 열기 애니메이션
       setIsDetailOpen(true);
       setTimeout(() => {
         setIsAnimating(false);
-      }, 400);
+      }, animationDuration);
     }
 
     if (onDetailClick) {
-      onDetailClick(apiMember);
+      onDetailClick(apiData);
     }
   };
   return {
@@ -59,7 +65,7 @@ export const useDataRow = ({
     isClosing,
     member,
     guardian,
-    getFieldValue,
     handleDetailClick,
+    getDetailContainerState,
   };
 };
