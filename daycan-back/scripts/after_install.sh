@@ -10,7 +10,7 @@ chmod 640 /etc/daycan/daycan.env
 chown root:daycan /etc/daycan/daycan.env
 
 # systemd 유닛 설치/갱신
-cat >/etc/systemd/system/daycan.service <<UNIT
+cat >/etc/systemd/system/daycan.service <<'UNIT'
 [Unit]
 Description=Daycan Spring Boot Service
 After=network.target
