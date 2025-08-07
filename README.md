@@ -68,7 +68,9 @@ _어떻게 치매까지 사랑하겠어 엄말 사랑하는 거지_ by _학동�
 슬랙의 bot을 만들어서 스크럼과 회고 내용 작성 후 회의 시작
 <img src='./images/scrum_ex.png'>
 <img src='./images/review_ex.png'>
+
 [회의록](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%ED%9A%8C%EC%9D%98%EB%A1%9D)
+
 </details>
 
 
