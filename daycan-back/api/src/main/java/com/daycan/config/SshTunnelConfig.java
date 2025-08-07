@@ -8,33 +8,28 @@ import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 @Slf4j
 @Component
-@ConfigurationProperties(prefix = "daycan.ssh")   // ← daycan.ssh.*
+@ConfigurationProperties(prefix = "daycan.ssh")
 @Validated
 @Getter
 @Setter
 public class SshTunnelConfig {
 
-  /** true 면 로컬 개발 환경 → SSH 터널 사용 */
   private boolean local;
 
-  // EC2 Jump Host
-  private String jumpHost;          // daycan.ssh.jump-host
-  private int    port        = 22;  // daycan.ssh.port
-  private String user;              // daycan.ssh.user
-  private String keyPath;           // daycan.ssh.key-path
+  private String jumpHost;
+  private int port = 22;
+  private String user;
+  private String keyPath;
 
-  // 대상 RDS
-  private String dbEndpoint;        // daycan.db.endpoint
-  private int    dbPort      = 3306;// daycan.db.port
+  private String dbEndpoint;
+  private int dbPort = 3306;
 
-  /*-------------------------------------------*/
   private Session session;
 
   @PreDestroy
@@ -42,9 +37,8 @@ public class SshTunnelConfig {
     if (session != null && session.isConnected()) session.disconnect();
   }
 
-  /** 로컬 모드일 때만 터널 오픈 후 포워딩된 LocalPort 반환 */
-  public int ensureTunnel() {
-    if (!local) return dbPort;  // 서버 모드면 RDS 포트 그대로
+  public void ensureTunnel() {
+    if (!local) return;
     try {
       JSch jsch = new JSch();
       jsch.addIdentity(keyPath);
@@ -55,13 +49,16 @@ public class SshTunnelConfig {
       log.info("🔐 SSH connect {}@{}:{}...", user, jumpHost, port);
       session.connect();
 
-      int forwarded = session.setPortForwardingL(0, dbEndpoint, dbPort);
-      log.info("🚇 Forward localhost:{} → {}:{}", forwarded, dbEndpoint, dbPort);
-      return forwarded;
+      int forwardedPort = session.setPortForwardingL(0, dbEndpoint, dbPort);
+      log.info("🚇 Forward localhost:{} → {}:{}", forwardedPort, dbEndpoint, dbPort);
+
+      // 환경변수 오버라이드 (Spring Boot가 참조할 수 있도록)
+      System.setProperty("DB_HOST", "localhost");
+      System.setProperty("DB_PORT", String.valueOf(forwardedPort));
+
     } catch (JSchException e) {
       close();
       throw new IllegalStateException("SSH tunnel 실패", e);
     }
   }
-
 }
