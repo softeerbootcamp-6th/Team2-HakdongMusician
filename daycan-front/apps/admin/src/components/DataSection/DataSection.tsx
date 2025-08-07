@@ -1,5 +1,4 @@
 import { Button, COLORS, Icon } from "@daycan/ui";
-import { DataSectionCard } from "@/components/DataSectionCard/DataSectionCard.tsx";
 import {
   dataSectionContainer,
   dataSectionContent,
@@ -7,19 +6,19 @@ import {
   dataSectionTopButton,
   dataSectionBottomButton,
 } from "./DataSection.css.ts";
-import type { ElderInfo, Guardian } from "@/types/elder.ts";
 
 interface DataSectionProps {
-  member?: ElderInfo;
-  guardian?: Guardian;
+  dataSectionCard?: React.ReactNode;
 }
 
-export const DataSection = ({ member, guardian }: DataSectionProps) => {
+export const DataSection = ({ dataSectionCard }: DataSectionProps) => {
   return (
     <div className={dataSectionContainer}>
       <div className={dataSectionContent}>
-        <DataSectionCard type="member" memberInfo={member} />
-        <DataSectionCard type="guardian" guardianInfo={guardian} />
+        {/* dataSectionCard */}
+        {dataSectionCard}
+
+        {/* 버튼 영역 */}
         <div className={dataSectionButtonContainer}>
           <div className={dataSectionTopButton}>
             <Button
