@@ -1,8 +1,7 @@
-import { COLORS, Heading } from "@daycan/ui";
+import { COLORS, Heading, HighlightingHeading } from "@daycan/ui";
 import { greeting } from "./Greeting.css";
 import envelopeImage from "@/assets/png/envelope.png";
 import openedEnvelopeImage from "@/assets/png/envelope_opened.png";
-import { HighlightingHeading } from "@/components/HighlightingHeading";
 import { useNavigate } from "react-router-dom";
 interface GreetingProps {
   parentName: string;

@@ -4,7 +4,6 @@
  * 한 페이지 내에서만 재사용되는 컴포넌트는 페이지 내의 컴포넌트에서 정의합니다.
  * @author 홍규진
  */
-export { HighlightingHeading } from "./HighlightingHeading";
 export { SemiCircularGaugeChart } from "./SemiCircularGaugeChart";
 export { Footer } from "./Footer/Footer";
 export { Header } from "./Header/Header";

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { HighlightingHeading } from "@/components";
-import { Heading } from "@daycan/ui";
+import { Heading, HighlightingHeading } from "@daycan/ui";
 import { StackCard } from "./components/StackCard/StackCard";
 import { container, heading, headingContainer } from "./DailyReportPage.css";
 import {

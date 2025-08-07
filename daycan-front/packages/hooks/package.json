@@ -1,0 +1,23 @@
+{
+  "name": "@daycan/hooks",
+  "private": false,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "lint": "eslint \"src/**/*.ts\"",
+    "build": "vite build"
+  },
+  "peerDependencies": {
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19"
+  },
+  "devDependencies": {
+    "@daycan/eslint-config": "workspace:*",
+    "@daycan/typescript-config": "workspace:*",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
