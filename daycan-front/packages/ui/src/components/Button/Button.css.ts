@@ -64,6 +64,20 @@ export const button = recipe({
         height: 48,
       },
     },
+    flexRule: {
+      spaceBetween: {
+        justifyContent: "space-between",
+      },
+      spaceAround: {
+        justifyContent: "space-around",
+      },
+      spaceEvenly: {
+        justifyContent: "space-evenly",
+      },
+      center: {
+        justifyContent: "center",
+      },
+    },
   },
 
   defaultVariants: {
