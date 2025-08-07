@@ -34,11 +34,15 @@ public class SshTunnelConfig {
 
   @PreDestroy
   public void close() {
-    if (session != null && session.isConnected()) session.disconnect();
+    if (session != null && session.isConnected()) {
+      session.disconnect();
+    }
   }
 
   public void ensureTunnel() {
-    if (!local) return;
+    if (!local) {
+      return;
+    }
     try {
       JSch jsch = new JSch();
       jsch.addIdentity(keyPath);
@@ -49,7 +53,8 @@ public class SshTunnelConfig {
       log.info("🔐 SSH connect {}@{}:{}...", user, jumpHost, port);
       session.connect();
 
-      int forwardedPort = session.setPortForwardingL(0, dbEndpoint, dbPort);
+      int forwardedPort = session.setPortForwardingL(dbPort, dbEndpoint, dbPort);
+
       log.info("🚇 Forward localhost:{} → {}:{}", forwardedPort, dbEndpoint, dbPort);
 
       // 환경변수 오버라이드 (Spring Boot가 참조할 수 있도록)
