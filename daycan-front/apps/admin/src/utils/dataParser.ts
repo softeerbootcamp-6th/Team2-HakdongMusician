@@ -1,9 +1,9 @@
 import {
-  type MemberResponse,
-  type ElderInfo,
-  type Guardian,
+  type AdminMemberAndGuardianResponse,
+  type MemberInfo,
+  type GuardianInfo,
   type MemberDetailInfo,
-} from "@/types/elder";
+} from "@/types/member";
 // 성별 변환 함수
 export const convertGender = (gender: "MALE" | "FEMALE"): string => {
   return gender === "MALE" ? "남성" : "여성";
@@ -16,13 +16,13 @@ export const convertCareLevel = (careLevel: number): string => {
 
 // API 데이터를 ElderMember로 변환
 export const convertApiToElderMember = (
-  apiData: MemberResponse,
+  apiData: AdminMemberAndGuardianResponse,
   index: number
-): ElderInfo => {
+): MemberInfo => {
   return {
     id: index + 1, // 임시 ID (실제로는 API에서 받아와야 함)
     order: index + 1, // 순서 추가
-    profileImage: apiData.avatarUrl,
+    avatarUrl: apiData.avatarUrl,
     name: apiData.name,
     birthDate: apiData.birthDate,
     gender: convertGender(apiData.gender),
@@ -34,20 +34,22 @@ export const convertApiToElderMember = (
 };
 
 // API 데이터를 Guardian으로 변환
-export const convertApiToGuardian = (apiData: MemberResponse): Guardian => {
+export const convertApiToGuardian = (
+  apiData: AdminMemberAndGuardianResponse
+): GuardianInfo => {
   return {
-    name: apiData.guardianName,
-    relation: apiData.guardianRelation,
-    birthDate: apiData.guardianRelationBirthDate,
-    phoneNumber: apiData.guardianPhoneNumber,
-    avatarUrl: apiData.guardianAvatarUrl,
+    guardianName: apiData.guardianName,
+    guardianRelation: apiData.guardianRelation,
+    guardianRelationBirthDate: apiData.guardianRelationBirthDate,
+    guardianPhoneNumber: apiData.guardianPhoneNumber,
+    guardianAvatarUrl: apiData.guardianAvatarUrl,
     isSubscribed: apiData.isSubscribed,
   };
 };
 
 // API 데이터를 MemberDetailInfo로 변환
 export const convertApiToMemberDetailInfo = (
-  apiData: MemberResponse,
+  apiData: AdminMemberAndGuardianResponse,
   index: number
 ): MemberDetailInfo => {
   return {
