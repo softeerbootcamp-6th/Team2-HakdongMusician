@@ -1,6 +1,10 @@
 import { LoginLayout } from "@/layout/login";
-import { MainLayout, ReportLayout } from "../layout";
-import { LoginPage } from "../pages";
+import { MainLayout, ReportLayout, MobileLayout } from "../layout";
+import { LoginPage } from "@/pages";
+import {
+  HomeFunnelStepContainer,
+  InfoFunnelStepContainer,
+} from "@/pages/care-sheet/funnels";
 
 export type TRoutes = {
   path: string;
@@ -40,6 +44,20 @@ export const routes: TRoutes[] = [
       {
         path: "",
         element: <LoginPage />,
+      },
+    ],
+  },
+  {
+    path: "/care-sheet",
+    layout: <MobileLayout />,
+    children: [
+      {
+        path: "",
+        element: <HomeFunnelStepContainer />,
+      },
+      {
+        path: "info",
+        element: <InfoFunnelStepContainer />,
       },
     ],
   },
