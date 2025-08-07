@@ -1,5 +1,10 @@
+import { type ReactNode } from "react";
 import { useFunnel } from "./FunnelContext";
-import type { FunnelStepProps } from "./types";
+
+export interface FunnelStepProps<T extends string> {
+  name: T;
+  children: ReactNode;
+}
 
 export function FunnelStep<TSteps extends readonly string[]>({
   name,
