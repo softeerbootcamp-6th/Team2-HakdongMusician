@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { Body, Icon, COLORS, Chip } from "@daycan/ui";
 
-interface DropdownChipProps {
+interface DropDownChipProps {
   label: string;
   isOpen: boolean;
   onClick: () => void;
@@ -15,7 +15,7 @@ export const DropDownChip = ({
   onClick,
   children,
   style = {},
-}: DropdownChipProps) => {
+}: DropDownChipProps) => {
   return (
     <div
       style={{ position: "relative", height: "100%" }}
@@ -28,10 +28,10 @@ export const DropDownChip = ({
           height: "100%",
           padding: "2px 16px",
           cursor: "pointer",
-          backgroundColor: isOpen ? COLORS.gray[300] : COLORS.white,
           boxShadow: `0px 0px 4px rgba(0, 0, 0, 0.05)`,
           ...style,
         }}
+        color={isOpen ? "grayDark" : "grayLight"}
         onClick={onClick}
       >
         <Body
