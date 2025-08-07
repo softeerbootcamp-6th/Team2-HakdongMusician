@@ -22,7 +22,7 @@ _어떻게 치매까지 사랑하겠어 엄말 사랑하는 거지_ by _학동�
 <table>
 <th>팀원</th>
     <th>  김수환 </th>
-	  <th>  홍규진 </th>
+    <th>  홍규진 </th>
     <th> 소보길 </th>
     <tr>
     <td> 팀원 소개 </td>
@@ -66,8 +66,11 @@ _어떻게 치매까지 사랑하겠어 엄말 사랑하는 거지_ by _학동�
    <summary> 자세히 보기 (Click)</summary>
 <br />
 슬랙의 bot을 만들어서 스크럼과 회고 내용 작성 후 회의 시작
-<img src='./images/scrum_ex.png'>
-<img src='./images/review_ex.png'>
+
+<img width="450" height="309" alt="scrum_ex" src="https://github.com/user-attachments/assets/244dbe4e-ed20-4b5c-a548-4d4ec80f9577" />
+
+<img width="460" height="325" alt="review_ex" src="https://github.com/user-attachments/assets/f21f89d1-a794-401a-8d6b-87de59e8dbbc" />
+
 
 [회의록](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%ED%9A%8C%EC%9D%98%EB%A1%9D)
 
@@ -104,12 +107,12 @@ _어떻게 치매까지 사랑하겠어 엄말 사랑하는 거지_ by _학동�
     <tr>
       <td align="center">Backend</td>
       <td align="start">
-              </td>
+             java/spring </td>
     </tr>
     <tr>
       <td align="center">Frontend</td>
       <td align="start">
-              </td>
+             reactjs </td>
     </tr>
   </tbody>
 </table>
