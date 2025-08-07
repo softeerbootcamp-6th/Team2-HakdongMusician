@@ -1,12 +1,15 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/daycan?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true}
-    username: ${DB_USERNAME:daycan}
-    password: ${DB_PASSWORD:daycan}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/daycan?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update      # 운영 RDS에 DROP 방지
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+springdoc:
+  swagger-ui:
+    path: /api
+    persist-authorization: true
