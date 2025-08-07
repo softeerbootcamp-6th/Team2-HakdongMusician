@@ -23,12 +23,13 @@ export const dataListHeaderItem = style({
   maxWidth: "1052px",
   width: "100%",
 });
-export const headerColumn = style({
-  textAlign: "center",
-});
 
 export const actionColumn = style({
   width: "100px",
   display: "flex",
   justifyContent: "flex-end",
+});
+
+export const headerColumn = style({
+  textAlign: "center",
 });

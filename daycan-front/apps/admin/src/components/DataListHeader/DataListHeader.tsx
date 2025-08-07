@@ -2,15 +2,14 @@ import { Body } from "@daycan/ui";
 import {
   dataListHeaderContainer,
   dataListHeaderItem,
-  headerColumn,
   actionColumn,
-} from "./DataListHeader.css";
+} from "./DataListHeader.css.ts";
 import { Chip } from "@daycan/ui";
-
-import type { HeaderColumn } from "@/types/elder.ts"; // Assuming this is the correct path for your types
+import { headerColumn } from "./DataListHeader.css.ts";
+import type { MEMBER_HEADERS } from "@/constants/memberList.ts";
 
 interface DataListHeaderProps {
-  columns: HeaderColumn[];
+  columns: typeof MEMBER_HEADERS;
 }
 
 export const DataListHeader = ({ columns }: DataListHeaderProps) => {
