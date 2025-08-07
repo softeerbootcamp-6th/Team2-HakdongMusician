@@ -82,17 +82,7 @@ _어떻게 치매까지 사랑하겠어 엄말 사랑하는 거지_ by _학동�
 
 ## | Tool | 사용 목적 |
 
-## 그라운드 룰
 
-<details>
-   <summary> 자세히 보기 (Click)</summary>
-<br />
-<img src='./assets/rule.png'>
-
-</details>
-
-<br />
-<br />
 
 ## 🛠️ 기술 스택
 
