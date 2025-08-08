@@ -31,8 +31,8 @@ export const mainSectionWrapper = style({
 });
 
 export const mainSection = style({
-  width: "100%",
   backgroundColor: COLORS.gray[50],
+  width: "100%",
   maxWidth: "1256px",
   padding: "0 84px",
   margin: "0 auto 0 0",
