@@ -12,6 +12,7 @@ export const sidebarContent = style({
   gap: "24px",
   boxSizing: "border-box",
   backgroundColor: COLORS.gray[700],
+  minWidth: "256px",
 });
 
 // Header styles

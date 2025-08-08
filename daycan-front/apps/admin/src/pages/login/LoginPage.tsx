@@ -57,6 +57,7 @@ export const LoginPage = () => {
               variant="grayLight"
               inputSize="pcTextFieldLarge"
               placeholder="아이디"
+              color="grayLight"
               value={email}
               onChange={handleEmailChange}
             />
@@ -68,6 +69,7 @@ export const LoginPage = () => {
               variant="grayLight"
               inputSize="pcTextFieldLarge"
               placeholder="비밀번호"
+              color="grayLight"
               value={password}
               onChange={handlePasswordChange}
             />

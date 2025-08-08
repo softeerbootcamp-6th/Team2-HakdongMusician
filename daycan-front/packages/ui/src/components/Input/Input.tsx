@@ -1,8 +1,18 @@
 import React, { InputHTMLAttributes } from "react";
 import { classNames } from "@/utils";
-import { input, type InputVariants } from "./Input.css";
+import {
+  input,
+  type InputVariants,
+  inputStyle,
+  type InputStyleVariants,
+} from "./Input.css";
 
-export type InputProps = InputHTMLAttributes<HTMLInputElement> & InputVariants;
+export type InputProps = InputHTMLAttributes<HTMLInputElement> &
+  InputVariants &
+  InputStyleVariants & {
+    leftIcon?: React.ReactNode;
+    rightIcon?: React.ReactNode;
+  };
 
 /* 
     Input 컴포넌트입니다.
@@ -12,6 +22,8 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & InputVariants;
     @param type - Input 타입 (text, password 등)
     @param className - 추가적인 클래스 이름
     @param placeholder - Input 플레이스홀더 텍스트
+    @param leftIcon - Input 왼쪽에 표시할 아이콘
+    @param rightIcon - Input 오른쪽에 표시할 아이콘
     @author 소보길
 */
 
@@ -21,15 +33,24 @@ export const Input = ({
   flexRule,
   type,
   className,
+  leftIcon,
+  rightIcon,
   placeholder,
+  color,
   ...props
 }: InputProps) => {
   return (
-    <input
-      type={type}
+    <div
       className={classNames(input({ variant, inputSize, flexRule }), className)}
-      placeholder={placeholder}
       {...props}
-    />
+    >
+      {leftIcon}
+      <input
+        type={type}
+        placeholder={placeholder}
+        className={inputStyle({ color })}
+      />
+      {rightIcon}
+    </div>
   );
 };
