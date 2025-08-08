@@ -97,7 +97,7 @@ public class AdminCareSheetController {
     List<CareSheetMetaResponse> mock = List.of(
         new CareSheetMetaResponse(
             1001L,
-            CareSheetStatus.DONE,
+            DocumentStatus.SHEET_DONE,
             new MemberMetaEntry("MEM12345", "오애순",
                 LocalDate.of(1943, 9, 12), Gender.FEMALE),
             true,
@@ -106,7 +106,7 @@ public class AdminCareSheetController {
         ),
         new CareSheetMetaResponse(
             1002L,
-            CareSheetStatus.PENDING,
+            DocumentStatus.SHEET_PENDING,
             new MemberMetaEntry("MEM67890", "김관식",
                 LocalDate.of(1940, 3, 8), Gender.MALE),
             false,
@@ -169,7 +169,7 @@ public class AdminCareSheetController {
 
   private PhysicalEntry mockPhysicalEntry() {
     return new PhysicalEntry(
-        true, true, true,
+        true, true, true,"30분", "샤워",
         new MealSupport(true, new MealEntry(MealType.REGULAR, MealAmount.FULL)),
         new MealSupport(true, new MealEntry(MealType.PORRIDGE, MealAmount.MORE_HALF)),
         new MealSupport(false, null),

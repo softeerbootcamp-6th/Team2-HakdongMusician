@@ -1,4 +1,4 @@
-package com.daycan.common.exception;
+package com.daycan.exceptions;
 
 import com.daycan.common.response.status.Status;
 import lombok.Getter;

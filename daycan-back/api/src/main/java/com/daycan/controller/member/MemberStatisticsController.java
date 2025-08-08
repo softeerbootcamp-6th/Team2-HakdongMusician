@@ -4,10 +4,10 @@ import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.MemberDetails;
 import com.daycan.dto.NumberValue;
 
-import com.daycan.dto.member.statistics.DailyHealthStatisticsEntry;
+import com.daycan.dto.entry.DailyHealthStatisticsEntry;
 import com.daycan.dto.member.statistics.MemberStatisticsResponse;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.dto.member.statistics.MonthlyHealthStatisticsEntry;
+import com.daycan.dto.entry.MonthlyHealthStatisticsEntry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,6 +1,6 @@
 package com.daycan.service;
 
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.StaffErrorStatus;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;
@@ -50,11 +50,7 @@ public class StaffService {
         adminStaffRequest.birthDate(),
         adminStaffRequest.phoneNumber(),
         adminStaffRequest.avatarUrl(),
-        organizationId,
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        null
-    );
+        organizationId);
 
     Staff savedStaff = staffRepository.save(staff);
     return toAdminResponse(savedStaff);
@@ -74,10 +70,8 @@ public class StaffService {
         adminStaffRequest.birthDate(),
         adminStaffRequest.phoneNumber(),
         adminStaffRequest.avatarUrl(),
-        organizationId,
-        staff.getCreatedAt(),
-        staff.getUpdatedAt(),
-        staff.getDeletedAt());
+        organizationId
+    );
 
     Staff savedStaff = staffRepository.save(updatedStaff);
     return toAdminResponse(savedStaff);

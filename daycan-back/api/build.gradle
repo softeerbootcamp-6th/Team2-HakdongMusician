@@ -47,6 +47,10 @@ dependencies {
     // my sql JSON 타입
     implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.9.4'
 
+    // shed lock
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:5.10.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.10.0'
+
 }
 
 tasks.named('test') {

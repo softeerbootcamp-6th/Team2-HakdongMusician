@@ -1,4 +1,4 @@
-package com.daycan.domain.entity;
+package com.daycan.domain.helper;
 
 public record ProgramComment(
     String programName,    // ex) “낮잠 스트레칭”

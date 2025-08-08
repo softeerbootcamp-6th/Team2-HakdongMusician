@@ -1,4 +1,4 @@
-package com.daycan.dto.member.statistics;
+package com.daycan.dto.entry;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.YearMonth;

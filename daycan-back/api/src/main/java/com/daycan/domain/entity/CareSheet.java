@@ -1,20 +1,24 @@
 package com.daycan.domain.entity;
 
+import static jakarta.persistence.FetchType.LAZY;
+
+import com.daycan.domain.BaseTimeEntity;
+import com.daycan.domain.helper.DocumentKey;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
+
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,14 +31,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "care_sheet")
-public class CareSheet {
+public class CareSheet extends BaseTimeEntity {
 
-  /* 기본 식별자 -------------------------------------------------------- */
-  @Id
-  private Long id;                                // = document_id
+  @EmbeddedId
+  private DocumentKey id;  // Document의 복합키와 공유
 
-  /* 출‧퇴근 & 차량 ----------------------------------------------------- */
-  @Column(nullable = false, length = 50)
+  @OneToOne(fetch = LAZY, optional = false)
+  @MapsId  // DocumentKey를 그대로 매핑
+  @JoinColumns({
+      @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
+      @JoinColumn(name = "date", referencedColumnName = "date")
+  })
+  private Document document;
+
+  @Column(name = "writer_id", nullable = false)
+  private Long writerId; // 작성자 ID (Staff의 ID)
+
+  @Column(nullable = false, length = 11, updatable = false, insertable = false)
   private String username;
 
   @Column(name = "arrival_time", nullable = false)
@@ -43,30 +56,27 @@ public class CareSheet {
   @Column(name = "end_time", nullable = false)
   private LocalTime endTime;
 
-  @Column(name = "vehicle_provided", nullable = false)
-  private boolean vehicleProvided;
+  @Column(name = "vehicle_number", nullable = false)
+  private String vehicleNumber;
 
-  /* 이미지 ------------------------------------------------------------- */
-  @Column(name = "image_url", length = 2048)      // S3 키 길이 여유
-  private String imageUrl;
+  @Column(name = "signature_url", length = 2048)
+  private String signatureUrl;
 
-  /* 목욕 ---------------------------------------------------------------- */
   @Column(name = "wash_care", nullable = false)
   private boolean washCare;
 
-  @Column(name = "mobility_care", nullable = false)   // 스펠링 수정
+  @Column(name = "mobility_care", nullable = false)
   private boolean mobilityCare;
 
   @Column(name = "bathing_care", nullable = false)
   private boolean bathingCare;
 
   @Column(name = "bathing_duration_minutes")
-  private Integer bathingDurationMinutes;            // 분 단위
+  private String bathingDurationMinutes;
 
   @Column(name = "bathing_type")
-  private String bathingType;                   // enum 생성
+  private String bathingType;
 
-  /* 식사(Embedded 세트) -------------------------------------------------- */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "provided", column = @Column(name = "breakfast_provided", nullable = false)),
@@ -91,7 +101,6 @@ public class CareSheet {
   })
   private Meal dinner;
 
-  /* 서비스 지원 여부 ---------------------------------------------------- */
   @Column(name = "cognitive_support", nullable = false)
   private boolean cognitiveSupport;
 
@@ -114,30 +123,80 @@ public class CareSheet {
   private boolean cognitiveProgram;
 
   @Column(name = "cognitive_initiative_program", nullable = false)
-  private boolean cognitiveInitiativeProgram;          // 의미 확인 후 사용
+  private boolean cognitiveInitiativeProgram;
 
   @Column(name = "physical_therapy", nullable = false)
   private boolean physicalTherapy;
 
-  /* 코멘트 ------------------------------------------------------------- */
   @Column(name = "functional_comment", length = 300)
-  @Size(max = 100, message = "최대 100자까지만 입력 가능합니다.")
+  @Size(max = 100)
   private String functionalComment;
 
   @Column(name = "cognitive_comment", length = 300)
-  @Size(max = 100, message = "최대 100자까지만 입력 가능합니다.")
+  @Size(max = 100)
   private String cognitiveComment;
 
   @Column(name = "health_comment", length = 300)
-  @Size(max = 100, message = "최대 100자까지만 입력 가능합니다.")
+  @Size(max = 100)
   private String healthComment;
 
   @Column(name = "physical_comment", length = 300)
-  @Size(max = 100, message = "최대 100자까지만 입력 가능합니다.")
+  @Size(max = 100)
   private String physicalComment;
 
-  /* AI 코멘트 ---------------------------------------------------------- */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-  @JoinColumn(name = "document_id")                   // FK는 AiComment 테이블에 존재
-  private List<AiComment> aiComments = new ArrayList<>();
+
+  public void update(
+      LocalTime arrivalTime,
+      LocalTime endTime,
+      String vehicleNumber,
+      String signatureUrl,
+      boolean washCare,
+      boolean mobilityCare,
+      boolean bathingCare,
+      String bathingDurationMinutes,
+      String bathingType,
+      Meal breakfast,
+      Meal lunch,
+      Meal dinner,
+      boolean cognitiveSupport,
+      boolean communicationSupport,
+      boolean healthCare,
+      boolean nursingCare,
+      boolean emergencyService,
+      boolean healthTraining,
+      boolean cognitiveProgram,
+      boolean cognitiveInitiativeProgram,
+      boolean physicalTherapy,
+      String functionalComment,
+      String cognitiveComment,
+      String healthComment,
+      String physicalComment
+  ) {
+    this.arrivalTime = arrivalTime;
+    this.endTime = endTime;
+    this.vehicleNumber = vehicleNumber;
+    this.signatureUrl = signatureUrl;
+    this.washCare = washCare;
+    this.mobilityCare = mobilityCare;
+    this.bathingCare = bathingCare;
+    this.bathingDurationMinutes = bathingDurationMinutes;
+    this.bathingType = bathingType;
+    this.breakfast = breakfast;
+    this.lunch = lunch;
+    this.dinner = dinner;
+    this.cognitiveSupport = cognitiveSupport;
+    this.communicationSupport = communicationSupport;
+    this.healthCare = healthCare;
+    this.nursingCare = nursingCare;
+    this.emergencyService = emergencyService;
+    this.healthTraining = healthTraining;
+    this.cognitiveProgram = cognitiveProgram;
+    this.cognitiveInitiativeProgram = cognitiveInitiativeProgram;
+    this.physicalTherapy = physicalTherapy;
+    this.functionalComment = functionalComment;
+    this.cognitiveComment = cognitiveComment;
+    this.healthComment = healthComment;
+    this.physicalComment = physicalComment;
+  }
+
 }

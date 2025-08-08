@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, String> {
 
+
+  Optional<Member> findByUsernameAndActiveIsTrue(String id);
   /**
    * 센터별 전체 회원 조회
    */
@@ -24,6 +26,11 @@ public interface MemberRepository extends JpaRepository<Member, String> {
    */
   Page<Member> findByOrganizationIdAndDeletedAtIsNull(String organizationId, Pageable pageable);
 
+  /**
+   * 센터별 회원 조회 (소프트 삭제 제외)
+   */
+  @Query("select m from Member m where m.active = true")
+  List<Member> findAllActive();
   /**
    * 센터별 회원 조회 with 필터링 (성별, 장기요양등급, 이름)
    */

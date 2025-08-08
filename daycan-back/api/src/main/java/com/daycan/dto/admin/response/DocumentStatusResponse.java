@@ -1,7 +1,6 @@
 package com.daycan.dto.admin.response;
 
-import com.daycan.domain.enums.CareReportStatus;
-import com.daycan.domain.enums.CareSheetStatus;
+import com.daycan.domain.enums.DocumentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 
@@ -19,7 +18,7 @@ public record DocumentStatusResponse(
       Long careSheetId,
 
       @Schema(description = "기록지 상태", example = "2")
-      CareSheetStatus status
+      DocumentStatus status
   ) {
 
   }
@@ -29,7 +28,7 @@ public record DocumentStatusResponse(
       Long careReportId,
 
       @Schema(description = "리포트 상태", example = "2")
-      CareReportStatus status
+      DocumentStatus status
   ) {
 
   }

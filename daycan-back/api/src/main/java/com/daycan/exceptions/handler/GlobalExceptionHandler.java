@@ -1,6 +1,6 @@
-package com.daycan.common.exception.handler;
+package com.daycan.exceptions.handler;
 
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.common.response.status.CommonErrorStatus;
 import jakarta.validation.ConstraintViolationException;
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * 에러 상태에 맞춰 ResponseEntity<ApiResponse>를 생성합니다.
+   * 에러 상태에 맞춰 ResponseEntity<ResponseWrapper>를 생성합니다.
    */
   private ResponseEntity<ResponseWrapper<Object>> buildErrorResponse(
       CommonErrorStatus status,

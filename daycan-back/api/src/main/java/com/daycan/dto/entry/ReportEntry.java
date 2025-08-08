@@ -1,4 +1,4 @@
-package com.daycan.dto;
+package com.daycan.dto.entry;
 
 public record ReportEntry(
     String key,            // 예: "혈압", "아침"

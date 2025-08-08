@@ -9,7 +9,8 @@ import com.daycan.auth.repository.RefreshTokenRepository;
 import com.daycan.auth.entity.RefreshToken;
 import com.daycan.auth.dto.Token;
 import com.daycan.auth.security.JwtTokenProvider;
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.auth.security.PasswordHasher;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.entity.Member;
@@ -18,8 +19,6 @@ import com.daycan.repository.MemberRepository;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import org.mindrot.jbcrypt.BCrypt;
 
 
 @Service
@@ -131,6 +130,7 @@ public class AuthService {
 
 
   private boolean verifyPassword(String raw, String hashed) {
-    return BCrypt.checkpw(raw, hashed);
+
+    return PasswordHasher.matches(raw, hashed);
   }
 }

@@ -1,5 +1,6 @@
 package com.daycan.domain.entity;
 
+import com.daycan.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "program")
-public class Program {
+public class Program extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,6 +8,16 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
+      jdbc.batch_size: 100
+      order_inserts: true
+      order_updates: true
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+
+
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect

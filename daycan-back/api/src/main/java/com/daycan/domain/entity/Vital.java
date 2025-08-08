@@ -1,17 +1,22 @@
 package com.daycan.domain.entity;
 
+import static jakarta.persistence.FetchType.LAZY;
+
+import com.daycan.domain.BaseTimeEntity;
+import com.daycan.domain.helper.DocumentKey;
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "vital")
@@ -19,11 +24,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Vital {
+public class Vital extends BaseTimeEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @EmbeddedId
+  private DocumentKey id;  // Document의 복합키와 공유
+
+  @OneToOne(fetch = LAZY, optional = false)
+  @MapsId  // DocumentKey를 그대로 매핑
+  @JoinColumns({
+      @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
+      @JoinColumn(name = "date", referencedColumnName = "date")
+  })
+  private Document document;
 
   @Column(name = "blood_pressure_systolic")
   private Integer bloodPressureSystolic;
@@ -39,7 +51,4 @@ public class Vital {
 
   @Column(name = "number_of_urine")
   private Integer numberOfUrine;
-
-  @Column(name = "document_id")
-  private Long documentId;
 }

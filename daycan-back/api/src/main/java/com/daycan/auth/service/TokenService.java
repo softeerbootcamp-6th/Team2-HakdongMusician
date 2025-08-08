@@ -7,7 +7,7 @@ import com.daycan.auth.repository.RefreshTokenRepository;
 import com.daycan.auth.entity.RefreshToken;
 import com.daycan.auth.dto.Token;
 import com.daycan.auth.security.JwtTokenProvider;
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.AuthErrorStatus;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;

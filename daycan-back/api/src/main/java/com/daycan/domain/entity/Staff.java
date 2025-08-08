@@ -1,5 +1,6 @@
 package com.daycan.domain.entity;
 
+import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;
 import jakarta.persistence.Column;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "staff")
-public class Staff {
+public class Staff extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,13 +46,4 @@ public class Staff {
 
   @Column(length = 11, nullable = false)
   private String organizationId;
-
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
-
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  @Column(name = "deleted_at")
-  private LocalDateTime deletedAt;
 }

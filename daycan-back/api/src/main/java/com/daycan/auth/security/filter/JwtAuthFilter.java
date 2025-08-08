@@ -6,7 +6,7 @@ import com.daycan.auth.model.UserType;
 import com.daycan.auth.service.AuthService;
 import com.daycan.auth.service.BlacklistService;
 import com.daycan.auth.security.JwtTokenProvider;
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.common.response.status.AuthErrorStatus;
 import com.daycan.common.response.status.Status;

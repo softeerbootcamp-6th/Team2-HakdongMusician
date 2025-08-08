@@ -1,5 +1,6 @@
 package com.daycan.domain.entity;
 
+
 import com.daycan.domain.enums.MealAmount;
 import com.daycan.domain.enums.MealType;
 import jakarta.persistence.Column;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-class Meal {
+public class Meal{
   @Column(nullable = false)
   private boolean provided;
 

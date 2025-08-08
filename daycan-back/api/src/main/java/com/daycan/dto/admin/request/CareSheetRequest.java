@@ -13,10 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record CareSheetRequest(
-    @Schema(description = "기록지 고유 ID (수정 시 필수)", example = "10")
-    Long id,
-
-    @Schema(description = "기록 작성자 id", example = "1")
+    @Schema(description = "기록 작성자 id (종사자 id)", example = "1")
     @NotBlank
     Long writerId,
 

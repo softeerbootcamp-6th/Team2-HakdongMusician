@@ -1,9 +1,9 @@
 package com.daycan.utils;
 
 import com.daycan.domain.entity.CareReport;
-import com.daycan.domain.entity.ProgramComment;
+import com.daycan.domain.helper.ProgramComment;
 import com.daycan.domain.entity.Vital;
-import com.daycan.dto.ReportEntry;
+import com.daycan.dto.entry.ReportEntry;
 import java.util.List;
 
 public class ReportEntryMapper {

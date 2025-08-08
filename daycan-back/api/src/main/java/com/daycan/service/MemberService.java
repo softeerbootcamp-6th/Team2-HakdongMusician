@@ -1,6 +1,12 @@
 package com.daycan.service;
 
-import com.daycan.common.exception.ApplicationException;
+import static org.apache.logging.log4j.util.Strings.isBlank;
+
+import com.daycan.auth.security.PasswordHasher;
+import com.daycan.common.response.status.MemberErrorStatus;
+import com.daycan.domain.helper.MemberCommand;
+import com.daycan.dto.entry.PasswordEntry;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.PageResponse;
 import com.daycan.common.response.status.CenterErrorStatus;
 import com.daycan.common.response.status.CommonErrorStatus;
@@ -9,7 +15,7 @@ import com.daycan.domain.enums.Gender;
 import com.daycan.dto.admin.request.MemberRequest;
 import com.daycan.dto.admin.response.AdminMemberResponse;
 import com.daycan.repository.MemberRepository;
-import java.time.LocalDateTime;
+import jakarta.persistence.OptimisticLockException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class MemberService {
 
   private final MemberRepository memberRepository;
@@ -30,6 +35,7 @@ public class MemberService {
   /**
    * 센터별 회원 목록 조회 (필터링 지원)
    */
+  @Transactional(readOnly = true)
   public List<AdminMemberResponse> getMemberList(String organizationId, Gender gender,
       Integer careLevel, String name) {
     try {
@@ -95,80 +101,56 @@ public class MemberService {
    * 새 회원 등록
    */
   @Transactional
-  public AdminMemberResponse createMember(MemberRequest memberRequest, String organizationId) {
+  public AdminMemberResponse createMember(MemberRequest req, String organizationId) {
     try {
-      // 장기요양인정번호 중복 체크
-      if (memberRepository.existsByUsernameAndOrganizationIdAndDeletedAtIsNull(
-          memberRequest.careNumber(), organizationId)) {
-        throw new ApplicationException(CommonErrorStatus.CONSTRAINT_VIOLATION);
+      Member existing = memberRepository.findByUsername(req.careNumber()).orElse(null);
+      if (existing != null) {
+        return reactivateExistingMember(existing, req, organizationId);
       }
 
-      Member member = Member.builder()
-          .username(memberRequest.careNumber())
-          .name(memberRequest.name())
-          .gender(memberRequest.gender())
-          .birthDate(memberRequest.birthDate())
-          .careLevel(memberRequest.careLevel())
-          .avatarUrl(memberRequest.avatarUrl())
-          .guardianName(memberRequest.guardianName())
-          .guardianRelation(memberRequest.guardianRelation())
-          .guardianRelationBirthDate(memberRequest.guardianBirthDate())
-          .guardianPhoneNumber(memberRequest.guardianPhoneNumber())
-          .guardianAvatarUrl(memberRequest.guardianAvatarUrl())
-          .acceptReport(memberRequest.reportConsent())
-          .organizationId(organizationId)
-          .password(memberRequest.guardianPassword()) // 실제로는 암호화 필요
-          .createdAt(LocalDateTime.now())
-          .updatedAt(LocalDateTime.now())
-          .build();
+      String hashed = requireAndHashPassword(req.passwordEntry());
+      Member member = Member.createNew(
+          req.careNumber(), organizationId, req.name(),
+          req.gender(), req.birthDate(), hashed
+      );
+      member.apply(buildMemberCommand(req, null));
 
-      Member savedMember = memberRepository.save(member);
-      return convertToAdminMemberResponse(savedMember);
+      Member saved = memberRepository.save(member);
+      return convertToAdminMemberResponse(saved);
 
     } catch (ApplicationException e) {
       throw e;
+    } catch (OptimisticLockException e) {
+      throw new ApplicationException(CommonErrorStatus.CONFLICT, "동시 수정 충돌");
     } catch (Exception e) {
-      log.error("회원 등록 중 오류 발생: {}", e.getMessage());
+      log.error("회원 등록 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
+
 
   /**
    * 회원 정보 수정
    */
   @Transactional
-  public AdminMemberResponse updateMember(String username, MemberRequest memberRequest,
+  public AdminMemberResponse updateMember(String username, MemberRequest req,
       String organizationId) {
     try {
-      Member existingMember =
-          getMemberByUsernameAndOrganizationId(username, organizationId);
+      Member member = getMemberByUsernameAndOrganizationId(username, organizationId);
+      String hashed = hashPasswordIfPresent(req.passwordEntry());
+      member.apply(buildMemberCommand(req, hashed));
 
-      // 엔티티 업데이트 (Setter 사용)
-      existingMember.setName(memberRequest.name());
-      existingMember.setGender(memberRequest.gender());
-      existingMember.setBirthDate(memberRequest.birthDate());
-      existingMember.setCareLevel(memberRequest.careLevel());
-      existingMember.setAvatarUrl(memberRequest.avatarUrl());
-      existingMember.setGuardianName(memberRequest.guardianName());
-      existingMember.setGuardianRelation(memberRequest.guardianRelation());
-      existingMember.setGuardianRelationBirthDate(memberRequest.guardianBirthDate());
-      existingMember.setGuardianPhoneNumber(memberRequest.guardianPhoneNumber());
-      existingMember.setGuardianAvatarUrl(memberRequest.guardianAvatarUrl());
-      existingMember.setAcceptReport(memberRequest.reportConsent());
-      // TODO 암호화 필요
-      existingMember.setPassword(memberRequest.guardianPassword());
-      existingMember.setUpdatedAt(LocalDateTime.now());
-
-      Member updatedMember = memberRepository.save(existingMember);
-      return convertToAdminMemberResponse(updatedMember);
+      Member updated = memberRepository.save(member);
+      return convertToAdminMemberResponse(updated);
 
     } catch (ApplicationException e) {
       throw e;
     } catch (Exception e) {
-      log.error("회원 수정 중 오류 발생: {}", e.getMessage());
+      log.error("회원 수정 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
+
 
   /**
    * 회원 삭제 (소프트 삭제)
@@ -179,7 +161,7 @@ public class MemberService {
       Member member =
           getMemberByUsernameAndOrganizationId(username, organizationId);
 
-      member.setDeletedAt(LocalDateTime.now());
+      member.deactivate();
       memberRepository.save(member);
 
     } catch (ApplicationException e) {
@@ -193,8 +175,63 @@ public class MemberService {
   /**
    * 센터별 회원 수 조회
    */
+  @Transactional(readOnly = true)
   public long getMemberCount(String organizationId) {
     return memberRepository.countByOrganizationIdAndDeletedAtIsNull(organizationId);
+  }
+
+  private AdminMemberResponse reactivateExistingMember(Member existing, MemberRequest req, String organizationId) {
+    assertReactivatable(existing, req);
+
+    String hashed = hashPasswordIfPresent(req.passwordEntry());
+    // 비번이 기존에도 없고 이번에도 안 왔으면 예외
+    if (hashed == null && isBlank(existing.getPassword())) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_PASSWORD_NOT_FOUND, "재활성화 시 비밀번호가 필요합니다.");
+    }
+
+    existing.reactivateTo(organizationId);
+    existing.apply(buildMemberCommand(req, hashed));
+    return convertToAdminMemberResponse(existing);
+  }
+
+  /** 재활성화 사전 검증 */
+  private void assertReactivatable(Member existing, MemberRequest req) {
+    if (Boolean.TRUE.equals(existing.getActive())) {
+      throw new ApplicationException(
+          CommonErrorStatus.CONSTRAINT_VIOLATION,
+          "이미 활성 회원(username=" + req.careNumber() + ")이 존재합니다."
+      );
+    }
+  }
+
+
+  private String requireAndHashPassword(PasswordEntry passwordEntry) {
+    if (passwordEntry == null || isBlank(passwordEntry.guardianPassword())) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_PASSWORD_NOT_FOUND, "비밀번호가 필요합니다.");
+    }
+    return PasswordHasher.hash(passwordEntry.guardianPassword());
+  }
+
+  private String hashPasswordIfPresent(PasswordEntry passwordEntry) {
+    if (passwordEntry != null) {
+      String raw = passwordEntry.guardianPassword();
+      if (isBlank(raw)) {
+        throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM,
+            "blank password not allowed");
+      }
+      return PasswordHasher.hash(raw);
+    }
+    return null;
+  }
+
+  private MemberCommand buildMemberCommand(MemberRequest req, String hashedPassword) {
+    return new MemberCommand(
+        req.name(), req.gender(), req.birthDate(), req.careLevel(),
+        req.avatarUrl(), req.guardianName(), req.guardianRelation(),
+        req.guardianBirthDate(), req.guardianPhoneNumber(), req.guardianAvatarUrl(),
+        req.reportConsent(),
+        hashedPassword
+    );
   }
 
   private Member getMemberByUsernameAndOrganizationId(String username, String organizationId) {
@@ -211,21 +248,23 @@ public class MemberService {
    * Member 엔티티를 AdminMemberResponse로 변환
    */
   private AdminMemberResponse convertToAdminMemberResponse(Member member) {
-    return new AdminMemberResponse(
-        member.getUsername(),
-        member.getName(),
-        member.getGender(),
-        member.getBirthDate(),
-        member.getCareLevel(),
-        member.getAvatarUrl(),
-        member.getGuardianName(),
-        member.getGuardianRelation(),
-        member.getGuardianRelationBirthDate(),
-        member.getGuardianPhoneNumber(),
-        member.getGuardianAvatarUrl(),
-        member.getAcceptReport(),
-        member.getOrganizationId(),
-        member.getCreatedAt(),
-        member.getUpdatedAt());
+    return AdminMemberResponse.builder()
+        .username(member.getUsername())
+        .name(member.getName())
+        .gender(member.getGender())
+        .birthDate(member.getBirthDate())
+        .careLevel(member.getCareLevel())
+        .avatarUrl(member.getAvatarUrl())
+        .guardianName(member.getGuardianName())
+        .guardianRelation(member.getGuardianRelation())
+        .guardianBirthDate(member.getGuardianBirthDate())
+        .guardianPhoneNumber(member.getGuardianPhoneNumber())
+        .guardianAvatarUrl(member.getGuardianAvatarUrl())
+        .acceptReport(member.getAcceptReport())
+        .organizationId(member.getOrganizationId())
+        .createdAt(member.getCreatedAt())
+        .updatedAt(member.getUpdatedAt())
+        .build();
   }
+
 }

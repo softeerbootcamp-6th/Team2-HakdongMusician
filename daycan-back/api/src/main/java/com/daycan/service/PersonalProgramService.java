@@ -1,6 +1,6 @@
 package com.daycan.service;
 
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
 import com.daycan.domain.entity.Program;
 import com.daycan.domain.entity.CareSheet;

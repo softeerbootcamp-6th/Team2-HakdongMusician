@@ -1,9 +1,12 @@
 package com.daycan.repository;
 
 import com.daycan.domain.entity.Document;
+import com.daycan.domain.helper.DocumentKey;
 import com.daycan.domain.enums.DocumentStatus;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,52 +15,52 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DocumentRepository extends JpaRepository<Document, Long> {
+public interface DocumentRepository extends JpaRepository<Document, DocumentKey> {
 
-  /**
-   * 회원 ID로 문서 조회
-   */
-  List<Document> findByMemberId(String memberId);
+  @Query("SELECT d.id.memberId FROM Document d WHERE d.id.date = :date")
+  Set<String> findMemberIdsByDate(@Param("date") LocalDate date);
 
-  /**
-   * 날짜로 문서 조회
-   */
-  List<Document> findByDate(LocalDate date);
+  default Optional<Document> findByMemberIdAndDate(String memberId, LocalDate date) {
+    return findById(DocumentKey.of(memberId, date));
+  }
 
-  /**
-   * 상태로 문서 조회
-   */
+  default boolean existsByMemberIdAndDate(String memberId, LocalDate date) {
+    return existsById(DocumentKey.of(memberId, date));
+  }
+
+  List<Document> findByIdMemberId(String memberId);
+
+  List<Document> findByIdDate(LocalDate date);
+
   List<Document> findByStatus(DocumentStatus status);
 
-  /**
-   * 회원 ID와 날짜로 문서 조회
-   */
-  List<Document> findByMemberIdAndDate(String memberId, LocalDate date);
-
-  /**
-   * 페이지별 문서 상태 조회 (최신순)
-   */
   Page<Document> findAllByOrderByUpdatedAtDesc(Pageable pageable);
 
-  @Query("SELECT COUNT(d) FROM Document d WHERE d.status IN (:incompleteStatuses) AND d.date >= :date")
+  @Query("""
+      SELECT COUNT(d)
+      FROM Document d
+      WHERE d.status IN (:incompleteStatuses)
+        AND d.id.date >= :date
+        AND d.organizationId = :organizationId
+      """)
   long countByStatusInAndGreaterOrEqualsThanDateAndOrganizationId(
       @Param("incompleteStatuses") List<DocumentStatus> incompleteStatuses,
       @Param("date") LocalDate date,
       @Param("organizationId") String organizationId);
 
-  @Query("SELECT COUNT(d) FROM Document d WHERE d.status IN (:incompleteStatuses) AND d.date = :date")
+  @Query("""
+      SELECT COUNT(d)
+      FROM Document d
+      WHERE d.status IN (:incompleteStatuses)
+        AND d.id.date = :date
+        AND d.organizationId = :organizationId
+      """)
   long countByStatusInAndDateAndOrganizationId(
       @Param("incompleteStatuses") List<DocumentStatus> incompleteStatuses,
       @Param("date") LocalDate date,
       @Param("organizationId") String organizationId);
 
-  /**
-   * 날짜 범위별 문서 조회
-   */
-  List<Document> findByDateBetweenOrderByDateDesc(LocalDate startDate, LocalDate endDate);
+  List<Document> findByIdDateBetweenOrderByIdDateDesc(LocalDate startDate, LocalDate endDate);
 
-  /**
-   * 회원 ID와 상태로 문서 조회
-   */
-  List<Document> findByMemberIdAndStatus(String memberId, DocumentStatus status);
+  List<Document> findByIdMemberIdAndStatus(String memberId, DocumentStatus status);
 }

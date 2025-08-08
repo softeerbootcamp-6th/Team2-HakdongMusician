@@ -1,16 +1,19 @@
 package com.daycan.service;
 
+import com.daycan.exceptions.ApplicationException;
+import com.daycan.common.response.status.DocumentErrorStatus;
 import com.daycan.domain.entity.CareReport;
 
-import com.daycan.domain.entity.ProgramComment;
+import com.daycan.domain.helper.ProgramComment;
 import com.daycan.dto.FullReportDto;
-import com.daycan.dto.ReportEntry;
+import com.daycan.dto.entry.ReportEntry;
 import com.daycan.dto.member.report.CardFooter;
 import com.daycan.repository.CareReportRepository;
 import com.daycan.utils.ReportEntryMapper;
-import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,38 +26,35 @@ public class CareReportService {
 
   // API 메인 메서드
   @Transactional(readOnly = true)
-  public FullReportDto getReport(Long reportId) {
+  public FullReportDto getReport(String username, LocalDate date) {
 
-    /* current + previous 한 번에 조회 (Vital 페치 포함) */
-//    List<CareReport> pair =
-//        reportRepo.findTop2ByIdLessThanEqualOrderByIdDesc(reportId);
-//
-//    if (pair.isEmpty()) {
-//      throw new EntityNotFoundException("report " + reportId);
-//    }
-//    CareReport current  = pair.get(0);
-//    CareReport previous = pair.size() > 1 ? pair.get(1) : null;
+    List<CareReport> pair = reportRepo
+        .findTop2ByMemberIdAndDateBeforeEqualOrderByDateDesc(username, date, PageRequest.of(0, 2));
 
-    CareReport current = reportRepo.findById(reportId)
-        .orElseThrow(() -> new EntityNotFoundException("report " + reportId));
+    if (pair.isEmpty()) {
+      throw new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND);
+    }
+    CareReport current = pair.get(0);
+    int totalScore = totalScore(current);
 
-    int totalScore   = totalScore(current);
-    int changeAmount = totalScore - 1;
+    Integer changeAmount = pair.size() > 1 ? scoreChangeAmount(current, pair.get(1)) : null;
 
     /* ── 섹션별 구성 ── */
-    SectionBundle meal      = buildMealSection(current);
-    SectionBundle health    = buildHealthSection(current);
-    SectionBundle physical  = buildProgramSection(
+    SectionBundle meal = buildMealSection(current);
+
+    SectionBundle health = buildHealthSection(current);
+
+    SectionBundle physical = buildProgramSection(
         current.getPhysicalProgramComments(),
         current.getPhysicalScore(),
         current.getPhysicalFooterComment());
+
     SectionBundle cognitive = buildProgramSection(
         current.getCognitiveProgramComments(),
         current.getCognitiveScore(),
         current.getCognitiveFooterComment());
 
     return assembleDto(
-        current.getId(),
         totalScore,
         changeAmount,
         meal,
@@ -66,13 +66,17 @@ public class CareReportService {
 
   // private helpers
 
-  /** 총점 */
+  /**
+   * 총점
+   */
   private int totalScore(CareReport r) {
     return r.getMealScore() + r.getVitalScore()
         + r.getPhysicalScore() + r.getCognitiveScore();
   }
 
-  /** 식사 섹션 */
+  /**
+   * 식사 섹션
+   */
   private SectionBundle buildMealSection(CareReport r) {
     return new SectionBundle(
         ReportEntryMapper.mealEntries(r),
@@ -80,7 +84,9 @@ public class CareReportService {
     );
   }
 
-  /** 건강 섹션 */
+  /**
+   * 건강 섹션
+   */
   private SectionBundle buildHealthSection(CareReport r) {
     return new SectionBundle(
         ReportEntryMapper.healthEntries(r),
@@ -88,7 +94,9 @@ public class CareReportService {
     );
   }
 
-  /** 프로그램(인지·신체) 공통 */
+  /**
+   * 프로그램(인지·신체) 공통
+   */
   private SectionBundle buildProgramSection(
       List<ProgramComment> programs, int score, String footerMemo) {
 
@@ -98,18 +106,18 @@ public class CareReportService {
     );
   }
 
-  /** DTO 조립 */
+  /**
+   * DTO 조립
+   */
   private FullReportDto assembleDto(
-      Long reportId,
-      int total,
-      int change,
+      Integer total,
+      Integer change,
       SectionBundle meal,
       SectionBundle health,
       SectionBundle physical,
       SectionBundle cognitive) {
 
     return new FullReportDto(
-        reportId,
         total,
         change,
         meal.footer().score(),
@@ -128,11 +136,19 @@ public class CareReportService {
     );
   }
 
-  /* ===============================================================
-   *  내부 전용 DTO – 섹션 묶음
-   * =============================================================== */
+  private Integer scoreChangeAmount(CareReport current, CareReport previous) {
+    if (previous == null) {
+      return null; // 이전 리포트가 없으면 변화량은 null
+    }
+    return totalScore(current) - totalScore(previous);
+  }
+
+
+  // 내부 DTO – 섹션 묶음
   private record SectionBundle(
       List<ReportEntry> entries,
       CardFooter footer
-  ) {}
+  ) {
+
+  }
 }

@@ -1,6 +1,7 @@
 package com.daycan.dto.admin.request;
 
 import com.daycan.domain.enums.Gender;
+import com.daycan.dto.entry.PasswordEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
@@ -60,21 +61,11 @@ public record MemberRequest(
     String guardianAvatarUrl,
 
     @Schema(description = "리포트 수신 동의 여부", example = "true")
+    @NotNull
     Boolean reportConsent,
 
-    @Schema(description = "보호자 비밀번호(설정/변경 시에만 전송)", example = "qwerasdf12!")
-    @NotNull
-    @Size(min = 8, max = 64, message = "비밀번호는 8~64자")
-    String guardianPassword,
-
-    @Schema(description = "보호자 비밀번호 확인", example = "qwerasdf12!")
-    @NotNull
-    String guardianPasswordConfirm
+    @Schema(description = "보호자 비밀번호(설정/변경 시에만 전송)")
+    PasswordEntry passwordEntry
 
 ) {
-
-  @AssertTrue(message = "guardianPassword와 guardianPasswordConfirm가 일치해야 합니다.")
-  public boolean isPasswordConfirmed() {
-    return Objects.equals(guardianPassword, guardianPasswordConfirm);
-  }
 }

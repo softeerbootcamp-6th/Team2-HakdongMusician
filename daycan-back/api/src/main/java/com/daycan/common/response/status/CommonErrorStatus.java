@@ -28,7 +28,10 @@ public enum CommonErrorStatus implements Status {
   /*
    * NOT FOUND (HTTP 404)
    */
-  NOT_FOUND(HttpStatus.NOT_FOUND, 40400,"찾지 못했습니다");
+  NOT_FOUND(HttpStatus.NOT_FOUND, 40400,"찾지 못했습니다"),
+
+  CONFLICT(HttpStatus.CONFLICT, 40900, "요청이 충돌했습니다. 중복된 데이터가 존재합니다.")
+  ;
 
   private final HttpStatus httpStatus;
   private final int code;
