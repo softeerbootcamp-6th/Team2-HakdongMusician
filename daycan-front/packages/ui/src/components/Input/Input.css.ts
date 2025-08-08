@@ -1,5 +1,6 @@
 import { recipe, RecipeVariants } from "@vanilla-extract/recipes";
 import { COLORS } from "@/styles/colors";
+import { style } from "@vanilla-extract/css";
 
 export const input = recipe({
   base: {
@@ -12,6 +13,9 @@ export const input = recipe({
     borderRadius: "8px",
     border: `1px solid ${COLORS.gray[200]}`,
     boxSizing: "border-box",
+    boxShadow: `0px 0px 4px rgba(0, 0, 0, 0.05)`,
+    width: "100%",
+    height: "100%",
   },
   variants: {
     variant: {
@@ -76,4 +80,26 @@ export const input = recipe({
   },
 });
 
+export const inputStyle = recipe({
+  base: {
+    border: "none",
+    outline: "none",
+    width: "100%",
+  },
+  variants: {
+    color: {
+      white: {
+        backgroundColor: COLORS.white,
+      },
+      grayLight: {
+        backgroundColor: COLORS.gray[50],
+      },
+    },
+  },
+  defaultVariants: {
+    color: "white",
+  },
+});
+
 export type InputVariants = RecipeVariants<typeof input>;
+export type InputStyleVariants = RecipeVariants<typeof inputStyle>;

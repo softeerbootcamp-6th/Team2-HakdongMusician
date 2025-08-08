@@ -10,13 +10,14 @@ export type ChipProps = PropsWithChildren<
 export const Chip = ({
   onClick,
   children,
+  color,
   flexRule,
   round,
   ...props
 }: ChipProps) => {
   return (
     <div
-      className={classNames(chip({ flexRule, round }))}
+      className={classNames(chip({ flexRule, round, color }))}
       onClick={onClick}
       {...props}
     >

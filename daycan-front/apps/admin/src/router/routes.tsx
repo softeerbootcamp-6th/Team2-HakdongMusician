@@ -1,6 +1,6 @@
 import { LoginLayout } from "@/layout/login";
 import { MainLayout, ReportLayout, MobileLayout } from "../layout";
-import { LoginPage } from "@/pages";
+import { LoginPage, MemberPage } from "@/pages";
 import {
   HomeFunnelStepContainer,
   InfoFunnelStepContainer,
@@ -24,6 +24,10 @@ export const routes: TRoutes[] = [
       {
         path: "",
         element: <div>HomePage</div>, // => 여기 Outlet으로 렌더됨
+      },
+      {
+        path: "members",
+        element: <MemberPage />,
       },
     ],
   },
