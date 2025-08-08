@@ -14,12 +14,17 @@ export const Button = ({
   size,
   children,
   disabled,
+  flexRule,
   ...props
 }: ButtonProps) => {
   return (
     <button
       className={classNames(
-        button({ variant: disabled ? "disabled" : variant, size })
+        button({
+          variant: disabled ? "disabled" : variant,
+          size,
+          flexRule,
+        })
       )}
       disabled={disabled}
       {...props}

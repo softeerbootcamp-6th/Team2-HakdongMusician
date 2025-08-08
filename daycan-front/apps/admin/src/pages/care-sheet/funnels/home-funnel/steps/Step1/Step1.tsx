@@ -9,18 +9,33 @@ import { StepButtons } from "../../../../components/StepButtons";
 import pictureMethod from "@/assets/png/picture-method.png";
 import selectMethod from "@/assets/png/select-method.png";
 import { useFunnel } from "@daycan/hooks";
-import { useNavigate } from "react-router-dom";
+import { getWriterName } from "../../utils/parseData";
 
 export const Step1 = () => {
-  const { toPrev } = useFunnel();
-  const navigate = useNavigate();
+  const { toPrev, toNext, funnelState, updateState } = useFunnel();
+
+  // 작성자 이름 가져오기
+  const writerName = getWriterName(funnelState);
+
+  const handleMethodSelect = (method: string) => {
+    // FunnelState에 선택된 방법 저장
+    updateState({
+      selectedMethod: method,
+    });
+
+    if (method === "direct") {
+      toNext();
+    } else {
+      console.log("사진 등록");
+    }
+  };
 
   return (
     <div className={careSheetPageContainer}>
       <Header />
       <div className={careSheetPageContent}>
         <div className={careSheetPageContentTitleContainer}>
-          <HighlightingHeading text={`홍요양님`} />
+          <HighlightingHeading text={`${writerName}님!`} />
         </div>
         <Body type="large" weight={600} color={COLORS.gray[800]}>
           어떻게 기록지를 작성할까요?
@@ -31,7 +46,7 @@ export const Step1 = () => {
           image={selectMethod}
           isSelected={true}
           onClick={() => {
-            navigate("/care-sheet/info");
+            handleMethodSelect("direct");
           }}
         />
         <WritingMethodCard
@@ -40,8 +55,7 @@ export const Step1 = () => {
           image={pictureMethod}
           isSelected={false}
           onClick={() => {
-            // navigate("/care-sheet/info");
-            console.log("사진 등록");
+            handleMethodSelect("photo");
           }}
         />
         <StepButtons onPrev={toPrev} />

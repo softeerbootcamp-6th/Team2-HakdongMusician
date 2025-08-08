@@ -36,6 +36,7 @@ export { default as TwoPanelIcon } from "./svg/two-panel.svg";
 export { default as LockIcon } from "./svg/lock-24.svg";
 export { default as RecordIcon } from "./svg/record.svg";
 export { default as ReportIcon } from "./svg/report.svg";
+export { default as BlockIcon } from "./svg/block.svg";
 
 // 카메라/이미지 관련 아이콘들
 export { default as FlipCameraIcon } from "./svg/flip_camera_ios.svg";
@@ -57,3 +58,4 @@ export { default as StampGoodIcon } from "./svg/stamp-good.svg";
 export { default as StampBadIcon } from "./svg/stamp-bad.svg";
 export { default as BrainIcon } from "./svg/brain.svg";
 export { default as ActivityIcon } from "./svg/activity.svg";
+export { default as TransportationIcon } from "./svg/transportation.svg";
