@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { PageToolbar } from "@/components/PageToolbar";
 import { Body, Heading, Icon, Button, Input, COLORS } from "@daycan/ui";
 import {
@@ -12,60 +11,18 @@ import {
 } from "./MemberPage.css.ts";
 import { FilterSearchbar } from "@/components/FilterSearchbar/FilterSearchbar.tsx";
 import { DropDownPanel } from "@/components/DropDownPanel/DropDownPanel.tsx";
-import { DropDownChip } from "@/components/DropdownChip";
+import { DropDownChip } from "@/components/DropDownChip/index.ts";
 import { MemberDataList } from "./components/MemberDataList/MemberDataList.tsx";
-import { API_ELDER_DUMMY_DATA } from "@/constants/memberDummyData.ts";
+import { useMember } from "./hooks";
 
 export const MemberPage = () => {
-  // 각 칩의 드롭다운 상태 관리
-  const [dropdownStates, setDropdownStates] = useState({
-    careGrade: false,
-    gender: false,
-  });
-  // 더미 데이터로 초기화
-  const dummyMember = API_ELDER_DUMMY_DATA.result;
+  const {
+    dropdownStates,
+    handleNewMember,
+    toggleDropdown,
+    handleResetFilters,
+  } = useMember();
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest("[data-dropdown-container]")) {
-        setDropdownStates({
-          careGrade: false,
-          gender: false,
-        });
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleNewMember = () => {
-    console.log("새 수급자 등록");
-    // 등록 페이지로 이동하거나 모달 열기
-  };
-
-  // 드롭다운 토글 함수
-  const toggleDropdown = (type: "careGrade" | "gender") => {
-    setDropdownStates((prev) => ({
-      ...prev,
-      [type]: !prev[type],
-      // 다른 드롭다운 닫기
-      ...(type === "careGrade" ? { gender: false } : { careGrade: false }),
-    }));
-  };
-
-  const handleResetFilters = () => {
-    console.log("필터 초기화");
-    // 드롭다운 상태도 초기화
-    setDropdownStates({
-      careGrade: false,
-      gender: false,
-    });
-    // 필터 초기화 로직
-  };
   return (
     <div className={memberContainer}>
       {/* 페이지 툴바 */}
@@ -127,8 +84,8 @@ export const MemberPage = () => {
         </div>
       </FilterSearchbar>
 
-      {/* 수급자 목록 */}
-      <MemberDataList memberDatas={dummyMember} />
+      {/* 데이터 리스트 */}
+      <MemberDataList />
     </div>
   );
 };
