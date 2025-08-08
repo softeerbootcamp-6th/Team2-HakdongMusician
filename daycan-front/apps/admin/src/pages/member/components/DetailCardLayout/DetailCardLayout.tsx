@@ -1,6 +1,5 @@
 import {
   detailCardLayout,
-  detailCardLayoutHeader,
   detailCardLayoutContent,
   detailCardLayoutAvatar,
 } from "./DetailCardLayout.css";
@@ -17,7 +16,7 @@ export const DetailCardLayout = ({
 }: DetailCardLayoutProps) => {
   return (
     <div className={detailCardLayout}>
-      <div className={detailCardLayoutHeader}>{dataCategory}</div>
+      {dataCategory}
       <div className={detailCardLayoutContent}>
         <img
           src={dataAvatarUrl}

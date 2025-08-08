@@ -4,7 +4,7 @@ export const detailCardLayout = style({
   display: "flex",
   flex: 1,
   flexDirection: "column",
-  gap: "16px",
+  gap: "12px",
 });
 
 export const detailCardLayoutHeader = style({
@@ -16,7 +16,7 @@ export const detailCardLayoutHeader = style({
 export const detailCardLayoutContent = style({
   display: "flex",
   flexDirection: "row",
-  gap: "16px",
+  gap: "20px",
 });
 
 export const detailCardLayoutAvatar = style({

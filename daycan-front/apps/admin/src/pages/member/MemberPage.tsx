@@ -7,7 +7,7 @@ import {
   memberSearch,
   memberButton,
   resetContainer,
-  Divider,
+  divider,
 } from "./MemberPage.css.ts";
 import { FilterSearchbar } from "@/components/FilterSearchbar/FilterSearchbar.tsx";
 import { DropDownPanel } from "@/components/DropDownPanel/DropDownPanel.tsx";
@@ -47,7 +47,7 @@ export const MemberPage = () => {
               color={COLORS.gray[300]}
             />
           </div>
-          <div className={Divider} />
+          <div className={divider} />
           {/* 필터링 chips */}
           <div className={memberFilter}>
             <DropDownChip
@@ -73,14 +73,15 @@ export const MemberPage = () => {
             inputSize="textSearch"
             className={memberSearch}
             flexRule="none"
-          >
-            <Icon
-              name="search"
-              width={24}
-              height={24}
-              color={COLORS.gray[300]}
-            />
-          </Input>
+            leftIcon={
+              <Icon
+                name="search"
+                width={24}
+                height={24}
+                color={COLORS.gray[700]}
+              />
+            }
+          />
         </div>
       </FilterSearchbar>
 

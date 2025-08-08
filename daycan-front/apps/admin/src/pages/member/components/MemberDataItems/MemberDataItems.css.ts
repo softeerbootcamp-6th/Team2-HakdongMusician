@@ -174,8 +174,7 @@ export const dataDetailContainer = recipe({
 });
 
 export const detailCardLayout = style({
+  flex: 4,
   display: "flex",
-  flex: 3,
   flexDirection: "row",
-  gap: "16px",
 });

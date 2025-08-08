@@ -50,7 +50,7 @@ export const resetContainer = style({
   boxShadow: `0px 0px 4px rgba(0, 0, 0, 0.05)`,
 });
 
-export const Divider = style({
+export const divider = style({
   width: "2px",
   height: "16px",
   backgroundColor: COLORS.gray[200],
