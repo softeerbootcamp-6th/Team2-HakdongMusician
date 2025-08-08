@@ -3,24 +3,24 @@ import { DetailCardLayout } from "../DetailCardLayout/DetailCardLayout";
 import memberImage from "@/assets/images/elder.png";
 import type { MemberData } from "@/types/member";
 import {
-  memberDetailCardContainer,
-  memberDetailCardContentContainer,
-  memberDetailCardContentItemContainer,
-} from "./MemberDetailCard.css";
+  memberDetailContainer,
+  memberDetailContentContainer,
+  memberDetailContentItemContainer,
+} from "./MemberDetailContent.css";
 
-interface MemberDetailCardProps {
+interface MemberDetailContentProps {
   member: MemberData;
 }
 
-export const MemberDetailCard = ({ member }: MemberDetailCardProps) => {
+export const MemberDetailContent = ({ member }: MemberDetailContentProps) => {
   return (
     <DetailCardLayout dataCategory="수급자 정보" dataAvatarUrl={memberImage}>
-      <div className={memberDetailCardContainer}>
-        <Heading type="small" weight={500}>
+      <div className={memberDetailContainer}>
+        <Heading type="xsmall" weight={500}>
           {member.name}
         </Heading>
-        <div className={memberDetailCardContentContainer}>
-          <div className={memberDetailCardContentItemContainer}>
+        <div className={memberDetailContentContainer}>
+          <div className={memberDetailContentItemContainer}>
             <Body type="xsmall" weight={500} color={COLORS.gray[500]}>
               성별
             </Body>
@@ -34,7 +34,7 @@ export const MemberDetailCard = ({ member }: MemberDetailCardProps) => {
               장기요양인정번호
             </Body>
           </div>
-          <div className={memberDetailCardContentItemContainer}>
+          <div className={memberDetailContentItemContainer}>
             <Body type="xsmall" weight={500}>
               {member.gender}
             </Body>
