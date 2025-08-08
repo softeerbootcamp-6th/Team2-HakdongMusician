@@ -38,6 +38,8 @@ import {
   BrainIcon,
   ActivityIcon,
   LocationIcon,
+  TransportationIcon,
+  BlockIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -84,4 +86,6 @@ export const iconMap = {
   brain: BrainIcon,
   activity: ActivityIcon,
   location: LocationIcon,
+  transportation: TransportationIcon,
+  block: BlockIcon,
 };

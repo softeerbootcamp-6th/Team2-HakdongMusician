@@ -8,17 +8,26 @@ import {
   searchResultsContainer,
 } from "./Step0.css";
 import { mockSearchResults } from "../../../../constants/dummy";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFunnel } from "@daycan/hooks";
 import type { SearchResultItem } from "../../components/SearchStaffResultList/types";
 import { StepButtons } from "../../../../components/StepButtons";
 
 export const Step0 = () => {
-  const { toNext } = useFunnel();
+  const { toNext, updateState, getStepState } = useFunnel();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<SearchResultItem | null>(
     null
   );
+
+  // 기존 데이터가 있으면 로드
+  useEffect(() => {
+    const existingData = getStepState("STEP_0");
+    if (existingData) {
+      setSelectedUser(existingData.selectedUser || null);
+      setSearchQuery(existingData.searchQuery || "");
+    }
+  }, [getStepState]);
 
   const filteredResults = mockSearchResults.filter(
     (item) =>
@@ -30,15 +39,30 @@ export const Step0 = () => {
     const value = e.target.value;
     setSearchQuery(value);
 
+    // FunnelState에 데이터 저장
+    updateState({
+      searchQuery: value,
+    });
+
     // 검색어가 비어있으면 선택된 사용자도 초기화
     if (value.length === 0) {
       setSelectedUser(null);
+      updateState({
+        selectedUser: null,
+        searchQuery: value,
+      });
     }
   };
 
   const handleUserSelect = (user: SearchResultItem) => {
     setSelectedUser(user);
     setSearchQuery(user.name);
+
+    // FunnelState에 데이터 저장
+    updateState({
+      selectedUser: user,
+      searchQuery: user.name,
+    });
   };
 
   const handleNext = () => {
