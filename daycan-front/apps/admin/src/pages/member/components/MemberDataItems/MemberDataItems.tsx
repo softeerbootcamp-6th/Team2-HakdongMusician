@@ -20,11 +20,16 @@ import {
 import profileImg from "@/assets/images/profile.png";
 import { useMember } from "../../hooks";
 import { MemberDataItemDetail } from "../MemberDataItemDetail/MemberDataItemDetail";
-import { MemberDetailCard } from "../MemberDetailCard/MemberDetailCard";
-import { GuardianDetailCard } from "../GuardianDetailCard/GuardianDetailCard";
+import { MemberDetailContent } from "../MemberDetailContent/MemberDetailContent";
+import { GuardianDetailContent } from "../GuardianDetailContent/GuardianDetailContent";
+import type { MemberData } from "@/types";
 
-export const MemberDataItems = () => {
-  const { members, openDetails, getDetailContainerState, handleDetailClick } =
+interface MemberDataItemsProps {
+  members: MemberData[];
+}
+
+export const MemberDataItems = ({ members }: MemberDataItemsProps) => {
+  const { openDetails, getDetailContainerState, handleDetailClick } =
     useMember();
 
   return (
@@ -52,7 +57,7 @@ export const MemberDataItems = () => {
                 <div className={careGradeColumn}>
                   {formatCareGrade(member.careLevel)}
                 </div>
-                <div className={careNumberColumn}>{member.careNumber}</div>
+                <div className={careNumberColumn}>{member.careLevel}</div>
                 <div className={guardianContactColumn}>
                   {member.guardianPhoneNumber}
                 </div>
@@ -77,8 +82,8 @@ export const MemberDataItems = () => {
                 <MemberDataItemDetail
                   detailCard={
                     <div className={detailCardLayout}>
-                      <MemberDetailCard member={member as any} />
-                      <GuardianDetailCard member={member as any} />
+                      <MemberDetailContent member={member as any} />
+                      <GuardianDetailContent member={member as any} />
                     </div>
                   }
                 />
