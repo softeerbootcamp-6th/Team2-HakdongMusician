@@ -1,9 +1,15 @@
 import React, { InputHTMLAttributes } from "react";
 import { classNames } from "@/utils";
-import { input, type InputVariants, inputStyle } from "./Input.css";
+import {
+  input,
+  type InputVariants,
+  inputStyle,
+  type InputStyleVariants,
+} from "./Input.css";
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> &
-  InputVariants & {
+  InputVariants &
+  InputStyleVariants & {
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
   };
@@ -30,6 +36,7 @@ export const Input = ({
   leftIcon,
   rightIcon,
   placeholder,
+  color,
   ...props
 }: InputProps) => {
   return (
@@ -38,7 +45,11 @@ export const Input = ({
       {...props}
     >
       {leftIcon}
-      <input type={type} placeholder={placeholder} className={inputStyle} />
+      <input
+        type={type}
+        placeholder={placeholder}
+        className={inputStyle({ color })}
+      />
       {rightIcon}
     </div>
   );

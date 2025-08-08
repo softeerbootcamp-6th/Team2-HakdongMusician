@@ -80,10 +80,26 @@ export const input = recipe({
   },
 });
 
-export const inputStyle = style({
-  border: "none",
-  outline: "none",
-  width: "100%",
+export const inputStyle = recipe({
+  base: {
+    border: "none",
+    outline: "none",
+    width: "100%",
+  },
+  variants: {
+    color: {
+      white: {
+        backgroundColor: COLORS.white,
+      },
+      grayLight: {
+        backgroundColor: COLORS.gray[50],
+      },
+    },
+  },
+  defaultVariants: {
+    color: "white",
+  },
 });
 
 export type InputVariants = RecipeVariants<typeof input>;
+export type InputStyleVariants = RecipeVariants<typeof inputStyle>;
