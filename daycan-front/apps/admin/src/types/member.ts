@@ -10,6 +10,55 @@ export type DataColumn = {
   width?: string; // 데이터의 너비 (선택적)
 };
 
+export type Member = {
+  id: number;
+  name: string;
+  birthDate: string;
+  gender: "MALE" | "FEMALE";
+  careNumber: string;
+};
+
+export type Guardian = {
+  id: number;
+  name: string;
+  relation: string;
+  birthDate: string;
+  phoneNumber: string;
+};
+
+export type MemberAndGuardian = Member | Guardian;
+
+//수급자를 위한 데이터 타입
+
+export type MemberData = {
+  username: "AA1234567";
+  name: "홍길동";
+  gender: "MALE";
+  birthDate: "1950-05-12";
+  careLevel: 5;
+  avatarUrl: "https://cdn.example.com/avatar/USR123.png";
+  guardianName: "이보호자";
+  guardianRelation: "딸";
+  guardianRelationBirthDate: "1978-10-02";
+  guardianPhoneNumber: "010-1234-5678";
+  guardianAvatarUrl: "https://cdn.example.com/avatar/GUARD123.png";
+  acceptReport: true;
+  organizationId: "CTR00001234";
+  createdAt: "2024-01-01T00:00:00";
+  updatedAt: "2024-01-01T00:00:00";
+};
+
+export type CenterAdminData = {
+  id: 123;
+  centerId: "CTR00001234";
+  name: "홍관리";
+  gender: "MALE";
+  staffRole: "CENTER_ADMIN";
+  birthDate: "1985-03-15";
+  phoneNumber: "010-1234-5678";
+  avatarUrl: "https://cdn.example.com/avatar/ADMIN_123.png";
+};
+
 // API 응답 타입 (백엔드에서 받아오는 원본 데이터)
 export type AdminMemberAndGuardianResponse = {
   name: string;
