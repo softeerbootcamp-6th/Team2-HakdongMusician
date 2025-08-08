@@ -24,3 +24,4 @@ export * from "./Segment";
 export * from "./LottieAnimation";
 export * from "./Calendar";
 export * from "./HightlightingHeading";
+export * from "./TimePicker";
