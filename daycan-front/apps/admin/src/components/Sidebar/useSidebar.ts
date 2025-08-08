@@ -12,7 +12,7 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.RECORD_SHEET) => {
   useEffect(() => {
     const currentPath = location.pathname;
     switch (currentPath) {
-      case "/elders":
+      case "/members":
         setSelectedMenu(PAGE_KEYS.RECIPIENT);
         break;
       case "/report":
@@ -37,7 +37,7 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.RECORD_SHEET) => {
     // 메뉴에 따라 페이지 라우팅
     switch (menuName) {
       case PAGE_KEYS.RECIPIENT:
-        navigate("/elders");
+        navigate("/members");
         break;
       case PAGE_KEYS.RECORD_SHEET:
         navigate("/");
