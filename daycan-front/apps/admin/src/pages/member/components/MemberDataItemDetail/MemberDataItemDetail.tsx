@@ -1,10 +1,11 @@
 import { Button, COLORS, Icon } from "@daycan/ui";
 import {
-  dataSectionContainer,
-  dataSectionContent,
-  dataSectionButtonContainer,
-  dataSectionTopButton,
-  dataSectionBottomButton,
+  memberDataItemDetailContainer,
+  memberDataItemDetailContent,
+  memberDataItemDetailCardContainer,
+  memberDataItemDetailButtonContainer,
+  memberDataItemDetailTopButton,
+  memberDataItemDetailBottomButton,
 } from "./MemberDataItemDetail.css";
 
 interface MemberDataItemDetailProps {
@@ -15,21 +16,25 @@ export const MemberDataItemDetail = ({
   detailCard,
 }: MemberDataItemDetailProps) => {
   return (
-    <div className={dataSectionContainer}>
-      <div className={dataSectionContent}>
-        {detailCard}
+    <div className={memberDataItemDetailContainer}>
+      <div className={memberDataItemDetailContent}>
+        <div className={memberDataItemDetailCardContainer}>{detailCard}</div>
 
-        <div className={dataSectionButtonContainer}>
-          <div className={dataSectionTopButton}>
+        <div className={memberDataItemDetailButtonContainer}>
+          <div className={memberDataItemDetailTopButton}>
             <Button
               size="fullWidth"
               style={{ backgroundColor: COLORS.gray[600], color: COLORS.white }}
             >
               기록지 및 리포트 내역
-              <Icon name="arrowRight" stroke="currentColor" />
+              <Icon
+                name="arrowRight"
+                stroke="currentColor"
+                color={COLORS.gray[600]}
+              />
             </Button>
           </div>
-          <div className={dataSectionBottomButton}>
+          <div className={memberDataItemDetailBottomButton}>
             <Button
               size="small"
               style={{

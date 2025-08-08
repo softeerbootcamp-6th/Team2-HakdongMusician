@@ -5,13 +5,13 @@ export const API_ELDER_DUMMY_DATA = {
   result: [
     {
       username: "AA1234597",
-      name: "김수진",
+      name: "김큐티빠띠엔젤할무니",
       gender: "여성 " as const,
       birthDate: "1945-03-15",
       careLevel: 1,
       avatarUrl: "https://cdn.example.com/avatar/USR001.png",
       careNumber: "AA12345678",
-      guardianName: "김영희",
+      guardianName: "소소보루보루소소보루루루루루",
       guardianRelation: "딸",
       guardianRelationBirthDate: "1975-08-20",
       guardianPhoneNumber: "010-1234-5678",

@@ -1,7 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { COLORS } from "@daycan/ui";
 
-export const dataSectionContainer = style({
+export const memberDataItemDetailContainer = style({
   display: "flex",
   flexDirection: "column",
   width: "1084px",
@@ -9,7 +9,7 @@ export const dataSectionContainer = style({
   borderTop: `1px solid ${COLORS.gray[200]}`,
 });
 
-export const dataSectionContent = style({
+export const memberDataItemDetailContent = style({
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
@@ -24,7 +24,7 @@ export const dataSectionContent = style({
   boxShadow: `0px 0px 4px rgba(0, 0, 0, 0.05)`,
 });
 
-export const dataSectionButtonContainer = style({
+export const memberDataItemDetailButtonContainer = style({
   flex: 1,
   display: "flex",
   flexDirection: "column",
@@ -38,7 +38,7 @@ export const dataSectionButtonContainer = style({
   minHeight: "250px",
 });
 
-export const dataSectionTopButton = style({
+export const memberDataItemDetailTopButton = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -46,10 +46,14 @@ export const dataSectionTopButton = style({
   width: "100%",
 });
 
-export const dataSectionBottomButton = style({
+export const memberDataItemDetailBottomButton = style({
   display: "flex",
   flexDirection: "row",
   justifyContent: "flex-end",
   marginLeft: "auto",
   gap: "8px",
+});
+
+export const memberDataItemDetailCardContainer = style({
+  flex: 4,
 });
