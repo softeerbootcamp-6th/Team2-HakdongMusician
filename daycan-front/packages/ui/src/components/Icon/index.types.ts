@@ -4,6 +4,7 @@ import {
   ArrowRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronDownIcon,
   UpIcon,
   DownIcon,
   GoodIcon,
@@ -40,6 +41,11 @@ import {
   LocationIcon,
   TransportationIcon,
   BlockIcon,
+  CheckedIcon,
+  UncheckedIcon,
+  PlusBoxIcon,
+  MinusBoxIcon,
+  DeleteIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -52,6 +58,7 @@ export const iconMap = {
   arrowRight: ArrowRightIcon,
   chevronLeft: ChevronLeftIcon,
   chevronRight: ChevronRightIcon,
+  chevronDown: ChevronDownIcon,
   up: UpIcon,
   down: DownIcon,
   good: GoodIcon,
@@ -88,4 +95,9 @@ export const iconMap = {
   location: LocationIcon,
   transportation: TransportationIcon,
   block: BlockIcon,
+  checked: CheckedIcon,
+  unchecked: UncheckedIcon,
+  plusBox: PlusBoxIcon,
+  minusBox: MinusBoxIcon,
+  delete: DeleteIcon,
 };

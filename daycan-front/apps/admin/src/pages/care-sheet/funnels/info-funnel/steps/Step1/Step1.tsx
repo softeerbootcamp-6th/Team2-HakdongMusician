@@ -69,12 +69,20 @@ export const Step1 = () => {
   return (
     <InfoFunnelLayout>
       <div className={step1Container}>
-        <div className={step1HighlightingHeadingContainer}>
-          <HighlightingHeading text={recipientName} />
-          <Heading type="medium" weight={600} color={COLORS.gray[800]}>
-            님이 어떤 날에 오셨나요?
-          </Heading>
+        <div>
+          <>
+            <div className={step1HighlightingHeadingContainer}>
+              <HighlightingHeading text={recipientName} />
+              <Heading type="medium" weight={600} color={COLORS.gray[800]}>
+                님이
+              </Heading>
+            </div>
+            <Heading type="medium" weight={600} color={COLORS.gray[800]}>
+              어떤 날에 오셨나요?
+            </Heading>
+          </>
         </div>
+
         <div
           className={step1TodayContainer}
           onClick={() => {

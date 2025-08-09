@@ -4,6 +4,7 @@ import { LoginPage, MemberPage } from "@/pages";
 import {
   HomeFunnelStepContainer,
   InfoFunnelStepContainer,
+  DiagnosisFunnelStepContainer,
 } from "@/pages/care-sheet/funnels";
 
 export type TRoutes = {
@@ -62,6 +63,10 @@ export const routes: TRoutes[] = [
       {
         path: "info",
         element: <InfoFunnelStepContainer />,
+      },
+      {
+        path: "diagnosis",
+        element: <DiagnosisFunnelStepContainer />,
       },
     ],
   },

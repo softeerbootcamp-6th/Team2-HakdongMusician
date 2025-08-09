@@ -1,5 +1,8 @@
-import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import type { InfoFunnelData } from "../types/infoType";
 
-// info-funnel용 jotai atom 생성
-export const infoFunnelDataAtom = atom<InfoFunnelData | null>(null);
+// 로컬스토리지 지속형 atom
+export const infoFunnelDataAtom = atomWithStorage<InfoFunnelData | null>(
+  "careSheet:infoFunnel",
+  null
+);
