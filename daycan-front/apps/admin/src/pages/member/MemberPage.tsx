@@ -73,14 +73,6 @@ export const MemberPage = () => {
             inputSize="textSearch"
             className={memberSearch}
             flexRule="none"
-            leftIcon={
-              <Icon
-                name="search"
-                width={24}
-                height={24}
-                color={COLORS.gray[700]}
-              />
-            }
           />
         </div>
       </FilterSearchbar>

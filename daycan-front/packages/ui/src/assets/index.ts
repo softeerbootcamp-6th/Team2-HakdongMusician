@@ -18,12 +18,17 @@ export { default as UpIcon } from "./svg/up.svg";
 export { default as DownIcon } from "./svg/down.svg";
 export { default as ChevronLeftIcon } from "./svg/chevron-left.svg";
 export { default as ChevronRightIcon } from "./svg/chevron-right.svg";
+export { default as ChevronDownIcon } from "./svg/chevron-down.svg";
 
 // 상태 아이콘들
 export { default as GoodIcon } from "./svg/good.svg";
 export { default as BadIcon } from "./svg/bad.svg";
 export { default as WarningFilledIcon } from "./svg/warning-filled.svg";
 export { default as WarningOutlineIcon } from "./svg/warning-outline.svg";
+export { default as CheckedIcon } from "./svg/check-box-checked.svg";
+export { default as UncheckedIcon } from "./svg/check-box-unchecked.svg";
+export { default as PlusBoxIcon } from "./svg/plus-box.svg";
+export { default as MinusBoxIcon } from "./svg/minus-box.svg";
 
 // 기능 아이콘들
 export { default as CalendarIcon } from "./svg/calendar.svg";
@@ -37,6 +42,7 @@ export { default as LockIcon } from "./svg/lock-24.svg";
 export { default as RecordIcon } from "./svg/record.svg";
 export { default as ReportIcon } from "./svg/report.svg";
 export { default as BlockIcon } from "./svg/block.svg";
+export { default as DeleteIcon } from "./svg/delete.svg";
 
 // 카메라/이미지 관련 아이콘들
 export { default as FlipCameraIcon } from "./svg/flip_camera_ios.svg";
