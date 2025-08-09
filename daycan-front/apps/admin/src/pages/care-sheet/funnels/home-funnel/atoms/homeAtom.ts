@@ -1,5 +1,8 @@
-import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import type { HomeFunnelData } from "../types/homeType";
 
-// jotai atom 생성
-export const homeFunnelDataAtom = atom<HomeFunnelData | null>(null);
+// 로컬스토리지 지속형 atom
+export const homeFunnelDataAtom = atomWithStorage<HomeFunnelData | null>(
+  "careSheet:homeFunnel",
+  null
+);
