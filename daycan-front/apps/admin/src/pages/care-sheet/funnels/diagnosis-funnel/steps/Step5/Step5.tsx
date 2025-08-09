@@ -49,7 +49,7 @@ export const Step5 = () => {
   const handleNext = async () => {
     // 여기서 API 호출이 성공했다고 가정하고 초기화
     updateState({ points });
-    await new Promise((r) => setTimeout(resetAll, 0));
+    await new Promise((_) => setTimeout(resetAll, 0));
     console.log("resetAll 발동 API 호출 후 초기화");
     toNext();
   };
