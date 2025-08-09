@@ -1,7 +1,6 @@
-package com.daycan.repository;
+package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.CareReport;
-import com.daycan.domain.entry.DocumentKey;
 import java.time.LocalDate;
 import java.util.List;
 

@@ -47,9 +47,6 @@ public class Member extends Account {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "username", length = 20, nullable = false)
-  private String username; // 전역 유니크(정규화 저장)
-
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "center_id", nullable = false)
   private Center center; // 소속 센터(1:1 전제)

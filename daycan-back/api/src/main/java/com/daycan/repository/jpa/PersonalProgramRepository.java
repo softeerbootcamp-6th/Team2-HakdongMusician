@@ -1,4 +1,4 @@
-package com.daycan.repository;
+package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.PersonalProgram;
 import com.daycan.domain.enums.ProgramScore;

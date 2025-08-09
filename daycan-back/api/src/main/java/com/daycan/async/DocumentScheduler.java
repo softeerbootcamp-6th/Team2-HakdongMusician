@@ -1,7 +1,7 @@
 package com.daycan.async;
 
 import com.daycan.domain.entity.Member;
-import com.daycan.repository.MemberRepository;
+import com.daycan.repository.jpa.MemberRepository;
 import com.daycan.service.DocumentService;
 import java.time.LocalDate;
 import java.time.ZoneId;

@@ -1,4 +1,4 @@
-package com.daycan.repository;
+package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;

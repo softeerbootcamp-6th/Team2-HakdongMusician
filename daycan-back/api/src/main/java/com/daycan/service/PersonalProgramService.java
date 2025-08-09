@@ -5,7 +5,7 @@ import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
 import com.daycan.domain.entity.PersonalProgram;
 import com.daycan.domain.enums.ProgramScore;
-import com.daycan.repository.PersonalProgramRepository;
+import com.daycan.repository.jpa.PersonalProgramRepository;
 
 import java.time.LocalDate;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package com.daycan.repository;
+package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.Center;
 import java.util.Optional;
@@ -14,4 +14,5 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
   // 비즈니스 식별자(UNIQUE)
   Optional<Center> findByCenterCode(String centerCode);
   boolean existsByCenterCode(String centerCode);
+
 }

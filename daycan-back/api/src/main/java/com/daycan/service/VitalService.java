@@ -2,7 +2,7 @@ package com.daycan.service;
 
 
 import com.daycan.domain.entity.Vital;
-import com.daycan.repository.VitalRepository;
+import com.daycan.repository.jpa.VitalRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -2,6 +2,7 @@ package com.daycan.utils;
 
 import com.daycan.domain.entity.CareSheet;
 import com.daycan.domain.entity.Document;
+import com.daycan.domain.entity.Staff;
 import com.daycan.domain.entity.Vital;
 import com.daycan.domain.entry.Meal;
 import com.daycan.dto.admin.request.CareSheetRequest;
@@ -17,10 +18,11 @@ public final class SheetMapper {
 
   private SheetMapper() {}
 
-  public static CareSheet toCareSheet(Document document, CareSheetRequest req) {
+  public static CareSheet toCareSheet(Document document, CareSheetRequest req, Staff staff) {
     return CareSheet.builder()
-        .id(document.getId())          // 공유 PK
-        .document(document)            // @MapsId 매핑
+        .id(document.getId())// 공유 PK
+        .document(document)  // @MapsId 매핑
+        .writer(staff)
         .arrivalTime(req.startTime())
         .endTime(req.endTime())
         .vehicleNumber(req.mobilityNumber())

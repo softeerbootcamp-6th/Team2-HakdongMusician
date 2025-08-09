@@ -21,6 +21,7 @@ public class AdminCenterController {
 
   private final CenterService centerService;
 
+
   @GetMapping("/me")
   public ResponseWrapper<CenterResponse> getMemberList(
       @AuthenticatedUser CenterDetails centerDetails

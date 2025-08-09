@@ -4,7 +4,7 @@ import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.CenterErrorStatus;
 import com.daycan.domain.entity.Center;
 import com.daycan.dto.admin.response.CenterResponse;
-import com.daycan.repository.CenterRepository;
+import com.daycan.repository.jpa.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@ public class CenterService {
 
     return new CenterResponse(
         center.getName(),
-        center.getLocation(),
+        center.getCenterCode(),
         center.getPhoneNumber(),
         center.getLogoUrl()
     );

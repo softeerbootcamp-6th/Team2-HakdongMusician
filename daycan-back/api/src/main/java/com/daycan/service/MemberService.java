@@ -1,7 +1,5 @@
 package com.daycan.service;
 
-import static org.apache.logging.log4j.util.Strings.isBlank;
-
 import com.daycan.auth.security.PasswordHasher;
 import com.daycan.common.response.status.MemberErrorStatus;
 import com.daycan.domain.entity.Center;
@@ -15,11 +13,10 @@ import com.daycan.domain.entity.Member;
 import com.daycan.domain.enums.Gender;
 import com.daycan.dto.admin.request.MemberRequest;
 import com.daycan.dto.admin.response.AdminMemberResponse;
-import com.daycan.repository.CenterRepository;
-import com.daycan.repository.MemberRepository;
+import com.daycan.repository.jpa.CenterRepository;
+import com.daycan.repository.jpa.MemberRepository;
 import jakarta.persistence.OptimisticLockException;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

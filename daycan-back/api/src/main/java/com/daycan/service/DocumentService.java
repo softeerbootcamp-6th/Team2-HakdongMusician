@@ -1,7 +1,6 @@
 package com.daycan.service;
 
 import com.daycan.common.response.status.MemberErrorStatus;
-import com.daycan.domain.entry.DocumentKey;
 import com.daycan.domain.entity.Member;
 import com.daycan.dto.admin.request.CareSheetRequest;
 import com.daycan.exceptions.ApplicationException;
@@ -13,8 +12,8 @@ import com.daycan.dto.admin.response.CareSheetCountResponse;
 import com.daycan.dto.admin.response.DocumentCountResponse;
 import com.daycan.dto.admin.response.DocumentStatusResponse;
 import com.daycan.exceptions.DocumentNonCreatedException;
-import com.daycan.repository.DocumentRepository;
-import com.daycan.repository.MemberRepository;
+import com.daycan.repository.jpa.DocumentRepository;
+import com.daycan.repository.jpa.MemberRepository;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -35,14 +34,17 @@ public class DocumentService {
   private final CareSheetService careSheetService;
 
   @Transactional
-  public void createCareSheet(CareSheetRequest req) {
+  public Long writeCareSheet(CareSheetRequest req) {
+    Long documentId;
     try {
-      careSheetService.writeSheet(req);
+      documentId = careSheetService.writeSheet(req);
     } catch (DocumentNonCreatedException e) {
       Member member = requireActiveMember(req.memberId());
       findOrCreateDocument(member, req.date());
-      careSheetService.writeSheet(req);
+      documentId = careSheetService.writeSheet(req);
     }
+
+    return documentId;
   }
 
   /**

@@ -13,7 +13,7 @@ public enum StaffErrorStatus implements Status {
   /**
    * 이미 존재하는 사용자명입니다. (HTTP 409)
    */
-  USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT,40941 ,"이미 존재하는 사용자명입니다.");
+  ALREADY_EXISTS(HttpStatus.CONFLICT,40941 ,"이미 존재하는 사용자명입니다.");
 
   private final HttpStatus httpStatus;
   private final int code;

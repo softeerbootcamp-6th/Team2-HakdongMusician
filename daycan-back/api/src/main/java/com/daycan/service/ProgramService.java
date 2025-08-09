@@ -5,7 +5,7 @@ import com.daycan.domain.enums.ProgramType;
 import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
 import com.daycan.domain.entity.Program;
-import com.daycan.repository.ProgramRepository;
+import com.daycan.repository.jpa.ProgramRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

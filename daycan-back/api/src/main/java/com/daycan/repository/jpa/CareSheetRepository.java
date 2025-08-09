@@ -1,4 +1,4 @@
-package com.daycan.repository;
+package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.CareSheet;
 import org.springframework.data.jpa.repository.JpaRepository;

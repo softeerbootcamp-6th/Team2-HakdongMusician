@@ -10,6 +10,8 @@ import lombok.Getter;
 @Getter
 @MappedSuperclass
 public abstract class Account extends BaseTimeEntity {
+  @Column(name = "username", length = 20, nullable = false, unique = true, updatable = false)
+  protected String username;
 
   @Column(name = "password", length = 100, nullable = false)
   protected String password;
