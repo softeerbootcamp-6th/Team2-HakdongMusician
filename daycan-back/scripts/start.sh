@@ -8,3 +8,4 @@ if systemctl is-active --quiet daycan; then
 else
   systemctl start daycan
 fi
+echo "🎉 Daycan service started successfully!"

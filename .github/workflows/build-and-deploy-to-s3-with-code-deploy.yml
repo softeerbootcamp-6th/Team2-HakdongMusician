@@ -58,7 +58,8 @@ jobs:
         working-directory: daycan-back
         run: |
           echo "🔨 Making daycan.env file..."
-          echo "DB_URL=${{ secrets.DB_URL }}" >> daycan.env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> daycan.env
+          echo "DB_PORT=3306" >> daycan.env
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> daycan.env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> daycan.env
           echo "SPRING_PROFILES_ACTIVE=develop" >> daycan.env
