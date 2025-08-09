@@ -44,6 +44,14 @@ export const toastContainer = style({
   vars: {
     "--toastify-toast-width": "fit-content",
   },
+  // react-toastify의 top-center 기본 포지셔닝을 덮어써서 정확히 중앙 정렬
+  left: "0 !important",
+  right: "0 !important",
+  transform: "none !important",
+  margin: "0 auto !important",
+  display: "flex",
+  justifyContent: "center",
+  pointerEvents: "none",
 });
 
 export type ToastVariants = RecipeVariants<typeof toast>;

@@ -29,13 +29,12 @@ export const Segment = ({
           index,
           options,
           value,
-          type,
+          type
         );
 
         return (
-          <>
+          <React.Fragment key={`segment-option-${index}-${option}`}>
             <SegmentItem
-              key={option}
               type={type}
               selected={isSelected}
               onClick={() => onSegmentChange(option)}
@@ -45,7 +44,7 @@ export const Segment = ({
             {shouldShowDivider && (
               <div className={classNames(segmentDivider)} />
             )}
-          </>
+          </React.Fragment>
         );
       })}
     </div>
@@ -58,7 +57,7 @@ const getSegmentItemState = (
   index: number,
   options: string[],
   value: string,
-  type?: string,
+  type?: string
 ) => {
   const isSelected = value === option;
   const isNextSelected =

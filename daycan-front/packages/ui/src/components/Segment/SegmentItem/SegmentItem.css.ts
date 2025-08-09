@@ -34,6 +34,7 @@ export const segmentItem = recipe({
     cursor: "pointer",
     userSelect: "none",
     transition: "all 0.2s ease",
+    boxSizing: "border-box",
   },
   variants: {
     type: {
