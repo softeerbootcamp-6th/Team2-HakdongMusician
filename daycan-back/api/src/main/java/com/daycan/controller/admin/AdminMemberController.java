@@ -50,7 +50,7 @@ public class AdminMemberController {
     Center center = centerDetails.getCenter();
 
     PageResponse<List<AdminMemberResponse>> memberList = memberService.getMemberListWithPaging(
-        center.getOrganizationId(), gender, careLevel, name, pageable);
+        center.getId(), gender, careLevel, name, pageable);
 
     return ResponseWrapper.onSuccess(memberList);
   }
@@ -64,7 +64,7 @@ public class AdminMemberController {
 
     AdminMemberResponse member = memberService.getMemberById(
         username,
-        center.getOrganizationId());
+        center.getId());
     return ResponseWrapper.onSuccess(member);
   }
 
@@ -76,7 +76,7 @@ public class AdminMemberController {
     Center center = centerDetails.getCenter();
 
     AdminMemberResponse newMember = memberService.createMember(memberRequest,
-        center.getOrganizationId());
+        center.getId());
     return ResponseWrapper.onSuccess(newMember);
   }
 
@@ -89,7 +89,7 @@ public class AdminMemberController {
     Center center = centerDetails.getCenter();
 
     AdminMemberResponse updatedMember = memberService.updateMember(username, memberRequest,
-        center.getOrganizationId());
+        center.getId());
     return ResponseWrapper.onSuccess(updatedMember);
   }
 
@@ -100,7 +100,7 @@ public class AdminMemberController {
       @Parameter(description = "장기요양인정번호", example = "AA1234567") @PathVariable String username) {
     Center center = centerDetails.getCenter();
 
-    memberService.deleteMember(username, center.getOrganizationId());
+    memberService.deleteMember(username, center.getId());
     return ResponseWrapper.onSuccess(null);
   }
 
@@ -112,7 +112,7 @@ public class AdminMemberController {
       @Parameter(description = "엑셀 파일 (.xlsx, .xls)", required = true) @RequestParam("file") MultipartFile file) {
     Center center = centerDetails.getCenter();
     // TODO: 엑셀 파일 파싱 및 일괄 등록 로직 구현 필요
-    List<AdminMemberResponse> memberList = memberService.getMemberList(center.getOrganizationId(),
+    List<AdminMemberResponse> memberList = memberService.getMemberList(center.getId(),
         null, null, null);
     return ResponseWrapper.onSuccess(memberList);
   }

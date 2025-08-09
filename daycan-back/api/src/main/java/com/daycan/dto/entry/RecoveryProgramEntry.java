@@ -25,6 +25,6 @@ public record RecoveryProgramEntry(
 
     @Schema(description = "기능회복훈련 특이사항", example = "프로그램에 적극적으로 참여")
     @Size(max = 100)
-    String note
+    String comment
 ) {}
 

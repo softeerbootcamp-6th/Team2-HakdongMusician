@@ -40,6 +40,6 @@ public class AdminDocumentController {
   public ResponseWrapper<DocumentCountResponse> getDocumentCount(
       @AuthenticatedUser CenterDetails centerDetails) {
     Center center = centerDetails.getCenter();
-    return ResponseWrapper.onSuccess(documentService.getDocumentCount(center.getOrganizationId()));
+    return ResponseWrapper.onSuccess(documentService.getDocumentCount(center.getId()));
   }
 }

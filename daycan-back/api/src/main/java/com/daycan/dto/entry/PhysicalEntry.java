@@ -16,6 +16,12 @@ public record PhysicalEntry(
     @Schema(description = "목욕 도움 여부", example = "true")
     boolean assistBathing,
 
+    @Schema(description = "목욕 시간", example = "30분")
+    String bathingDurationMinutes,
+
+    @Schema(description = "목욕 유형", example = "샤워")
+    String bathingType,
+
     @Valid @NotNull
     @Schema(description = "아침 식사 지원 정보")
     MealSupport breakfast,
@@ -38,6 +44,6 @@ public record PhysicalEntry(
 
     @Schema(description = "신체 활동 특이사항", example = "보행 시 통증 호소")
     @Size(max = 100)
-    String note
+    String comment
 ) { }
 

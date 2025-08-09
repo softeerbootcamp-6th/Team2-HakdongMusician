@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update      # 운영 RDS에 DROP 방지
+      ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQLDialect
 springdoc:

@@ -3,7 +3,6 @@ package com.daycan.controller.member;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.MemberDetails;
 import com.daycan.dto.FullReportDto;
-import com.daycan.dto.ReportEntry;
 import com.daycan.dto.member.report.ProgramSupportResponse;
 import com.daycan.dto.member.report.HealthSupportResponse;
 import com.daycan.dto.member.report.MealSupportResponse;
@@ -58,7 +57,7 @@ public class MemberReportController {
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate date
   ) {
-    FullReportDto report = careReportService.getReport(1L);
+    FullReportDto report = careReportService.getReport(memberDetails.getMember().getUsername(), date);
     return ResponseWrapper.onSuccess(report);
   }
 

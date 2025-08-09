@@ -1,10 +1,10 @@
 package com.daycan.dto;
 
+import com.daycan.dto.entry.ReportEntry;
 import com.daycan.dto.member.report.CardFooter;
 import java.util.List;
 
 public record FullReportDto(
-    Long reportId,
     Integer totalScore,
     Integer changeAmount,
     Integer mealScore,

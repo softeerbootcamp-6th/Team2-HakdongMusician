@@ -1,14 +1,16 @@
 package com.daycan.service;
 
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.common.response.status.CenterErrorStatus;
+import com.daycan.domain.entity.Center;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.StaffErrorStatus;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;
 import com.daycan.dto.admin.request.AdminStaffRequest;
 import com.daycan.dto.admin.response.AdminStaffResponse;
-import com.daycan.repository.StaffRepository;
-import java.time.LocalDateTime;
+import com.daycan.repository.jpa.CenterRepository;
+import com.daycan.repository.jpa.StaffRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,87 +22,82 @@ import org.springframework.transaction.annotation.Transactional;
 public class StaffService {
 
   private final StaffRepository staffRepository;
+  private final CenterRepository centerRepository; // ← 추가
 
-  public List<AdminStaffResponse> getStaffList(String organizationId, StaffRole staffRole, Gender gender,
-      String name) {
-    List<Staff> staffList = staffRepository.findByOrganizationIdWithFilters(organizationId,
-        staffRole,
-        gender, name);
-
-    return staffList.stream()
-        .map(this::toAdminResponse)
-        .toList();
+  public List<AdminStaffResponse> getStaffList(Long centerId, StaffRole staffRole, Gender gender, String name) {
+    List<Staff> staffList = staffRepository.findByCenterWithFilters(centerId, staffRole, gender, name);
+    return staffList.stream().map(this::toAdminResponse).toList();
   }
 
-  public AdminStaffResponse getStaffById(Long id, String organizationId) {
-    Staff staff = staffRepository.findByIdAndOrganizationId(id, organizationId)
+  public AdminStaffResponse getStaffById(Long id, Long centerId) {
+    Staff staff = staffRepository.findByIdAndCenterId(id, centerId)
         .orElseThrow(() -> new ApplicationException(StaffErrorStatus.NOT_FOUND));
-
     return toAdminResponse(staff);
   }
 
-  @Transactional
-  public AdminStaffResponse createStaff(AdminStaffRequest adminStaffRequest,
-      String organizationId) {
-    Staff staff = new Staff(
-        null,
-        adminStaffRequest.name(),
-        adminStaffRequest.gender(),
-        adminStaffRequest.staffRole(),
-        adminStaffRequest.birthDate(),
-        adminStaffRequest.phoneNumber(),
-        adminStaffRequest.avatarUrl(),
-        organizationId,
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        null
-    );
+  // ───────────────────────── write ops ─────────────────────────
 
-    Staff savedStaff = staffRepository.save(staff);
-    return toAdminResponse(savedStaff);
+  @Transactional
+  public AdminStaffResponse createStaff(AdminStaffRequest req, Long centerId) {
+    Center center = requireCenter(centerId);
+
+    Staff staff = Staff.builder()
+        .name(req.name())
+        .gender(req.gender())
+        .staffRole(req.staffRole())
+        .birthDate(req.birthDate())
+        .phoneNumber(req.phoneNumber())
+        .avatarUrl(req.avatarUrl())
+        .center(center)                      // ← 연관 주입
+        .build();
+
+    Staff saved = staffRepository.save(staff);
+    return toAdminResponse(saved);
   }
 
   @Transactional
-  public AdminStaffResponse updateStaff(Long id, AdminStaffRequest adminStaffRequest,
-      String organizationId) {
-    Staff staff = staffRepository.findByIdAndOrganizationId(id, organizationId)
+  public AdminStaffResponse updateStaff(Long id, AdminStaffRequest req, Long centerId) {
+    Staff staff = staffRepository.findByIdAndCenterId(id, centerId)
         .orElseThrow(() -> new ApplicationException(StaffErrorStatus.NOT_FOUND));
 
-    Staff updatedStaff = new Staff(
-        staff.getId(),
-        adminStaffRequest.name(),
-        adminStaffRequest.gender(),
-        adminStaffRequest.staffRole(),
-        adminStaffRequest.birthDate(),
-        adminStaffRequest.phoneNumber(),
-        adminStaffRequest.avatarUrl(),
-        organizationId,
-        staff.getCreatedAt(),
-        staff.getUpdatedAt(),
-        staff.getDeletedAt());
+    // 엔티티가 @Builder(toBuilder = true)이므로 toBuilder로 부분 업데이트
+    staff = staff.toBuilder()
+        .name(req.name())
+        .gender(req.gender())
+        .staffRole(req.staffRole())
+        .birthDate(req.birthDate())
+        .phoneNumber(req.phoneNumber())
+        .avatarUrl(req.avatarUrl())
+        .build();
 
-    Staff savedStaff = staffRepository.save(updatedStaff);
-    return toAdminResponse(savedStaff);
+    Staff saved = staffRepository.save(staff);
+    return toAdminResponse(saved);
   }
 
   @Transactional
-  public void deleteStaff(Long id, String organizationId) {
-    Staff staff = staffRepository.findByIdAndOrganizationId(id, organizationId)
+  public void deleteStaff(Long id, Long centerId) {
+    Staff staff = staffRepository.findByIdAndCenterId(id, centerId)
         .orElseThrow(() -> new ApplicationException(StaffErrorStatus.NOT_FOUND));
-
-    staffRepository.delete(staff);
+    staffRepository.delete(staff); // 소프트 삭제가 필요하면 필드/메서드로 전환
   }
 
-  private AdminStaffResponse toAdminResponse(Staff staff) {
+  // ───────────────────────── helpers ─────────────────────────
+
+  private Center requireCenter(Long centerId) {
+    return centerRepository.findById(centerId)
+        .orElseThrow(() -> new ApplicationException(CenterErrorStatus.NOT_FOUND));
+  }
+
+  private AdminStaffResponse toAdminResponse(Staff s) {
     return new AdminStaffResponse(
-        staff.getId(),
-        staff.getOrganizationId(),
-        staff.getName(),
-        staff.getGender(),
-        staff.getStaffRole(),
-        staff.getBirthDate(),
-        staff.getPhoneNumber(),
-        staff.getAvatarUrl()
+        s.getId(),
+        s.getCenter().getId(),
+        s.getName(),
+        s.getGender(),
+        s.getStaffRole(),
+        s.getBirthDate(),
+        s.getPhoneNumber(),
+        s.getAvatarUrl()
     );
   }
 }

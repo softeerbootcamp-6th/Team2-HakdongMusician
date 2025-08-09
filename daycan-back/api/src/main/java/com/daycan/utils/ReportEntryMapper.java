@@ -1,9 +1,9 @@
 package com.daycan.utils;
 
 import com.daycan.domain.entity.CareReport;
-import com.daycan.domain.entity.ProgramComment;
+import com.daycan.domain.entry.ProgramComment;
 import com.daycan.domain.entity.Vital;
-import com.daycan.dto.ReportEntry;
+import com.daycan.dto.entry.ReportEntry;
 import java.util.List;
 
 public class ReportEntryMapper {
@@ -39,7 +39,7 @@ public class ReportEntryMapper {
 
   /* ───────── 건강 ───────── */
   public static List<ReportEntry> healthEntries(CareReport r) {
-    Vital v = r.getVital();
+    Vital v = r.getDocument().getVital();
 
     String tempWarn = (v.getTemperature() != null &&
         v.getTemperature().doubleValue() > HIGH_TEMPERATURE_THRESHOLD)

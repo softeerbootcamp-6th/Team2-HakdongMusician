@@ -21,12 +21,13 @@ public class AdminCenterController {
 
   private final CenterService centerService;
 
+
   @GetMapping("/me")
   public ResponseWrapper<CenterResponse> getMemberList(
       @AuthenticatedUser CenterDetails centerDetails
   ) {
     Center center = centerDetails.getCenter();
-    CenterResponse centerResponse = centerService.getCenterInfo(center.getOrganizationId());
+    CenterResponse centerResponse = centerService.getCenterInfo(center.getId());
     return ResponseWrapper.onSuccess(centerResponse);
   }
 }

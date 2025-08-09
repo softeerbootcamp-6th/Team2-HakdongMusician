@@ -1,17 +1,20 @@
 package com.daycan.domain.entity;
 
+
+import com.daycan.domain.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "vital")
@@ -19,11 +22,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Vital {
+public class Vital extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Column(name = "id")
+  private Long id; // document_id와 동일(공유 PK)
+
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  @MapsId
+  @JoinColumn(name = "id")
+  private Document document;
 
   @Column(name = "blood_pressure_systolic")
   private Integer bloodPressureSystolic;
@@ -39,7 +47,4 @@ public class Vital {
 
   @Column(name = "number_of_urine")
   private Integer numberOfUrine;
-
-  @Column(name = "document_id")
-  private Long documentId;
 }

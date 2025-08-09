@@ -12,8 +12,8 @@ public record AdminStaffResponse(
     @Schema(description = "관리자 ID (PK)", example = "123")
     Long id,
 
-    @Schema(description = "센터 ID (char(11))", example = "CTR00001234")
-    String centerId,
+    @Schema(description = "센터 ID Long", example = "1")
+    Long centerId,
 
     @Schema(description = "이름", example = "홍관리")
     String name,

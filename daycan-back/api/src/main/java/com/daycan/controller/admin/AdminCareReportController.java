@@ -1,13 +1,13 @@
 package com.daycan.controller.admin;
 
 import com.daycan.common.response.ResponseWrapper;
+import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.dto.FullReportDto;
-import com.daycan.dto.ReportEntry;
-import com.daycan.dto.admin.request.ReportQueryParameters;
+import com.daycan.dto.entry.ReportEntry;
+import com.daycan.dto.entry.ReportQueryParameters;
 import com.daycan.dto.admin.request.ReportReviewRequest;
 import com.daycan.dto.admin.response.CareReportMetaResponse;
 import com.daycan.common.response.PageResponse;
-import com.daycan.domain.enums.CareReportStatus;
 import com.daycan.dto.member.report.CardFooter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,16 +39,17 @@ public class AdminCareReportController {
 
   @GetMapping
   public PageResponse<List<CareReportMetaResponse>> getReportList(
-      @ParameterObject @ModelAttribute ReportQueryParameters query,
+      @ParameterObject @ModelAttribute @Valid
+      ReportQueryParameters query,
       // 스프링이 query-param <-> record 바인딩
       Pageable pageable               // page, size, sort 파라미터 처리
   ) {
 
     /* mock 데이터 생성 (임시) */
     List<CareReportMetaResponse> mock = List.of(
-        new CareReportMetaResponse(1L, "김순애", LocalDate.now(), CareReportStatus.REVIEWED, false),
+        new CareReportMetaResponse(1L, "김순애", LocalDate.now(), DocumentStatus.REPORT_REVIEWED, false),
         new CareReportMetaResponse(2L, "박철수", LocalDate.now().minusDays(1),
-            CareReportStatus.PENDING, true)
+            DocumentStatus.REPORT_PENDING, true)
     );
 
     return new PageResponse<>(
@@ -101,7 +102,6 @@ public class AdminCareReportController {
     );
 
     FullReportDto response = new FullReportDto(
-        1L,
         85,         // totalScore
         -2,          // changeAmount
         20,         // mealScore

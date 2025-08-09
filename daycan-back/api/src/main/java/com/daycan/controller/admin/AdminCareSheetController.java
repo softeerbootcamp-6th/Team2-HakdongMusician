@@ -1,5 +1,7 @@
 package com.daycan.controller.admin;
 
+import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.auth.model.CenterDetails;
 import com.daycan.dto.entry.CognitiveEntry;
 import com.daycan.dto.entry.HealthCareEntry;
 import com.daycan.dto.entry.MealSupport;
@@ -21,6 +23,7 @@ import com.daycan.dto.entry.BloodPressureEntry;
 import com.daycan.dto.entry.MealEntry;
 import com.daycan.dto.entry.MemberMetaEntry;
 import com.daycan.dto.entry.TemperatureEntry;
+import com.daycan.service.DocumentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +45,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/admin/care-sheet")
+@RequiredArgsConstructor
 @Tag(name = "📜 기록지 관리", description = "관리자용 기록지 관련 API")
 public class AdminCareSheetController {
+  private final DocumentService documentService;
 
   // 단건 조회
   @GetMapping("/{date}/{recipientId}")
@@ -97,7 +103,7 @@ public class AdminCareSheetController {
     List<CareSheetMetaResponse> mock = List.of(
         new CareSheetMetaResponse(
             1001L,
-            CareSheetStatus.DONE,
+            DocumentStatus.SHEET_DONE,
             new MemberMetaEntry("MEM12345", "오애순",
                 LocalDate.of(1943, 9, 12), Gender.FEMALE),
             true,
@@ -106,7 +112,7 @@ public class AdminCareSheetController {
         ),
         new CareSheetMetaResponse(
             1002L,
-            CareSheetStatus.PENDING,
+            DocumentStatus.SHEET_PENDING,
             new MemberMetaEntry("MEM67890", "김관식",
                 LocalDate.of(1940, 3, 8), Gender.MALE),
             false,
@@ -140,8 +146,10 @@ public class AdminCareSheetController {
   @PostMapping("")
   @Operation(summary = "기록지 직접 등록", description = "기록지 내용을 업로드합니다. (신체, 인지, 건강, 기능 회복 항목 포함)")
   public ResponseWrapper<Void> uploadCareSheet(
+      @AuthenticatedUser CenterDetails centerDetails,
       @Valid @RequestBody CareSheetRequest request
   ) {
+    documentService.writeCareSheet(request);
     return ResponseWrapper.onSuccess(null);
   }
 
@@ -169,7 +177,7 @@ public class AdminCareSheetController {
 
   private PhysicalEntry mockPhysicalEntry() {
     return new PhysicalEntry(
-        true, true, true,
+        true, true, true,"30분", "샤워",
         new MealSupport(true, new MealEntry(MealType.REGULAR, MealAmount.FULL)),
         new MealSupport(true, new MealEntry(MealType.PORRIDGE, MealAmount.MORE_HALF)),
         new MealSupport(false, null),

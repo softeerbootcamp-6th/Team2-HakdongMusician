@@ -1,13 +1,14 @@
 package com.daycan.service;
 
-import com.daycan.common.exception.ApplicationException;
+import com.daycan.domain.entity.Document;
+import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
-import com.daycan.domain.entity.Program;
-import com.daycan.domain.entity.CareSheet;
 import com.daycan.domain.entity.PersonalProgram;
-import com.daycan.domain.enums.ActivityScore;
-import com.daycan.repository.PersonalProgramRepository;
-import com.daycan.repository.ProgramRepository;
+import com.daycan.domain.enums.ProgramScore;
+import com.daycan.repository.jpa.PersonalProgramRepository;
+
+import java.time.LocalDate;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,105 +21,77 @@ import java.util.List;
 public class PersonalProgramService {
 
   private final PersonalProgramRepository personalProgramRepository;
-  private final ProgramRepository programRepository;
 
-  /**
-   * 모든 개인 활동 조회
-   */
   public List<PersonalProgram> getAllPersonalActivities() {
     return personalProgramRepository.findAll();
   }
 
-  /**
-   * ID로 개인 활동 조회
-   */
   public PersonalProgram getPersonalActivityById(Long id) {
     return personalProgramRepository.findById(id)
         .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
   }
 
-  /**
-   * CareSheet ID로 개인 활동 목록 조회
-   */
-  public List<PersonalProgram> getPersonalActivitiesByCareSheetId(Long careSheetId) {
-    return personalProgramRepository.findByCareSheetId(careSheetId);
+  public List<PersonalProgram> getPersonalActivitiesByDocumentId(Long documentId) {
+    return personalProgramRepository.findByDocumentId(documentId);
   }
 
-  /**
-   * Activity ID로 개인 활동 목록 조회
-   */
-  public List<PersonalProgram> getPersonalActivitiesByActivityId(Long programId) {
-    return personalProgramRepository.findByProgramId(programId);
+  public List<PersonalProgram> getPersonalActivitiesByMemberAndDate(Long memberId, LocalDate docDate) {
+    return personalProgramRepository.findByDocumentMemberIdAndDocumentDocDate(memberId, docDate);
   }
 
-  /**
-   * 특정 점수 범위의 개인 활동 조회
-   */
-  public List<PersonalProgram> getPersonalActivitiesByScores(List<ActivityScore> scores) {
+  public List<PersonalProgram> getPersonalActivitiesByProgram(String program) {
+    return personalProgramRepository.findByProgramName(program);
+  }
+
+  public List<PersonalProgram> getPersonalActivitiesByPrograms(Collection<String> programs) {
+    return personalProgramRepository.findByProgramNameIn(programs);
+  }
+
+  public List<PersonalProgram> getPersonalActivitiesByScores(Collection<ProgramScore> scores) {
     return personalProgramRepository.findByScoreIn(scores);
   }
 
-  /**
-   * CareSheet와 Activity로 개인 활동 조회
-   */
-  public List<PersonalProgram> getPersonalActivitiesByCareSheetAndActivity(Long careSheetId, Long activityId) {
-    return personalProgramRepository.findByCareSheetIdAndProgramId(careSheetId, activityId);
+  public List<PersonalProgram> getPersonalActivitiesByDocumentAndProgram(Long documentId, String program) {
+    return personalProgramRepository.findByDocumentIdAndProgramName(documentId, program);
   }
 
-  /**
-   * 새로운 개인 활동 생성
-   */
-  @Transactional
-  public PersonalProgram createPersonalActivity(CareSheet careSheet, Long programId,
-      ActivityScore score, String personalNote) {
-    Program program = programRepository.findById(programId)
-        .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
+  public List<PersonalProgram> getPersonalActivitiesByMemberDateAndProgram(
+      Long memberId, LocalDate docDate, String program) {
+    return personalProgramRepository
+        .findByDocumentMemberIdAndDocumentDocDateAndProgramName(memberId, docDate, program);
+  }
 
-    PersonalProgram personalProgram = PersonalProgram.builder()
-        .careSheet(careSheet)
-        .program(program)
+  @Transactional
+  public PersonalProgram createPersonalActivity(Document document, String program,
+      ProgramScore score, String personalNote) {
+
+    PersonalProgram entity = PersonalProgram.builder()
+        .document(document)
+        .programName(program)
         .score(score)
         .personalNote(personalNote)
         .build();
 
-    return personalProgramRepository.save(personalProgram);
+    return personalProgramRepository.save(entity);
   }
 
-  /**
-   * 개인 활동 수정
-   */
   @Transactional
-  public PersonalProgram updatePersonalActivity(Long id, ActivityScore score, String personalNote) {
-    PersonalProgram existingActivity = getPersonalActivityById(id);
-
-    PersonalProgram updatedActivity = PersonalProgram.builder()
-        .id(existingActivity.getId())
-        .careSheet(existingActivity.getCareSheet())
-        .program(existingActivity.getProgram())
-        .score(score != null ? score : existingActivity.getScore())
-        .personalNote(personalNote != null ? personalNote : existingActivity.getPersonalNote())
-        .build();
-
-    return personalProgramRepository.save(updatedActivity);
+  public PersonalProgram updatePersonalProgram(Long id, ProgramScore score, String personalNote) {
+    PersonalProgram personalProgram = getPersonalActivityById(id);
+    personalProgram.update(score, personalNote);
+    return personalProgram;
   }
 
-  /**
-   * 개인 활동 삭제
-   */
   @Transactional
-  public void deletePersonalActivity(Long id) {
+  public void deletePersonalProgram(Long id) {
     if (!personalProgramRepository.existsById(id)) {
       throw new ApplicationException(CommonErrorStatus.NOT_FOUND);
     }
     personalProgramRepository.deleteById(id);
   }
 
-  /**
-   * CareSheet의 모든 개인 활동 삭제
-   */
   @Transactional
-  public void deletePersonalActivitiesByCareSheetId(Long careSheetId) {
-    List<PersonalProgram> personalActivities = getPersonalActivitiesByCareSheetId(careSheetId);
-    personalProgramRepository.deleteAll(personalActivities);
+  public void deletePersonalProgramsByDocumentId(Long documentId) {
+    personalProgramRepository.deleteByDocumentId(documentId);
   }
 }

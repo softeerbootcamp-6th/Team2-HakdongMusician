@@ -1,7 +1,7 @@
 package com.daycan.dto.admin.response;
 
 import com.daycan.dto.entry.MemberMetaEntry;
-import com.daycan.domain.enums.CareSheetStatus;
+import com.daycan.domain.enums.DocumentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "기록지 메타 정보 응답 DTO")
@@ -10,8 +10,8 @@ public record CareSheetMetaResponse(
     @Schema(description = "기록지 ID", example = "1001")
     Long careSheetId,
 
-    @Schema(description = "기록지 상태", implementation = CareSheetStatus.class)
-    CareSheetStatus status,
+    @Schema(description = "기록지 상태", implementation = DocumentStatus.class)
+    DocumentStatus status,
 
     @Schema(description = "수급자 메타 정보")
     MemberMetaEntry memberMeta,

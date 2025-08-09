@@ -4,8 +4,10 @@ import com.daycan.domain.enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.Builder;
 
 @Schema(description = "관리자용 수급자 정보 응답")
+@Builder
 public record AdminMemberResponse(
 
     @Schema(description = "장기요양인정번호 (PK)", example = "AA1234567") String username,
@@ -24,7 +26,7 @@ public record AdminMemberResponse(
 
     @Schema(description = "보호자 관계", example = "딸") String guardianRelation,
 
-    @Schema(description = "보호자 생년월일", example = "1978-10-02") LocalDate guardianRelationBirthDate,
+    @Schema(description = "보호자 생년월일", example = "1978-10-02") LocalDate guardianBirthDate,
 
     @Schema(description = "보호자 전화번호", example = "010-1234-5678") String guardianPhoneNumber,
 

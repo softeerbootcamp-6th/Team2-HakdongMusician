@@ -7,7 +7,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record HealthCareEntry(
+public record  HealthCareEntry(
     @Schema(description = "건강관리(40분) 수행 여부", example = "true")
     boolean healthCare,
 
@@ -27,5 +27,5 @@ public record HealthCareEntry(
 
     @Schema(description = "건강관리 특이사항", example = "정상 범위 유지")
     @Size(max = 100)
-    String note
+    String comment
 ) {}

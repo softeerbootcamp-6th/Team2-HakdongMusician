@@ -1,33 +1,41 @@
 package com.daycan.domain.entity;
 
+import com.daycan.common.response.status.CenterErrorStatus;
+import com.daycan.domain.Account;
+import com.daycan.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.UniqueConstraint;
+import java.util.List;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
-@Builder
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "center")
-public class Center {
+@Table(
+    name = "center",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_center_code", columnNames = {"center_code"})
+    }
+)
+public class Center extends Account {
 
   @Id
-  @Column(name = "organization_id", length = 11, nullable = false)
-  // 장기요양 인증번호
-  private String organizationId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
+
+  /** 비즈니스 식별자(로그인 ID로도 사용) */
+  @Column(name = "center_code", length = 11, nullable = false, updatable = false)
+  private String centerCode;
 
   @Column(name = "name", length = 128)
   private String name;
-
-  @Column(name = "location", length = 128)
-  private String location;
 
   @Column(name = "phone_number", length = 20)
   private String phoneNumber;
@@ -35,18 +43,36 @@ public class Center {
   @Column(name = "logo_url", length = 1024)
   private String logoUrl;
 
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
-
-  @Column(name = "deleted_at")
-  private LocalDateTime deletedAt;
-
+  /** MySQL JSON 컬럼 <-> List<String> 매핑 */
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "car_numbers", columnDefinition = "json")
-  private String carNumbers; // JSON 필드는 String으로 매핑
+  private List<String> carNumbers;
 
-  @Column(name = "username", length = 20)
-  private String username;
+  protected Center() {}
 
-  @Column(name = "password", length = 100)
-  private String password;
+  /** 센터 신규 생성: username을 centerCode로 맞춰줌 */
+  public static Center createNew(String centerCode, String hashedPassword) {
+    if (isBlank(centerCode) || isBlank(hashedPassword)) {
+      throw new ApplicationException(CenterErrorStatus.CENTER_INVALID_CONSTRUCT);
+    }
+    Center c = new Center();
+    c.username = centerCode; // username은 centerCode로 설정
+    c.centerCode = centerCode;
+    c.changePassword(hashedPassword);
+    c.active = Boolean.TRUE;        // Account.active
+    return c;
+  }
+
+  /**
+   * 센터 프로필 정보 부분 업데이트.
+   * username/centerCode는 변경하지 않음(식별자 불변).
+   * location 필드는 상위 Account에 존재한다는 가정 하에 갱신.
+   */
+  public void updateCenterInfo(String name, String phoneNumber,
+      String logoUrl, List<String> carNumbers) {
+    if (name != null) this.name = name;
+    if (phoneNumber != null) this.phoneNumber = phoneNumber;
+    if (logoUrl != null) this.logoUrl = logoUrl;
+    if (carNumbers != null) this.carNumbers = carNumbers;
+  }
 }
