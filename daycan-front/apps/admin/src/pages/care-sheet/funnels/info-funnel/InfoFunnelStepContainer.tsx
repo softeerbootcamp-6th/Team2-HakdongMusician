@@ -1,4 +1,7 @@
 import { FunnelProvider, FunnelStep, type FunnelState } from "@daycan/hooks";
+import { useEffect } from "react";
+import { useAtomValue } from "jotai";
+import { homeFunnelDataAtom } from "../home-funnel/atoms/homeAtom";
 
 import { infoFunnelSteps } from "../../constants/steps";
 import { useNavigate } from "react-router-dom";
@@ -6,9 +9,11 @@ import { Step0, Step1, Step2, Step3, Step4, Step5 } from "./steps";
 import { infoFunnelDataAtom } from "./atoms/infoAtom";
 import { useSetAtom } from "jotai";
 import { convertFunnelStateToInfoFunnelData } from "./utils/parsingData";
+import { getStoredValue } from "../utils/storage";
 
 export const InfoFunnelStepContainer = () => {
   const navigate = useNavigate();
+  const homeData = useAtomValue(homeFunnelDataAtom);
   const setInfoFunnelData = useSetAtom(infoFunnelDataAtom);
 
   const handleComplete = (funnelState: FunnelState) => {
@@ -26,6 +31,14 @@ export const InfoFunnelStepContainer = () => {
     // 다음 페이지로 이동
     navigate("/care-sheet/diagnosis");
   };
+
+  // 홈 퍼널 데이터가 없으면 홈 퍼널로 이동 (atom 초기 null hydration 대비 로컬스토리지도 확인)
+  useEffect(() => {
+    const stored = getStoredValue("careSheet:homeFunnel");
+    if (stored === null) {
+      navigate("/care-sheet/", { replace: true });
+    }
+  }, [homeData, navigate]);
 
   return (
     <FunnelProvider
