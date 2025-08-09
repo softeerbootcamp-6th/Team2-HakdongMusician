@@ -1,9 +1,6 @@
-package com.daycan.batch;
+package com.daycan.async;
 
-import com.daycan.domain.entity.Document;
 import com.daycan.domain.entity.Member;
-import com.daycan.domain.enums.DocumentStatus;
-import com.daycan.repository.DocumentRepository;
 import com.daycan.repository.MemberRepository;
 import com.daycan.service.DocumentService;
 import java.time.LocalDate;

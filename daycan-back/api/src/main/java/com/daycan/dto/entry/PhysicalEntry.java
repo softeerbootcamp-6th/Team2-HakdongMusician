@@ -44,6 +44,6 @@ public record PhysicalEntry(
 
     @Schema(description = "신체 활동 특이사항", example = "보행 시 통증 호소")
     @Size(max = 100)
-    String note
+    String comment
 ) { }
 

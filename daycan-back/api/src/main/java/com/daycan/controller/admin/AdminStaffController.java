@@ -41,7 +41,7 @@ public class AdminStaffController {
       @Parameter(description = "종사자 이름 (부분 검색 가능)", example = "김간호") @RequestParam(required = false) String name) {
     Center center = centerDetails.getCenter();
 
-    List<AdminStaffResponse> staffList = staffService.getStaffList(center.getOrganizationId(),
+    List<AdminStaffResponse> staffList = staffService.getStaffList(center.getId(),
         staffRole,
         gender,
         name);
@@ -55,7 +55,7 @@ public class AdminStaffController {
       @Parameter(description = "종사자 ID", example = "1") @PathVariable Long id) {
     Center center = centerDetails.getCenter();
 
-    AdminStaffResponse staff = staffService.getStaffById(id, center.getOrganizationId());
+    AdminStaffResponse staff = staffService.getStaffById(id, center.getId());
     return ResponseWrapper.onSuccess(staff);
   }
 
@@ -67,7 +67,7 @@ public class AdminStaffController {
     Center center = centerDetails.getCenter();
 
     AdminStaffResponse newStaff = staffService.createStaff(adminStaffRequest,
-        center.getOrganizationId());
+        center.getId());
     return ResponseWrapper.onSuccess(newStaff);
   }
 
@@ -79,7 +79,7 @@ public class AdminStaffController {
       @RequestBody AdminStaffRequest adminStaffRequest) {
     Center center = centerDetails.getCenter();
     AdminStaffResponse updatedStaff = staffService.updateStaff(id, adminStaffRequest,
-        center.getOrganizationId());
+        center.getId());
     return ResponseWrapper.onSuccess(updatedStaff);
   }
 
@@ -90,7 +90,7 @@ public class AdminStaffController {
       @Parameter(description = "종사자 ID", example = "1") @PathVariable Long id) {
     Center center = centerDetails.getCenter();
 
-    staffService.deleteStaff(id, center.getOrganizationId());
+    staffService.deleteStaff(id, center.getId());
     return ResponseWrapper.onSuccess(null);
   }
 

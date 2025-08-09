@@ -5,18 +5,30 @@ import com.daycan.domain.Account;
 import com.daycan.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = "center")
+@Table(
+    name = "center",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_center_code", columnNames = {"center_code"})
+    }
+)
 public class Center extends Account {
 
   @Id
-  @Column(name = "organization_id", length = 11, nullable = false, updatable = false)
-  private String organizationId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
+
+  @Column(name = "center_code", length = 11, nullable = false, updatable = false)
+  private String centerCode; // 비즈니스 식별자
 
   @Column(name = "name", length = 128)
   private String name;
@@ -34,14 +46,16 @@ public class Center extends Account {
   private String carNumbers;
 
   @Column(name = "username", length = 20)
-  private String username;
+  private String username; // 센터 로그인 계정(있다면)
 
-  public static Center createNew(String organizationId, String hashedPassword) {
-    if (isBlank(organizationId) || isBlank(hashedPassword)) {
+  protected Center() {}
+
+  public static Center createNew(String centerCode, String hashedPassword) {
+    if (isBlank(centerCode) || isBlank(hashedPassword)) {
       throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "필수 파라미터가 누락되었습니다.");
     }
     Center c = new Center();
-    c.organizationId = organizationId;
+    c.centerCode = centerCode;
     c.changePassword(hashedPassword);
     c.active = Boolean.TRUE;
     return c;

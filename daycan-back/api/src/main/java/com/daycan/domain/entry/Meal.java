@@ -1,4 +1,4 @@
-package com.daycan.domain.entity;
+package com.daycan.domain.entry;
 
 
 import com.daycan.domain.enums.MealAmount;

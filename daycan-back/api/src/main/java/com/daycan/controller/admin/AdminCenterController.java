@@ -26,7 +26,7 @@ public class AdminCenterController {
       @AuthenticatedUser CenterDetails centerDetails
   ) {
     Center center = centerDetails.getCenter();
-    CenterResponse centerResponse = centerService.getCenterInfo(center.getOrganizationId());
+    CenterResponse centerResponse = centerService.getCenterInfo(center.getId());
     return ResponseWrapper.onSuccess(centerResponse);
   }
 }

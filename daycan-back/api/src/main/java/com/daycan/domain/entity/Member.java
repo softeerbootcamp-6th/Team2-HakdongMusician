@@ -2,17 +2,25 @@ package com.daycan.domain.entity;
 
 
 import com.daycan.common.response.status.MemberErrorStatus;
+import com.daycan.domain.Account;
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.enums.Gender;
-import com.daycan.domain.helper.MemberCommand;
+import com.daycan.domain.entry.MemberCommand;
 
 import com.daycan.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 import java.time.LocalDate;
 
@@ -23,16 +31,28 @@ import lombok.Getter;
 @Getter
 @Entity
 @Table(
-    name = "member"
-//    ,indexes = {
-//        @Index(name = "idx_member_active", columnList = "active")
-//    }
+    name = "member",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_member_username", columnNames = {"username"})
+    },
+    indexes = {
+        @Index(name = "idx_member_center", columnList = "center_id"),
+        @Index(name = "idx_member_active", columnList = "active")
+    }
 )
-public class Member extends BaseTimeEntity {
+public class Member extends Account {
 
   @Id
-  @Column(name = "username", length = 11, nullable = false)
-  private String username;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
+
+  @Column(name = "username", length = 20, nullable = false)
+  private String username; // 전역 유니크(정규화 저장)
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "center_id", nullable = false)
+  private Center center; // 소속 센터(1:1 전제)
 
   @Column(name = "name", nullable = false)
   private String name;
@@ -68,19 +88,33 @@ public class Member extends BaseTimeEntity {
   @Column(name = "guardian_avatar_url")
   private String guardianAvatarUrl;
 
-  @Column(name = "organization_id", length = 11, nullable = false)
-  private String organizationId;
-
-  @Column(name = "password", length = 100, nullable = false)
-  private String password;
-
-  @Column(name = "active", nullable = false)
-  private Boolean active = true;
-
   @Version
-  private Long version; // 경합 방지(권장)
+  private Long version;
 
-  protected Member() {} // JPA
+  protected Member() {}
+
+  public static Member createNew(String username,
+      Center center,
+      String name, Gender gender, LocalDate birthDate,
+      String hashedPassword) {
+    if (isBlank(username) || center == null || isBlank(name) || gender == null || birthDate == null || isBlank(hashedPassword)) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "필수 파라미터가 누락되었습니다.");
+    }
+    Member m = new Member();
+    m.username = username;            // 정규화된 값 전달 전제
+    m.center = center;
+    m.name = name;
+    m.gender = gender;
+    m.birthDate = birthDate;
+    m.changePassword(hashedPassword); // Account 메서드
+    m.active = Boolean.TRUE;
+    return m;
+  }
+
+  public void changeCenter(Center newCenter) {
+    if (newCenter == null) throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "center 누락");
+    this.center = newCenter;
+  }
 
   public void apply(MemberCommand cmd) {
     if (cmd.name() != null) this.name = cmd.name();
@@ -94,37 +128,6 @@ public class Member extends BaseTimeEntity {
     if (cmd.guardianPhoneNumber() != null) this.guardianPhoneNumber = cmd.guardianPhoneNumber();
     if (cmd.guardianAvatarUrl() != null) this.guardianAvatarUrl = cmd.guardianAvatarUrl();
     if (cmd.acceptReport() != null) this.acceptReport = cmd.acceptReport();
-    if (cmd.hashedPassword() != null) this.password = cmd.hashedPassword();
+    if (cmd.hashedPassword() != null) this.changePassword(cmd.hashedPassword());
   }
-
-  public static Member createNew(String username, String organizationId,
-      String name, Gender gender, LocalDate birthDate,
-      String hashedPassword) {
-    if (isBlank(username) || isBlank(organizationId) || isBlank(name) || gender == null || birthDate == null || isBlank(hashedPassword)) {
-      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "필수 파라미터가 누락되었습니다.");
-    }
-    Member m = new Member();
-    m.username = username;
-    m.organizationId = organizationId;
-    m.name = name;
-    m.gender = gender;
-    m.birthDate = birthDate;
-    m.password = hashedPassword;
-    m.active = Boolean.TRUE;
-    return m;
-  }
-
-  public void deactivate() {
-    this.active = Boolean.FALSE;
-  }
-
-  public void reactivateTo(String newOrganizationId) {
-    if (isBlank(newOrganizationId)) {
-      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "organizationId 누락");
-    }
-    this.organizationId = newOrganizationId;
-    this.active = Boolean.TRUE;
-  }
-
-  private static boolean isBlank(String v) { return v == null || v.isBlank(); }
 }

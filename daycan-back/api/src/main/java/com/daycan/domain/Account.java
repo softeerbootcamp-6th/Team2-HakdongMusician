@@ -41,5 +41,11 @@ public abstract class Account extends BaseTimeEntity {
   protected static boolean isBlank(String v) {
     return v == null || v.isBlank();
   }
+
+  public void reactivate() {
+    this.active = Boolean.TRUE;
+    this.deletedAt = null;
+  }
+
 }
 

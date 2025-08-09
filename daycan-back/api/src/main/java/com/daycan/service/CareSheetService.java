@@ -1,17 +1,19 @@
 package com.daycan.service;
 
 import com.daycan.domain.entity.Document;
-import com.daycan.domain.helper.DocumentKey;
 import com.daycan.domain.entity.CareSheet;
+import com.daycan.domain.entity.Vital;
 import com.daycan.dto.admin.request.CareSheetRequest;
 import com.daycan.exceptions.DocumentNonCreatedException;
 import com.daycan.repository.CareSheetRepository;
 import com.daycan.repository.DocumentRepository;
-import com.daycan.utils.CareSheetMapper;
+import com.daycan.repository.VitalRepository;
+import com.daycan.utils.SheetMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -20,42 +22,41 @@ public class CareSheetService {
 
   private final CareSheetRepository careSheetRepository;
   private final DocumentRepository documentRepository;
+  private final VitalRepository vitalRepository;
 
   /**
-   * 기록지 생성‧수정
-   * <p>
-   * [ 흐름 ] 1. 요청된 recipientId와 date로 Document 조회 (문서가 미리 생성되어 있어야 함) 2. CareSheet 존재 여부 확인 - 존재하지
-   * 않으면 신규 생성 - 존재하면 수정 3. Document 상태 COMPLETED로 갱신
+   * 기록지 생성‧수정 흐름: 1) Document 조회(없으면 DocumentService에서 생성) 2) CareSheet 존재 여부에 따라 생성/수정 3) Document
+   * 상태 갱신
    */
-  protected void createCareSheet(CareSheetRequest req) {
+  @Transactional
+  protected void writeSheet(CareSheetRequest req) {
 
-    // 해당 수급자/날짜의 문서(PK 공유)를 조회
-    Document doc = documentRepository.findById(
-        DocumentKey.of(req.recipientId(), req.date())
-    ).orElseThrow(DocumentNonCreatedException::new);
+    // memberId & docDate로 조회
+    Document doc = documentRepository
+        .findByMemberIdAndDocDate(req.memberId(), req.date())
+        .orElseThrow(DocumentNonCreatedException::new);
 
-    CareSheet saved;
     boolean isNew = !careSheetRepository.existsById(doc.getId());
-    // CareSheet 존재 여부에 따라 분기
-    if (isNew) {
-      // 신규 작성
-      CareSheet entity = CareSheetMapper.toEntity(doc, req);
-      saved = careSheetRepository.save(entity);
 
+    CareSheet savedSheet;
+    Vital savedVital;
+    if (isNew) {
+      savedVital = SheetMapper.toVital(doc, req);
+      CareSheet careSheet = SheetMapper.toCareSheet(doc,
+          req); // entity.setId(doc.getId()) & setDocument(doc)
+      savedSheet = careSheetRepository.save(careSheet);
+      savedVital = vitalRepository.save(savedVital); // Vital은 항상 새로 저장
     } else {
-      // 수정
       CareSheet sheet = careSheetRepository.findById(doc.getId())
           .orElseThrow(() -> new EntityNotFoundException("CareSheet " + doc.getId()));
-
-      CareSheetMapper.update(sheet, req);
-      saved = sheet;
+      SheetMapper.updateSheet(sheet, req);
+      savedSheet = sheet;
+      savedVital = SheetMapper.toVital(doc, req); // Vital은 항상 새로 저장
     }
 
-    // 문서 상태 COMPLETED 로 변경 (작성 완료 처리)
-    doc.sheetDone();
+    doc.sheetDone(); // 상태 갱신(영속 상태라 flush 시 반영)
 
-    log.info("[CareSheet] {} ({}) {}", saved.getId(),
+    log.debug("[CareSheet] {}  vital: {} ({}) {},", savedSheet.getId(), savedVital.getId(),
         req.date(), isNew ? "created" : "updated");
-
   }
 }

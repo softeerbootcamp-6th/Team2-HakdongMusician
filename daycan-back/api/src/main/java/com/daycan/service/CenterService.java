@@ -7,21 +7,24 @@ import com.daycan.dto.admin.response.CenterResponse;
 import com.daycan.repository.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CenterService {
 
   private final CenterRepository centerRepository;
 
-  public CenterResponse getCenterInfo(String organizationId) {
-    Center center = centerRepository.findById(organizationId)
+  public CenterResponse getCenterInfo(Long centerId) {
+    Center center = centerRepository.findById(centerId)
         .orElseThrow(() -> new ApplicationException(CenterErrorStatus.NOT_FOUND));
 
     return new CenterResponse(
         center.getName(),
         center.getLocation(),
         center.getPhoneNumber(),
-        center.getLogoUrl());
+        center.getLogoUrl()
+    );
   }
 }

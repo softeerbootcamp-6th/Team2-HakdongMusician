@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JwtAuthFilter implements Filter {
+
   private static final String ADMIN_PREFIX = "/admin";
   private static final String USER_DETAILS_ATTRIBUTE = "userDetails";
 

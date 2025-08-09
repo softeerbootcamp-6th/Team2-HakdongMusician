@@ -1,18 +1,17 @@
 package com.daycan.domain.entity;
 
-import static jakarta.persistence.FetchType.LAZY;
-
 import com.daycan.domain.BaseTimeEntity;
-import com.daycan.domain.helper.DocumentKey;
+import com.daycan.domain.entry.Meal;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -33,22 +32,18 @@ import lombok.NoArgsConstructor;
 @Table(name = "care_sheet")
 public class CareSheet extends BaseTimeEntity {
 
-  @EmbeddedId
-  private DocumentKey id;  // Document의 복합키와 공유
+  @Id
+  @Column(name = "id")
+  private Long id; // document_id와 동일(공유 PK)
 
-  @OneToOne(fetch = LAZY, optional = false)
-  @MapsId  // DocumentKey를 그대로 매핑
-  @JoinColumns({
-      @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
-      @JoinColumn(name = "date", referencedColumnName = "date")
-  })
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  @MapsId // id == document.id
+  @JoinColumn(name = "id")
   private Document document;
 
-  @Column(name = "writer_id", nullable = false)
-  private Long writerId; // 작성자 ID (Staff의 ID)
-
-  @Column(nullable = false, length = 11, updatable = false, insertable = false)
-  private String username;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "writer_id", nullable = false)
+  private Staff writer;
 
   @Column(name = "arrival_time", nullable = false)
   private LocalTime arrivalTime;
@@ -116,8 +111,8 @@ public class CareSheet extends BaseTimeEntity {
   @Column(name = "emergency_service", nullable = false)
   private boolean emergencyService;
 
-  @Column(name = "health_training", nullable = false)
-  private boolean healthTraining;
+  @Column(name = "motion_training", nullable = false)
+  private boolean motionTraining;
 
   @Column(name = "cognitive_program", nullable = false)
   private boolean cognitiveProgram;
@@ -128,22 +123,18 @@ public class CareSheet extends BaseTimeEntity {
   @Column(name = "physical_therapy", nullable = false)
   private boolean physicalTherapy;
 
-  @Column(name = "functional_comment", length = 300)
-  @Size(max = 100)
+  // @Size(100)와 length=300이 안 맞았던 부분 통일(길이=300, 검증=<=300)
+  @Size(max = 300) @Column(name = "functional_comment", length = 300)
   private String functionalComment;
 
-  @Column(name = "cognitive_comment", length = 300)
-  @Size(max = 100)
+  @Size(max = 300) @Column(name = "cognitive_comment", length = 300)
   private String cognitiveComment;
 
-  @Column(name = "health_comment", length = 300)
-  @Size(max = 100)
+  @Size(max = 300) @Column(name = "health_comment", length = 300)
   private String healthComment;
 
-  @Column(name = "physical_comment", length = 300)
-  @Size(max = 100)
+  @Size(max = 300) @Column(name = "physical_comment", length = 300)
   private String physicalComment;
-
 
   public void update(
       LocalTime arrivalTime,
@@ -163,7 +154,7 @@ public class CareSheet extends BaseTimeEntity {
       boolean healthCare,
       boolean nursingCare,
       boolean emergencyService,
-      boolean healthTraining,
+      boolean motionTraining,
       boolean cognitiveProgram,
       boolean cognitiveInitiativeProgram,
       boolean physicalTherapy,
@@ -189,7 +180,7 @@ public class CareSheet extends BaseTimeEntity {
     this.healthCare = healthCare;
     this.nursingCare = nursingCare;
     this.emergencyService = emergencyService;
-    this.healthTraining = healthTraining;
+    this.motionTraining = motionTraining;
     this.cognitiveProgram = cognitiveProgram;
     this.cognitiveInitiativeProgram = cognitiveInitiativeProgram;
     this.physicalTherapy = physicalTherapy;
@@ -198,5 +189,5 @@ public class CareSheet extends BaseTimeEntity {
     this.healthComment = healthComment;
     this.physicalComment = physicalComment;
   }
-
 }
+

@@ -1,4 +1,4 @@
-package com.daycan.domain.helper;
+package com.daycan.domain.entry;
 
 import com.daycan.domain.enums.Gender;
 import java.time.LocalDate;

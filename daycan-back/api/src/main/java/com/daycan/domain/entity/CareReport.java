@@ -1,18 +1,14 @@
 package com.daycan.domain.entity;
 
-import static jakarta.persistence.FetchType.LAZY;
 
 import com.daycan.domain.BaseTimeEntity;
-import com.daycan.domain.helper.DocumentKey;
-import com.daycan.domain.helper.ProgramComment;
+import com.daycan.domain.entry.ProgramComment;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -32,15 +28,13 @@ import org.hibernate.annotations.Type;
 @Table(name = "care_report")
 public class CareReport extends BaseTimeEntity {
 
-  @EmbeddedId
-  private DocumentKey id; // document ID (복합키)
+  @Id
+  @Column(name = "id")
+  private Long id; // document_id와 동일(공유 PK)
 
-  @OneToOne(fetch = LAZY, optional = false)
-  @MapsId                        // 공유 PK 핵심
-  @JoinColumns({
-      @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
-      @JoinColumn(name = "date", referencedColumnName = "date")
-  })
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  @MapsId // id == document.id
+  @JoinColumn(name = "id")
   private Document document;
 
   /* ─── 식사 ─── */
@@ -52,22 +46,18 @@ public class CareReport extends BaseTimeEntity {
   private String dinnerComment;
 
   @Column(nullable = false)
-  private int mealScore;          // 기본 0
+  private int mealScore;
   @Column(length = 300)
   private String mealFooterComment;
 
-  /* ─── Vital (매핑) ─── */
-  @OneToOne(fetch = FetchType.LAZY,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
-  @JoinColumn(name = "vital_id", nullable = false, unique = true)
-  private Vital vital;
+
   @Column(nullable = false)
   private int vitalScore;
   @Column(length = 300)
   private String healthFooterComment;
 
   /* ─── 인지 프로그램(JSON) ─── */
+  @Builder.Default
   @Type(JsonType.class)
   @Column(name = "cognitive_programs", columnDefinition = "json", nullable = false)
   private List<ProgramComment> cognitiveProgramComments = new ArrayList<>();
@@ -77,13 +67,12 @@ public class CareReport extends BaseTimeEntity {
   private String cognitiveFooterComment;
 
   /* ─── 신체 프로그램(JSON) ─── */
+  @Builder.Default
   @Type(JsonType.class)
   @Column(name = "physical_programs", columnDefinition = "json", nullable = false)
   private List<ProgramComment> physicalProgramComments = new ArrayList<>();
-
   @Column(nullable = false)
   private int physicalScore;
   @Column(length = 300)
   private String physicalFooterComment;
 }
-

@@ -6,20 +6,22 @@ import com.daycan.dto.entry.PhysicalEntry;
 import com.daycan.dto.entry.RecoveryProgramEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record CareSheetRequest(
+
     @Schema(description = "기록 작성자 id (종사자 id)", example = "1")
-    @NotBlank
+    @NotNull @Positive
     Long writerId,
 
-    @Schema(description = "수급자Id", example = "RP123456")
-    @NotBlank
-    String recipientId,
+    @Schema(description = "수급자 memberId", example = "101")
+    @NotNull @Positive
+    Long memberId,   // ← 기존 recipientId(String) 대체
 
     @Schema(description = "이용 날짜", example = "2025-08-01")
     @NotNull
@@ -33,7 +35,8 @@ public record CareSheetRequest(
     @NotNull
     LocalTime endTime,
 
-    @Schema(description = "이동 서비스 (nullable)", example = "123가 4567")
+    @Schema(description = "이동 서비스 차량번호 (nullable)", example = "123가4567")
+    @Size(max = 32)
     String mobilityNumber,
 
     @Valid @NotNull
@@ -52,4 +55,10 @@ public record CareSheetRequest(
     @Size(max = 500)
     String signatureUrl
 
-) {}
+) {
+    @Schema(hidden = true)
+    @AssertTrue(message = "startTime은 endTime보다 이르거나 같아야 합니다.")
+    public boolean isTimeRangeValid() {
+        return startTime == null || endTime == null || !startTime.isAfter(endTime);
+    }
+}

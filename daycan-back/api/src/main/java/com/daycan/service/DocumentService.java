@@ -1,7 +1,7 @@
 package com.daycan.service;
 
 import com.daycan.common.response.status.MemberErrorStatus;
-import com.daycan.domain.helper.DocumentKey;
+import com.daycan.domain.entry.DocumentKey;
 import com.daycan.domain.entity.Member;
 import com.daycan.dto.admin.request.CareSheetRequest;
 import com.daycan.exceptions.ApplicationException;
@@ -37,41 +37,30 @@ public class DocumentService {
   @Transactional
   public void createCareSheet(CareSheetRequest req) {
     try {
-      careSheetService.createCareSheet(req);
+      careSheetService.writeSheet(req);
     } catch (DocumentNonCreatedException e) {
-      findOrCreateDocument(req.recipientId(), req.date());
-      careSheetService.createCareSheet(req);
+      Member member = requireActiveMember(req.memberId());
+      findOrCreateDocument(member, req.date());
+      careSheetService.writeSheet(req);
     }
   }
 
   /**
-   * [Upsert] 주어진 멤버 목록 중, 아직 생성되지 않은 (memberId + date) 조합의 문서만 삽입.
-   *
-   * <p>
-   * 현재는 JPA 기반으로 사전 필터링 후 개별 save 처리하지만, 향후 아래 방식으로 리팩토링 고려:
-   * <ul>
-   *   <li>1) DB native 쿼리 기반 UPSERT (e.g., PostgreSQL ON CONFLICT DO NOTHING)</li>
-   *   <li>2) JDBC batch insert (단, GenerationType.IDENTITY 사용 시 제약 있음)</li>
-   *   <li>3) saveAll() → 고도화 (PK 전략 변경 시)</li>
-   * </ul>
-   * </p>
+   * [Upsert] members 중 (memberId + date) 없는 것만 INSERT
    */
   @Transactional
   public void upsertAll(List<Member> members, LocalDate date) {
-    if (members.isEmpty()) {
-      return;
-    }
+    if (members.isEmpty()) return;
 
-    Set<String> existing = documentRepository.findMemberIdsByDate(date);
+    // 이제 Long memberId 집합
+    Set<Long> existing = documentRepository.findMemberIdsByDate(date);
 
     List<Document> toInsert = members.stream()
-        .filter(m -> !existing.contains(m.getUsername()))
+        .filter(m -> !existing.contains(m.getId()))
         .map(m -> Document.builder()
-            .id(DocumentKey.of(
-                m.getUsername(),
-                date
-            ))
-            .organizationId(m.getOrganizationId())
+            .member(m)
+            .center(m.getCenter())          // 작성 시점 센터 박제
+            .docDate(date)
             .status(DocumentStatus.SHEET_PENDING)
             .build())
         .toList();
@@ -85,92 +74,85 @@ public class DocumentService {
       try {
         documentRepository.save(doc);
       } catch (DataIntegrityViolationException e) {
-        log.warn("[DocumentService] 중복 발생: memberId={}, date={}", doc.getId().getMemberId(), date);
+        log.warn("[DocumentService] 중복 발생: memberId={}, date={}",
+            doc.getMember().getId(), date);
       }
     }
-
     log.info("[DocumentService] {}: {} documents inserted (upsert)", date, toInsert.size());
   }
 
-  private Document findOrCreateDocument(String memberId, LocalDate date) {
-    return documentRepository.findById(
-        DocumentKey.of(memberId, date)
-    ).orElseGet(() -> createDocument(memberId, date));
+  // ───────────────────────── private helpers ─────────────────────────
+
+  private Document findOrCreateDocument(Member member, LocalDate date) {
+    return documentRepository.findByMemberIdAndDocDate(member.getId(), date)
+        .orElseGet(() -> createDocument(member, date));
   }
 
-  private Document createDocument(String memberId, LocalDate date) {
-    Member member = memberRepository.findByUsernameAndActiveIsTrue(memberId)
-        .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, memberId));
-
+  private Document createDocument(Member member, LocalDate date) {
     Document document = Document.builder()
-        .id(DocumentKey.of(memberId, date))
-            .organizationId(member.getOrganizationId())
-            .status(DocumentStatus.SHEET_PENDING)
-            .build();
+        .member(member)
+        .center(member.getCenter())       // 박제
+        .docDate(date)
+        .status(DocumentStatus.SHEET_PENDING)
+        .build();
 
     try {
       return documentRepository.save(document);
     } catch (DataIntegrityViolationException e) {
-      log.warn("[DocumentService] 중복 삽입 발생 → 재조회 시도: memberId={}, date={}", memberId, date);
-      return documentRepository.findById(DocumentKey.of(memberId, date))
+      log.warn("[DocumentService] 중복 삽입 발생 → 재조회 시도: memberId={}, date={}",
+          member.getId(), date);
+      return documentRepository.findByMemberIdAndDocDate(member.getId(), date)
           .orElseThrow(() -> new IllegalStateException("중복 문서 재조회 실패"));
     }
   }
 
-  @Transactional(readOnly = true)
-  public List<DocumentStatusResponse> getDocumentStatusList(int page) {
-    return List.of(new DocumentStatusResponse(
-        LocalDate.now(),
-        new DocumentStatusResponse.CareSheetStatusResponse(
-            1L,
-            DocumentStatus.SHEET_PENDING),
-        new DocumentStatusResponse.CareReportStatusResponse(
-            1L,
-            DocumentStatus.REPORT_PENDING)));
+  private Member requireActiveMember(Long memberId) {
+    Member m = memberRepository.findById(memberId)
+        .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, memberId));
+    if (!m.isActive()) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, "비활성 회원");
+    }
+    return m;
   }
 
   @Transactional(readOnly = true)
-  public DocumentCountResponse getDocumentCount(String organizationId) {
+  public List<DocumentStatusResponse> getDocumentStatusList(int page) {
+    // TODO: 실제 구현 전까지 임시 반환 그대로 유지
+    return List.of(new DocumentStatusResponse(
+        LocalDate.now(),
+        new DocumentStatusResponse.CareSheetStatusResponse(1L, DocumentStatus.SHEET_PENDING),
+        new DocumentStatusResponse.CareReportStatusResponse(1L, DocumentStatus.REPORT_PENDING)
+    ));
+  }
+
+  @Transactional(readOnly = true)
+  public DocumentCountResponse getDocumentCount(Long centerId) {
     try {
       List<DocumentStatus> incompleteSheetStatuses = List.of(DocumentStatus.SHEET_PENDING);
       List<DocumentStatus> incompleteReportStatuses = Arrays.asList(
           DocumentStatus.REPORT_PENDING,
           DocumentStatus.REPORT_CREATED,
-          DocumentStatus.REPORT_REVIEWED);
+          DocumentStatus.REPORT_REVIEWED
+      );
 
       LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
 
-      long accumulatedCareSheetDelayedCount = documentRepository
-          .countByStatusInAndGreaterOrEqualsThanDateAndOrganizationId(
-              incompleteSheetStatuses,
-              firstDayOfMonth,
-              organizationId);
+      long accSheet = documentRepository.countIncompleteFromDateByCenter(
+          incompleteSheetStatuses, firstDayOfMonth, centerId);
+      long todaySheet = documentRepository.countIncompleteOnDateByCenter(
+          incompleteSheetStatuses, LocalDate.now(), centerId);
 
-      long todayCareSheetDelayedCount = documentRepository.countByStatusInAndDateAndOrganizationId(
-          incompleteSheetStatuses,
-          LocalDate.now(),
-          organizationId);
-
-      long accumulatedCareReportDelayedCount = documentRepository
-          .countByStatusInAndGreaterOrEqualsThanDateAndOrganizationId(
-              incompleteReportStatuses,
-              firstDayOfMonth,
-              organizationId);
-
-      long todayCareReportDelayedCount = documentRepository.countByStatusInAndDateAndOrganizationId(
-          incompleteReportStatuses,
-          LocalDate.now(),
-          organizationId);
+      long accReport = documentRepository.countIncompleteFromDateByCenter(
+          incompleteReportStatuses, firstDayOfMonth, centerId);
+      long todayReport = documentRepository.countIncompleteOnDateByCenter(
+          incompleteReportStatuses, LocalDate.now(), centerId);
 
       return new DocumentCountResponse(
-          new CareReportCountResponse((int) todayCareSheetDelayedCount,
-              (int) (accumulatedCareSheetDelayedCount - todayCareSheetDelayedCount)),
-          new CareSheetCountResponse(
-              (int) (accumulatedCareReportDelayedCount - todayCareReportDelayedCount),
-              (int) todayCareReportDelayedCount));
-
+          new CareReportCountResponse((int) todaySheet, (int) (accSheet - todaySheet)),
+          new CareSheetCountResponse((int) (accReport - todayReport), (int) todayReport)
+      );
     } catch (Exception e) {
-      log.error("문서 카운트 조회 중 오류 발생: {}", e.getMessage());
+      log.error("문서 카운트 조회 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }

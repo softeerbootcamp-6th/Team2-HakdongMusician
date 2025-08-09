@@ -4,7 +4,8 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 
 import com.daycan.auth.security.PasswordHasher;
 import com.daycan.common.response.status.MemberErrorStatus;
-import com.daycan.domain.helper.MemberCommand;
+import com.daycan.domain.entity.Center;
+import com.daycan.domain.entry.MemberCommand;
 import com.daycan.dto.entry.PasswordEntry;
 import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.PageResponse;
@@ -14,6 +15,7 @@ import com.daycan.domain.entity.Member;
 import com.daycan.domain.enums.Gender;
 import com.daycan.dto.admin.request.MemberRequest;
 import com.daycan.dto.admin.response.AdminMemberResponse;
+import com.daycan.repository.CenterRepository;
 import com.daycan.repository.MemberRepository;
 import jakarta.persistence.OptimisticLockException;
 import java.util.List;
@@ -28,71 +30,73 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
 
   private final MemberRepository memberRepository;
+  private final CenterRepository centerRepository;
 
   /**
    * 센터별 회원 목록 조회 (필터링 지원)
    */
-  @Transactional(readOnly = true)
-  public List<AdminMemberResponse> getMemberList(String organizationId, Gender gender,
-      Integer careLevel, String name) {
+  public List<AdminMemberResponse> getMemberList(Long centerId,
+      Gender gender,
+      Integer careLevel,
+      String name) {
     try {
-      List<Member> members = memberRepository.findByOrganizationIdWithFilters(
-          organizationId, gender, careLevel, name);
-
+      List<Member> members = memberRepository.findByCenterWithFilters(centerId, gender, careLevel, name);
       return members.stream()
           .map(this::convertToAdminMemberResponse)
-          .collect(Collectors.toList());
-
+          .toList();
     } catch (Exception e) {
-      log.error("회원 목록 조회 중 오류 발생: {}", e.getMessage());
+      log.error("회원 목록 조회 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
 
   /**
-   * 센터별 회원 목록 조회 (필터링 지원, 페이징)
+   * 센터별 회원 목록 조회 (필터링 + 페이징)
    */
-  public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(String organizationId,
+  public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(Long centerId,
       Gender gender,
-      Integer careLevel, String name, Pageable pageable) {
+      Integer careLevel,
+      String name,
+      Pageable pageable) {
     try {
-      Page<Member> memberPage = memberRepository.findByOrganizationIdWithFilters(
-          organizationId, gender, careLevel, name, pageable);
-
-      List<AdminMemberResponse> memberList = memberPage.getContent().stream()
+      Page<Member> page = memberRepository.findPageByCenterWithFilters(centerId, gender, careLevel, name, pageable);
+      List<AdminMemberResponse> list = page.getContent().stream()
           .map(this::convertToAdminMemberResponse)
-          .collect(Collectors.toList());
+          .toList();
 
       return new PageResponse<>(
-          memberPage.getNumber(),
-          memberList,
-          (int) memberPage.getTotalElements(),
-          memberPage.getTotalPages());
-
+          page.getNumber(),
+          list,
+          (int) page.getTotalElements(),
+          page.getTotalPages()
+      );
     } catch (Exception e) {
-      log.error("회원 목록 조회(페이징) 중 오류 발생: {}", e.getMessage());
+      log.error("회원 목록 조회(페이징) 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
 
   /**
-   * 특정 회원 상세 조회
+   * 특정 회원 상세 조회 (센터 소속 확인)
    */
-  public AdminMemberResponse getMemberById(String username, String organizationId) {
+  public AdminMemberResponse getMemberById(String username, Long centerId) {
     try {
       Member member = memberRepository.findByUsername(username)
-          .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
-      // organizationId 체크
-
+          .filter(m -> m.getCenter().getId().equals(centerId))
+          .orElseThrow(() -> new ApplicationException(
+              memberRepository.findByUsername(username).isEmpty()
+                  ? CommonErrorStatus.NOT_FOUND
+                  : CenterErrorStatus.MEMBER_NOT_ALLOWED
+          ));
       return convertToAdminMemberResponse(member);
-
     } catch (ApplicationException e) {
       throw e;
     } catch (Exception e) {
-      log.error("회원 상세 조회 중 오류 발생: {}", e.getMessage());
+      log.error("회원 상세 조회 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
@@ -101,23 +105,32 @@ public class MemberService {
    * 새 회원 등록
    */
   @Transactional
-  public AdminMemberResponse createMember(MemberRequest req, String organizationId) {
+  public AdminMemberResponse createMember(MemberRequest req, Long centerId) {
     try {
-      Member existing = memberRepository.findByUsername(req.careNumber()).orElse(null);
-      if (existing != null) {
-        return reactivateExistingMember(existing, req, organizationId);
-      }
+      // username 전역 유니크 전제
+      memberRepository.findByUsername(req.careNumber()).ifPresent(m -> {
+        // (선택) 재활성화 정책: 필요 없다면 CONFLICT 던지기
+        if (m.isActive()) {
+          throw new ApplicationException(CommonErrorStatus.CONSTRAINT_VIOLATION, "이미 존재하는 회원");
+        }
+        // 재활성화 허용 시
+        // m.reactivate(); // Account.reactivate() 사용(선택 사항)
+        // m.changeCenter(requireCenter(centerId));
+        // m.apply(buildMemberCommand(req, hashPasswordIfPresent(req.passwordEntry())));
+        // throw new ApplicationException(CommonErrorStatus.CONFLICT, "재활성화 로직 미적용 상태");
+      });
 
       String hashed = requireAndHashPassword(req.passwordEntry());
       Member member = Member.createNew(
-          req.careNumber(), organizationId, req.name(),
-          req.gender(), req.birthDate(), hashed
+          req.careNumber(),
+          requireCenter(centerId),
+          req.name(), req.gender(), req.birthDate(),
+          hashed
       );
       member.apply(buildMemberCommand(req, null));
 
       Member saved = memberRepository.save(member);
       return convertToAdminMemberResponse(saved);
-
     } catch (ApplicationException e) {
       throw e;
     } catch (OptimisticLockException e) {
@@ -128,21 +141,17 @@ public class MemberService {
     }
   }
 
-
   /**
    * 회원 정보 수정
    */
   @Transactional
-  public AdminMemberResponse updateMember(String username, MemberRequest req,
-      String organizationId) {
+  public AdminMemberResponse updateMember(String username, MemberRequest req, Long centerId) {
     try {
-      Member member = getMemberByUsernameAndOrganizationId(username, organizationId);
+      Member member = getByUsernameAndCenter(username, centerId);
       String hashed = hashPasswordIfPresent(req.passwordEntry());
       member.apply(buildMemberCommand(req, hashed));
-
       Member updated = memberRepository.save(member);
       return convertToAdminMemberResponse(updated);
-
     } catch (ApplicationException e) {
       throw e;
     } catch (Exception e) {
@@ -151,59 +160,51 @@ public class MemberService {
     }
   }
 
-
   /**
    * 회원 삭제 (소프트 삭제)
    */
   @Transactional
-  public void deleteMember(String username, String organizationId) {
+  public void deleteMember(String username, Long centerId) {
     try {
-      Member member =
-          getMemberByUsernameAndOrganizationId(username, organizationId);
-
-      member.deactivate();
+      Member member = getByUsernameAndCenter(username, centerId);
+      member.deactivate(); // Account.deactivate()
       memberRepository.save(member);
-
     } catch (ApplicationException e) {
       throw e;
     } catch (Exception e) {
-      log.error("회원 삭제 중 오류 발생: {}", e.getMessage());
+      log.error("회원 삭제 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
 
   /**
-   * 센터별 회원 수 조회
+   * 센터별 회원 수 조회 (삭제 제외)
    */
-  @Transactional(readOnly = true)
-  public long getMemberCount(String organizationId) {
-    return memberRepository.countByOrganizationIdAndDeletedAtIsNull(organizationId);
-  }
-
-  private AdminMemberResponse reactivateExistingMember(Member existing, MemberRequest req, String organizationId) {
-    assertReactivatable(existing, req);
-
-    String hashed = hashPasswordIfPresent(req.passwordEntry());
-    // 비번이 기존에도 없고 이번에도 안 왔으면 예외
-    if (hashed == null && isBlank(existing.getPassword())) {
-      throw new ApplicationException(MemberErrorStatus.MEMBER_PASSWORD_NOT_FOUND, "재활성화 시 비밀번호가 필요합니다.");
-    }
-
-    existing.reactivateTo(organizationId);
-    existing.apply(buildMemberCommand(req, hashed));
-    return convertToAdminMemberResponse(existing);
-  }
-
-  /** 재활성화 사전 검증 */
-  private void assertReactivatable(Member existing, MemberRequest req) {
-    if (Boolean.TRUE.equals(existing.getActive())) {
-      throw new ApplicationException(
-          CommonErrorStatus.CONSTRAINT_VIOLATION,
-          "이미 활성 회원(username=" + req.careNumber() + ")이 존재합니다."
-      );
+  public long getMemberCount(Long centerId) {
+    try {
+      return memberRepository.countByCenterIdAndDeletedAtIsNull(centerId);
+    } catch (Exception e) {
+      log.error("회원 수 조회 중 오류 발생", e);
+      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
 
+  // ───────────────────────── private helpers ─────────────────────────
+
+  private Center requireCenter(Long centerId) {
+    return centerRepository.findById(centerId)
+        .orElseThrow(() -> new ApplicationException(CenterErrorStatus.NOT_FOUND));
+  }
+
+  private Member getByUsernameAndCenter(String username, Long centerId) {
+    return memberRepository.findByUsername(username)
+        .filter(m -> m.getCenter().getId().equals(centerId))
+        .orElseThrow(() -> new ApplicationException(
+            memberRepository.findByUsername(username).isEmpty()
+                ? CommonErrorStatus.NOT_FOUND
+                : CenterErrorStatus.MEMBER_NOT_ALLOWED
+        ));
+  }
 
   private String requireAndHashPassword(PasswordEntry passwordEntry) {
     if (passwordEntry == null || isBlank(passwordEntry.guardianPassword())) {
@@ -216,8 +217,7 @@ public class MemberService {
     if (passwordEntry != null) {
       String raw = passwordEntry.guardianPassword();
       if (isBlank(raw)) {
-        throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM,
-            "blank password not allowed");
+        throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "blank password not allowed");
       }
       return PasswordHasher.hash(raw);
     }
@@ -234,37 +234,25 @@ public class MemberService {
     );
   }
 
-  private Member getMemberByUsernameAndOrganizationId(String username, String organizationId) {
-    return memberRepository.findByUsername(username)
-        .filter(m -> m.getOrganizationId().equals(organizationId))
-        .orElseThrow(() -> new ApplicationException(
-            memberRepository.findByUsername(username).isEmpty()
-                ? CommonErrorStatus.NOT_FOUND
-                : CenterErrorStatus.MEMBER_NOT_ALLOWED
-        ));
-  }
-
-  /**
-   * Member 엔티티를 AdminMemberResponse로 변환
-   */
-  private AdminMemberResponse convertToAdminMemberResponse(Member member) {
+  private AdminMemberResponse convertToAdminMemberResponse(Member m) {
     return AdminMemberResponse.builder()
-        .username(member.getUsername())
-        .name(member.getName())
-        .gender(member.getGender())
-        .birthDate(member.getBirthDate())
-        .careLevel(member.getCareLevel())
-        .avatarUrl(member.getAvatarUrl())
-        .guardianName(member.getGuardianName())
-        .guardianRelation(member.getGuardianRelation())
-        .guardianBirthDate(member.getGuardianBirthDate())
-        .guardianPhoneNumber(member.getGuardianPhoneNumber())
-        .guardianAvatarUrl(member.getGuardianAvatarUrl())
-        .acceptReport(member.getAcceptReport())
-        .organizationId(member.getOrganizationId())
-        .createdAt(member.getCreatedAt())
-        .updatedAt(member.getUpdatedAt())
+        .username(m.getUsername())
+        .name(m.getName())
+        .gender(m.getGender())
+        .birthDate(m.getBirthDate())
+        .careLevel(m.getCareLevel())
+        .avatarUrl(m.getAvatarUrl())
+        .guardianName(m.getGuardianName())
+        .guardianRelation(m.getGuardianRelation())
+        .guardianBirthDate(m.getGuardianBirthDate())
+        .guardianPhoneNumber(m.getGuardianPhoneNumber())
+        .guardianAvatarUrl(m.getGuardianAvatarUrl())
+        .acceptReport(m.getAcceptReport())
+        .organizationId(String.valueOf(m.getCenter().getId()))
+        .createdAt(m.getCreatedAt())
+        .updatedAt(m.getUpdatedAt())
         .build();
   }
 
+  private static boolean isBlank(String v) { return v == null || v.isBlank(); }
 }

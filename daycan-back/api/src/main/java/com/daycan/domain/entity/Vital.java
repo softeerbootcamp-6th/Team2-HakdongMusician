@@ -1,14 +1,12 @@
 package com.daycan.domain.entity;
 
-import static jakarta.persistence.FetchType.LAZY;
 
 import com.daycan.domain.BaseTimeEntity;
-import com.daycan.domain.helper.DocumentKey;
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -26,15 +24,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Vital extends BaseTimeEntity {
 
-  @EmbeddedId
-  private DocumentKey id;  // Document의 복합키와 공유
+  @Id
+  @Column(name = "id")
+  private Long id; // document_id와 동일(공유 PK)
 
-  @OneToOne(fetch = LAZY, optional = false)
-  @MapsId  // DocumentKey를 그대로 매핑
-  @JoinColumns({
-      @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
-      @JoinColumn(name = "date", referencedColumnName = "date")
-  })
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  @MapsId
+  @JoinColumn(name = "id")
   private Document document;
 
   @Column(name = "blood_pressure_systolic")

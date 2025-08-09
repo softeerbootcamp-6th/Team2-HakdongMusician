@@ -12,5 +12,5 @@ public record CognitiveEntry(
 
     @Schema(description = "인지활동 특이사항", example = "대화 시 약간의 혼동 보임")
     @Size(max = 100)
-    String note
+    String comment
 ) {}

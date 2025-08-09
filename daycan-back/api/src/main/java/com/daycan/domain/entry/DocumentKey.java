@@ -1,4 +1,4 @@
-package com.daycan.domain.helper;
+package com.daycan.domain.entry;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -17,7 +17,8 @@ public class DocumentKey implements Serializable {
   @Column(name = "date", nullable = false, updatable = false)
   private LocalDate date;
 
-  protected DocumentKey() {} // JPA 기본 생성자
+  protected DocumentKey() {
+  }
 
   public static DocumentKey of(String memberId, LocalDate date) {
     return new DocumentKey(memberId, date);
@@ -28,10 +29,15 @@ public class DocumentKey implements Serializable {
     this.date = date;
   }
 
+
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof DocumentKey that)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof DocumentKey that)) {
+      return false;
+    }
     return Objects.equals(memberId, that.memberId) &&
         Objects.equals(date, that.date);
   }

@@ -1,4 +1,4 @@
-package com.daycan.batch;
+package com.daycan.async;
 
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.context.annotation.Configuration;

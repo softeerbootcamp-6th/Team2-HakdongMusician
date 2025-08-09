@@ -16,12 +16,7 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
    */
   List<Program> findByNameContaining(String name);
 
-  /**
-   * 속성별 활동 조회
-   */
-  @Query("SELECT a FROM Program a WHERE a.attribute LIKE %:attribute%")
-  List<Program> findByAttributeContaining(@Param("attribute") String attribute);
-
+  // 특정 센터에서 최근
   /**
    * 모든 활동을 이름순으로 조회
    */
