@@ -65,3 +65,7 @@ export { default as StampBadIcon } from "./svg/stamp-bad.svg";
 export { default as BrainIcon } from "./svg/brain.svg";
 export { default as ActivityIcon } from "./svg/activity.svg";
 export { default as TransportationIcon } from "./svg/transportation.svg";
+
+// 기타 아이콘들
+export { default as PhotoAlternateIcon } from "./svg/photo-alternate.svg";
+export { default as DeleteButtonIcon } from "./svg/delete-button.svg";
