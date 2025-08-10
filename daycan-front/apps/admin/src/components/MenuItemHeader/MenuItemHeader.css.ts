@@ -7,6 +7,11 @@ export const menuItemHeader = recipe({
     alignItems: "center",
     flexDirection: "row",
     gap: "8px",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: COLORS.gray[800],
+      borderRadius: "6px",
+    },
   },
   variants: {
     isSelected: {
