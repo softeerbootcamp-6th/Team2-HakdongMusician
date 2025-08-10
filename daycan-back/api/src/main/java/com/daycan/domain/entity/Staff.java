@@ -17,15 +17,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(
     name = "staff",
@@ -33,6 +31,7 @@ import lombok.NoArgsConstructor;
         @Index(name = "idx_staff_center", columnList = "center_id")
     }
 )
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Staff extends BaseTimeEntity {
 
   @Id
@@ -58,6 +57,55 @@ public class Staff extends BaseTimeEntity {
   private String avatarUrl;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "center_id", nullable = false)
+  @JoinColumn(name = "center_id", nullable = false, updatable = false)
   private Center center;
+
+  @Builder
+  public Staff(
+      String name,
+      Gender gender,
+      StaffRole staffRole,
+      LocalDate birthDate,
+      String phoneNumber,
+      String avatarUrl,
+      Center center) {
+    this.name = name;
+    this.gender = gender;
+    this.staffRole = staffRole;
+    this.birthDate = birthDate;
+    this.phoneNumber = phoneNumber;
+    this.avatarUrl = avatarUrl;
+    this.center = center;
+  }
+
+  public Staff update(
+      String name,
+      Gender gender,
+      StaffRole staffRole,
+      LocalDate birthDate,
+      String phoneNumber,
+      String avatarUrl
+  ) {
+    if (name != null) {
+      this.name = name;
+    }
+    if (gender != null) {
+      this.gender = gender;
+    }
+    if (staffRole != null) {
+      this.staffRole = staffRole;
+    }
+    if (birthDate != null) {
+      this.birthDate = birthDate;
+    }
+    if (phoneNumber != null) {
+      this.phoneNumber = phoneNumber;
+    }
+    if (avatarUrl != null) {
+      this.avatarUrl = avatarUrl;
+    }
+    return this;
+  }
+
+
 }

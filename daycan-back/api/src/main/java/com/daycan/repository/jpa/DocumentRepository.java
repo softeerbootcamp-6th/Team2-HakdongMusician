@@ -1,6 +1,6 @@
 package com.daycan.repository.jpa;
 
-import com.daycan.domain.entity.Document;
+import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
 import java.time.LocalDate;
 import java.util.List;

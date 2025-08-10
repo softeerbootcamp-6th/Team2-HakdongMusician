@@ -1,6 +1,8 @@
-package com.daycan.domain.entity;
+package com.daycan.domain.entity.document;
 
 import com.daycan.domain.BaseTimeEntity;
+import com.daycan.domain.entity.Center;
+import com.daycan.domain.entity.Member;
 import com.daycan.domain.enums.DocumentStatus;
 
 import jakarta.persistence.Column;
@@ -18,7 +20,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

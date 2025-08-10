@@ -40,7 +40,7 @@ public class AuthService {
         Center center = centerRepository.findByUsername(username)
             .orElseThrow(() -> new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL));
 
-        if (!verifyPassword(rawPw, center.getPassword())) {
+        if (isWrong(rawPw, center.getPassword())) {
           throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
         }
 
@@ -51,7 +51,7 @@ public class AuthService {
         Member member = memberRepository.findByUsername(username)
             .orElseThrow(() -> new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL));
 
-        if (!verifyPassword(rawPw, member.getPassword())) {
+        if (isWrong(rawPw, member.getPassword())) {
           throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
         }
 
@@ -79,7 +79,7 @@ public class AuthService {
     return new LoginResponse(access.value(), refresh.value());
   }
 
-  // 3) 토큰 재발급 (RTR)  –  token 컬럼으로 조회
+  // 토큰 재발급 : RTR
   public LoginResponse reissue(String rawRefreshToken, String rawOldAccessToken) {
 
     /*  저장된 RefreshToken 존재‧만료 확인 */
@@ -121,11 +121,6 @@ public class AuthService {
 
     return new LoginResponse(newAccess.value(), newRefresh.value());
   }
-  // 4) 헬퍼
-  public UserDetails parse(String token) {
-    String subject = jwtTokenProvider.parseSubject(token);
-    return loadByUserId(subject);
-  }
 
   public UserDetails loadByUserId(String sub) {
     String[] parts = sub.split(":");
@@ -152,8 +147,7 @@ public class AuthService {
   }
 
 
-  private boolean verifyPassword(String raw, String hashed) {
-
-    return PasswordHasher.matches(raw, hashed);
+  private boolean isWrong(String raw, String hashed) {
+    return !PasswordHasher.matches(raw, hashed);
   }
 }

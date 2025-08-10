@@ -18,12 +18,12 @@ import com.daycan.dto.admin.response.UrlResponse;
 import com.daycan.common.response.PageResponse;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.enums.*;
-
 import com.daycan.dto.entry.BloodPressureEntry;
 import com.daycan.dto.entry.MealEntry;
 import com.daycan.dto.entry.MemberMetaEntry;
 import com.daycan.dto.entry.TemperatureEntry;
 import com.daycan.service.DocumentService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -202,8 +202,8 @@ public class AdminCareSheetController {
     return new RecoveryProgramEntry(
         true, false, true, true,
         List.of(
-            new ProgramEntry(ProgramType.PHYSICAL, "보행 연습", ProgramEvaluation.MEDIUM),
-            new ProgramEntry(ProgramType.COGNITIVE, "퍼즐 맞추기", ProgramEvaluation.HIGH)
+            new ProgramEntry(ProgramType.PHYSICAL, "보행 연습", ProgramScore.MEDIUM),
+            new ProgramEntry(ProgramType.COGNITIVE, "퍼즐 맞추기", ProgramScore.HIGH)
         ),
         "적극적으로 참여"
     );

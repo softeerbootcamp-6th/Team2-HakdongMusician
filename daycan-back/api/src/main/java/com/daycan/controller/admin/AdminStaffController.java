@@ -9,6 +9,7 @@ import com.daycan.domain.enums.StaffRole;
 import com.daycan.dto.admin.request.AdminStaffRequest;
 import com.daycan.dto.admin.response.AdminStaffResponse;
 import com.daycan.service.StaffService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,7 +42,8 @@ public class AdminStaffController {
       @Parameter(description = "종사자 이름 (부분 검색 가능)", example = "김간호") @RequestParam(required = false) String name) {
     Center center = centerDetails.getCenter();
 
-    List<AdminStaffResponse> staffList = staffService.getStaffList(center.getId(),
+    List<AdminStaffResponse> staffList = staffService.getStaffList(
+        center.getId(),
         staffRole,
         gender,
         name);
@@ -60,14 +62,15 @@ public class AdminStaffController {
   }
 
   @PostMapping("")
-  @Operation(summary = "종사자 등록", description = "새로운 종사자를 등록합니다.")
+  @Operation(summary = "종사자 등록", description = "새로운 종사자를 등록합니다."
+      + "<br> 로그인 되어 있는 센터에 종사자를 등록합니다.")
   public ResponseWrapper<AdminStaffResponse> createStaff(
       @AuthenticatedUser CenterDetails centerDetails,
       @RequestBody AdminStaffRequest adminStaffRequest) {
     Center center = centerDetails.getCenter();
 
     AdminStaffResponse newStaff = staffService.createStaff(adminStaffRequest,
-        center.getId());
+        center);
     return ResponseWrapper.onSuccess(newStaff);
   }
 

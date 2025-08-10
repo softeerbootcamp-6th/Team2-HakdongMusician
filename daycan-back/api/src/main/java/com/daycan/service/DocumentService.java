@@ -5,7 +5,7 @@ import com.daycan.domain.entity.Member;
 import com.daycan.dto.admin.request.CareSheetRequest;
 import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
-import com.daycan.domain.entity.Document;
+import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.dto.admin.response.CareReportCountResponse;
 import com.daycan.dto.admin.response.CareSheetCountResponse;

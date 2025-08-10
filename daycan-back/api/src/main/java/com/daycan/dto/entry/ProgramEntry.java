@@ -1,6 +1,6 @@
 package com.daycan.dto.entry;
 
-import com.daycan.domain.enums.ProgramEvaluation;
+import com.daycan.domain.enums.ProgramScore;
 import com.daycan.domain.enums.ProgramType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -17,5 +17,5 @@ public record ProgramEntry(
 
     @Schema(description = "프로그램 평가 (상 / 중 / 하)", example = "HIGH")
     @NotNull
-    ProgramEvaluation evaluation
+    ProgramScore score
 ) {}

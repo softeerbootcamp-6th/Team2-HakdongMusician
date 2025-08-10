@@ -1,7 +1,7 @@
 package com.daycan.repository.jpa;
 
 
-import com.daycan.domain.entity.Vital;
+import com.daycan.domain.entity.document.Vital;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

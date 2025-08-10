@@ -15,30 +15,41 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.AntPathMatcher;
 
 @Slf4j
 public class JwtAuthFilter implements Filter {
 
   private static final String ADMIN_PREFIX = "/admin";
   private static final String USER_DETAILS_ATTRIBUTE = "userDetails";
+  private static final List<String> EXCLUDE_PATTERNS = List.of(
+      "/auth/login", "/auth/reissue",
+      "/swagger-ui.html", "/swagger-ui/**",
+      "/v3/api-docs/**", "/", "/api"
+  );
+
 
   private final JwtTokenProvider jwtTokenProvider;
   private final AuthService authService;          //  주입
   private final BlacklistService blacklistService;
   private final ObjectMapper objectMapper;
+  private final AntPathMatcher matcher;
 
   public JwtAuthFilter(
       JwtTokenProvider jwtTokenProvider,
       AuthService authService,
       BlacklistService blacklistService,
-      ObjectMapper objectMapper) {
+      ObjectMapper objectMapper,
+      AntPathMatcher matcher
+  ) {
     this.jwtTokenProvider = jwtTokenProvider;
     this.authService = authService;
     this.blacklistService = blacklistService;
     this.objectMapper = objectMapper;
+    this.matcher = matcher;
   }
-
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
@@ -46,13 +57,18 @@ public class JwtAuthFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     HttpServletResponse res = (HttpServletResponse) response;
 
-    String rawToken = resolveToken(req);
-    if (rawToken == null) {                       // 비인증 요청
+    // 경로 제외 하기
+    if (isExcluded(req)) {
+      log.debug("인증 제외 경로: {}", req.getRequestURI());
       chain.doFilter(request, response);
       return;
     }
 
+    String rawToken = resolveToken(req);
     try {
+      if (rawToken == null || rawToken.isBlank()) {
+        throw new ApplicationException(AuthErrorStatus.NON_TOKEN);
+      }
       // 블랙리스트 확인
       if (blacklistService.isBlacklisted(rawToken, TokenType.ACCESS)) {
         throw new ApplicationException(AuthErrorStatus.BLACKLISTED_TOKEN);
@@ -87,9 +103,6 @@ public class JwtAuthFilter implements Filter {
     }
   }
 
-  /* --------------------------------------------------
-     Bearer 토큰 추출
-     -------------------------------------------------- */
   private String resolveToken(HttpServletRequest request) {
     String bearer = request.getHeader("Authorization");
     return (bearer != null && bearer.startsWith("Bearer "))
@@ -97,9 +110,6 @@ public class JwtAuthFilter implements Filter {
         : null;
   }
 
-  /* --------------------------------------------------
-     공통 에러 응답
-     -------------------------------------------------- */
   private void handleError(HttpServletResponse res, Status status, String msg)
       throws IOException {
     res.setStatus(status.getHttpStatus().value());
@@ -108,5 +118,19 @@ public class JwtAuthFilter implements Filter {
     res.getWriter().write(
         objectMapper.writeValueAsString(ResponseWrapper.onFailure(status, msg))
     );
+  }
+
+  private boolean isExcluded(HttpServletRequest req) {
+    String uri = req.getRequestURI();
+    String ctx = req.getContextPath();
+    if (ctx != null && !ctx.isEmpty() && uri.startsWith(ctx)) {
+      uri = uri.substring(ctx.length());
+    }
+    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) return true;
+
+    for (String p : EXCLUDE_PATTERNS) {
+      if (matcher.match(p, uri)) return true;
+    }
+    return false;
   }
 }

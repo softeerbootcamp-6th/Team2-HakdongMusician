@@ -1,8 +1,9 @@
-package com.daycan.domain.entity;
+package com.daycan.domain.entity.document;
 
 
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.enums.ProgramScore;
+import com.daycan.domain.enums.ProgramType;
 import jakarta.persistence.Column;
 
 import jakarta.persistence.Entity;
@@ -21,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 개인 활동 엔티티
@@ -33,7 +35,7 @@ import lombok.NoArgsConstructor;
 @Table(
     name = "personal_program",
     indexes = {
-        @Index(name = "idx_pp_document", columnList = "document_id")
+        @Index(name = "idx_pp_care_sheet", columnList = "care_sheet_id")
     }
 )
 public class PersonalProgram extends BaseTimeEntity {
@@ -42,24 +44,45 @@ public class PersonalProgram extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // 문서 기준 1:N (권장) — CareSheet로 묶고 싶다면 Document 대신 CareSheet로 바꿔도 OK
+  @Setter
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "document_id", nullable = false)
-  private Document document;
+  @JoinColumn(name = "care_sheet_id", nullable = false, updatable = false)
+  private CareSheet careSheet;
 
-  @Column(name = "program_name", nullable = false, length = 100) // 캐시용 이름
+  @Column(name = "program_name", nullable = false, length = 100)
   private String programName;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private ProgramType type;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private ProgramScore score;
 
-  @Column(name = "personal_note", length = 1000)
-  private String personalNote;
-
-  public void update(ProgramScore score, String note) {
-    if (score != null) this.score = score;
-    if (note != null) this.personalNote = note;
+  public PersonalProgram(
+      String programName,
+      ProgramType type,
+      ProgramScore score
+  ) {
+    this.programName = programName;
+    this.type = type;
+    this.score = score;
   }
+
+
+  public void update(
+      String programName ,
+      ProgramType type,
+      ProgramScore score) {
+    if (programName != null) this.programName = programName;
+    if (type != null) this.type = type;
+    if (score != null) this.score = score;
+  }
+
+  protected void setCareSheet(CareSheet careSheet) { // 완전 private
+    this.careSheet = careSheet;
+  }
+
 }
 

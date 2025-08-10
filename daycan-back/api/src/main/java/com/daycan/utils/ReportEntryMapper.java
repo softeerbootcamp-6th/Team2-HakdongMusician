@@ -1,8 +1,8 @@
 package com.daycan.utils;
 
-import com.daycan.domain.entity.CareReport;
+import com.daycan.domain.entity.document.CareReport;
 import com.daycan.domain.entry.ProgramComment;
-import com.daycan.domain.entity.Vital;
+import com.daycan.domain.entity.document.Vital;
 import com.daycan.dto.entry.ReportEntry;
 import java.util.List;
 

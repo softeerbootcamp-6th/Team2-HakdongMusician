@@ -1,8 +1,17 @@
 package com.daycan.domain.enums;
 
-/**
- * 활동 점수
- */
+import lombok.Getter;
+
+@Getter
 public enum ProgramScore {
-  LOW,MID,HIGH;
+  HIGH("상"),
+  MEDIUM("중"),
+  LOW("하");
+
+  private final String kor;
+
+  ProgramScore(String kor) {
+    this.kor = kor;
+  }
+
 }
