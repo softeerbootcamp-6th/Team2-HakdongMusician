@@ -12,13 +12,13 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.RECORD_SHEET) => {
   useEffect(() => {
     const currentPath = location.pathname;
     switch (currentPath) {
-      case "/members":
+      case "/member":
         setSelectedMenu(PAGE_KEYS.RECIPIENT);
         break;
       case "/report":
         setSelectedMenu(PAGE_KEYS.REPORT_SENDING);
         break;
-      case "/":
+      case "/report":
         setSelectedMenu(PAGE_KEYS.RECORD_SHEET);
         break;
       default:
@@ -37,13 +37,13 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.RECORD_SHEET) => {
     // 메뉴에 따라 페이지 라우팅
     switch (menuName) {
       case PAGE_KEYS.RECIPIENT:
-        navigate("/members");
+        navigate("/member");
         break;
       case PAGE_KEYS.RECORD_SHEET:
-        navigate("/");
+        navigate("/report");
         break;
       case PAGE_KEYS.REPORT_SENDING:
-        navigate("/");
+        navigate("/report");
         break;
       case PAGE_KEYS.STAFF:
         // 종사자 관리 페이지가 구현되면 추가
