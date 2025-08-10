@@ -9,13 +9,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.AntPathMatcher;
 
 @Configuration
 public class FilterConfig {
-
-  /* -------------------------------------------------
-     1) 로그인 필터 (예시용)
-     ------------------------------------------------- */
+  /**
+   * 로그인 필터 등록
+   * - /auth/login 경로에 대해 LoginFilter를 적용
+   * - 순서: 1
+   */
   @Bean
   public FilterRegistrationBean<LoginFilter> loginFilter(
       AuthService authService,
@@ -28,9 +30,11 @@ public class FilterConfig {
     return reg;
   }
 
-  /* -------------------------------------------------
-     2) JWT 인증 필터  (← AuthService 추가 주입)
-     ------------------------------------------------- */
+  /**
+   * JWT 인증 필터 등록
+   * - 모든 경로에 대해 JwtAuthFilter를 적용
+   * - 순서: 2 (LoginFilter 다음)
+   */
   @Bean
   public FilterRegistrationBean<JwtAuthFilter> jwtAuthFilter(
       JwtTokenProvider jwtTokenProvider,
@@ -39,8 +43,10 @@ public class FilterConfig {
       ObjectMapper objectMapper
   ) {
     FilterRegistrationBean<JwtAuthFilter> reg = new FilterRegistrationBean<>();
-    reg.setFilter(new JwtAuthFilter(jwtTokenProvider, authService, blacklistService, objectMapper));
-    reg.addUrlPatterns("/*");                      // 전역
+
+    reg.setFilter(new JwtAuthFilter(
+        jwtTokenProvider, authService, blacklistService, objectMapper, new AntPathMatcher()));
+    reg.addUrlPatterns("/*");
     reg.setOrder(2);
     return reg;
   }

@@ -1,7 +1,7 @@
 package com.daycan.repository.querydsl;
 
-import com.daycan.domain.entity.QCareSheet;
-import com.daycan.domain.entity.QDocument;
+import com.daycan.domain.entity.document.QCareSheet;
+import com.daycan.domain.entity.document.QDocument;
 import com.daycan.domain.entity.QStaff;
 import com.daycan.domain.model.CareSheetInitVO;
 import com.querydsl.core.types.Projections;

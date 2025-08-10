@@ -36,7 +36,8 @@ public class AuthController {
   }
 
   @PostMapping("/reissue")
-  public ResponseWrapper<LoginResponse> reissue(@Valid @RequestBody ReissueRequest request,
+  public ResponseWrapper<LoginResponse> reissue(
+      @Valid @RequestBody ReissueRequest request,
       @RequestHeader("Authorization") String accessToken) {
 
     String rawAccessToken = extractToken(accessToken);

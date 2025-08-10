@@ -1,9 +1,11 @@
 package com.daycan.utils;
 
-import com.daycan.domain.entity.CareSheet;
-import com.daycan.domain.entity.Document;
+import com.daycan.common.response.status.DocumentErrorStatus;
+import com.daycan.domain.entity.document.CareSheet;
+import com.daycan.domain.entity.document.Document;
+import com.daycan.domain.entity.document.PersonalProgram;
 import com.daycan.domain.entity.Staff;
-import com.daycan.domain.entity.Vital;
+import com.daycan.domain.entity.document.Vital;
 import com.daycan.domain.entry.Meal;
 import com.daycan.dto.admin.request.CareSheetRequest;
 
@@ -11,12 +13,20 @@ import com.daycan.dto.entry.CognitiveEntry;
 import com.daycan.dto.entry.HealthCareEntry;
 import com.daycan.dto.entry.MealSupport;
 import com.daycan.dto.entry.PhysicalEntry;
+import com.daycan.dto.entry.ProgramEntry;
 import com.daycan.dto.entry.RecoveryProgramEntry;
+import com.daycan.exceptions.ApplicationException;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public final class SheetMapper {
 
-  private SheetMapper() {}
+  private SheetMapper() {
+  }
 
   public static CareSheet toCareSheet(Document document, CareSheetRequest req, Staff staff) {
     return CareSheet.builder()
@@ -49,7 +59,8 @@ public final class SheetMapper {
 
         .motionTraining(safe(req.recoveryProgram(), RecoveryProgramEntry::motionTraining))
         .cognitiveProgram(safe(req.recoveryProgram(), RecoveryProgramEntry::cognitiveProgram))
-        .cognitiveInitiativeProgram(safe(req.recoveryProgram(), RecoveryProgramEntry::cognitiveEnhancement))
+        .cognitiveInitiativeProgram(
+            safe(req.recoveryProgram(), RecoveryProgramEntry::cognitiveEnhancement))
         .physicalTherapy(safe(req.recoveryProgram(), RecoveryProgramEntry::physicalTherapy))
 
         // ── 코멘트 ──
@@ -92,22 +103,55 @@ public final class SheetMapper {
 
   public static Vital toVital(Document document, CareSheetRequest req) {
     return Vital.builder()
-        .id(document.getId())          // 공유 PK
-        .document(document)            // @MapsId
+        .id(document.getId())
+        .document(document)
         .bloodPressureSystolic(req.healthCare().bloodPressure().systolic())
         .bloodPressureDiastolic(req.healthCare().bloodPressure().diastolic())
-        .temperature(BigDecimal.valueOf(req.healthCare().temperature().temperature()))
+        .temperature(req.healthCare().temperature().temperature())
         .numberOfStool(req.physical().numberOfStool())
         .numberOfUrine(req.physical().numberOfUrine())
         .build();
   }
 
 
+  public static List<PersonalProgram> toPersonalPrograms(List<ProgramEntry> entries) {
+    if (entries == null || entries.isEmpty()) {
+      return List.of();
+    }
+
+    Map<String, ProgramEntry> latestByName = entries.stream()
+        .filter(Objects::nonNull)
+        .filter(e -> e.name() != null && !e.name().isBlank())
+        .collect(Collectors.toMap(
+            e -> truncate(e.name().trim(), 100),
+            e -> e,
+            (oldV, newV) -> newV,              // 같은 이름 있으면 나중 값으로
+            LinkedHashMap::new
+        ));
+
+    return latestByName.entrySet().stream()
+        .map(it -> new PersonalProgram(
+            it.getKey(),
+            it.getValue().type(),
+            it.getValue().score()
+        ))
+        .toList();
+  }
+
+  private static String truncate(String s, int max) {
+    return s.length() <= max ? s : s.substring(0, max);
+  }
+
+
   private static Meal toMeal(MealSupport support) {
-    if (support == null) return new Meal(false, null, null);
+    if (support == null) {
+      return new Meal(false, null, null);
+    }
     // support.entry()가 null일 수도 있으면 안전 가드
     var entry = support.entry();
-    if (entry == null) return new Meal(support.provided(), null, null);
+    if (entry == null) {
+      return new Meal(support.provided(), null, null);
+    }
     return new Meal(support.provided(), entry.mealType(), entry.amount());
   }
 

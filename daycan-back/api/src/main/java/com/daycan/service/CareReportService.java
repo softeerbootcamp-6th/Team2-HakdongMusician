@@ -4,7 +4,7 @@ import com.daycan.common.response.status.MemberErrorStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.exceptions.ApplicationException;
 import com.daycan.common.response.status.DocumentErrorStatus;
-import com.daycan.domain.entity.CareReport;
+import com.daycan.domain.entity.document.CareReport;
 
 import com.daycan.domain.entry.ProgramComment;
 import com.daycan.dto.FullReportDto;

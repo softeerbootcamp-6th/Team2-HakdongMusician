@@ -9,29 +9,23 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum CommonErrorStatus implements Status {
 
-  /**
-   * 잘못된 요청입니다. (HTTP 400)
-   */
+  //400
+  METHOD_ARGUMENT_NOT_VALID(HttpStatus.BAD_REQUEST, 40000, "요청 바디 검증에 실패했습니다."),
 
-  METHOD_ARGUMENT_NOT_VALID(HttpStatus.BAD_REQUEST, 40000,"요청 바디 검증에 실패했습니다."),
+  CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, 40001, "파라미터 검증에 실패했습니다."),
+  INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, 40002,
+      "잘못된 파일 형식입니다. 지원하지 않는 파일입니다."),
 
-  /**
-   * 파라미터 검증 실패입니다. (@RequestParam · @PathVariable · @Validated) (HTTP 400)
-   */
-  CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, 40001,"파라미터 검증에 실패했습니다."),
+  // 404
+  NOT_FOUND(HttpStatus.NOT_FOUND, 40403, "찾지 못했습니다"),
 
-  /**
-   * 서버 내부 오류입니다. (HTTP 500)
-   */
-  INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500,"서버 내부 오류입니다."),
+  // 409
+  CONFLICT(HttpStatus.CONFLICT, 40900, "요청이 충돌했습니다. 중복된 데이터가 존재합니다."),
 
-  /*
-   * NOT FOUND (HTTP 404)
-   */
-  NOT_FOUND(HttpStatus.NOT_FOUND, 40400,"찾지 못했습니다"),
-
-  CONFLICT(HttpStatus.CONFLICT, 40900, "요청이 충돌했습니다. 중복된 데이터가 존재합니다.")
+  //500
+  INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 50000, "서버 내부 오류입니다."),
   ;
+
 
   private final HttpStatus httpStatus;
   private final int code;

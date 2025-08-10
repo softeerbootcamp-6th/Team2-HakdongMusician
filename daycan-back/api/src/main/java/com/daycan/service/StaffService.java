@@ -18,37 +18,37 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class StaffService {
 
   private final StaffRepository staffRepository;
   private final CenterRepository centerRepository; // ← 추가
 
-  public List<AdminStaffResponse> getStaffList(Long centerId, StaffRole staffRole, Gender gender, String name) {
-    List<Staff> staffList = staffRepository.findByCenterWithFilters(centerId, staffRole, gender, name);
+  @Transactional(readOnly = true)
+  public List<AdminStaffResponse> getStaffList(Long centerId, StaffRole staffRole, Gender gender,
+      String name) {
+    List<Staff> staffList = staffRepository.findByCenterWithFilters(centerId, staffRole, gender,
+        name);
     return staffList.stream().map(this::toAdminResponse).toList();
   }
 
+  @Transactional(readOnly = true)
   public AdminStaffResponse getStaffById(Long id, Long centerId) {
     Staff staff = staffRepository.findByIdAndCenterId(id, centerId)
         .orElseThrow(() -> new ApplicationException(StaffErrorStatus.NOT_FOUND));
     return toAdminResponse(staff);
   }
 
-  // ───────────────────────── write ops ─────────────────────────
 
   @Transactional
-  public AdminStaffResponse createStaff(AdminStaffRequest req, Long centerId) {
-    Center center = requireCenter(centerId);
-
+  public AdminStaffResponse createStaff(AdminStaffRequest req, Center center) {
     Staff staff = Staff.builder()
         .name(req.name())
         .gender(req.gender())
+        .center(center)
         .staffRole(req.staffRole())
         .birthDate(req.birthDate())
         .phoneNumber(req.phoneNumber())
         .avatarUrl(req.avatarUrl())
-        .center(center)                      // ← 연관 주입
         .build();
 
     Staff saved = staffRepository.save(staff);
@@ -60,33 +60,29 @@ public class StaffService {
     Staff staff = staffRepository.findByIdAndCenterId(id, centerId)
         .orElseThrow(() -> new ApplicationException(StaffErrorStatus.NOT_FOUND));
 
-    // 엔티티가 @Builder(toBuilder = true)이므로 toBuilder로 부분 업데이트
-    staff = staff.toBuilder()
-        .name(req.name())
-        .gender(req.gender())
-        .staffRole(req.staffRole())
-        .birthDate(req.birthDate())
-        .phoneNumber(req.phoneNumber())
-        .avatarUrl(req.avatarUrl())
-        .build();
+    staff.update(
+        req.name(),
+        req.gender(),
+        req.staffRole(),
+        req.birthDate(),
+        req.phoneNumber(),
+        req.avatarUrl()
+    );
 
-    Staff saved = staffRepository.save(staff);
-    return toAdminResponse(saved);
+    return toAdminResponse(staff);
   }
 
   @Transactional
   public void deleteStaff(Long id, Long centerId) {
     Staff staff = staffRepository.findByIdAndCenterId(id, centerId)
         .orElseThrow(() -> new ApplicationException(StaffErrorStatus.NOT_FOUND));
-    staffRepository.delete(staff); // 소프트 삭제가 필요하면 필드/메서드로 전환
+    staffRepository.delete(staff);
   }
 
-  // ───────────────────────── helpers ─────────────────────────
 
-  private Center requireCenter(Long centerId) {
-    return centerRepository.findById(centerId)
-        .orElseThrow(() -> new ApplicationException(CenterErrorStatus.NOT_FOUND));
-  }
+  /*
+   * ---- helper method ----
+   */
 
   private AdminStaffResponse toAdminResponse(Staff s) {
     return new AdminStaffResponse(

@@ -1,4 +1,4 @@
-package com.daycan.domain.entity;
+package com.daycan.domain.entity.document;
 
 
 import com.daycan.domain.BaseTimeEntity;

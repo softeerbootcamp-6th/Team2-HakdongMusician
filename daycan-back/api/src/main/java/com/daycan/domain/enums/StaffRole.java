@@ -2,13 +2,17 @@ package com.daycan.domain.enums;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 
 public enum StaffRole {
   DIRECTOR("센터장", "ROLE_DIRECTOR"),
   SOCIAL_WORKER("사회복지사", "ROLE_SOCIAL_WORKER"),
-  CAREGIVER("요양보호사", "ROLE_CAREGIVER");
+  CAREGIVER("요양보호사", "ROLE_CAREGIVER"),
+
+  @JsonEnumDefaultValue UNKNOWN("", ""),
+  ;
 
   private final String kor;        // 한글 표시용
   private final String authority;  // Spring Security 권한명 등

@@ -1,6 +1,6 @@
 package com.daycan.repository.jpa;
 
-import com.daycan.domain.entity.CareReport;
+import com.daycan.domain.entity.document.CareReport;
 import java.time.LocalDate;
 import java.util.List;
 

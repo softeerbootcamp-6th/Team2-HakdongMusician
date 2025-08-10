@@ -83,7 +83,7 @@ public class MemberStatisticsController {
         일자별 값과 평균으로 반환합니다.
         """
   )
-  @GetMapping("/vitals/from/{startDate}/to/{endDate}")
+  @GetMapping("/vitals/from/{startDate:\\d{4}-\\d{2}-\\d{2}}/to/{endDate:\\d{4}-\\d{2}-\\d{2}}")
   public ResponseWrapper<MemberStatisticsResponse> getVitals(
       @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 시작일 (yyyy-MM-dd)", example = "2024-07-01")
@@ -128,7 +128,7 @@ public class MemberStatisticsController {
         월별 값과 평균으로 반환합니다.
         """
   )
-  @GetMapping("/vitals/from/{startMonth}/to/{endMonth}")
+  @GetMapping("/vitals/from/{startMonth:\\d{4}-\\d{2}}/to/{endMonth:\\d{4}-\\d{2}}")
   public ResponseWrapper<MemberStatisticsResponse> getMonthlyVitals(
       @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 시작월 (yyyy-MM)", example = "2024-02")

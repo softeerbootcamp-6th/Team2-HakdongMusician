@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public record AdminStaffResponse(
 
     @Schema(description = "관리자 ID (PK)", example = "123")
-    Long id,
+    Long staffId,
 
     @Schema(description = "센터 ID Long", example = "1")
     Long centerId,

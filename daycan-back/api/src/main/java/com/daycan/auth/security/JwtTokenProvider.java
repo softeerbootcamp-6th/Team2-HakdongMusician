@@ -9,15 +9,19 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
 
   /* ---------------- 상수 ---------------- */
-  private static final long ACCESS_TOKEN_EXPIRATION_MS  = 1_000 * 60 * 15;         // 15분
-  private static final long REFRESH_TOKEN_EXPIRATION_MS = 1_000 * 60 * 60 * 24 * 14; // 14일
-  private static final String SECRET_KEY = "very-secret-and-secure-jwt-key-please-change-it!!!";
+  @Value("${jwt.access-token.expire-length}")
+  private Long ACCESS_TOKEN_EXPIRATION_MS;
+  @Value("${jwt.access-token.expire-length}")
+  private Long REFRESH_TOKEN_EXPIRATION_MS; // 14일
+  @Value("${jwt.custom.secretKey}")
+  private String SECRET_KEY;
 
   private Key key;
 

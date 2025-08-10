@@ -64,6 +64,21 @@ jobs:
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> daycan.env
           echo "SPRING_PROFILES_ACTIVE=develop" >> daycan.env
           echo "DAYCAN_PORT=8080" >> daycan.env
+          
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> daycan.env
+
+          # OpenAI
+          echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}" >> daycan.env
+          echo "OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}" >> daycan.env
+
+          # CLOVA OCR
+          echo "CLOVA_URL=${{ secrets.CLOVA_URL }}" >> daycan.env
+          echo "CLOVA_KEY=${{ secrets.CLOVA_KEY }}" >> daycan.env
+          
+          # S3
+          echo "APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}" >> daycan.env
+          echo "APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}" >> daycan.env
+
           echo "✅ daycan.env file created successfully!"
 
       - name: Prepare CodeDeploy bundle
