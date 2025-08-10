@@ -15,9 +15,9 @@ export const MemberDetailItemRow = ({
       <Body
         type="xsmall"
         weight={500}
-        color={COLORS.gray[500]}
         style={{
           width: "90px",
+          color: COLORS.gray[500],
         }}
       >
         {label}
