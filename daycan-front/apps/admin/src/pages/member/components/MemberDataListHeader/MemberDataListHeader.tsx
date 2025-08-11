@@ -10,6 +10,7 @@ import {
   careGradeColumn,
   careNumberColumn,
   guardianContactColumn,
+  detailButton,
 } from "./MemberDataListHeader.css.ts";
 
 export const MemberDataListHeader = () => {
@@ -40,10 +41,7 @@ export const MemberDataListHeader = () => {
         <Body type="small" weight={500} className={guardianContactColumn}>
           보호자 연락처
         </Body>
-        <Chip
-          round="s"
-          style={{ backgroundColor: "transparent", width: "70px" }}
-        >
+        <Chip round="s" className={detailButton}>
           <Body type="xsmall" color="transparent">
             상세 보기
           </Body>

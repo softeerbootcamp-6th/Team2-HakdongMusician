@@ -48,7 +48,6 @@ export const menuItemWrapper = style({
 export const menuItem = style({
   display: "flex",
   borderRadius: "6px",
-  cursor: "pointer",
   transition: "background-color 0.2s ease",
   justifyContent: "center",
   gap: "8px",

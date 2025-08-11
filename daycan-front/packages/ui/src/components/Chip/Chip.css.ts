@@ -14,7 +14,6 @@ export const chip = recipe({
     color: COLORS.gray[100],
     backgroundColor: COLORS.gray[600],
     fontStyle: "normal",
-    cursor: "pointer",
     border: "none",
     boxSizing: "border-box",
   },

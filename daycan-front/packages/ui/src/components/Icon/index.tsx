@@ -8,6 +8,7 @@ export interface IconProps {
   color?: string;
   stroke?: string;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 /**
@@ -30,6 +31,7 @@ export const Icon = ({
   stroke = "none",
   onClick,
   className,
+  style,
 }: IconProps) => {
   const SvgIcon = iconMap[name];
   if (!SvgIcon) return null;
@@ -41,6 +43,7 @@ export const Icon = ({
       stroke={stroke}
       onClick={onClick}
       className={className}
+      style={style}
     />
   );
 };
