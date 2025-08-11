@@ -9,8 +9,7 @@ import {
   infoSectionLayoutProfilePlaceholder,
   infoSectionLayoutDeleteButton,
 } from "./InfoSectionLayout.css";
-import { useState, useRef } from "react";
-import { processImageFile } from "@/utils";
+import { useImageController } from "../../hooks/useImageController";
 
 /*
  * InfoSectionLayoutProps 타입
@@ -33,73 +32,20 @@ export const InfoSectionLayout = ({
   children,
   onImageChange,
 }: InfoSectionLayoutProps) => {
-  const [selectedImage, setSelectedImage] = useState<string>(
-    profileImage ?? ""
-  );
-  const [isDragOver, setIsDragOver] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      processImageFile(
-        file,
-        (imageUrl) => {
-          setSelectedImage(imageUrl);
-          if (onImageChange) {
-            onImageChange(file);
-          }
-        },
-        (errorMessage) => {
-          alert(errorMessage);
-        }
-      );
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      processImageFile(
-        file,
-        (imageUrl) => {
-          setSelectedImage(imageUrl);
-          if (onImageChange) {
-            onImageChange(file);
-          }
-        },
-        (errorMessage) => {
-          alert(errorMessage);
-        }
-      );
-    }
-  };
-
-  const handleChangeButtonClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  //이미지 삭제 함수
-  const handleDeleteImage = () => {
-    setSelectedImage("");
-    if (onImageChange) {
-      onImageChange(null);
-    }
-  };
+  const {
+    selectedImage,
+    isDragOver,
+    fileInputRef,
+    handleImageChange,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    handleChangeButtonClick,
+    handleDeleteImage,
+  } = useImageController({
+    initialImage: profileImage,
+    onImageChange,
+  });
 
   return (
     <div className={infoSectionLayoutContainer}>
@@ -133,7 +79,7 @@ export const InfoSectionLayout = ({
               <div className={infoSectionLayoutDeleteButton}>
                 <Icon
                   onClick={handleDeleteImage}
-                  name="deleteButton"
+                  name="photoDeleteButton"
                   width={20}
                   height={20}
                   color="white"
