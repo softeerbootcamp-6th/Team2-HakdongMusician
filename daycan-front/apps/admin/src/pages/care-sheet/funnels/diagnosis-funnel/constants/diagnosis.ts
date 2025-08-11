@@ -31,3 +31,28 @@ export const DIAGNOSIS_CONSTANTS = {
 export type ProgramType = (typeof DIAGNOSIS_CONSTANTS.PROGRAM.TYPES)[number];
 export type EvaluationLevel =
   (typeof DIAGNOSIS_CONSTANTS.PROGRAM.EVALUATIONS)[number];
+
+// 식사 코드/라벨 매핑 (UI ↔ API 변환용)
+export const MEAL_TYPE_CODE_TO_LABEL: Record<string, string> = {
+  REGULAR: "일반식",
+  PORRIDGE: "죽",
+  RICE_WATER: "유동식",
+};
+
+export const MEAL_TYPE_LABEL_TO_CODE: Record<string, string> = {
+  일반식: "REGULAR",
+  죽: "PORRIDGE",
+  유동식: "RICE_WATER",
+};
+
+export const MEAL_AMOUNT_CODE_TO_LABEL: Record<string, string> = {
+  FULL: "1인분",
+  MORE_HALF: "1/2이상",
+  LESS_HALF: "1/3이하",
+};
+
+export const MEAL_AMOUNT_LABEL_TO_CODE: Record<string, string> = {
+  "1인분": "FULL",
+  "1/2이상": "MORE_HALF",
+  "1/3이하": "LESS_HALF",
+};

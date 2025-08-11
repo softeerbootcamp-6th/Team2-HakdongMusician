@@ -1,0 +1,247 @@
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSetAtom } from "jotai";
+import { useFunnel } from "@daycan/hooks";
+import { homeFunnelDataAtom } from "../../atoms/homeAtom";
+import { infoFunnelDataAtom } from "../../../info-funnel/atoms/infoAtom";
+import { diagnosisFunnelDataAtom } from "../../../diagnosis-funnel/atoms/diagnosisAtom";
+
+export const usePhotoSelect = (
+  setIsBottomSheetOpen: (isOpen: boolean) => void
+) => {
+  const navigate = useNavigate();
+  const { funnelState } = useFunnel();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [shouldAutoConfirm, setShouldAutoConfirm] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 각 퍼널별 데이터 설정 함수 선언
+  const setHomeFunnelData = useSetAtom(homeFunnelDataAtom);
+  const setInfoFunnelData = useSetAtom(infoFunnelDataAtom);
+  const setDiagnosisFunnelData = useSetAtom(diagnosisFunnelDataAtom);
+
+  // selectedImage가 설정되고 자동 확인이 필요한 경우 확인 함수 호출
+  useEffect(() => {
+    if (selectedImage && shouldAutoConfirm) {
+      setShouldAutoConfirm(false); // 플래그 리셋
+      handleImageConfirm();
+    }
+  }, [selectedImage, shouldAutoConfirm]);
+
+  // 카메라 촬영 시작
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" }, // 후면 카메라 우선
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+    } catch (error) {
+      console.error("카메라 접근 실패:", error);
+      alert("카메라에 접근할 수 없습니다.");
+    }
+  };
+
+  // 사진 촬영
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext("2d");
+      if (context) {
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+        context.drawImage(videoRef.current, 0, 0);
+
+        // 캔버스에서 이미지 데이터 URL 가져오기
+        const imageDataUrl = canvasRef.current.toDataURL("image/jpeg");
+        setSelectedImage(imageDataUrl);
+
+        // 스트림 정지
+        const stream = videoRef.current.srcObject as MediaStream;
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+        }
+      }
+    }
+  };
+
+  // 파일 선택
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // 지원하는 이미지 형식 검증
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      if (!allowedTypes.includes(file.type)) {
+        alert(
+          "지원하지 않는 이미지 형식입니다. PNG, JPEG, JPG 형식만 사용 가능합니다."
+        );
+        return;
+      }
+
+      setShouldAutoConfirm(true); // 자동 확인 플래그 설정
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setSelectedImage(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // 이미지 제거
+  const removeImage = () => {
+    setSelectedImage(null);
+  };
+
+  // API 호출 시뮬레이션 (실제로는 이미지 업로드 API 호출)
+  const simulateImageUpload = async (imageData: string): Promise<string> => {
+    setIsProcessing(true);
+    console.log("simulateImageUpload", imageData);
+
+    // // 실제 API 호출을 시뮬레이션 (1초 대기)
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // 성공 응답 시뮬레이션
+    const mockResponse = {
+      success: true,
+      imageUrl: "https://example.com/uploaded-image.jpg",
+      message: "이미지가 성공적으로 업로드되었습니다.",
+    };
+
+    setIsProcessing(false);
+    return mockResponse.imageUrl;
+  };
+
+  // 사진 등록 방법 선택 후 처리
+  const handlePhotoMethodSelect = async (photoMethod: "camera" | "album") => {
+    console.log("handlePhotoMethodSelect", photoMethod);
+
+    if (photoMethod === "camera") {
+      // 카메라 시작
+      await startCamera();
+    } else {
+      // 파일 선택 다이얼로그 열기
+      fileInputRef.current?.click();
+    }
+  };
+
+  // 이미지 확인 및 다음 단계 진행
+  const handleImageConfirm = async () => {
+    if (!selectedImage) {
+      alert("이미지를 선택해주세요.");
+      return;
+    }
+
+    try {
+      // 이미지 업로드 API 호출 시뮬레이션
+      const uploadedImageUrl = await simulateImageUpload(selectedImage);
+      console.log("업로드된 이미지 URL:", uploadedImageUrl);
+
+      // 1. home-funnel 데이터 설정
+      setHomeFunnelData({
+        writerId: funnelState.STEP_0?.writerId || 1,
+      });
+
+      // 2. info-funnel에 기본 데이터 설정 (mock data)
+      setInfoFunnelData({
+        recipientId: "1", // 기본 수급자 ID
+        date: new Date().toISOString().split("T")[0], // 오늘 날짜
+        startTime: "09:10", // 기본 시작 시간
+        endTime: "17:20", // 기본 종료 시간
+        mobilityNumber: "", // 차량 번호
+      });
+
+      // 3. diagnosis-funnel에 기본 데이터 설정 (mock data)
+      setDiagnosisFunnelData({
+        physical: {
+          assistWashing: true,
+          assistMovement: true,
+          assistBathing: false,
+          breakfast: {
+            provided: true,
+            entry: {
+              mealType: "REGULAR",
+              amount: "MORE_HALF",
+            },
+            validProvidedEntry: false,
+          },
+          lunch: {
+            provided: false,
+            entry: {
+              mealType: "REGULAR",
+              amount: "FULL",
+            },
+            validProvidedEntry: false,
+          },
+          dinner: {
+            provided: true,
+            entry: {
+              mealType: "REGULAR",
+              amount: "FULL",
+            },
+            validProvidedEntry: false,
+          },
+          numberOfStool: 2,
+          numberOfUrine: 3,
+          note: "오늘은 목욕을 했어요",
+        },
+        cognitive: {
+          assistCognitiveCare: false,
+          assistCommunication: true,
+          note: "인지 테스트 결과 좋음",
+        },
+        healthCare: {
+          healthCare: false,
+          nursingCare: true,
+          emergencyService: true,
+          bloodPressure: {
+            systolic: 130,
+            diastolic: 90,
+          },
+          temperature: 36.5,
+          note: "",
+        },
+        recoveryProgram: {
+          motionTraining: true,
+          cognitiveProgram: true,
+          cognitiveEnhancement: true,
+          physicalTherapy: true,
+          programEntries: [],
+          note: "",
+        },
+      });
+
+      // 4. 바텀시트 닫기
+      setIsBottomSheetOpen(false);
+      // 5. diagnosis 페이지로 이동 (모든 데이터가 설정된 상태)
+      navigate("/care-sheet/diagnosis");
+    } catch (error) {
+      console.error("이미지 업로드 실패:", error);
+      alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  return {
+    // 상태
+    isProcessing,
+    selectedImage,
+    shouldAutoConfirm,
+
+    // refs
+    fileInputRef,
+    videoRef,
+    canvasRef,
+
+    // 함수들
+    startCamera,
+    capturePhoto,
+    handleFileSelect,
+    removeImage,
+    handlePhotoMethodSelect,
+    handleImageConfirm,
+  };
+};

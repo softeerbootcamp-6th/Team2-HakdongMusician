@@ -1,5 +1,5 @@
 import { FunnelProvider, FunnelStep, type FunnelState } from "@daycan/hooks";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAtomValue } from "jotai";
 import { homeFunnelDataAtom } from "../home-funnel/atoms/homeAtom";
 
@@ -10,11 +10,14 @@ import { infoFunnelDataAtom } from "./atoms/infoAtom";
 import { useSetAtom } from "jotai";
 import { convertFunnelStateToInfoFunnelData } from "./utils/parsingData";
 import { getStoredValue } from "../utils/storage";
+import type { InfoFunnelData } from "./types/infoType";
+import { mockMembers } from "./constants/dummy";
 
 export const InfoFunnelStepContainer = () => {
   const navigate = useNavigate();
   const homeData = useAtomValue(homeFunnelDataAtom);
   const setInfoFunnelData = useSetAtom(infoFunnelDataAtom);
+  const infoData = useAtomValue(infoFunnelDataAtom);
 
   const handleComplete = (funnelState: FunnelState) => {
     // FunnelState를 info-funnel 데이터로 변환
@@ -40,11 +43,41 @@ export const InfoFunnelStepContainer = () => {
     }
   }, [homeData, navigate]);
 
+  // photo-funnel로부터 채워진 info atom을 funnelState로 프리필
+  const initialState: FunnelState | undefined = useMemo(() => {
+    const d: InfoFunnelData | null = infoData;
+    if (!d) return undefined;
+
+    return {
+      STEP_0: {
+        recipientId: d.recipientId,
+        searchQuery: "",
+        selectedMember: mockMembers.find((m) => m.id === d.recipientId),
+      },
+      STEP_1: {
+        date: new Date(d.date),
+        isToday: false,
+      },
+      STEP_2: {
+        startTime: d.startTime,
+      },
+      STEP_3: {
+        endTime: d.endTime,
+      },
+      STEP_4: {
+        isUsedCarService: Boolean(d.mobilityNumber),
+        carNumber: d.mobilityNumber || "",
+      },
+    } as FunnelState;
+  }, [infoData]);
+
   return (
     <FunnelProvider
       steps={infoFunnelSteps}
       funnelId="info-funnel"
       onComplete={handleComplete}
+      initialState={initialState}
+      initialStep={initialState ? "STEP_5" : undefined}
     >
       <FunnelStep name="STEP_0">
         <Step0 />

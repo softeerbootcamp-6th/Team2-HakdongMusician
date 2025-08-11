@@ -46,8 +46,6 @@ import {
   PlusBoxIcon,
   MinusBoxIcon,
   DeleteIcon,
-  PhotoAlternateIcon,
-  DeleteButtonIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -102,6 +100,4 @@ export const iconMap = {
   plusBox: PlusBoxIcon,
   minusBox: MinusBoxIcon,
   delete: DeleteIcon,
-  photoAlternate: PhotoAlternateIcon,
-  deleteButton: DeleteButtonIcon,
 };

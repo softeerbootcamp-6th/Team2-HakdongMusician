@@ -14,6 +14,6 @@ export const convertFunnelStateToHomeFunnelData = (
   const step0Data = funnelState.STEP_0;
 
   return {
-    writerId: step0Data?.selectedUser?.id || 1,
+    writerId: step0Data?.writerId || 1,
   };
 };
