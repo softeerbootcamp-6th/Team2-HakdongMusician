@@ -19,7 +19,7 @@ import { useFunnel } from "@daycan/hooks";
 import { getRecipientName } from "../../utils/parsingData";
 
 export const Step1 = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [date, setDate] = useState<Date>();
   const [isToday, setIsToday] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const { toNext, toPrev, getStepState, updateState, funnelState } =
@@ -32,7 +32,7 @@ export const Step1 = () => {
   useEffect(() => {
     const existingData = getStepState("STEP_1");
     if (existingData) {
-      setSelectedDate(existingData.selectedDate);
+      setDate(existingData.date);
       setIsToday(existingData.isToday || false);
     }
   }, [getStepState]);
@@ -44,24 +44,24 @@ export const Step1 = () => {
     // 오늘 선택 시 날짜를 오늘로 설정
     if (newIsToday) {
       const today = new Date();
-      setSelectedDate(today);
+      setDate(today);
       updateState({
         isToday: newIsToday,
-        selectedDate: today,
+        date: today,
       });
     } else {
-      setSelectedDate(undefined);
+      setDate(undefined);
       updateState({
         isToday: newIsToday,
-        selectedDate: undefined,
+        date: undefined,
       });
     }
   };
 
   const handleDateSelect = (date: Date) => {
-    setSelectedDate(date);
+    setDate(date);
     updateState({
-      selectedDate: date,
+      date: date,
       isToday: false, // 다른 날짜 선택 시 오늘 선택 해제
     });
   };
@@ -108,6 +108,15 @@ export const Step1 = () => {
           <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
             다른 날짜 선택
           </Body>
+          {date && !isToday && (
+            <Body type="xsmall" weight={500} color={COLORS.primary[300]}>
+              {date.toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </Body>
+          )}
           <Icon
             name="calendar"
             width={20}
@@ -124,7 +133,7 @@ export const Step1 = () => {
               handleDateSelect(date);
               setIsDatePickerOpen(false);
             }}
-            initialDate={new Date()}
+            initialDate={date || new Date()}
           />
         )}
       </div>
@@ -135,7 +144,7 @@ export const Step1 = () => {
         onPrev={() => {
           toPrev();
         }}
-        isNextEnabled={!!selectedDate || isToday}
+        isNextEnabled={!!date || isToday}
       />
     </InfoFunnelLayout>
   );

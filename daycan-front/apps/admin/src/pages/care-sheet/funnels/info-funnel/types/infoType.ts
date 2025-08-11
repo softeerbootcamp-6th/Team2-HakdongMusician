@@ -2,25 +2,25 @@ import type { Member } from "../components/MemberList/types";
 
 // 각 Step의 데이터 타입 정의
 export interface Step0Data {
-  selectedMemberId?: string;
+  recipientId?: string;
   searchQuery: string;
   selectedMember?: Member;
 }
 
 export interface Step1Data {
-  selectedDate?: Date;
+  date?: Date;
   isToday: boolean;
 }
 
 export interface Step2Data {
-  selectedComeTime: string;
+  startTime: string;
   hour: string;
   minute: string;
   amPm: string;
 }
 
 export interface Step3Data {
-  selectedGoneTime: string;
+  endTime: string;
   hour: string;
   minute: string;
   amPm: string;
