@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useFunnel } from "@daycan/hooks";
 import type { EvaluationLevel, ProgramType } from "../../constants/diagnosis";
+import { useAtomValue } from "jotai";
+import { diagnosisFunnelDataAtom } from "../../atoms/diagnosisAtom";
+import type { DiagnosisFunnelData } from "../../types/diagnosisType";
 
 export const useStep3 = () => {
   const { toNext, toPrev, updateState, getStepState } = useFunnel();
@@ -19,6 +22,7 @@ export const useStep3 = () => {
   const [programEntries, setProgramEntries] = useState<
     Array<{ type: ProgramType; name: string; evaluation: EvaluationLevel }>
   >([]);
+  const diagnosisAtom = useAtomValue(diagnosisFunnelDataAtom);
 
   // 기존 데이터가 있으면 로드
   useEffect(() => {
@@ -36,8 +40,22 @@ export const useStep3 = () => {
       );
       setTrainingSpecialNote(existingData.trainingSpecialNote || "");
       setProgramEntries(existingData.programEntries || []);
+      return;
     }
-  }, [getStepState]);
+    const d: DiagnosisFunnelData | null = diagnosisAtom;
+    if (d && d.recoveryProgram) {
+      setIsTrainingChecked(!!d.recoveryProgram.motionTraining);
+      setIsCognitiveActivityTrainingChecked(
+        !!d.recoveryProgram.cognitiveProgram
+      );
+      setIsCognitiveFunctionEnhancementTrainingChecked(
+        !!d.recoveryProgram.cognitiveEnhancement
+      );
+      setIsPhysicalTherapyChecked(!!d.recoveryProgram.physicalTherapy);
+      setTrainingSpecialNote(d.recoveryProgram.note || "");
+      setProgramEntries(d.recoveryProgram.programEntries || []);
+    }
+  }, [getStepState, diagnosisAtom]);
 
   const handleNext = () => {
     updateState({

@@ -28,7 +28,7 @@ export const Step5 = () => {
           </Body>
         </div>
 
-        {/* Step0: 선택된 멤버 */}
+        {/* Step0: 수급자 */}
         <div className={step5InfoRow}>
           <Body type="small" weight={600} color={COLORS.gray[600]}>
             수급자:
@@ -38,7 +38,7 @@ export const Step5 = () => {
           </Body>
         </div>
 
-        {/* Step1: 선택된 날짜 */}
+        {/* Step1: 이용 날짜 */}
         <div className={step5InfoRow}>
           <Body type="small" weight={600} color={COLORS.gray[600]}>
             이용 날짜:
@@ -46,29 +46,29 @@ export const Step5 = () => {
           <Body type="small" weight={600} color={COLORS.gray[800]}>
             {step1Data?.isToday
               ? "오늘"
-              : step1Data?.selectedDate
-                ? step1Data.selectedDate.toLocaleDateString("ko-KR")
+              : step1Data?.date
+                ? new Date(step1Data.date).toLocaleDateString("ko-KR")
                 : "선택되지 않음"}
           </Body>
         </div>
 
-        {/* Step2: 오신 시간 */}
+        {/* Step2: 시작 시간 */}
         <div className={step5InfoRow}>
           <Body type="small" weight={600} color={COLORS.gray[600]}>
             시작 시간:
           </Body>
           <Body type="small" weight={600} color={COLORS.gray[800]}>
-            {step2Data?.selectedComeTime || "선택되지 않음"}
+            {step2Data?.startTime || "선택되지 않음"}
           </Body>
         </div>
 
-        {/* Step3: 가신 시간 */}
+        {/* Step3: 종료 시간 */}
         <div className={step5InfoRow}>
           <Body type="small" weight={600} color={COLORS.gray[600]}>
             종료 시간:
           </Body>
           <Body type="small" weight={600} color={COLORS.gray[800]}>
-            {step3Data?.selectedGoneTime || "선택되지 않음"}
+            {step3Data?.endTime || "선택되지 않음"}
           </Body>
         </div>
 
