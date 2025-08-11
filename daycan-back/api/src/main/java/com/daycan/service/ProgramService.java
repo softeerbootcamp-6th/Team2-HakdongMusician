@@ -2,7 +2,7 @@ package com.daycan.service;
 
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.enums.ProgramType;
-import com.daycan.exceptions.ApplicationException;
+import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.CommonErrorStatus;
 import com.daycan.domain.entity.Program;
 import com.daycan.repository.jpa.ProgramRepository;

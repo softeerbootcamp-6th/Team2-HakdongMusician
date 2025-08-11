@@ -3,7 +3,7 @@ package com.daycan.domain.entity.document;
 
 import com.daycan.common.response.status.DocumentErrorStatus;
 import com.daycan.domain.BaseTimeEntity;
-import com.daycan.exceptions.ApplicationException;
+import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,10 +14,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "vital")
