@@ -47,7 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/admin/care-sheet")
 @RequiredArgsConstructor
-@Tag(name = "📜 기록지 관리", description = "관리자용 기록지 관련 API")
+@Tag(name = "기록지 관리", description = "관리자용 기록지 관련 API")
 public class CenterCareSheetController {
   private final DocumentService documentService;
 
@@ -127,6 +127,7 @@ public class CenterCareSheetController {
   // 파일 다운로드
   @GetMapping("/download")
   @Operation(summary = "공단 제출용 기록지 파일 다운로드", description = "국민건강보험공단 제출용 기록지 파일(Excel)을 다운로드합니다.")
+  @Deprecated
   public ResponseWrapper<UrlResponse> downloadCareReportFile(
       @RequestParam(required = true) String year,
       @RequestParam(required = true) String month) {
