@@ -1,5 +1,9 @@
 import type { FunnelState } from "@daycan/hooks";
-import { DIAGNOSIS_CONSTANTS } from "../constants/diagnosis";
+import {
+  DIAGNOSIS_CONSTANTS,
+  MEAL_TYPE_CODE_TO_LABEL,
+  MEAL_AMOUNT_CODE_TO_LABEL,
+} from "../constants/diagnosis";
 import type { DiagnosisFunnelData } from "../types/diagnosisType";
 
 export interface DiagnosisSummaryItem {
@@ -13,6 +17,16 @@ export interface DiagnosisSummarySection {
 }
 
 const yesNo = (flag?: boolean) => (flag ? "예" : "아니오");
+
+// 코드값 → 한글 라벨 매핑
+const mealTypeLabel = MEAL_TYPE_CODE_TO_LABEL;
+const mealAmountLabel = MEAL_AMOUNT_CODE_TO_LABEL;
+
+const toMealLabel = (type?: string, amount?: string) => {
+  const t = type ? (mealTypeLabel[type] ?? type) : "-";
+  const a = amount ? (mealAmountLabel[amount] ?? amount) : "-";
+  return `${t} / ${a}`;
+};
 
 export const convertFunnelStateToDiagnosisSummary = (
   funnelState: FunnelState
@@ -31,19 +45,19 @@ export const convertFunnelStateToDiagnosisSummary = (
       {
         label: "아침 식사",
         value: s0.isBreakfastChecked
-          ? `${s0.breakfastType ?? "-"} / ${s0.breakfastAmount ?? "-"}`
+          ? toMealLabel(s0.breakfastType, s0.breakfastAmount)
           : "미진행",
       },
       {
         label: "점심 식사",
         value: s0.isLunchChecked
-          ? `${s0.lunchType ?? "-"} / ${s0.lunchAmount ?? "-"}`
+          ? toMealLabel(s0.lunchType, s0.lunchAmount)
           : "미진행",
       },
       {
         label: "저녁 식사",
         value: s0.isDinnerChecked
-          ? `${s0.dinnerType ?? "-"} / ${s0.dinnerAmount ?? "-"}`
+          ? toMealLabel(s0.dinnerType, s0.dinnerAmount)
           : "미진행",
       },
       {
