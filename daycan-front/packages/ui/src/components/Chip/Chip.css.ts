@@ -50,7 +50,7 @@ export const chip = recipe({
       },
       grayDark: {
         backgroundColor: COLORS.gray[600],
-        color: COLORS.gray[300],
+        color: COLORS.gray[50],
       },
       yellow: {
         backgroundColor: COLORS.yellow[200],
