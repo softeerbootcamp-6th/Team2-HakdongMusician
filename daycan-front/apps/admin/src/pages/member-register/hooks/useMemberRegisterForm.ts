@@ -158,18 +158,10 @@ export const useMemberRegisterForm = () => {
     return Object.values(requiredFields).every(Boolean);
   };
 
-  // yyyy.mm.dd 에서 yyyy-mm-dd 로 변경하는 함수임
-  const changeBirthDate = (birthDate: string) => {
-    const [year, month, day] = birthDate.split(".");
-    return `${year}-${month}-${day}`;
-  };
-
   //마지막 제출 함수
   const handleSubmit = () => {
     //바뀐 상태를 backend형식에 맞게 변환
     form.passwordConfirmed = true;
-    form.birthDate = changeBirthDate(form.birthDate);
-    form.guardianBirthDate = changeBirthDate(form.guardianBirthDate);
 
     //여기서 API 호출
     console.log("폼 제출:", form);
