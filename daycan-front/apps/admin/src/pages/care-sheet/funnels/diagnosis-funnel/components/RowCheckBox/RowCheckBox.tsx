@@ -22,7 +22,12 @@ export const RowCheckBox = ({
         <Body type="medium" weight={400} color={COLORS.gray[700]}>
           {label}
         </Body>
-        <Icon name={checked ? "checked" : "unchecked"} width={24} height={24} />
+        <Icon
+          name={checked ? "checked" : "unchecked"}
+          width={24}
+          height={24}
+          color={COLORS.gray[100]}
+        />
       </div>
       {isExpandable && checked && expandableChildren}
     </>

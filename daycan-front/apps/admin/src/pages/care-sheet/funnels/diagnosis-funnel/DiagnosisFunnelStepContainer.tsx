@@ -24,7 +24,7 @@ export const DiagnosisFunnelStepContainer = () => {
   useEffect(() => {
     const stored = getStoredValue("careSheet:infoFunnel");
     if (stored === null) {
-      navigate("/care-sheet/info", { replace: true });
+      navigate("/care-sheet/new/info", { replace: true });
     }
   }, [infoData]);
 
