@@ -3,15 +3,17 @@ import { classNames } from "@/utils";
 import {
   input,
   type InputVariants,
-  inputStyle,
-  type InputStyleVariants,
+  inputElement,
+  type InputElementVariants,
 } from "./Input.css";
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> &
   InputVariants &
-  InputStyleVariants & {
+  InputElementVariants & {
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
+    backgroundColor?: string;
+    inputMaxLength?: number;
   };
 
 /* 
@@ -36,19 +38,26 @@ export const Input = ({
   leftIcon,
   rightIcon,
   placeholder,
-  color,
+  style,
+  inputMaxLength,
+  backgroundColor,
+  fontSize,
   ...props
 }: InputProps) => {
   return (
     <div
       className={classNames(input({ variant, inputSize, flexRule }), className)}
+      style={{ ...style }}
       {...props}
     >
       {leftIcon}
       <input
         type={type}
         placeholder={placeholder}
-        className={inputStyle({ color })}
+        className={inputElement({ fontSize })}
+        style={{ backgroundColor }}
+        maxLength={inputMaxLength}
+        {...props}
       />
       {rightIcon}
     </div>
