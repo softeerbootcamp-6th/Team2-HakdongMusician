@@ -1,5 +1,7 @@
 package com.daycan.service.document;
 
+import com.daycan.api.dto.entry.document.report.ReportStatus;
+import com.daycan.api.dto.entry.document.sheet.SheetStatus;
 import com.daycan.common.response.status.MemberErrorStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.api.dto.center.request.CareSheetRequest;
@@ -122,8 +124,8 @@ public class DocumentService {
     // TODO: 실제 구현 전까지 임시 반환 그대로 유지
     return List.of(new DocumentStatusResponse(
         LocalDate.now(),
-        new DocumentStatusResponse.CareSheetStatusResponse(1L, DocumentStatus.SHEET_PENDING),
-        new DocumentStatusResponse.CareReportStatusResponse(1L, DocumentStatus.REPORT_PENDING)
+        new DocumentStatusResponse.CareSheetStatusResponse(1L, SheetStatus.DONE),
+        new DocumentStatusResponse.CareReportStatusResponse(1L, ReportStatus.DONE)
     ));
   }
 

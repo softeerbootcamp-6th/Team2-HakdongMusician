@@ -1,7 +1,7 @@
 package com.daycan.api.controller.center;
 
+import com.daycan.api.dto.entry.document.report.ReportStatus;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.api.dto.entry.document.report.ReportEntry;
 import com.daycan.api.dto.member.request.ReportQueryParameters;
@@ -47,9 +47,9 @@ public class CenterCareReportController {
 
     /* mock 데이터 생성 (임시) */
     List<CareReportMetaResponse> mock = List.of(
-        new CareReportMetaResponse(1L, "김순애", LocalDate.now(), DocumentStatus.REPORT_REVIEWED, false),
+        new CareReportMetaResponse(1L, "김순애", LocalDate.now(), ReportStatus.REVIEWED, false),
         new CareReportMetaResponse(2L, "박철수", LocalDate.now().minusDays(1),
-            DocumentStatus.REPORT_PENDING, true)
+            ReportStatus.PENDING, true)
     );
 
     return new PageResponse<>(

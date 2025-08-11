@@ -1,5 +1,6 @@
 package com.daycan.api.controller.center;
 
+import com.daycan.api.dto.entry.document.sheet.SheetStatus;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.api.dto.entry.document.sheet.CognitiveEntry;
@@ -103,7 +104,7 @@ public class CenterCareSheetController {
     List<CareSheetMetaResponse> mock = List.of(
         new CareSheetMetaResponse(
             1001L,
-            DocumentStatus.SHEET_DONE,
+            SheetStatus.DONE,
             new MemberMetaEntry("MEM12345", "오애순",
                 LocalDate.of(1943, 9, 12), Gender.FEMALE),
             true,
@@ -112,7 +113,7 @@ public class CenterCareSheetController {
         ),
         new CareSheetMetaResponse(
             1002L,
-            DocumentStatus.SHEET_PENDING,
+            SheetStatus.PENDING,
             new MemberMetaEntry("MEM67890", "김관식",
                 LocalDate.of(1940, 3, 8), Gender.MALE),
             false,
