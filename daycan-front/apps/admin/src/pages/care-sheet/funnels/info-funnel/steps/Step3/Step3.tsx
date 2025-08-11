@@ -15,7 +15,7 @@ import { getRecipientName } from "../../utils/parsingData";
 export const Step3 = () => {
   const { toNext, toPrev, updateState, getStepState, funnelState } =
     useFunnel();
-  const [selectedTime, setSelectedTime] = useState<string>("09:00 오전");
+  const [selectedTime, setSelectedTime] = useState<string>("17:00");
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   // 수급자 이름 가져오기
@@ -24,29 +24,25 @@ export const Step3 = () => {
   // 기존 데이터가 있으면 로드
   useEffect(() => {
     const existingData = getStepState("STEP_3");
-    if (existingData) {
-      setSelectedTime(existingData.selectedTime);
+    if (existingData?.endTime) {
+      setSelectedTime(existingData.endTime);
       setIsConfirmed(true);
     }
   }, [getStepState]);
 
-  const handleTimeConfirm = (h: string, m: string, ap: string) => {
-    const timeString = `${h}:${m} ${ap}`;
+  const handleTimeConfirm = (time24: string) => {
+    // TimePicker에서 받은 24시간 값을 그대로 사용
     //TODO- API 명세 나오면 확인 필요
     console.log(selectedTime);
-    setSelectedTime(timeString);
+    setSelectedTime(time24);
     setIsConfirmed(true);
 
     // FunnelState에 데이터 저장
     updateState({
-      selectedGoneTime: timeString,
-      hour: h,
-      minute: m,
-      amPm: ap,
+      endTime: time24,
     });
-
-    console.log(h, m, ap);
   };
+
   return (
     <InfoFunnelLayout>
       <div className={step3HighlightingHeadingContainer}>
@@ -59,9 +55,7 @@ export const Step3 = () => {
         시간
       </Body>
       <TimePicker
-        defaultHour="05"
-        defaultMinute="00"
-        defaultAmPm="오후"
+        defaultTime24={getStepState("STEP_3")?.endTime || "17:00"}
         onConfirm={handleTimeConfirm}
       />
       <StepButtons

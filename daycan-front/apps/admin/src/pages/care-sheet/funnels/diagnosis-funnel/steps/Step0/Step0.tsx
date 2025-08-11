@@ -6,8 +6,10 @@ import { RowCounter } from "../../components/RowCounter";
 import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { ColumnTextArea } from "../../components/ColumnTextArea/ColumnTextArea";
 import { useStep0 } from "./useStep0";
+import { useNavigate } from "react-router-dom";
 
 export const Step0 = () => {
+  const navigate = useNavigate();
   const {
     // 상태들
     isWashHelperChecked,
@@ -45,9 +47,11 @@ export const Step0 = () => {
     handleIncrementStoolCount,
     handleDecrementStoolCount,
     handleNext,
-    toPrev,
   } = useStep0();
 
+  const handleOnPrev = () => {
+    navigate("/care-sheet/info");
+  };
   return (
     <DiagnosisLayout title="신체 활동" nextTitle="인지 활동">
       <DiagnosisCardLayout title="도움">
@@ -172,7 +176,11 @@ export const Step0 = () => {
         />
       </DiagnosisCardLayout>
 
-      <StepButtons onNext={handleNext} onPrev={toPrev} isNextEnabled={true} />
+      <StepButtons
+        onNext={handleNext}
+        onPrev={handleOnPrev}
+        isNextEnabled={true}
+      />
     </DiagnosisLayout>
   );
 };

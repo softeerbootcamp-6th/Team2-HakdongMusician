@@ -24,21 +24,28 @@ const minutes = Array.from(
 type AMPM = "오전" | "오후";
 
 interface Props {
-  defaultHour?: string;
-  defaultMinute?: string;
-  defaultAmPm?: AMPM;
-  onConfirm: (h: string, m: string, ap: AMPM) => void;
+  defaultTime24?: string; // "HH:MM" 형태의 24시간 초기값
+  onConfirm: (time24: string) => void; // 24시간 "HH:MM" 형태로 반환
 }
 
-export const TimePicker = ({
-  defaultHour = "09",
-  defaultMinute = "00",
-  defaultAmPm = "오전",
-  onConfirm,
-}: Props) => {
-  const [ampm, setAmPm] = useState<AMPM>(defaultAmPm);
-  const [hour, setHour] = useState(defaultHour);
-  const [minute, setMinute] = useState(defaultMinute);
+export const TimePicker = ({ defaultTime24 = "09:00", onConfirm }: Props) => {
+  // 24시간 → 12시간 변환
+  const parseTime24 = (time24: string) => {
+    const [hStr, mStr] = time24.split(":");
+    const hNum = Number(hStr);
+    const amPm = hNum >= 12 ? "오후" : "오전";
+    const hour12 = ((hNum + 11) % 12) + 1;
+    return {
+      hour: String(hour12).padStart(2, "0"),
+      minute: String(mStr || "00").padStart(2, "0"),
+      amPm,
+    };
+  };
+
+  const initialTime = parseTime24(defaultTime24);
+  const [ampm, setAmPm] = useState<AMPM>(initialTime.amPm as AMPM);
+  const [hour, setHour] = useState<string>(initialTime.hour);
+  const [minute, setMinute] = useState<string>(initialTime.minute);
 
   const hRef = useRef<HTMLUListElement>(null);
   const mRef = useRef<HTMLUListElement>(null);
@@ -65,14 +72,29 @@ export const TimePicker = ({
     };
 
   useEffect(() => {
-    hRef.current?.scrollTo({ top: hours.indexOf(defaultHour) * ITEM_HEIGHT });
+    hRef.current?.scrollTo({
+      top: hours.indexOf(initialTime.hour) * ITEM_HEIGHT,
+    });
     mRef.current?.scrollTo({
-      top: minutes.indexOf(defaultMinute) * ITEM_HEIGHT,
+      top: minutes.indexOf(initialTime.minute) * ITEM_HEIGHT,
     });
     ampmRef.current?.scrollTo({
-      top: ["오전", "오후"].indexOf(defaultAmPm) * ITEM_HEIGHT,
+      top: ["오전", "오후"].indexOf(initialTime.amPm) * ITEM_HEIGHT,
     });
-  }, [defaultHour, defaultMinute, defaultAmPm]);
+  }, [defaultTime24]);
+
+  const handleConfirm = () => {
+    // 12시간 → 24시간 변환
+    let hNum = Number(hour);
+    if (ampm === "오후" && hNum !== 12) {
+      hNum += 12;
+    } else if (ampm === "오전" && hNum === 12) {
+      hNum = 0;
+    }
+
+    const time24 = `${String(hNum).padStart(2, "0")}:${minute.padStart(2, "0")}`;
+    onConfirm(time24);
+  };
 
   return (
     <div className={wrapper}>
@@ -130,13 +152,7 @@ export const TimePicker = ({
         </ul>
       </div>
 
-      <Button
-        variant="primary"
-        size="fullWidth"
-        onClick={() => {
-          onConfirm(hour, minute, ampm);
-        }}
-      >
+      <Button variant="primary" size="fullWidth" onClick={handleConfirm}>
         확인
       </Button>
     </div>
