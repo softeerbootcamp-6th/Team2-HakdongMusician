@@ -10,16 +10,13 @@ import {
   divider,
 } from "./MemberPage.css.ts";
 import { FilterSearchbar } from "@/components/FilterSearchbar/FilterSearchbar.tsx";
-import { DropDownPanel } from "@/components/DropDownPanel/DropDownPanel.tsx";
-import { DropDownChip } from "@/components/DropDownChip/index.ts";
 import { MemberDataList } from "./components/MemberDataList/MemberDataList.tsx";
 import { useMember } from "./hooks";
-
 export const MemberPage = () => {
   const {
-    dropdownStates,
+    // dropdownStates,
     handleNewMember,
-    toggleDropdown,
+    // toggleDropdown,
     handleResetFilters,
   } = useMember();
 
@@ -50,20 +47,28 @@ export const MemberPage = () => {
           <div className={divider} />
           {/* 필터링 chips */}
           <div className={memberFilter}>
-            <DropDownChip
+            {/* <DropDownChip
               label="장기요양등급"
               isOpen={dropdownStates.careGrade}
               onClick={() => toggleDropdown("careGrade")}
             >
-              <DropDownPanel />
+              <DropDownPanel
+                title="장기요양등급"
+                options={CARE_LEVEL_OPTIONS}
+                onChange={() => {}}
+              />
             </DropDownChip>
             <DropDownChip
               label="성별"
               isOpen={dropdownStates.gender}
               onClick={() => toggleDropdown("gender")}
             >
-              <DropDownPanel />
-            </DropDownChip>
+              <DropDownPanel
+                title="성별"
+                options={GENDER_OPTIONS}
+                onChange={() => {}}
+              />
+            </DropDownChip> */}
           </div>
         </div>
         <div className={memberSearch}>

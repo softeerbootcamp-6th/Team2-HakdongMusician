@@ -14,7 +14,7 @@ import { ICON_NAMES } from "@/constants/iconNames";
 
 export const Sidebar = () => {
   const { handleMenuClick, isMenuSelected, count, handleNewRecordClick } =
-    useSidebar();
+    useSidebar(PAGE_KEYS.RECIPIENT);
 
   return (
     /* Sidebar */

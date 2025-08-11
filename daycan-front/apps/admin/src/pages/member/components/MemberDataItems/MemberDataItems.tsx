@@ -67,6 +67,7 @@ export const MemberDataItems = ({ members }: MemberDataItemsProps) => {
                   onClick={() => handleDetailClick(member.username)}
                   style={{
                     width: "70px",
+                    cursor: "pointer",
                   }}
                 >
                   <Body type="xsmall" color={COLORS.gray[700]}>

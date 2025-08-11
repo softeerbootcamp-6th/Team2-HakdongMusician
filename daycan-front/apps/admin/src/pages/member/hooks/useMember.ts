@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { API_ELDER_DUMMY_DATA } from "@/constants/memberDummyData";
+import { useNavigate } from "react-router-dom";
 
 // 드롭다운 상태 타입
 type DropdownStates = {
@@ -8,6 +9,7 @@ type DropdownStates = {
 };
 
 export const useMember = () => {
+  const navigate = useNavigate();
   // 드롭다운 상태 관리
   const [dropdownStates, setDropdownStates] = useState<DropdownStates>({
     careGrade: false,
@@ -45,7 +47,10 @@ export const useMember = () => {
 
   // 새 수급자 등록 핸들러
   const handleNewMember = () => {
-    console.log("새 수급자 등록");
+    navigate("/member/new");
+  };
+  const handleEditMember = (id: string) => {
+    navigate(`/member/edit/${id}`);
   };
 
   // 드롭다운 토글 함수
@@ -122,5 +127,6 @@ export const useMember = () => {
     handleResetFilters,
     getDetailContainerState,
     handleDetailClick,
+    handleEditMember,
   };
 };

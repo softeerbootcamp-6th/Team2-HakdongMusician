@@ -11,7 +11,7 @@ export const container = style({
 
 export const sidebarWrapper = style({
   flex: 1,
-  backgroundColor: COLORS.gray[900],
+  backgroundColor: COLORS.gray[700],
 });
 
 export const sidebar = style({
