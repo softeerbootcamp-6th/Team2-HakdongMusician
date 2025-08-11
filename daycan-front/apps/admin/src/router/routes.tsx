@@ -1,6 +1,6 @@
 import { LoginLayout } from "@/layout/login";
 import { MainLayout, ReportLayout, MobileLayout } from "../layout";
-import { LoginPage, MemberPage } from "@/pages";
+import { LoginPage, MemberPage, CareSheetPage } from "@/pages";
 import {
   HomeFunnelStepContainer,
   InfoFunnelStepContainer,
@@ -30,6 +30,10 @@ export const routes: TRoutes[] = [
         path: "members",
         element: <MemberPage />,
       },
+      {
+        path: "care-sheet",
+        element: <CareSheetPage />,
+      },
     ],
   },
   {
@@ -53,7 +57,7 @@ export const routes: TRoutes[] = [
     ],
   },
   {
-    path: "/care-sheet",
+    path: "/care-sheet/new",
     layout: <MobileLayout />,
     children: [
       {
