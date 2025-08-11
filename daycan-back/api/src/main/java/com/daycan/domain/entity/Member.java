@@ -26,7 +26,6 @@ import java.time.LocalDate;
 import lombok.Getter;
 
 
-
 @Getter
 @Entity
 @Table(
@@ -87,17 +86,19 @@ public class Member extends Account {
   @Version
   private Long version;
 
-  protected Member() {}
+  protected Member() {
+  }
 
   public static Member createNew(String username,
       Center center,
       String name, Gender gender, LocalDate birthDate,
       String hashedPassword) {
-    if (isBlank(username) || center == null || isBlank(name) || gender == null || birthDate == null || isBlank(hashedPassword)) {
+    if (isBlank(username) || center == null || isBlank(name) || gender == null || birthDate == null
+        || isBlank(hashedPassword)) {
       throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "필수 파라미터가 누락되었습니다.");
     }
     Member m = new Member();
-    m.username = username;            // 정규화된 값 전달 전제
+    m.username = username; // 정규화된 값 전달 전제
     m.center = center;
     m.name = name;
     m.gender = gender;
@@ -108,22 +109,48 @@ public class Member extends Account {
   }
 
   public void changeCenter(Center newCenter) {
-    if (newCenter == null) throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "center 누락");
+    if (newCenter == null) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "center 누락");
+    }
     this.center = newCenter;
   }
 
   public void apply(MemberCommand cmd) {
-    if (cmd.name() != null) this.name = cmd.name();
-    if (cmd.gender() != null) this.gender = cmd.gender();
-    if (cmd.birthDate() != null) this.birthDate = cmd.birthDate();
-    if (cmd.careLevel() != null) this.careLevel = cmd.careLevel();
-    if (cmd.avatarUrl() != null) this.avatarUrl = cmd.avatarUrl();
-    if (cmd.guardianName() != null) this.guardianName = cmd.guardianName();
-    if (cmd.guardianRelation() != null) this.guardianRelation = cmd.guardianRelation();
-    if (cmd.guardianBirthDate() != null) this.guardianBirthDate = cmd.guardianBirthDate();
-    if (cmd.guardianPhoneNumber() != null) this.guardianPhoneNumber = cmd.guardianPhoneNumber();
-    if (cmd.guardianAvatarUrl() != null) this.guardianAvatarUrl = cmd.guardianAvatarUrl();
-    if (cmd.acceptReport() != null) this.acceptReport = cmd.acceptReport();
-    if (cmd.hashedPassword() != null) this.changePassword(cmd.hashedPassword());
+    if (cmd.name() != null) {
+      this.name = cmd.name();
+    }
+    if (cmd.gender() != null) {
+      this.gender = cmd.gender();
+    }
+    if (cmd.birthDate() != null) {
+      this.birthDate = cmd.birthDate();
+    }
+    if (cmd.careLevel() != null) {
+      this.careLevel = cmd.careLevel();
+    }
+    if (cmd.avatarUrl() != null) {
+      this.avatarUrl = cmd.avatarUrl();
+    }
+    if (cmd.guardianName() != null) {
+      this.guardianName = cmd.guardianName();
+    }
+    if (cmd.guardianRelation() != null) {
+      this.guardianRelation = cmd.guardianRelation();
+    }
+    if (cmd.guardianBirthDate() != null) {
+      this.guardianBirthDate = cmd.guardianBirthDate();
+    }
+    if (cmd.guardianPhoneNumber() != null) {
+      this.guardianPhoneNumber = cmd.guardianPhoneNumber();
+    }
+    if (cmd.guardianAvatarUrl() != null) {
+      this.guardianAvatarUrl = cmd.guardianAvatarUrl();
+    }
+    if (cmd.acceptReport() != null) {
+      this.acceptReport = cmd.acceptReport();
+    }
+    if (cmd.hashedPassword() != null) {
+      this.changePassword(cmd.hashedPassword());
+    }
   }
 }

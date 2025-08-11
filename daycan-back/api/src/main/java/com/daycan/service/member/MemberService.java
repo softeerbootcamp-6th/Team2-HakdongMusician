@@ -34,24 +34,6 @@ public class MemberService {
   private final CenterRepository centerRepository;
 
   /**
-   * 센터별 회원 목록 조회 (필터링 지원)
-   */
-  public List<AdminMemberResponse> getMemberList(Long centerId,
-      Gender gender,
-      Integer careLevel,
-      String name) {
-    try {
-      List<Member> members = memberRepository.findByCenterWithFilters(centerId, gender, careLevel, name);
-      return members.stream()
-          .map(this::convertToAdminMemberResponse)
-          .toList();
-    } catch (Exception e) {
-      log.error("회원 목록 조회 중 오류 발생", e);
-      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
-    }
-  }
-
-  /**
    * 센터별 회원 목록 조회 (필터링 + 페이징)
    */
   public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(Long centerId,
@@ -106,15 +88,13 @@ public class MemberService {
     try {
       // username 전역 유니크 전제
       memberRepository.findByUsername(req.careNumber()).ifPresent(m -> {
-        // (선택) 재활성화 정책: 필요 없다면 CONFLICT 던지기
         if (m.isActive()) {
-          throw new ApplicationException(CommonErrorStatus.CONSTRAINT_VIOLATION, "이미 존재하는 회원");
+          throw new ApplicationException(MemberErrorStatus.MEMBER_ALREADY_EXISTS);
         }
-        // 재활성화 허용 시
-        // m.reactivate(); // Account.reactivate() 사용(선택 사항)
-        // m.changeCenter(requireCenter(centerId));
-        // m.apply(buildMemberCommand(req, hashPasswordIfPresent(req.passwordEntry())));
-        // throw new ApplicationException(CommonErrorStatus.CONFLICT, "재활성화 로직 미적용 상태");
+         m.reactivate(); // Account.reactivate() 사용(선택 사항)
+         m.changeCenter(requireCenter(centerId));
+         m.apply(buildMemberCommand(
+             req, hashPasswordIfPresent(req.passwordEntry())));
       });
 
       String hashed = requireAndHashPassword(req.passwordEntry());
@@ -165,7 +145,6 @@ public class MemberService {
     try {
       Member member = getByUsernameAndCenter(username, centerId);
       member.deactivate(); // Account.deactivate()
-      memberRepository.save(member);
     } catch (ApplicationException e) {
       throw e;
     } catch (Exception e) {

@@ -104,17 +104,4 @@ public class CenterMemberController {
     return ResponseWrapper.onSuccess(null);
   }
 
-  @PostMapping(value = "/excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @Operation(summary = "엑셀로 수급자 일괄 등록", description = "엑셀 파일(.xlsx, .xls)을 업로드하여 수급자를 일괄 등록합니다.")
-  @Deprecated
-  public ResponseWrapper<List<AdminMemberResponse>> createMemberFromExcel(
-      @AuthenticatedUser CenterDetails centerDetails,
-      @Parameter(description = "엑셀 파일 (.xlsx, .xls)", required = true) @RequestParam("file") MultipartFile file) {
-    Center center = centerDetails.getCenter();
-    // TODO: 엑셀 파일 파싱 및 일괄 등록 로직 구현 필요
-    List<AdminMemberResponse> memberList = memberService.getMemberList(center.getId(),
-        null, null, null);
-    return ResponseWrapper.onSuccess(memberList);
-  }
-
 }
