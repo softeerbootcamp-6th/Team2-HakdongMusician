@@ -49,6 +49,8 @@ export { default as FlipCameraIcon } from "./svg/flip_camera_ios.svg";
 export { default as ReplaceImageIcon } from "./svg/replace_image.svg";
 export { default as AddPhotoByCameraIcon } from "./svg/add-photo-by-camera.svg";
 export { default as AddPhotoIcon } from "./svg/add-photo.svg";
+export { default as PhotoAlternateIcon } from "./svg/photo-alternate.svg";
+export { default as PhotoDeleteButtonIcon } from "./svg/photo-delete-button.svg";
 
 // 로고 아이콘들
 export { default as FullLogo32Icon } from "./svg/full-logo-32.svg";
@@ -67,5 +69,3 @@ export { default as ActivityIcon } from "./svg/activity.svg";
 export { default as TransportationIcon } from "./svg/transportation.svg";
 
 // 기타 아이콘들
-export { default as PhotoAlternateIcon } from "./svg/photo-alternate.svg";
-export { default as DeleteButtonIcon } from "./svg/delete-button.svg";
