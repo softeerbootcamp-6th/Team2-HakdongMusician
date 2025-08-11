@@ -26,7 +26,7 @@ export const HomeFunnelStepContainer = () => {
       homeFunnelData
     );
 
-    navigate("/care-sheet/info");
+    navigate("/care-sheet/new/info");
   };
 
   // 기본값이 있으면 Step1로 프리필

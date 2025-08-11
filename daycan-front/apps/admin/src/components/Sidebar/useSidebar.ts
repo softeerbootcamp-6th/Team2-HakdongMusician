@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { PAGE_KEYS, type PageKey } from "@/constants/sidebar.ts";
 
-export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.RECORD_SHEET) => {
+export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.CARE_SHEET) => {
   const [selectedMenu, setSelectedMenu] = useState<PageKey>(initialMenu);
   const [count] = useState<number>(5);
   const navigate = useNavigate();
@@ -18,8 +18,8 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.RECORD_SHEET) => {
       case "/report":
         setSelectedMenu(PAGE_KEYS.REPORT_SENDING);
         break;
-      case "/report":
-        setSelectedMenu(PAGE_KEYS.RECORD_SHEET);
+      case "/care-sheet":
+        setSelectedMenu(PAGE_KEYS.CARE_SHEET);
         break;
       default:
         break;
@@ -39,8 +39,8 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.RECORD_SHEET) => {
       case PAGE_KEYS.RECIPIENT:
         navigate("/member");
         break;
-      case PAGE_KEYS.RECORD_SHEET:
-        navigate("/report");
+      case PAGE_KEYS.CARE_SHEET:
+        navigate("/care-sheet");
         break;
       case PAGE_KEYS.REPORT_SENDING:
         navigate("/report");

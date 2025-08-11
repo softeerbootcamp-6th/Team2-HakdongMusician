@@ -12,7 +12,7 @@ export const InfoFunnelHeader = () => {
         height={24}
         color={COLORS.gray[50]}
         onClick={() => {
-          navigate("/care-sheet/");
+          navigate("/care-sheet/new");
         }}
       />
       <Body type="medium" color={COLORS.gray[900]} weight={600}>

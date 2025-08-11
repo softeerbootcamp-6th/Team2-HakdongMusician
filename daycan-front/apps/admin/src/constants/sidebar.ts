@@ -1,5 +1,5 @@
 export const PAGE_KEYS = {
-  RECORD_SHEET: "기록지 관리",
+  CARE_SHEET: "기록지 관리",
   REPORT_SENDING: "리포트 전송",
   RECIPIENT: "수급자 관리",
   STAFF: "종사자 관리",

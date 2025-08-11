@@ -67,7 +67,7 @@ export const Step0 = () => {
           toNext();
         }}
         onPrev={() => {
-          navigate("/care-sheet/");
+          navigate("/care-sheet/new");
         }}
         isNextEnabled={!!recipientId}
       />

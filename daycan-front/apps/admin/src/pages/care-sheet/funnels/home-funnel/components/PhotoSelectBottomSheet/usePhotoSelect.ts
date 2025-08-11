@@ -218,7 +218,7 @@ export const usePhotoSelect = (
       // 4. 바텀시트 닫기
       setIsBottomSheetOpen(false);
       // 5. diagnosis 페이지로 이동 (모든 데이터가 설정된 상태)
-      navigate("/care-sheet/diagnosis");
+      navigate("/care-sheet/new/diagnosis");
     } catch (error) {
       console.error("이미지 업로드 실패:", error);
       alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");

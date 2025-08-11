@@ -32,14 +32,14 @@ export const InfoFunnelStepContainer = () => {
     );
 
     // 다음 페이지로 이동
-    navigate("/care-sheet/diagnosis");
+    navigate("/care-sheet/new/diagnosis");
   };
 
   // 홈 퍼널 데이터가 없으면 홈 퍼널로 이동 (atom 초기 null hydration 대비 로컬스토리지도 확인)
   useEffect(() => {
     const stored = getStoredValue("careSheet:homeFunnel");
     if (stored === null) {
-      navigate("/care-sheet/", { replace: true });
+      navigate("/care-sheet/new", { replace: true });
     }
   }, [homeData, navigate]);
 

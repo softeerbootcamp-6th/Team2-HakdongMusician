@@ -50,7 +50,7 @@ export const Step0 = () => {
   } = useStep0();
 
   const handleOnPrev = () => {
-    navigate("/care-sheet/info");
+    navigate("/care-sheet/new/info");
   };
   return (
     <DiagnosisLayout title="신체 활동" nextTitle="인지 활동">
