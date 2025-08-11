@@ -7,11 +7,11 @@ import {
   memberInfoSectionContent,
 } from "./GenderSelector.css";
 
-type Gender = "male" | "female";
+type Gender = "MALE" | "FEMALE";
 
 interface GenderSelectorProps {
   selectedGender: string;
-  onGenderSelect: (gender: string) => void;
+  onGenderSelect: (gender: Gender) => void;
 }
 
 export const GenderSelector = ({
@@ -25,17 +25,22 @@ export const GenderSelector = ({
   return (
     <div className={memberInfoSectionContent}>
       <div className={labelContainer}>
-        <Body
-          weight={600}
-          type="large"
+        <div
           style={{
             width: "68px",
             height: "29px",
-            color: COLORS.gray[700],
           }}
         >
-          성별
-        </Body>
+          <Body
+            weight={600}
+            type="large"
+            style={{
+              color: COLORS.gray[700],
+            }}
+          >
+            성별
+          </Body>
+        </div>
       </div>
       <div className={chipContainer}>
         {GENDER_OPTIONS.map((option: { value: string; label: string }) => (

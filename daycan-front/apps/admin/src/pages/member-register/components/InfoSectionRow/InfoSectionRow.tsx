@@ -61,9 +61,7 @@ export const InfoSectionRow = ({
   return (
     <div className={memberInfoSectionContent}>
       <div className={labelContainer}>
-        <Body
-          weight={600}
-          type="large"
+        <div
           style={{
             width: isLongTermCareLabel
               ? "133px"
@@ -71,11 +69,18 @@ export const InfoSectionRow = ({
                 ? "104px"
                 : "68px",
             height: "29px",
-            color: COLORS.gray[700],
           }}
         >
-          {label}
-        </Body>
+          <Body
+            weight={600}
+            type="large"
+            style={{
+              color: COLORS.gray[700],
+            }}
+          >
+            {label}
+          </Body>
+        </div>
       </div>
       <div className={inputContainer}>
         <Input

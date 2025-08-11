@@ -60,7 +60,7 @@ export const MemberInfoSection = ({
         />
         <InfoSectionRow
           label="생년월일"
-          placeholder="YYYY.MM.DD"
+          placeholder="YYYY-MM-DD"
           value={form.birthDate}
           name="birthDate"
           onChange={(e) => onUpdate("birthDate", e.target.value)}
@@ -80,17 +80,22 @@ export const MemberInfoSection = ({
           }}
         >
           <div className={labelContainer}>
-            <Body
-              weight={600}
-              type="large"
+            <div
               style={{
                 width: "133px",
                 height: "29px",
-                color: COLORS.gray[700],
               }}
             >
-              장기요양등급
-            </Body>
+              <Body
+                weight={600}
+                type="large"
+                style={{
+                  color: COLORS.gray[700],
+                }}
+              >
+                장기요양등급
+              </Body>
+            </div>
           </div>
           <CareLevelDropDown
             options={CARE_LEVEL_OPTIONS}

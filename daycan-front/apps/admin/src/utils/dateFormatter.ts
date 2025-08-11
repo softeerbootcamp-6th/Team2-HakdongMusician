@@ -1,44 +1,4 @@
 /**
- * 생년월일 입력 시 자동으로 YYYY.MM.DD 형식으로 변환하는 함수
- * @param value - 사용자 입력값
- * @returns 포맷팅된 생년월일 문자열
- */
-export const formatBirthDate = (value: string): string => {
-  // 숫자와 점만 허용
-  const cleaned = value.replace(/[^\d.]/g, "");
-
-  // 점이 이미 있는 경우 중복 제거
-  const parts = cleaned.split(".").filter((part) => part.length > 0);
-
-  let result = "";
-
-  if (parts.length > 0) {
-    // 첫 번째 부분 (년도)
-    if (parts[0].length <= 4) {
-      result += parts[0];
-    } else {
-      result += parts[0].substring(0, 4);
-    }
-
-    // 두 번째 부분 (월)
-    if (parts.length > 1 && parts[1].length <= 2) {
-      result += "." + parts[1];
-    } else if (parts.length > 1) {
-      result += "." + parts[1].substring(0, 2);
-    }
-
-    // 세 번째 부분 (일)
-    if (parts.length > 2 && parts[2].length <= 2) {
-      result += "." + parts[2];
-    } else if (parts.length > 2) {
-      result += "." + parts[2].substring(0, 2);
-    }
-  }
-
-  return result;
-};
-
-/**
  * 생년월일 입력 시 자동으로 YYYY.MM.DD 형식으로 변환하는 함수 (실시간 입력용)
  * @param value - 사용자 입력값
  * @returns 포맷팅된 생년월일 문자열
@@ -49,9 +9,9 @@ export const formatBirthDateOnInput = (value: string): string => {
 
   if (numbers.length === 0) return "";
   if (numbers.length <= 4) return numbers;
-  if (numbers.length <= 6) return `${numbers.slice(0, 4)}.${numbers.slice(4)}`;
+  if (numbers.length <= 6) return `${numbers.slice(0, 4)}-${numbers.slice(4)}`;
 
-  return `${numbers.slice(0, 4)}.${numbers.slice(4, 6)}.${numbers.slice(6, 8)}`;
+  return `${numbers.slice(0, 4)}-${numbers.slice(4, 6)}-${numbers.slice(6, 8)}`;
 };
 
 /**
@@ -122,7 +82,7 @@ export const validateBirthDate = (
     return { isValid: false, errorMessage: "올바른 생년월일을 입력해 주세요" };
   }
 
-  const parts = value.split(".");
+  const parts = value.split("-");
   if (parts.length !== 3) {
     return { isValid: false, errorMessage: "올바른 생년월일을 입력해 주세요" };
   }

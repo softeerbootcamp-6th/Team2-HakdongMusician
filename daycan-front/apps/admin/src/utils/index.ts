@@ -1,5 +1,4 @@
 export {
-  formatBirthDate,
   formatBirthDateOnInput,
   formatPhoneNumber,
   formatPhoneNumberOnInput,

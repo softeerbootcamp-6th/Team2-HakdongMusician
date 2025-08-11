@@ -58,7 +58,7 @@ export const GuardianInfoSection = ({
         />
         <InfoSectionRow
           label="생년월일"
-          placeholder="YYYY.MM.DD"
+          placeholder="YYYY-MM-DD"
           value={form.guardianBirthDate}
           name="guardianBirthDate"
           maxLength={10}
