@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
 
     # daycan-back 디렉토리에서 작업 (루트 Gradle 프로젝트)
-    # TODO: daycan-back 디렉토리에서 멀티모듈로 작업하는 방법으로 전환
     defaults:
       run:
         working-directory: daycan-back/api
@@ -78,6 +77,18 @@ jobs:
           # S3
           echo "APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}" >> daycan.env
           echo "APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}" >> daycan.env
+          
+          echo 'JAVA_OPTS=\
+          -Xms256m \                                # JVM 초기 힙 크기 256MB
+          -Xmx512m \                                # JVM 최대 힙 크기 512MB
+          -XX:+UseG1GC \                            # G1 Garbage Collector 사용
+          -XX:-TieredCompilation \                  # Tiered Compilation 비활성화 → C2 서버 컴파일러만 사용
+          -XX:+HeapDumpOnOutOfMemoryError \         # OOM 발생 시 힙 덤프 생성
+          -XX:HeapDumpPath=/var/log/daycan/heapdump.hprof \  # 힙 덤프 저장 경로
+          -Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags \  # GC 로그 기록 (시간, 업타임, 레벨, 태그 포함)
+          -XX:+ExitOnOutOfMemoryError' >> daycan.env # OOM 발생 시 프로세스 즉시 종료
+          
+          echo 'TZ=Asia/Seoul' >> daycan.env
 
           echo "✅ daycan.env file created successfully!"
 

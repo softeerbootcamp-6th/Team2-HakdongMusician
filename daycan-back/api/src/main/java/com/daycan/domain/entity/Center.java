@@ -2,7 +2,7 @@ package com.daycan.domain.entity;
 
 import com.daycan.common.response.status.CenterErrorStatus;
 import com.daycan.domain.Account;
-import com.daycan.exceptions.ApplicationException;
+import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

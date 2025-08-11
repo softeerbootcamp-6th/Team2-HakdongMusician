@@ -3,11 +3,10 @@ package com.daycan.domain.entity;
 
 import com.daycan.common.response.status.MemberErrorStatus;
 import com.daycan.domain.Account;
-import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.entry.MemberCommand;
 
-import com.daycan.exceptions.ApplicationException;
+import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

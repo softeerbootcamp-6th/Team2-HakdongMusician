@@ -15,7 +15,7 @@ public record MemberCommand(
     String guardianPhoneNumber,
     String guardianAvatarUrl,
     Boolean acceptReport,
-    String hashedPassword // 이미 해시된 것만!
+    String hashedPassword
 ) {
 
 }
