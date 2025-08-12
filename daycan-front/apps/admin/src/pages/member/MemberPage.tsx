@@ -9,9 +9,9 @@ import {
   resetContainer,
   divider,
 } from "./MemberPage.css.ts";
-import { FilterSearchbar } from "@/components/FilterSearchbar/FilterSearchbar.tsx";
-import { MemberDataList } from "./components/MemberDataList/MemberDataList.tsx";
-import { MemberEditModal } from "./components/MemberEditModal";
+import { FilterSearchbar } from "@/components/FilterSearchbar";
+import { MemberDataList } from "./components/MemberDataList";
+import { MemberEditAuthModal } from "./components/MemberEditAuthModal";
 import { useMember } from "./hooks";
 import { useState } from "react";
 
@@ -22,20 +22,22 @@ export const MemberPage = () => {
     // toggleDropdown,
     handleResetFilters,
     handleEditMember,
+    members,
   } = useMember();
 
-  const [isMemberEditModalOpen, setIsMemberEditModalOpen] = useState(false);
+  const [isMemberEditAuthModalOpen, setIsMemberEditAuthModalOpen] =
+    useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
 
   // 수정 버튼 클릭 시 모달 열기
-  const handleEditClick = (memberId: string) => {
+  const handleEditButtonClick = (memberId: string) => {
     setSelectedMemberId(memberId);
-    setIsMemberEditModalOpen(true);
+    setIsMemberEditAuthModalOpen(true);
   };
 
   // 모달에서 인증 성공 시 라우팅
-  const handleEditSuccess = () => {
-    setIsMemberEditModalOpen(false);
+  const handleEditAccessConfirm = () => {
+    setIsMemberEditAuthModalOpen(false);
     if (selectedMemberId) {
       handleEditMember(selectedMemberId);
     }
@@ -104,15 +106,18 @@ export const MemberPage = () => {
       </FilterSearchbar>
 
       {/* 데이터 리스트 */}
-      <MemberDataList onEditClick={handleEditClick} />
+      <MemberDataList
+        onEditButtonClick={handleEditButtonClick}
+        members={members}
+      />
 
-      <MemberEditModal
-        isOpen={isMemberEditModalOpen}
+      <MemberEditAuthModal
+        isOpen={isMemberEditAuthModalOpen}
         onClose={() => {
-          setIsMemberEditModalOpen(false);
+          setIsMemberEditAuthModalOpen(false);
           setSelectedMemberId("");
         }}
-        onEditSuccess={handleEditSuccess}
+        onEditAccessConfirm={handleEditAccessConfirm}
         memberId={selectedMemberId}
       />
     </div>

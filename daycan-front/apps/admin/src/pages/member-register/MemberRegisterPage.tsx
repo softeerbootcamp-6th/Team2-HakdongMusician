@@ -2,7 +2,7 @@ import { Body, Button, COLORS, Heading, Icon } from "@daycan/ui";
 import {
   MemberInfoSection,
   GuardianInfoSection,
-  ReportConsentModal,
+  AcceptReportInfoModal,
 } from "./components";
 import {
   memberRegisterPageContent,
@@ -24,23 +24,22 @@ interface MemberRegisterPageProps {
 }
 
 export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
-  const { username } = useParams();
+  const { memberId } = useParams();
 
   const {
     form,
     updateMemberInfo,
     updateGuardianInfo,
-    updateReportConsent,
-    getFieldErrors,
-    isFormFilled,
-    isEditFormFilled,
-    handleSubmit,
+    updateAcceptReport,
+
+    handleIsFormFilled,
+    handleFormErrorCheck,
+    errors,
+    showErrors,
     isPasswordEditMode,
     setIsPasswordEditMode,
-  } = useMemberRegisterForm(mode, username as string);
+  } = useMemberRegisterForm(mode, memberId as string);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showErrors, setShowErrors] = useState(false);
   const [isReportConsentModalOpen, setIsReportConsentModalOpen] =
     useState(false);
   // 수급자 정보 업데이트
@@ -54,28 +53,8 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
   };
 
   // 리포트 수신 동의 토글
-  const handleReportConsentToggle = () => {
-    updateReportConsent(!form.acceptReport);
-  };
-
-  // 폼 제출 시 에러 검증
-  const handleFormSubmit = () => {
-    const fieldErrors = getFieldErrors();
-    setErrors(fieldErrors);
-    setShowErrors(true);
-
-    if (Object.keys(fieldErrors).length === 0) {
-      handleSubmit();
-    }
-  };
-
-  // 폼 제출 버튼 활성화 여부(수정 , 등록페이지 구분)
-  const handleIsFormFilled = () => {
-    if (mode === "register") {
-      return isFormFilled();
-    } else {
-      return isEditFormFilled();
-    }
+  const handleAcceptReportToggle = () => {
+    updateAcceptReport(!form.acceptReport);
   };
 
   return (
@@ -145,7 +124,7 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
               stroke={form.acceptReport ? COLORS.gray[700] : COLORS.gray[400]}
               width={48}
               height={48}
-              onClick={handleReportConsentToggle}
+              onClick={handleAcceptReportToggle}
               style={{ cursor: "pointer" }}
               color={form.acceptReport ? COLORS.primary[300] : COLORS.gray[200]}
             />
@@ -169,7 +148,7 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
         <Button
           size="large"
           disabled={!handleIsFormFilled()}
-          onClick={handleFormSubmit}
+          onClick={handleFormErrorCheck}
           style={{
             backgroundColor: handleIsFormFilled()
               ? COLORS.primary[300]
@@ -184,7 +163,7 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
         </Button>
       </div>
 
-      <ReportConsentModal
+      <AcceptReportInfoModal
         isOpen={isReportConsentModalOpen}
         onClose={() => {
           setIsReportConsentModalOpen(false);

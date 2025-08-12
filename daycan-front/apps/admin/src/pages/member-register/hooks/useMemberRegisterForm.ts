@@ -29,10 +29,12 @@ interface MemberRegisterForm {
 
 export const useMemberRegisterForm = (
   mode: "register" | "edit",
-  username: string
+  memberId: string
 ) => {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showErrors, setShowErrors] = useState(false);
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
   const [form, setForm] = useState<MemberRegisterForm>({
     name: "",
@@ -57,7 +59,7 @@ export const useMemberRegisterForm = (
     if (mode === "edit") {
       // 더미파일 가져와서 response에 저장
       const response = API_ELDER_DUMMY_DATA.result.find(
-        (item) => item.username === username
+        (item) => item.memberId === memberId
       );
 
       // response를 form에 덮어씌우기
@@ -78,6 +80,7 @@ export const useMemberRegisterForm = (
         // guardianPassword: response?.guardianPassword || "",
         // guardianPasswordConfirm: response?.guardianPasswordConfirm || "",
       };
+      console.log("updatedForm", updatedForm);
 
       setForm(updatedForm);
       // 원본 데이터를 copyForm에 저장하여 변경사항 비교에 사용
@@ -87,7 +90,7 @@ export const useMemberRegisterForm = (
 
   useEffect(() => {
     getInitialData();
-  }, [mode, username]);
+  }, [mode, memberId]);
 
   // 개별 필드 업데이트 함수들 (즉, 여기서 각각 하나씩 값이 바뀌게 하는 거)
   const updateField = (
@@ -114,7 +117,7 @@ export const useMemberRegisterForm = (
   };
 
   // 리포트 수신 동의 업데이트
-  const updateReportConsent = (consent: boolean) => {
+  const updateAcceptReport = (consent: boolean) => {
     updateField("acceptReport", consent);
   };
 
@@ -191,7 +194,7 @@ export const useMemberRegisterForm = (
   };
 
   //등록 버튼 활성화
-  const isFormFilled = (): boolean => {
+  const isRegisterPageFormChangedOrFilled = (): boolean => {
     // 필수 필드들만 확인 (선택적 필드 제외)
     const requiredFields = {
       name: form.name.trim() !== "",
@@ -211,7 +214,7 @@ export const useMemberRegisterForm = (
   };
 
   //수정 버튼 활성화
-  const isEditFormFilled = (): boolean => {
+  const isEditPageFormChangedOrFilled = (): boolean => {
     // 수정 모드이고 변경사항이 없는 경우 false 반환
     if (mode === "edit") {
       const hasChanges = Object.keys(form).some((key) => {
@@ -233,6 +236,27 @@ export const useMemberRegisterForm = (
       guardianPhoneNumber: form.guardianPhoneNumber.trim() !== "",
     };
     return Object.values(requiredFields).every(Boolean);
+  };
+
+  // 폼 제출 버튼 활성화 여부(수정 , 등록페이지 구분),,
+  // 다만 활성화 여부만 판단하고 제출해도 폼 형식에 맞지 않으면 handleFormErrorCheck에서 검출
+  const handleIsFormFilled = () => {
+    if (mode === "register") {
+      return isRegisterPageFormChangedOrFilled();
+    } else {
+      return isEditPageFormChangedOrFilled();
+    }
+  };
+
+  // 폼 제출 시 에러 검증
+  const handleFormErrorCheck = () => {
+    const fieldErrors = getFieldErrors();
+    setErrors(fieldErrors);
+    setShowErrors(true);
+
+    if (Object.keys(fieldErrors).length === 0) {
+      handleSubmit();
+    }
   };
 
   //마지막 제출 함수
@@ -283,18 +307,21 @@ export const useMemberRegisterForm = (
     form,
 
     //버튼 활성화 여부
-    isFormFilled,
-    isEditFormFilled,
+    handleIsFormFilled,
+    //폼 제출 시 에러 검증
+    handleFormErrorCheck,
+
     //마지막 제출 함수
     handleSubmit,
 
     //개별 필드 업데이트 함수들
     updateMemberInfo,
     updateGuardianInfo,
-    updateReportConsent,
+    updateAcceptReport,
 
     //에러 메시지
-    getFieldErrors,
+    errors,
+    showErrors,
 
     //비밀번호 수정 모드 여부(수정 페이지에서 비밀번호 수정시 비밀번호 수정 모드 활성화)
     isPasswordEditMode,
