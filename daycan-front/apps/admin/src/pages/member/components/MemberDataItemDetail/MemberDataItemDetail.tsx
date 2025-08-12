@@ -11,18 +11,18 @@ import {
 
 interface MemberDataItemDetailProps {
   detailCard?: React.ReactNode;
-  username: string;
-  onEditClick: (memberId: string) => void;
+  memberId: string;
+  onEditButtonClick: (memberId: string) => void;
 }
 
 export const MemberDataItemDetail = ({
   detailCard,
-  username,
-  onEditClick,
+  memberId,
+  onEditButtonClick,
 }: MemberDataItemDetailProps) => {
   // 수정 버튼 클릭 시 부모 컴포넌트로 이벤트 전달
   const handleEditClick = () => {
-    onEditClick(username);
+    onEditButtonClick(memberId);
   };
 
   return (

@@ -49,8 +49,8 @@ export const useMember = () => {
   const handleNewMember = () => {
     navigate("/member/new");
   };
-  const handleEditMember = (id: string) => {
-    navigate(`/member/edit/${id}`);
+  const handleEditMember = (memberId: string) => {
+    navigate(`/member/edit/${memberId}`);
   };
 
   // 드롭다운 토글 함수

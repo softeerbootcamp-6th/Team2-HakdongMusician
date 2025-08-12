@@ -8,7 +8,8 @@ export const API_ELDER_DUMMY_DATA = {
   message: "성공",
   result: [
     {
-      username: "AA1234597",
+      memberId: "1",
+      userCode: "AA1234597",
       name: "김큐티빠띠엔젤할무니",
       gender: "FEMALE" as const,
       birthDate: "1945-03-15",
@@ -26,7 +27,8 @@ export const API_ELDER_DUMMY_DATA = {
       updatedAt: "2024-01-01T00:00:00",
     },
     {
-      username: "BB87654321",
+      memberId: "2",
+      userCode: "BB87654321",
       name: "박영수",
       gender: "MALE" as const,
       birthDate: "1950-07-22",
@@ -44,7 +46,8 @@ export const API_ELDER_DUMMY_DATA = {
       updatedAt: "2024-01-01T00:00:00",
     },
     {
-      username: "CC11223344",
+      memberId: "3",
+      userCode: "CC11223344",
       name: "이미경",
       gender: "FEMALE" as const,
       birthDate: "1948-11-08",
@@ -62,7 +65,8 @@ export const API_ELDER_DUMMY_DATA = {
       updatedAt: "2024-01-01T00:00:00",
     },
     {
-      username: "DD55667788",
+      memberId: "4",
+      userCode: "DD55667788",
       name: "최철수",
       gender: "MALE" as const,
       birthDate: "1952-01-30",
@@ -80,7 +84,8 @@ export const API_ELDER_DUMMY_DATA = {
       updatedAt: "2024-01-01T00:00:00",
     },
     {
-      username: "AA1234567",
+      memberId: "5",
+      userCode: "AA1234567",
       name: "홍노인",
       gender: "MALE" as const,
       birthDate: "1950-05-12",

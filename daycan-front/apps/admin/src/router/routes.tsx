@@ -40,7 +40,7 @@ export const routes: TRoutes[] = [
         element: <MemberRegisterPage mode="register" />,
       },
       {
-        path: "edit/:username",
+        path: "edit/:memberId",
         element: <MemberRegisterPage mode="edit" />,
       },
       {
