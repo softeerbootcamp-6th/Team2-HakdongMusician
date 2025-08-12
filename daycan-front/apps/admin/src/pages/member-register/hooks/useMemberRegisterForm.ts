@@ -61,6 +61,17 @@ export const useMemberRegisterForm = (
       const response = API_ELDER_DUMMY_DATA.result.find(
         (item) => item.memberId === memberId
       );
+      if (!response) {
+        showToast({
+          data: {
+            message: "회원 정보를 찾을 수 없어요.",
+            type: "error",
+            variant: "pc",
+          },
+        });
+        navigate("/member");
+        return;
+      }
 
       // response를 form에 덮어씌우기
       const updatedForm = {

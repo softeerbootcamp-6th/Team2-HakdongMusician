@@ -25,6 +25,9 @@ interface MemberRegisterPageProps {
 
 export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
   const { memberId } = useParams();
+  if (!memberId || !["register", "edit"].includes(mode)) {
+    return <div>페이지를 찾을 수 없어요.</div>;
+  }
 
   const {
     form,
@@ -38,7 +41,7 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
     showErrors,
     isPasswordEditMode,
     setIsPasswordEditMode,
-  } = useMemberRegisterForm(mode, memberId as string);
+  } = useMemberRegisterForm(mode, memberId);
 
   const [isReportConsentModalOpen, setIsReportConsentModalOpen] =
     useState(false);
