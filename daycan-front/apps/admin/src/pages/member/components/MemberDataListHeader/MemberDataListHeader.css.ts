@@ -82,7 +82,4 @@ export const detailButton = style({
   backgroundColor: "transparent",
   width: "70px",
   cursor: "default",
-  ":hover": {
-    backgroundColor: COLORS.gray[800],
-  },
 });

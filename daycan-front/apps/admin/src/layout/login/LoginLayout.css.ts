@@ -4,20 +4,22 @@ import { COLORS } from "@daycan/ui";
 export const container = style({
   display: "flex",
   flexDirection: "column",
-  height: "100vh",
+  minHeight: "100vh",
   width: "100%",
   backgroundColor: COLORS.gray[50],
   alignItems: "center",
   justifyContent: "center",
+  boxSizing: "border-box",
 });
 
 export const section = style({
   display: "flex",
-  marginTop: "auto",
   flexDirection: "column",
   alignItems: "center",
-  backgroundColor: COLORS.white,
+  backgroundColor: COLORS.gray[50],
   borderRadius: "20px",
   width: "718px",
-  height: "726px",
+  minHeight: "726px",
+  marginBottom: "20px",
+  flexShrink: 0,
 });

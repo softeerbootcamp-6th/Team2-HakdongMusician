@@ -43,7 +43,7 @@ export const InfoSectionLayout = ({
     handleChangeButtonClick,
     handleDeleteImage,
   } = useImageController({
-    initialImage: profileImage,
+    profileImage,
     onImageChange,
   });
 

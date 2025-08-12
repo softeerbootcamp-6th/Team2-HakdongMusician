@@ -6,15 +6,32 @@ import {
   memberDataItemDetailButtonContainer,
   memberDataItemDetailTopButton,
   memberDataItemDetailBottomButton,
+  editButton,
 } from "./MemberDataItemDetail.css";
 
 interface MemberDataItemDetailProps {
   detailCard?: React.ReactNode;
+  memberId: string;
+  onEditButtonClick: (memberId: string) => void;
+  onDeleteButtonClick: (memberId: string) => void;
 }
 
 export const MemberDataItemDetail = ({
   detailCard,
+  memberId,
+  onEditButtonClick,
+  onDeleteButtonClick,
 }: MemberDataItemDetailProps) => {
+  // 수정 버튼 클릭 시 부모 컴포넌트로 이벤트 전달
+  const handleEditClick = () => {
+    onEditButtonClick(memberId);
+  };
+
+  // 삭제 버튼 클릭 시 부모 컴포넌트로 이벤트 전달
+  const handleDeleteClick = () => {
+    onDeleteButtonClick(memberId);
+  };
+
   return (
     <div className={memberDataItemDetailContainer}>
       <div className={memberDataItemDetailContent}>
@@ -37,12 +54,8 @@ export const MemberDataItemDetail = ({
           <div className={memberDataItemDetailBottomButton}>
             <Button
               size="small"
-              style={{
-                backgroundColor: COLORS.green[500],
-                color: COLORS.green[200],
-                width: "58px",
-                height: "32px",
-              }}
+              onClick={handleEditClick}
+              className={editButton}
             >
               수정
             </Button>
@@ -50,6 +63,7 @@ export const MemberDataItemDetail = ({
               variant="error"
               size="small"
               style={{ width: "58px", height: "32px" }}
+              onClick={handleDeleteClick}
             >
               삭제
             </Button>

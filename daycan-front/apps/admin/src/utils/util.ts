@@ -8,4 +8,9 @@ const formatCareGrade = (careLevel: number) => {
   return careLevel ? `${careLevel}급` : "-";
 };
 
-export { formatBirthDate, formatCareGrade };
+// 성별 포맷팅 함수
+const formatGender = (gender: string) => {
+  return gender === "MALE" ? "남성" : "여성";
+};
+
+export { formatBirthDate, formatCareGrade, formatGender };
