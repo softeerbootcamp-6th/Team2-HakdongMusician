@@ -1,7 +1,7 @@
 import { Chip } from "@daycan/ui";
 import { Body } from "@daycan/ui";
 import { COLORS } from "@daycan/ui";
-import { formatBirthDate, formatCareGrade } from "@/utils/util";
+import { formatBirthDate, formatCareGrade, formatGender } from "@/utils/util";
 import {
   memberDataList,
   memberDataListItem,
@@ -26,9 +26,13 @@ import type { MemberData } from "@/types";
 
 interface MemberDataItemsProps {
   members: MemberData[];
+  onEditClick: (memberId: string) => void;
 }
 
-export const MemberDataItems = ({ members }: MemberDataItemsProps) => {
+export const MemberDataItems = ({
+  members,
+  onEditClick,
+}: MemberDataItemsProps) => {
   const { openDetails, getDetailContainerState, handleDetailClick } =
     useMember();
 
@@ -36,7 +40,6 @@ export const MemberDataItems = ({ members }: MemberDataItemsProps) => {
     <div className={memberDataList}>
       {members.map((member, idx) => {
         const isDetailOpen = openDetails.has(member.username);
-
         return (
           <div key={member.username}>
             <div>
@@ -53,7 +56,9 @@ export const MemberDataItems = ({ members }: MemberDataItemsProps) => {
                 <div className={birthDateColumn}>
                   {formatBirthDate(member.birthDate)}
                 </div>
-                <div className={genderColumn}>{member.gender}</div>
+                <div className={genderColumn}>
+                  {formatGender(member.gender)}
+                </div>
                 <div className={careGradeColumn}>
                   {formatCareGrade(member.careLevel)}
                 </div>
@@ -81,12 +86,14 @@ export const MemberDataItems = ({ members }: MemberDataItemsProps) => {
                 })}
               >
                 <MemberDataItemDetail
+                  username={member.username}
                   detailCard={
                     <div className={detailCardLayout}>
                       <MemberDetailContent member={member as any} />
                       <GuardianDetailContent member={member as any} />
                     </div>
                   }
+                  onEditClick={onEditClick}
                 />
               </div>
             </div>
