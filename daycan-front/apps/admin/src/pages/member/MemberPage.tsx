@@ -11,14 +11,35 @@ import {
 } from "./MemberPage.css.ts";
 import { FilterSearchbar } from "@/components/FilterSearchbar/FilterSearchbar.tsx";
 import { MemberDataList } from "./components/MemberDataList/MemberDataList.tsx";
+import { MemberEditModal } from "./components/MemberEditModal";
 import { useMember } from "./hooks";
+import { useState } from "react";
+
 export const MemberPage = () => {
   const {
     // dropdownStates,
     handleNewMember,
     // toggleDropdown,
     handleResetFilters,
+    handleEditMember,
   } = useMember();
+
+  const [isMemberEditModalOpen, setIsMemberEditModalOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<string>("");
+
+  // 수정 버튼 클릭 시 모달 열기
+  const handleEditClick = (memberId: string) => {
+    setSelectedMemberId(memberId);
+    setIsMemberEditModalOpen(true);
+  };
+
+  // 모달에서 인증 성공 시 라우팅
+  const handleEditSuccess = () => {
+    setIsMemberEditModalOpen(false);
+    if (selectedMemberId) {
+      handleEditMember(selectedMemberId);
+    }
+  };
 
   return (
     <div className={memberContainer}>
@@ -83,7 +104,17 @@ export const MemberPage = () => {
       </FilterSearchbar>
 
       {/* 데이터 리스트 */}
-      <MemberDataList />
+      <MemberDataList onEditClick={handleEditClick} />
+
+      <MemberEditModal
+        isOpen={isMemberEditModalOpen}
+        onClose={() => {
+          setIsMemberEditModalOpen(false);
+          setSelectedMemberId("");
+        }}
+        onEditSuccess={handleEditSuccess}
+        memberId={selectedMemberId}
+      />
     </div>
   );
 };

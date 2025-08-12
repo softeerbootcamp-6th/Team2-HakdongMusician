@@ -8,3 +8,4 @@ export { MemberDataItemDetail } from "./MemberDataItemDetail/MemberDataItemDetai
 export { MemberDataListHeader } from "./MemberDataListHeader/MemberDataListHeader";
 export { MemberDetailContent } from "./MemberDetailContent/MemberDetailContent";
 export { GuardianDetailContent } from "./GuardianDetailContent/GuardianDetailContent";
+export { MemberEditModal } from "./MemberEditModal/MemberEditModal";
