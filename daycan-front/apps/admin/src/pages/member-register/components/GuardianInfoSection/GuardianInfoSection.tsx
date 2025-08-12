@@ -5,9 +5,9 @@ import { InfoSectionRow } from "../InfoSectionRow";
 interface GuardianInfoSectionProps {
   form: {
     guardianName: string;
-    guardianBirthDate: string;
+    guardianRelationBirthDate: string;
     guardianPhoneNumber: string;
-    guardianRelationship: string;
+    guardianRelation: string;
     guardianPassword: string;
     guardianPasswordConfirm: string;
     guardianAvatarUrl?: string;
@@ -15,6 +15,9 @@ interface GuardianInfoSectionProps {
   onUpdate: (field: string, value: string) => void;
   errors: Record<string, string>;
   showErrors: boolean;
+  mode?: "register" | "edit";
+  isPasswordEditMode: boolean;
+  setIsPasswordEditMode: (isPasswordEditMode: boolean) => void;
 }
 
 export const GuardianInfoSection = ({
@@ -22,7 +25,20 @@ export const GuardianInfoSection = ({
   onUpdate,
   errors,
   showErrors,
+  mode = "register",
+  isPasswordEditMode,
+  setIsPasswordEditMode,
 }: GuardianInfoSectionProps) => {
+  // 비밀번호 수정 모드 활성화
+  const handlePasswordEditTrigger = () => {
+    if (mode === "edit" && !isPasswordEditMode) {
+      setIsPasswordEditMode(true);
+      // 비밀번호 관련 필드들을 모두 초기화 (한 번만 실행)
+      onUpdate("guardianPassword", "");
+      onUpdate("guardianPasswordConfirm", "");
+    }
+  };
+
   const handleImageChange = (file: File | null) => {
     if (file) {
       // 이미지 파일을 form에 저장하거나 처리
@@ -59,12 +75,14 @@ export const GuardianInfoSection = ({
         <InfoSectionRow
           label="생년월일"
           placeholder="YYYY-MM-DD"
-          value={form.guardianBirthDate}
-          name="guardianBirthDate"
+          value={form.guardianRelationBirthDate}
+          name="guardianRelationBirthDate"
           maxLength={10}
-          onChange={(e) => onUpdate("guardianBirthDate", e.target.value)}
-          errorMessage={showErrors ? errors.guardianBirthDate : ""}
-          showError={showErrors && !!errors.guardianBirthDate}
+          onChange={(e) =>
+            onUpdate("guardianRelationBirthDate", e.target.value)
+          }
+          errorMessage={showErrors ? errors.guardianRelationBirthDate : ""}
+          showError={showErrors && !!errors.guardianRelationBirthDate}
         />
         <InfoSectionRow
           label="연락처"
@@ -78,19 +96,26 @@ export const GuardianInfoSection = ({
         <InfoSectionRow
           label="수급자와의 관계"
           placeholder="예) 자녀"
-          value={form.guardianRelationship}
-          name="guardianRelationship"
+          value={form.guardianRelation}
+          name="guardianRelation"
           maxLength={10}
-          onChange={(e) => onUpdate("guardianRelationship", e.target.value)}
-          errorMessage={showErrors ? errors.guardianRelationship : ""}
-          showError={showErrors && !!errors.guardianRelationship}
+          onChange={(e) => onUpdate("guardianRelation", e.target.value)}
+          errorMessage={showErrors ? errors.guardianRelation : ""}
+          showError={showErrors && !!errors.guardianRelation}
         />
         <InfoSectionRow
           label="비밀번호 설정"
-          placeholder="비밀번호 입력"
-          value={form.guardianPassword}
+          placeholder={
+            mode === "edit" && !isPasswordEditMode ? "****" : "비밀번호 입력"
+          }
+          value={
+            mode === "edit" && !isPasswordEditMode
+              ? "****"
+              : form.guardianPassword
+          }
           name="guardianPassword"
           maxLength={20}
+          disabled={mode === "edit" && !isPasswordEditMode}
           onChange={(e) => onUpdate("guardianPassword", e.target.value)}
           errorMessage={showErrors ? errors.guardianPassword : ""}
           showError={showErrors && !!errors.guardianPassword}
@@ -101,6 +126,7 @@ export const GuardianInfoSection = ({
           value={form.guardianPasswordConfirm}
           name="guardianPasswordConfirm"
           maxLength={20}
+          onPasswordEditTrigger={handlePasswordEditTrigger}
           onChange={(e) => onUpdate("guardianPasswordConfirm", e.target.value)}
           errorMessage={showErrors ? errors.guardianPasswordConfirm : ""}
           showError={showErrors && !!errors.guardianPasswordConfirm}
