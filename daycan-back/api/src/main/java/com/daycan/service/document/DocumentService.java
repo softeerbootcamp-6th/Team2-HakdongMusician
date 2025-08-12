@@ -10,10 +10,10 @@ import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.CommonErrorStatus;
-import com.daycan.api.dto.center.response.CareReportCountResponse;
-import com.daycan.api.dto.center.response.CareSheetCountResponse;
-import com.daycan.api.dto.center.response.DocumentCountResponse;
-import com.daycan.api.dto.center.response.DocumentStatusResponse;
+import com.daycan.api.dto.center.response.report.CareReportCountResponse;
+import com.daycan.api.dto.center.response.sheet.CareSheetCountResponse;
+import com.daycan.api.dto.center.response.document.DocumentCountResponse;
+import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
 import com.daycan.repository.jpa.DocumentRepository;
 

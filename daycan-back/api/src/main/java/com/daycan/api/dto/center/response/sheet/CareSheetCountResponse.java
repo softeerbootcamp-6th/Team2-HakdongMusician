@@ -1,4 +1,4 @@
-package com.daycan.api.dto.center.response;
+package com.daycan.api.dto.center.response.sheet;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

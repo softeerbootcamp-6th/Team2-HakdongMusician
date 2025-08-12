@@ -1,4 +1,4 @@
-package com.daycan.api.dto.center.response;
+package com.daycan.api.dto.center.response.report;
 
 import com.daycan.domain.entry.document.sheet.MealSupport;
 import com.daycan.api.dto.member.response.report.HealthSupportResponse;

@@ -1,4 +1,4 @@
-package com.daycan.api.dto.center.response;
+package com.daycan.api.dto.center.response.image;
 
 import java.util.List;
 import java.util.Map;

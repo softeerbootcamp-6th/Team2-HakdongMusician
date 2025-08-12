@@ -1,6 +1,6 @@
 package com.daycan.domain.model;
 
-import com.daycan.api.dto.center.response.CareSheetResponse;
+import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
 import com.daycan.domain.entry.document.sheet.CognitiveEntry;
 import com.daycan.domain.entry.document.sheet.HealthCareEntry;
 import com.daycan.domain.entry.document.sheet.PhysicalEntry;

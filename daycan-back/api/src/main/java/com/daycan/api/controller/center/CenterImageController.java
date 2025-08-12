@@ -1,7 +1,7 @@
 package com.daycan.api.controller.center;
 
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.api.dto.center.response.PresignResponse;
+import com.daycan.api.dto.center.response.image.PresignResponse;
 
 import com.daycan.external.S3Service;
 import io.swagger.v3.oas.annotations.tags.Tag;

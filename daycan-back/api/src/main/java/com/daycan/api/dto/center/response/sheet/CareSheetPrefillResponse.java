@@ -1,4 +1,4 @@
-package com.daycan.api.dto.center.response;
+package com.daycan.api.dto.center.response.sheet;
 
 import com.daycan.domain.entry.document.sheet.CognitiveEntry;
 import com.daycan.domain.entry.document.sheet.HealthCareEntry;
@@ -8,11 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Schema(description = "기록지 정보 응답")
-public record CareSheetResponse(
-    @Schema(description = "기록지 고유 ID", example = "10")
-    Long id,
-
+@Schema(description = "기록지 ocr 결과 응답")
+public record CareSheetPrefillResponse(
     @Schema(description = "기록 작성자 id", example = "1")
     Long writerId,
 
@@ -38,5 +35,5 @@ public record CareSheetResponse(
     CognitiveEntry cognitive,
     HealthCareEntry healthCare,
     RecoveryProgramEntry recoveryProgram
-){
+) {
 }

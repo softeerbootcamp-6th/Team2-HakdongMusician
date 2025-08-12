@@ -7,7 +7,7 @@ import com.daycan.domain.entity.Center;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;
 import com.daycan.api.dto.center.request.AdminStaffRequest;
-import com.daycan.api.dto.center.response.AdminStaffResponse;
+import com.daycan.api.dto.center.response.centermanage.AdminStaffResponse;
 import com.daycan.service.center.StaffService;
 
 import io.swagger.v3.oas.annotations.Operation;

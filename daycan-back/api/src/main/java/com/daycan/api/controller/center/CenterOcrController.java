@@ -1,8 +1,7 @@
 package com.daycan.api.controller.center;
 
-import com.daycan.api.dto.center.response.CareSheetPrefillResponse;
-import com.daycan.api.dto.center.response.OcrResponse;
-import com.daycan.api.dto.common.Url;
+import com.daycan.api.dto.center.response.sheet.CareSheetPrefillResponse;
+import com.daycan.api.dto.center.response.image.OcrResponse;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;

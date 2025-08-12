@@ -5,7 +5,7 @@ import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
-import com.daycan.api.dto.center.response.CenterResponse;
+import com.daycan.api.dto.center.response.centermanage.CenterResponse;
 import com.daycan.service.center.CenterService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

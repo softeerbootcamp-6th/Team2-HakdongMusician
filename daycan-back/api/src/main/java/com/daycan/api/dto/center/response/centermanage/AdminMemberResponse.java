@@ -1,4 +1,4 @@
-package com.daycan.api.dto.center.response;
+package com.daycan.api.dto.center.response.centermanage;
 
 import com.daycan.domain.enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;

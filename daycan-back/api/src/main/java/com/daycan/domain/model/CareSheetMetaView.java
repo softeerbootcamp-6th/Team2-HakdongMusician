@@ -1,6 +1,6 @@
 package com.daycan.domain.model;
 
-import com.daycan.api.dto.center.response.CareSheetMetaResponse;
+import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.entity.document.Document;

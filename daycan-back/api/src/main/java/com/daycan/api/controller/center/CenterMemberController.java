@@ -7,7 +7,7 @@ import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.enums.Gender;
 import com.daycan.api.dto.center.request.MemberRequest;
-import com.daycan.api.dto.center.response.AdminMemberResponse;
+import com.daycan.api.dto.center.response.centermanage.AdminMemberResponse;
 import com.daycan.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

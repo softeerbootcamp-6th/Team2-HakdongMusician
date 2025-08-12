@@ -4,8 +4,8 @@ import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
-import com.daycan.api.dto.center.response.DocumentCountResponse;
-import com.daycan.api.dto.center.response.DocumentStatusResponse;
+import com.daycan.api.dto.center.response.document.DocumentCountResponse;
+import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
 import com.daycan.service.document.DocumentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

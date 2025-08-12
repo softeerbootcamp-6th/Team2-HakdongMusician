@@ -1,4 +1,4 @@
-package com.daycan.api.dto.center.response;
+package com.daycan.api.dto.center.response.sheet;
 
 import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.entry.member.MemberMetaEntry;

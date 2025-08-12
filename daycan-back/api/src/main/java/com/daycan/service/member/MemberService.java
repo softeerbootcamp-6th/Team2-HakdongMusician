@@ -12,7 +12,7 @@ import com.daycan.common.response.status.error.CommonErrorStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.enums.Gender;
 import com.daycan.api.dto.center.request.MemberRequest;
-import com.daycan.api.dto.center.response.AdminMemberResponse;
+import com.daycan.api.dto.center.response.centermanage.AdminMemberResponse;
 import com.daycan.repository.jpa.CenterRepository;
 import com.daycan.repository.jpa.MemberRepository;
 import java.util.List;

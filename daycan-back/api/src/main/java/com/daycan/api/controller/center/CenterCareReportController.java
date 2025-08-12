@@ -8,7 +8,7 @@ import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.domain.entry.document.report.ReportEntry;
 import com.daycan.api.dto.center.request.ReportQueryParameters;
 import com.daycan.api.dto.center.request.ReportReviewRequest;
-import com.daycan.api.dto.center.response.CareReportMetaResponse;
+import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
 import com.daycan.common.response.PageResponse;
 import com.daycan.domain.entry.document.report.CardFooter;
 import com.daycan.domain.enums.Gender;

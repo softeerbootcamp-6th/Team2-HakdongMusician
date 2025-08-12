@@ -1,6 +1,6 @@
 package com.daycan.domain.model;
 
-import com.daycan.api.dto.center.response.DocumentStatusResponse;
+import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
 
 import com.daycan.domain.entry.document.report.ReportStatus;
 import com.daycan.domain.entry.document.sheet.SheetStatus;
