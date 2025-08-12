@@ -25,8 +25,10 @@ interface MemberRegisterPageProps {
 
 export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
   const { memberId } = useParams();
-  if (!memberId || !["register", "edit"].includes(mode)) {
-    return <div>페이지를 찾을 수 없어요.</div>;
+
+  //후에 memberId없을 때 예외처리
+  if (!memberId) {
+    console.error("memberId is required");
   }
 
   const {
@@ -41,7 +43,7 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
     showErrors,
     isPasswordEditMode,
     setIsPasswordEditMode,
-  } = useMemberRegisterForm(mode, memberId);
+  } = useMemberRegisterForm(mode, memberId as string);
 
   const [isReportConsentModalOpen, setIsReportConsentModalOpen] =
     useState(false);
