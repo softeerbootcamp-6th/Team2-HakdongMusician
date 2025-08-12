@@ -1,6 +1,11 @@
 import { LoginLayout } from "@/layout/login";
 import { MainLayout, ReportLayout, MobileLayout } from "../layout";
-import { LoginPage, MemberPage, MemberRegisterPage, CareSheetPage } from "@/pages";
+import {
+  LoginPage,
+  MemberPage,
+  MemberRegisterPage,
+  CareSheetPage,
+} from "@/pages";
 import {
   HomeFunnelStepContainer,
   InfoFunnelStepContainer,
@@ -32,16 +37,16 @@ export const routes: TRoutes[] = [
       },
       {
         path: "new",
-        element: <MemberRegisterPage />,
+        element: <MemberRegisterPage mode="register" />,
+      },
+      {
+        path: "edit/:username",
+        element: <MemberRegisterPage mode="edit" />,
       },
       {
         path: "care-sheet",
         element: <CareSheetPage />,
       },
-      // {
-      //   path: "member/edit/:id",
-      //   element: <MemberEditPage />,
-      // },
     ],
   },
   {

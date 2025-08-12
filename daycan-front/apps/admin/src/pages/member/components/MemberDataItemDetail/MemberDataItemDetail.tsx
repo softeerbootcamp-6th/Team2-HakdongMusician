@@ -6,15 +6,25 @@ import {
   memberDataItemDetailButtonContainer,
   memberDataItemDetailTopButton,
   memberDataItemDetailBottomButton,
+  editButton,
 } from "./MemberDataItemDetail.css";
 
 interface MemberDataItemDetailProps {
   detailCard?: React.ReactNode;
+  username: string;
+  onEditClick: (memberId: string) => void;
 }
 
 export const MemberDataItemDetail = ({
   detailCard,
+  username,
+  onEditClick,
 }: MemberDataItemDetailProps) => {
+  // 수정 버튼 클릭 시 부모 컴포넌트로 이벤트 전달
+  const handleEditClick = () => {
+    onEditClick(username);
+  };
+
   return (
     <div className={memberDataItemDetailContainer}>
       <div className={memberDataItemDetailContent}>
@@ -37,12 +47,8 @@ export const MemberDataItemDetail = ({
           <div className={memberDataItemDetailBottomButton}>
             <Button
               size="small"
-              style={{
-                backgroundColor: COLORS.green[500],
-                color: COLORS.green[200],
-                width: "58px",
-                height: "32px",
-              }}
+              onClick={handleEditClick}
+              className={editButton}
             >
               수정
             </Button>

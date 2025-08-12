@@ -17,8 +17,15 @@ import {
 } from "./MemberRegisterPage.css";
 import { useMemberRegisterForm } from "./hooks";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
-export const MemberRegisterPage = () => {
+interface MemberRegisterPageProps {
+  mode: "register" | "edit";
+}
+
+export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
+  const { username } = useParams();
+
   const {
     form,
     updateMemberInfo,
@@ -26,8 +33,11 @@ export const MemberRegisterPage = () => {
     updateReportConsent,
     getFieldErrors,
     isFormFilled,
+    isEditFormFilled,
     handleSubmit,
-  } = useMemberRegisterForm();
+    isPasswordEditMode,
+    setIsPasswordEditMode,
+  } = useMemberRegisterForm(mode, username as string);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showErrors, setShowErrors] = useState(false);
@@ -45,7 +55,7 @@ export const MemberRegisterPage = () => {
 
   // 리포트 수신 동의 토글
   const handleReportConsentToggle = () => {
-    updateReportConsent(!form.reportConsent);
+    updateReportConsent(!form.acceptReport);
   };
 
   // 폼 제출 시 에러 검증
@@ -56,6 +66,15 @@ export const MemberRegisterPage = () => {
 
     if (Object.keys(fieldErrors).length === 0) {
       handleSubmit();
+    }
+  };
+
+  // 폼 제출 버튼 활성화 여부(수정 , 등록페이지 구분)
+  const handleIsFormFilled = () => {
+    if (mode === "register") {
+      return isFormFilled();
+    } else {
+      return isEditFormFilled();
     }
   };
 
@@ -72,7 +91,9 @@ export const MemberRegisterPage = () => {
             color={COLORS.gray[50]}
             stroke={COLORS.gray[700]}
           />
-          <Heading>수급자 등록</Heading>
+          <Heading>
+            {mode === "register" ? "수급자 등록" : "수급자 수정"}
+          </Heading>
         </div>
 
         <div className={memberRegisterPageHeaderDescription}>
@@ -98,9 +119,9 @@ export const MemberRegisterPage = () => {
         <GuardianInfoSection
           form={{
             guardianName: form.guardianName,
-            guardianBirthDate: form.guardianBirthDate,
+            guardianRelationBirthDate: form.guardianRelationBirthDate,
             guardianPhoneNumber: form.guardianPhoneNumber,
-            guardianRelationship: form.guardianRelationship,
+            guardianRelation: form.guardianRelation,
             guardianPassword: form.guardianPassword,
             guardianPasswordConfirm: form.guardianPasswordConfirm,
             guardianAvatarUrl: form.guardianAvatarUrl,
@@ -108,6 +129,9 @@ export const MemberRegisterPage = () => {
           onUpdate={handleGuardianInfoUpdate}
           errors={errors}
           showErrors={showErrors}
+          mode={mode}
+          isPasswordEditMode={isPasswordEditMode}
+          setIsPasswordEditMode={setIsPasswordEditMode}
         />
       </div>
 
@@ -118,14 +142,12 @@ export const MemberRegisterPage = () => {
           <div className={memberRegisterPageReportLeftContent}>
             <Icon
               name="circleCheck"
-              stroke={form.reportConsent ? COLORS.gray[700] : COLORS.gray[400]}
+              stroke={form.acceptReport ? COLORS.gray[700] : COLORS.gray[400]}
               width={48}
               height={48}
               onClick={handleReportConsentToggle}
               style={{ cursor: "pointer" }}
-              color={
-                form.reportConsent ? COLORS.primary[300] : COLORS.gray[200]
-              }
+              color={form.acceptReport ? COLORS.primary[300] : COLORS.gray[200]}
             />
             <Body type="small" weight={600}>
               수급자 정보 리포트 수신 동의
@@ -146,18 +168,18 @@ export const MemberRegisterPage = () => {
       <div className={memberRegisterPageButtonContainer}>
         <Button
           size="large"
-          disabled={!isFormFilled()}
+          disabled={!handleIsFormFilled()}
           onClick={handleFormSubmit}
           style={{
-            backgroundColor: isFormFilled()
+            backgroundColor: handleIsFormFilled()
               ? COLORS.primary[300]
               : COLORS.gray[400],
-            cursor: isFormFilled() ? "pointer" : "not-allowed",
-            opacity: isFormFilled() ? 1 : 0.6,
+            cursor: handleIsFormFilled() ? "pointer" : "not-allowed",
+            opacity: handleIsFormFilled() ? 1 : 0.6,
           }}
         >
           <Body type="medium" weight={600} color={COLORS.gray[600]}>
-            등록
+            {mode === "register" ? "등록" : "수정"}
           </Body>
         </Button>
       </div>
