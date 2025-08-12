@@ -2,7 +2,7 @@ package com.daycan.service.center;
 
 import com.daycan.domain.entity.Center;
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.StaffErrorStatus;
+import com.daycan.common.response.status.error.StaffErrorStatus;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;

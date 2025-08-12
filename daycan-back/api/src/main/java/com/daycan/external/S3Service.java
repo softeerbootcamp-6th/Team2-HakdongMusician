@@ -1,6 +1,6 @@
 package com.daycan.external;
 
-import com.daycan.common.response.status.CommonErrorStatus;
+import com.daycan.common.response.status.error.CommonErrorStatus;
 import com.daycan.api.dto.center.response.PresignResponse;
 import com.daycan.common.exceptions.ApplicationException;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.daycan.domain.entity;
 
-import com.daycan.common.response.status.CenterErrorStatus;
+import com.daycan.common.response.status.error.CenterErrorStatus;
 import com.daycan.domain.Account;
 import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;

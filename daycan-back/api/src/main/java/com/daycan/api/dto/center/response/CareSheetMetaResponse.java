@@ -1,7 +1,7 @@
 package com.daycan.api.dto.center.response;
 
-import com.daycan.api.dto.entry.document.sheet.SheetStatus;
-import com.daycan.api.dto.entry.member.MemberMetaEntry;
+import com.daycan.domain.entry.document.sheet.SheetStatus;
+import com.daycan.domain.entry.member.MemberMetaEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "기록지 메타 정보 응답 DTO")

@@ -1,14 +1,14 @@
 package com.daycan.api.dto.center.response;
 
-import com.daycan.api.dto.entry.document.report.ReportStatus;
-import java.time.LocalDate;
+import com.daycan.domain.entry.document.report.ReportStatus;
+import com.daycan.domain.entry.member.GuardianMetaEntry;
+import com.daycan.domain.entry.member.MemberMetaEntry;
 
 public record CareReportMetaResponse(
     Long id,
-    String recipientName,
-    LocalDate scheduledDate,      // 예정 발송일 (or 생성일)
-    ReportStatus status,
-    boolean delayed               // 지연 여부 플래그
+    MemberMetaEntry memberMetaEntry,
+    GuardianMetaEntry guardianMetaEntry,
+    ReportStatus status
 ) {
 
 }

@@ -1,7 +1,9 @@
 package com.daycan.domain.enums;
 
-import com.daycan.api.dto.entry.document.report.ReportStatus;
-import com.daycan.api.dto.entry.document.sheet.SheetStatus;
+import com.daycan.domain.entry.document.report.ReportStatus;
+import com.daycan.domain.entry.document.sheet.SheetStatus;
+import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 
 @Getter
@@ -22,6 +24,21 @@ public enum DocumentStatus {
     this.description = description;
   }
 
+  private static final Map<DocumentStatus, Set<DocumentStatus>> ALLOWED = Map.of(
+      NOT_APPLICABLE, Set.of(SHEET_PENDING),
+      SHEET_PENDING,  Set.of(SHEET_DONE),
+      SHEET_DONE,     Set.of(REPORT_PENDING),
+      REPORT_PENDING, Set.of(REPORT_CREATED),
+      REPORT_CREATED, Set.of(REPORT_REVIEWED),
+      REPORT_REVIEWED,Set.of(REPORT_SENDING, REPORT_RESERVED),
+      REPORT_RESERVED,Set.of(REPORT_SENDING),
+      REPORT_SENDING, Set.of(REPORT_DONE),
+      REPORT_DONE,    Set.of()
+  );
+  public boolean canTransitTo(DocumentStatus next) {
+    return ALLOWED.getOrDefault(this, Set.of()).contains(next);
+  }
+
   public SheetStatus toSheetStatus() {
     return switch (this) {
       case NOT_APPLICABLE -> SheetStatus.NOT_APPLICABLE;
@@ -31,6 +48,20 @@ public enum DocumentStatus {
           -> SheetStatus.DONE;
     };
   }
+
+  public ReportStatus toReportStatus(Long careReportId) {
+    return switch (this) {
+      case NOT_APPLICABLE, SHEET_PENDING -> ReportStatus.NOT_APPLICABLE;
+      case SHEET_DONE     -> (careReportId == null ? ReportStatus.NOT_APPLICABLE : ReportStatus.PENDING);
+      case REPORT_PENDING   -> ReportStatus.PENDING;
+      case REPORT_CREATED   -> ReportStatus.CREATED;
+      case REPORT_REVIEWED  -> ReportStatus.REVIEWED;
+      case REPORT_SENDING   -> ReportStatus.SENDING;
+      case REPORT_RESERVED  -> ReportStatus.RESERVED;
+      case REPORT_DONE      -> ReportStatus.DONE;
+    };
+  }
+
 
   public static DocumentStatus from(SheetStatus sheet, ReportStatus report) {
     // 리포트 축이 유효하면 리포트 축을 우선한다.

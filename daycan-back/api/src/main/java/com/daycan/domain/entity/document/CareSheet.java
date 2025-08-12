@@ -4,7 +4,7 @@ import static jakarta.persistence.CascadeType.*;
 
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.entity.Staff;
-import com.daycan.domain.entry.Meal;
+import com.daycan.domain.entry.document.sheet.Meal;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -155,6 +155,9 @@ public class CareSheet extends BaseTimeEntity {
   @Column(name = "physical_comment", length = 300)
   private String physicalComment;
 
+  public void linkDocument(Document doc) {
+    this.document = doc;
+  }
   public void addPersonalProgram(PersonalProgram personalProgram) {
     if (personalPrograms == null) {
       personalPrograms = new ArrayList<>();
@@ -285,5 +288,6 @@ public class CareSheet extends BaseTimeEntity {
       this.physicalComment = physicalComment;
     }
   }
+
 }
 

@@ -18,8 +18,8 @@ public interface VitalRepository extends JpaRepository<Vital, Long> {
   @Query("""
       select v from Vital v
       where v.document.member.id = :memberId
-        and v.document.docDate = :docDate
+        and v.document.date = :date
       """)
   Optional<Vital> findByMemberAndDate(@Param("memberId") Long memberId,
-      @Param("docDate") LocalDate docDate);
+      @Param("date") LocalDate date);
 }

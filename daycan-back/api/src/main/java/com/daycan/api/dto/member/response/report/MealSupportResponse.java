@@ -1,6 +1,6 @@
 package com.daycan.api.dto.member.response.report;
 
-import com.daycan.api.dto.entry.document.report.CardFooter;
+import com.daycan.domain.entry.document.report.CardFooter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "식사 지원 응답")

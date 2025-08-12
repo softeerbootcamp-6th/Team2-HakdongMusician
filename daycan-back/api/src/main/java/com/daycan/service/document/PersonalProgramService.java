@@ -1,7 +1,7 @@
 package com.daycan.service.document;
 
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.CommonErrorStatus;
+import com.daycan.common.response.status.error.CommonErrorStatus;
 import com.daycan.domain.entity.document.PersonalProgram;
 import com.daycan.repository.jpa.PersonalProgramRepository;
 

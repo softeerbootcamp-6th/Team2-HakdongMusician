@@ -1,14 +1,17 @@
 package com.daycan.api.controller.center;
 
-import com.daycan.api.dto.entry.document.report.ReportStatus;
+import com.daycan.domain.entry.document.report.ReportStatus;
+import com.daycan.domain.entry.member.GuardianMetaEntry;
+import com.daycan.domain.entry.member.MemberMetaEntry;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.api.dto.common.FullReportDto;
-import com.daycan.api.dto.entry.document.report.ReportEntry;
-import com.daycan.api.dto.member.request.ReportQueryParameters;
+import com.daycan.domain.entry.document.report.ReportEntry;
+import com.daycan.api.dto.center.request.ReportQueryParameters;
 import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.api.dto.center.response.CareReportMetaResponse;
 import com.daycan.common.response.PageResponse;
-import com.daycan.api.dto.entry.document.report.CardFooter;
+import com.daycan.domain.entry.document.report.CardFooter;
+import com.daycan.domain.enums.Gender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +25,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,26 +34,39 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping("/admin/care-report")
-@Tag(name = "📋 리포트 관리", description = "관리자용 리포트 관련 API")
+@Tag(name = "\uD83D\uDCCB 리포트 관리", description = "관리자용 리포트 관련 API")
 public class CenterCareReportController {
 
-  /**
-   * post: 검토 된 리포트 전송 api (시간 파라미터로 추가하고 없으면 즉시 전송)
-   */
-
-  @GetMapping
+  @GetMapping(value = "/{date}")
   public PageResponse<List<CareReportMetaResponse>> getReportList(
       @ParameterObject @ModelAttribute @Valid
       ReportQueryParameters query,
+
+      LocalDate date,
       // 스프링이 query-param <-> record 바인딩
       Pageable pageable               // page, size, sort 파라미터 처리
   ) {
 
     /* mock 데이터 생성 (임시) */
     List<CareReportMetaResponse> mock = List.of(
-        new CareReportMetaResponse(1L, "김순애", LocalDate.now(), ReportStatus.REVIEWED, false),
-        new CareReportMetaResponse(2L, "박철수", LocalDate.now().minusDays(1),
-            ReportStatus.PENDING, true)
+        new CareReportMetaResponse(1L,
+            new MemberMetaEntry(
+                "MEM12345", "오애순",
+                LocalDate.of(1943, 9, 12),
+                Gender.FEMALE),
+            new GuardianMetaEntry(
+                "양금명",
+                "010-1234-5678"),
+            ReportStatus.REVIEWED),
+        new CareReportMetaResponse(2L,
+            new MemberMetaEntry(
+                "MEM12345", "오애순",
+                LocalDate.of(1943, 9, 12),
+                Gender.FEMALE),
+            new GuardianMetaEntry(
+                "양금명",
+                "010-1234-5678"),
+            ReportStatus.PENDING)
     );
 
     return new PageResponse<>(
@@ -66,16 +83,16 @@ public class CenterCareReportController {
           성공 시, data 필드에 리포트 내용을 담아 반환합니다.
           """
   )
-  @GetMapping("/{date}/{recipientId}")
+  @GetMapping("/{date}/{memberId}")
   public ResponseWrapper<FullReportDto> getReport(
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate date,
 
-      @Parameter(description = "수급자 ID", example = "MEM123456", required = true)
+      @Parameter(description = "수급자 ID", example = "1L", required = true)
       @PathVariable
-      String recipientId
+      Long memberId
   ) {
     // Mock data 생성
     List<ReportEntry> mealEntries = List.of(
@@ -165,7 +182,7 @@ public class CenterCareReportController {
           - time 파라미터를 주지 않으면 전송 시간은 현재 시간으로 설정됩니다.
           """
   )
-  @PutMapping("/{reportId}/send")
+  @PatchMapping("/{reportId}/send")
   public ResponseWrapper<Void> sendReport(
       @PathVariable Long reportId,
       @Parameter(description = "전송 시간 (ISO 8601 형식, 예: 2025-07-31T10:00:00Z)")

@@ -1,7 +1,7 @@
 package com.daycan.api.dto.center.request;
 
 import com.daycan.domain.enums.Gender;
-import com.daycan.api.dto.entry.member.PasswordEntry;
+import com.daycan.domain.entry.member.PasswordEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
-@Schema(description = "수급자 정보 요청")
+@Schema(description = "수급자 post/patch 요청")
 public record MemberRequest(
 
     @Schema(description = "수급자명", example = "김노인")

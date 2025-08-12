@@ -1,9 +1,9 @@
 package com.daycan.api.dto.member.response.report;
 
-import com.daycan.api.dto.entry.document.BloodPressureEntry;
-import com.daycan.api.dto.entry.document.report.CardFooter;
-import com.daycan.api.dto.entry.document.ToiletEntry;
-import com.daycan.api.dto.entry.document.TemperatureEntry;
+import com.daycan.domain.entry.document.vital.BloodPressureEntry;
+import com.daycan.domain.entry.document.report.CardFooter;
+import com.daycan.domain.entry.document.vital.ToiletEntry;
+import com.daycan.domain.entry.document.vital.TemperatureEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 

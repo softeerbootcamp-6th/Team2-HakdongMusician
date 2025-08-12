@@ -18,7 +18,6 @@ import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +27,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springdoc.core.annotations.ParameterObject;
 
 @RestController()
 @RequestMapping("/admin/member")
-@Tag(name = "👵🏻 수급자 관리", description = "관리자용 수급자 관련 API")
+@Tag(name = "\uD83D\uDC75 수급자 관리", description = "관리자용 수급자 관련 API")
 @RequiredArgsConstructor
 public class CenterMemberController {
 
@@ -55,15 +53,15 @@ public class CenterMemberController {
     return ResponseWrapper.onSuccess(memberList);
   }
 
-  @GetMapping("/{username}")
+  @GetMapping("/{memberId}")
   @Operation(summary = "수급자 상세 조회", description = "특정 수급자의 상세 정보를 조회합니다.")
   public ResponseWrapper<AdminMemberResponse> getMemberById(
       @AuthenticatedUser CenterDetails centerDetails,
-      @Parameter(description = "장기요양인정번호", example = "AA1234567") @PathVariable String username) {
+      @Parameter(description = "장기요양인정번호", example = "1L") @PathVariable Long memberId) {
     Center center = centerDetails.getCenter();
 
     AdminMemberResponse member = memberService.getMemberById(
-        username,
+        memberId,
         center.getId());
     return ResponseWrapper.onSuccess(member);
   }
@@ -80,27 +78,27 @@ public class CenterMemberController {
     return ResponseWrapper.onSuccess(newMember);
   }
 
-  @PutMapping("/{username}")
+  @PutMapping("/{memberId}")
   @Operation(summary = "수급자 정보 수정", description = "기존 수급자의 정보를 수정합니다.")
   public ResponseWrapper<AdminMemberResponse> updateMember(
       @AuthenticatedUser CenterDetails centerDetails,
-      @Parameter(description = "장기요양인정번호", example = "AA1234567") @PathVariable String username,
+      @Parameter(description = "수급자 id", example = "1") @PathVariable Long memberId,
       @RequestBody @Valid MemberRequest memberRequest) {
     Center center = centerDetails.getCenter();
 
-    AdminMemberResponse updatedMember = memberService.updateMember(username, memberRequest,
+    AdminMemberResponse updatedMember = memberService.updateMember(memberId, memberRequest,
         center.getId());
     return ResponseWrapper.onSuccess(updatedMember);
   }
 
-  @DeleteMapping("/{username}")
+  @DeleteMapping("/{memberId}")
   @Operation(summary = "수급자 삭제", description = "특정 수급자를 삭제합니다.")
   public ResponseWrapper<Void> deleteMember(
       @AuthenticatedUser CenterDetails centerDetails,
-      @Parameter(description = "장기요양인정번호", example = "AA1234567") @PathVariable String username) {
+      @Parameter(description = "장기요양인정번호", example = "1") @PathVariable Long memberId) {
     Center center = centerDetails.getCenter();
 
-    memberService.deleteMember(username, center.getId());
+    memberService.deleteMember(memberId, center.getId());
     return ResponseWrapper.onSuccess(null);
   }
 

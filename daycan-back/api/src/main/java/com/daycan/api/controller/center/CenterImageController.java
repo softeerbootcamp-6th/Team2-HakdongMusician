@@ -4,6 +4,7 @@ import com.daycan.common.response.ResponseWrapper;
 import com.daycan.api.dto.center.response.PresignResponse;
 
 import com.daycan.external.S3Service;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/images")
+@Tag(name = "\uD83D\uDEE2 S3 관련 API", description = "이미지 업로드 및 presigned URL 관련 API")
 public class CenterImageController {
 
   private final S3Service s3Service;

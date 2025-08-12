@@ -1,7 +1,7 @@
 package com.daycan.domain.entity.document;
 
 
-import com.daycan.common.response.status.DocumentErrorStatus;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
@@ -94,6 +94,10 @@ public class Vital extends BaseTimeEntity {
     if (numberOfUrine != null) {
       this.numberOfUrine = numberOfUrine;
     }
+  }
+
+  public void linkDocument(Document doc) {
+    this.document = doc;
   }
 
 }

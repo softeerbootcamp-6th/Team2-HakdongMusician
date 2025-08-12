@@ -6,7 +6,7 @@ import com.daycan.auth.dto.LoginRequest;
 import com.daycan.auth.dto.LoginResponse;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.common.response.status.AuthErrorStatus;
+import com.daycan.common.response.status.error.AuthErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

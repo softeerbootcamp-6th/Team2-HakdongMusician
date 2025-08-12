@@ -1,10 +1,11 @@
 package com.daycan.domain.entity;
 
 
-import com.daycan.common.response.status.MemberErrorStatus;
+import com.daycan.common.response.status.error.CenterErrorStatus;
+import com.daycan.common.response.status.error.MemberErrorStatus;
 import com.daycan.domain.Account;
 import com.daycan.domain.enums.Gender;
-import com.daycan.domain.entry.MemberCommand;
+import com.daycan.domain.entry.member.MemberCommand;
 
 import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
@@ -87,6 +88,11 @@ public class Member extends Account {
   private Long version;
 
   protected Member() {
+  }
+  public void validateCenter(Center center) {
+    if (!this.center.getId().equals(center.getId())) {
+      throw new ApplicationException(CenterErrorStatus.MEMBER_NOT_ALLOWED, "해당 센터에 속하지 않는 회원입니다.");
+    }
   }
 
   public static Member createNew(String username,

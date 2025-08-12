@@ -20,8 +20,8 @@ public interface CareReportRepository extends JpaRepository<CareReport, Long> {
       select c
       from CareReport c
       where c.document.member.id = :memberId
-        and c.document.docDate <= :date
-      order by c.document.docDate desc
+        and c.document.date <= :date
+      order by c.document.date desc
       """)
   List<CareReport> findTopByMemberAndDateBeforeEq(
       @Param("memberId") Long memberId,

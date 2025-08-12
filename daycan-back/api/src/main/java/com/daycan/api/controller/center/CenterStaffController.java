@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/staff")
-@Tag(name = "👨‍💼 종사자 관리", description = "관리자용 종사자 관련 API")
+@Tag(name = "\uD83D\uDC77\u200D♂\uFE0F 종사자 관리", description = "관리자용 종사자 관련 API")
 @RequiredArgsConstructor
 public class CenterStaffController {
 

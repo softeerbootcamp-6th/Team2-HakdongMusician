@@ -4,10 +4,10 @@ import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.MemberDetails;
 import com.daycan.api.dto.common.NumberValue;
 
-import com.daycan.api.dto.entry.statistics.DailyHealthStatisticsEntry;
+import com.daycan.domain.entry.statistics.DailyHealthStatisticsEntry;
 import com.daycan.api.dto.member.response.statistics.MemberStatisticsResponse;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.api.dto.entry.statistics.MonthlyHealthStatisticsEntry;
+import com.daycan.domain.entry.statistics.MonthlyHealthStatisticsEntry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/member/statistics")
 @Tag(
-    name = "🧾 고령자 건강 정보 통계 API",
+    name = "\uD83D\uDCC8 고령자 건강 정보 통계 API",
     description = "고령자의 일일 상태 리포트를 조회하는 API입니다. 식사, 건강, 신체·인지 활동별 리포트를 각각 조회할 수 있습니다."
 )
 public class MemberStatisticsController {

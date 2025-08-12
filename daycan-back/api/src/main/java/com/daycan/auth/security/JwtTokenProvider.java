@@ -2,7 +2,7 @@ package com.daycan.auth.security;
 
 import com.daycan.auth.dto.Token;
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.AuthErrorStatus;
+import com.daycan.common.response.status.error.AuthErrorStatus;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
