@@ -1,14 +1,14 @@
 import { Heading, Modal } from "@daycan/ui";
 
-interface ReportConsentModalProps {
+interface AcceptReportInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const ReportConsentModal = ({
+export const AcceptReportInfoModal = ({
   isOpen,
   onClose,
-}: ReportConsentModalProps) => {
+}: AcceptReportInfoModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Heading type="large" weight={600} style={{ marginBottom: 24 }}>
