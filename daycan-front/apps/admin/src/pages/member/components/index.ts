@@ -3,9 +3,8 @@
  * @author 소보길
  */
 
-export { MemberDataItems } from "./MemberDataItems/MemberDataItems";
 export { MemberDataItemDetail } from "./MemberDataItemDetail/MemberDataItemDetail";
 export { MemberDataListHeader } from "./MemberDataListHeader/MemberDataListHeader";
 export { MemberDetailContent } from "./MemberDetailContent/MemberDetailContent";
 export { GuardianDetailContent } from "./GuardianDetailContent/GuardianDetailContent";
-export { MemberEditModal } from "./MemberEditModal/MemberEditModal";
+export { MemberEditAuthModal } from "./MemberEditAuthModal/MemberEditAuthModal";
