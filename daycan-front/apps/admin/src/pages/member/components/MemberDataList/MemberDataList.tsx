@@ -30,11 +30,13 @@ import type { MemberData } from "@/types/member.ts";
 
 interface MemberDataListProps {
   onEditButtonClick: (memberId: string) => void;
+  onDeleteButtonClick: (memberId: string) => void;
   members: MemberData[];
 }
 
 export const MemberDataList = ({
   onEditButtonClick,
+  onDeleteButtonClick,
   members,
 }: MemberDataListProps) => {
   const { openDetails, getDetailContainerState, handleDetailClick } =
@@ -105,6 +107,7 @@ export const MemberDataList = ({
                       </div>
                     }
                     onEditButtonClick={onEditButtonClick}
+                    onDeleteButtonClick={onDeleteButtonClick}
                   />
                 </div>
               </div>

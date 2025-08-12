@@ -14,6 +14,7 @@ import { MemberDataList } from "./components/MemberDataList";
 import { MemberEditAuthModal } from "./components/MemberEditAuthModal";
 import { useMember } from "./hooks";
 import { useState } from "react";
+import { MemberDeleteConfirmModal } from "./components/MemberDeleteConfirmModal";
 
 export const MemberPage = () => {
   const {
@@ -28,6 +29,8 @@ export const MemberPage = () => {
   const [isMemberEditAuthModalOpen, setIsMemberEditAuthModalOpen] =
     useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
+  const [isMemberDeleteConfirmModalOpen, setIsMemberDeleteConfirmModalOpen] =
+    useState(false);
 
   // 수정 버튼 클릭 시 모달 열기
   const handleEditButtonClick = (memberId: string) => {
@@ -41,6 +44,11 @@ export const MemberPage = () => {
     if (selectedMemberId) {
       handleEditMember(selectedMemberId);
     }
+  };
+
+  const handleDeleteButtonClick = (memberId: string) => {
+    setSelectedMemberId(memberId);
+    setIsMemberDeleteConfirmModalOpen(true);
   };
 
   return (
@@ -108,6 +116,7 @@ export const MemberPage = () => {
       {/* 데이터 리스트 */}
       <MemberDataList
         onEditButtonClick={handleEditButtonClick}
+        onDeleteButtonClick={handleDeleteButtonClick}
         members={members}
       />
 
@@ -118,6 +127,12 @@ export const MemberPage = () => {
           setSelectedMemberId("");
         }}
         onEditAccessConfirm={handleEditAccessConfirm}
+        memberId={selectedMemberId}
+      />
+
+      <MemberDeleteConfirmModal
+        isOpen={isMemberDeleteConfirmModalOpen}
+        onClose={() => setIsMemberDeleteConfirmModalOpen(false)}
         memberId={selectedMemberId}
       />
     </div>
