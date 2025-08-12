@@ -9,16 +9,55 @@ import {
   resetContainer,
   divider,
 } from "./MemberPage.css.ts";
-import { FilterSearchbar } from "@/components/FilterSearchbar/FilterSearchbar.tsx";
-import { MemberDataList } from "./components/MemberDataList/MemberDataList.tsx";
+import { FilterSearchbar } from "@/components/FilterSearchbar";
+import { MemberDataList } from "./components/MemberDataList";
+import { MemberEditAuthModal } from "./components/MemberEditAuthModal";
 import { useMember } from "./hooks";
+import { useState } from "react";
+import { MemberDeleteConfirmModal } from "./components/MemberDeleteConfirmModal";
+
 export const MemberPage = () => {
   const {
     // dropdownStates,
     handleNewMember,
     // toggleDropdown,
     handleResetFilters,
+    handleEditMember,
+    members,
   } = useMember();
+
+  const [isMemberEditAuthModalOpen, setIsMemberEditAuthModalOpen] =
+    useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<string>("");
+  const [isMemberDeleteConfirmModalOpen, setIsMemberDeleteConfirmModalOpen] =
+    useState(false);
+
+  // 수정 버튼 클릭 시 모달 열기
+  const handleEditButtonClick = (memberId: string) => {
+    setSelectedMemberId(memberId);
+    setIsMemberEditAuthModalOpen(true);
+  };
+
+  // 모달에서 인증 성공 시 라우팅
+  const handleEditAccessConfirm = () => {
+    setIsMemberEditAuthModalOpen(false);
+    if (selectedMemberId) {
+      handleEditMember(selectedMemberId);
+    }
+  };
+
+  const handleDeleteButtonClick = (memberId: string) => {
+    setSelectedMemberId(memberId);
+    setIsMemberDeleteConfirmModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setIsMemberDeleteConfirmModalOpen(false);
+    if (selectedMemberId) {
+      // api 호출
+      console.log("delete member", selectedMemberId);
+    }
+  };
 
   return (
     <div className={memberContainer}>
@@ -83,7 +122,27 @@ export const MemberPage = () => {
       </FilterSearchbar>
 
       {/* 데이터 리스트 */}
-      <MemberDataList />
+      <MemberDataList
+        onEditButtonClick={handleEditButtonClick}
+        onDeleteButtonClick={handleDeleteButtonClick}
+        members={members}
+      />
+
+      <MemberEditAuthModal
+        isOpen={isMemberEditAuthModalOpen}
+        onClose={() => {
+          setIsMemberEditAuthModalOpen(false);
+          setSelectedMemberId("");
+        }}
+        onEditAccessConfirm={handleEditAccessConfirm}
+        memberId={selectedMemberId}
+      />
+
+      <MemberDeleteConfirmModal
+        isOpen={isMemberDeleteConfirmModalOpen}
+        onClose={() => setIsMemberDeleteConfirmModalOpen(false)}
+        onDeleteConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };

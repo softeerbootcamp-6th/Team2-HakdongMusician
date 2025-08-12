@@ -41,6 +41,10 @@ export const MemberInfoSection = ({
     }
   };
 
+  const handleGenderSelect = (gender: string) => {
+    onUpdate("gender", gender);
+  };
+
   return (
     <InfoSectionLayout
       title="수급자 정보"
@@ -69,7 +73,7 @@ export const MemberInfoSection = ({
         />
         <GenderSelector
           selectedGender={form.gender}
-          onGenderSelect={(gender) => onUpdate("gender", gender)}
+          onGenderSelect={handleGenderSelect}
         />
         <div
           style={{
