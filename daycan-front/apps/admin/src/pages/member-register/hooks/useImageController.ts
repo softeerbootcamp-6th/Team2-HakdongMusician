@@ -1,21 +1,31 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { processImageFile } from "@/utils";
 import { useToast } from "@daycan/ui";
 
 interface UseImageControllerProps {
-  initialImage?: string;
+  profileImage?: string;
   onImageChange?: (file: File | null) => void;
 }
 
 export const useImageController = ({
-  initialImage = "",
+  profileImage,
   onImageChange,
 }: UseImageControllerProps) => {
-  const [selectedImage, setSelectedImage] = useState<string>(initialImage);
+  const [selectedImage, setSelectedImage] = useState<string>(
+    profileImage || ""
+  );
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { showToast } = useToast();
+
+  // profileImage prop이 변경될 때 selectedImage 상태 동기화
+  useEffect(() => {
+    if (profileImage !== undefined) {
+      setSelectedImage(profileImage);
+    }
+  }, [profileImage]);
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
