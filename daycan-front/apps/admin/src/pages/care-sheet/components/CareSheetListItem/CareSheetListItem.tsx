@@ -31,6 +31,7 @@ const getStatusInfo = (status: string) => {
         text: "작성 완료",
         icon: "circleCheck",
         color: COLORS.blue[500],
+        strokeColor: COLORS.white,  
       };
     case "NOT_APPLICABLE":
       return {
@@ -101,6 +102,7 @@ export const CareSheetListItem = ({
             width={20}
             height={20}
             color={statusInfo.color}
+            stroke={statusInfo.strokeColor}
           />
         </div>
       </div>
