@@ -9,12 +9,13 @@ import {
 interface MemberDeleteConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  memberId: string;
+  onDeleteConfirm: () => void;
 }
 
 export const MemberDeleteConfirmModal = ({
   isOpen,
   onClose,
+  onDeleteConfirm,
 }: MemberDeleteConfirmModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -32,7 +33,7 @@ export const MemberDeleteConfirmModal = ({
             <Button variant="unEmphasized" onClick={onClose} size="fullWidth">
               닫기
             </Button>
-            <Button size="fullWidth" variant="error">
+            <Button size="fullWidth" variant="error" onClick={onDeleteConfirm}>
               삭제
             </Button>
           </div>

@@ -51,6 +51,14 @@ export const MemberPage = () => {
     setIsMemberDeleteConfirmModalOpen(true);
   };
 
+  const handleDeleteConfirm = () => {
+    setIsMemberDeleteConfirmModalOpen(false);
+    if (selectedMemberId) {
+      // api 호출
+      console.log("delete member", selectedMemberId);
+    }
+  };
+
   return (
     <div className={memberContainer}>
       {/* 페이지 툴바 */}
@@ -133,7 +141,7 @@ export const MemberPage = () => {
       <MemberDeleteConfirmModal
         isOpen={isMemberDeleteConfirmModalOpen}
         onClose={() => setIsMemberDeleteConfirmModalOpen(false)}
-        memberId={selectedMemberId}
+        onDeleteConfirm={handleDeleteConfirm}
       />
     </div>
   );
