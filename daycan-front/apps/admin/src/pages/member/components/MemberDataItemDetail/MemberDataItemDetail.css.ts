@@ -57,3 +57,16 @@ export const memberDataItemDetailBottomButton = style({
 export const memberDataItemDetailCardContainer = style({
   flex: 4,
 });
+
+export const editButton = style({
+  backgroundColor: COLORS.green[500],
+  color: COLORS.white,
+  width: "58px",
+  height: "32px",
+  borderRadius: "8px",
+  border: "none",
+  cursor: "pointer",
+  ":hover": {
+    backgroundColor: COLORS.green[200],
+  },
+});

@@ -27,11 +27,12 @@ export const mainSectionWrapper = style({
   flex: 4,
   display: "flex",
   justifyContent: "center", // 가운데 정렬 위해
-  backgroundColor: COLORS.gray[800],
+  backgroundColor: COLORS.gray[50],
 });
 
 export const mainSection = style({
   backgroundColor: COLORS.gray[50],
+  display: "flex",
   width: "100%",
   maxWidth: "1256px",
   padding: "0 84px",
