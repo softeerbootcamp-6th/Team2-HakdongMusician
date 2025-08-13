@@ -1,6 +1,6 @@
 package com.daycan.api.dto.center.request;
 
-import com.daycan.api.dto.entry.document.report.ReportEntry;
+import com.daycan.domain.entry.document.report.ReportEntry;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 

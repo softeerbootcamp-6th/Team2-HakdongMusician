@@ -1,18 +1,18 @@
 package com.daycan.service.document;
 
-import com.daycan.common.response.status.MemberErrorStatus;
+import com.daycan.common.response.status.error.MemberErrorStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.DocumentErrorStatus;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.document.CareReport;
 
 import com.daycan.domain.entry.ProgramComment;
 import com.daycan.api.dto.common.FullReportDto;
-import com.daycan.api.dto.entry.document.report.ReportEntry;
-import com.daycan.api.dto.entry.document.report.CardFooter;
+import com.daycan.domain.entry.document.report.ReportEntry;
+import com.daycan.domain.entry.document.report.CardFooter;
 import com.daycan.repository.jpa.CareReportRepository;
 import com.daycan.repository.jpa.MemberRepository;
-import com.daycan.api.mapper.ReportEntryMapper;
+import com.daycan.util.mapper.ReportEntryMapper;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

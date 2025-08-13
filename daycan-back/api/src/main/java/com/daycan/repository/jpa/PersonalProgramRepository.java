@@ -23,11 +23,11 @@ public interface PersonalProgramRepository extends JpaRepository<PersonalProgram
   List<PersonalProgram> findByCareSheetIdAndProgramName(Long careSheetId, String programName);
 
   // 멤버 + 일자 (CareSheet -> Document 경유)
-  List<PersonalProgram> findByCareSheetDocumentMemberIdAndCareSheetDocumentDocDate(
+  List<PersonalProgram> findByCareSheetDocumentMemberIdAndCareSheetDocumentDate(
       Long memberId, LocalDate docDate);
 
   // 멤버 + 일자 + 프로그램명
-  List<PersonalProgram> findByCareSheetDocumentMemberIdAndCareSheetDocumentDocDateAndProgramName(
+  List<PersonalProgram> findByCareSheetDocumentMemberIdAndCareSheetDocumentDateAndProgramName(
       Long memberId, LocalDate docDate, String programName);
 
   // 프로그램/점수 필터

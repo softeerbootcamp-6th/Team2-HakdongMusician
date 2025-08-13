@@ -1,22 +1,22 @@
 package com.daycan.service.member;
 
 import com.daycan.auth.security.PasswordHasher;
-import com.daycan.common.response.status.MemberErrorStatus;
+import com.daycan.common.response.status.error.MemberErrorStatus;
 import com.daycan.domain.entity.Center;
-import com.daycan.domain.entry.MemberCommand;
-import com.daycan.api.dto.entry.member.PasswordEntry;
+import com.daycan.domain.entry.member.MemberCommand;
+import com.daycan.domain.entry.member.PasswordEntry;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.PageResponse;
-import com.daycan.common.response.status.CenterErrorStatus;
-import com.daycan.common.response.status.CommonErrorStatus;
+import com.daycan.common.response.status.error.CenterErrorStatus;
+import com.daycan.common.response.status.error.CommonErrorStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.enums.Gender;
 import com.daycan.api.dto.center.request.MemberRequest;
-import com.daycan.api.dto.center.response.AdminMemberResponse;
+import com.daycan.api.dto.center.response.centermanage.AdminMemberResponse;
 import com.daycan.repository.jpa.CenterRepository;
 import com.daycan.repository.jpa.MemberRepository;
-import jakarta.persistence.OptimisticLockException;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class MemberService {
 
   private final MemberRepository memberRepository;
@@ -36,150 +35,150 @@ public class MemberService {
   /**
    * 센터별 회원 목록 조회 (필터링 + 페이징)
    */
-  public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(Long centerId,
+  @Transactional(readOnly = true)
+  public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(
+      Long centerId,
       Gender gender,
       Integer careLevel,
       String name,
-      Pageable pageable) {
-    try {
-      Page<Member> page = memberRepository.findPageByCenterWithFilters(centerId, gender, careLevel, name, pageable);
-      List<AdminMemberResponse> list = page.getContent().stream()
-          .map(this::convertToAdminMemberResponse)
-          .toList();
+      Pageable pageable
+  ) {
+    Page<Member> page = memberRepository.findPageByCenterWithFilters(
+        centerId,
+        gender,
+        careLevel,
+        name,
+        pageable
+    );
 
-      return new PageResponse<>(
-          page.getNumber(),
-          list,
-          (int) page.getTotalElements(),
-          page.getTotalPages()
-      );
-    } catch (Exception e) {
-      log.error("회원 목록 조회(페이징) 중 오류 발생", e);
-      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
-    }
+    List<AdminMemberResponse> list = page.getContent().stream()
+        .map(this::convertToAdminMemberResponse)
+        .toList();
+
+    return new PageResponse<>(
+        page.getNumber(),
+        list,
+        (int) page.getTotalElements(),
+        page.getTotalPages()
+    );
   }
 
   /**
-   * 특정 회원 상세 조회 (센터 소속 확인)
+   * 특정 회원 상세 조회 (센터 소속 + 활성 확인)
    */
-  public AdminMemberResponse getMemberById(String username, Long centerId) {
-    try {
-      Member member = memberRepository.findByUsername(username)
-          .filter(m -> m.getCenter().getId().equals(centerId))
-          .orElseThrow(() -> new ApplicationException(
-              memberRepository.findByUsername(username).isEmpty()
-                  ? CommonErrorStatus.NOT_FOUND
-                  : CenterErrorStatus.MEMBER_NOT_ALLOWED
-          ));
-      return convertToAdminMemberResponse(member);
-    } catch (ApplicationException e) {
-      throw e;
-    } catch (Exception e) {
-      log.error("회원 상세 조회 중 오류 발생", e);
-      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
-    }
+  @Transactional(readOnly = true)
+  public AdminMemberResponse getMemberById(Long memberId, Long centerId) {
+    Member member = getByMemberIdAndCenter(memberId, centerId);
+    return convertToAdminMemberResponse(member);
   }
 
   /**
-   * 새 회원 등록
+   * 새 회원 등록 (비활성 기존 계정은 재활성)
    */
   @Transactional
   public AdminMemberResponse createMember(MemberRequest req, Long centerId) {
-    try {
-      // username 전역 유니크 전제
-      memberRepository.findByUsername(req.careNumber()).ifPresent(m -> {
-        if (m.isActive()) {
-          throw new ApplicationException(MemberErrorStatus.MEMBER_ALREADY_EXISTS);
-        }
-         m.reactivate(); // Account.reactivate() 사용(선택 사항)
-         m.changeCenter(requireCenter(centerId));
-         m.apply(buildMemberCommand(
-             req, hashPasswordIfPresent(req.passwordEntry())));
-      });
+    Center center = requireCenter(centerId);
 
+    Optional<Member> existing = memberRepository.findByUsername(req.careNumber());
+    if (existing.isPresent()) {
+      Member m = existing.get();
+      if (m.isActive()) {
+        throw new ApplicationException(MemberErrorStatus.MEMBER_ALREADY_EXISTS);
+      }
+      // 재활성 플로우
       String hashed = requireAndHashPassword(req.passwordEntry());
-      Member member = Member.createNew(
-          req.careNumber(),
-          requireCenter(centerId),
-          req.name(), req.gender(), req.birthDate(),
-          hashed
-      );
-      member.apply(buildMemberCommand(req, null));
-
-      Member saved = memberRepository.save(member);
-      return convertToAdminMemberResponse(saved);
-    } catch (ApplicationException e) {
-      throw e;
-    } catch (OptimisticLockException e) {
-      throw new ApplicationException(CommonErrorStatus.CONFLICT, "동시 수정 충돌");
-    } catch (Exception e) {
-      log.error("회원 등록 중 오류 발생", e);
-      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
+      m.reactivate();
+      m.changeCenter(center);
+      m.apply(buildMemberCommand(req, hashed));
+      return convertToAdminMemberResponse(m);
     }
+
+    // 신규 생성
+    String hashed = requireAndHashPassword(req.passwordEntry());
+    Member member = Member.createNew(
+        req.careNumber(),
+        center,
+        req.name(), req.gender(), req.birthDate(),
+        hashed
+    );
+    member.apply(buildMemberCommand(req, null));
+
+    Member saved = memberRepository.save(member);
+    return convertToAdminMemberResponse(saved);
   }
 
   /**
    * 회원 정보 수정
    */
   @Transactional
-  public AdminMemberResponse updateMember(String username, MemberRequest req, Long centerId) {
-    try {
-      Member member = getByUsernameAndCenter(username, centerId);
-      String hashed = hashPasswordIfPresent(req.passwordEntry());
-      member.apply(buildMemberCommand(req, hashed));
-      Member updated = memberRepository.save(member);
-      return convertToAdminMemberResponse(updated);
-    } catch (ApplicationException e) {
-      throw e;
-    } catch (Exception e) {
-      log.error("회원 수정 중 오류 발생", e);
-      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
-    }
+  public AdminMemberResponse updateMember(Long memberId, MemberRequest req, Long centerId) {
+    Member member = getByMemberIdAndCenter(memberId, centerId);
+    String hashed = hashPasswordIfPresent(req.passwordEntry());
+    member.apply(buildMemberCommand(req, hashed));
+    return convertToAdminMemberResponse(member);
   }
 
   /**
    * 회원 삭제 (소프트 삭제)
    */
   @Transactional
-  public void deleteMember(String username, Long centerId) {
-    try {
-      Member member = getByUsernameAndCenter(username, centerId);
-      member.deactivate(); // Account.deactivate()
-    } catch (ApplicationException e) {
-      throw e;
-    } catch (Exception e) {
-      log.error("회원 삭제 중 오류 발생", e);
-      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
-    }
+  public void deleteMember(Long memberId, Long centerId) {
+    Member member = getByMemberIdAndCenter(memberId, centerId);
+    member.deactivate();
   }
 
   /**
    * 센터별 회원 수 조회 (삭제 제외)
    */
   public long getMemberCount(Long centerId) {
-    try {
-      return memberRepository.countByCenterIdAndDeletedAtIsNull(centerId);
-    } catch (Exception e) {
-      log.error("회원 수 조회 중 오류 발생", e);
-      throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
+    return memberRepository.countByCenterIdAndDeletedAtIsNull(centerId);
+  }
+
+  // ───────────────────────── public helpers ─────────────────────────
+
+  /** memberId로 활성 회원 조회 */
+  public Member requireActiveMember(Long memberId) {
+    Member m = memberRepository.findById(memberId)
+        .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, memberId));
+    return requireActiveMember(m);
+  }
+
+  /** 동일 엔티티 재사용용 오버로드: 재조회 방지 */
+  public Member requireActiveMember(Member m) {
+    if (m == null) throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
+    if (!m.isActive()) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, "비활성 회원");
     }
+    return m;
+  }
+
+  public void validateCenterMember(Member member, Long centerId) {
+    if (!member.getCenter().getId().equals(centerId)) {
+      throw new ApplicationException(CenterErrorStatus.MEMBER_NOT_ALLOWED);
+    }
+  }
+
+  public Member getByMemberIdAndCenter(Long memberId, Long centerId) {
+    Member m = memberRepository.findById(memberId)
+        .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
+    validateCenterMember(m, centerId);
+    return requireActiveMember(m);
   }
 
   // ───────────────────────── private helpers ─────────────────────────
 
+  /** 단일 조회 + 센터 검증 + 활성 검증 */
+  private Member getByUsernameAndCenter(String username, Long centerId) {
+    Member m = memberRepository.findByUsername(username)
+        .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
+    validateCenterMember(m, centerId);
+    return requireActiveMember(m);
+  }
+
+
   private Center requireCenter(Long centerId) {
     return centerRepository.findById(centerId)
         .orElseThrow(() -> new ApplicationException(CenterErrorStatus.NOT_FOUND));
-  }
-
-  private Member getByUsernameAndCenter(String username, Long centerId) {
-    return memberRepository.findByUsername(username)
-        .filter(m -> m.getCenter().getId().equals(centerId))
-        .orElseThrow(() -> new ApplicationException(
-            memberRepository.findByUsername(username).isEmpty()
-                ? CommonErrorStatus.NOT_FOUND
-                : CenterErrorStatus.MEMBER_NOT_ALLOWED
-        ));
   }
 
   private String requireAndHashPassword(PasswordEntry passwordEntry) {
@@ -190,14 +189,12 @@ public class MemberService {
   }
 
   private String hashPasswordIfPresent(PasswordEntry passwordEntry) {
-    if (passwordEntry != null) {
-      String raw = passwordEntry.guardianPassword();
-      if (isBlank(raw)) {
-        throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "blank password not allowed");
-      }
-      return PasswordHasher.hash(raw);
+    if (passwordEntry == null) return null;
+    String raw = passwordEntry.guardianPassword();
+    if (isBlank(raw)) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "blank password not allowed");
     }
-    return null;
+    return PasswordHasher.hash(raw);
   }
 
   private MemberCommand buildMemberCommand(MemberRequest req, String hashedPassword) {
@@ -212,6 +209,7 @@ public class MemberService {
 
   private AdminMemberResponse convertToAdminMemberResponse(Member m) {
     return AdminMemberResponse.builder()
+        .id(m.getId())
         .username(m.getUsername())
         .name(m.getName())
         .gender(m.getGender())
@@ -230,5 +228,7 @@ public class MemberService {
         .build();
   }
 
-  private static boolean isBlank(String v) { return v == null || v.isBlank(); }
+  private static boolean isBlank(String v) {
+    return v == null || v.isBlank();
+  }
 }

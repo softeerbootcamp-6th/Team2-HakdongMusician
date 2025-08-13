@@ -1,7 +1,7 @@
 package com.daycan.auth.model;
 
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.AuthErrorStatus;
+import com.daycan.common.response.status.error.AuthErrorStatus;
 
 public enum UserType {
   CENTER, MEMBER;

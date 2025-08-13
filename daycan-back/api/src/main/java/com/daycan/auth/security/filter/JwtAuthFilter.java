@@ -8,7 +8,7 @@ import com.daycan.auth.service.BlacklistService;
 import com.daycan.auth.security.JwtTokenProvider;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.common.response.status.AuthErrorStatus;
+import com.daycan.common.response.status.error.AuthErrorStatus;
 import com.daycan.common.response.status.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;

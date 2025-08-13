@@ -6,10 +6,10 @@ import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.api.dto.member.response.report.ProgramSupportResponse;
 import com.daycan.api.dto.member.response.report.HealthSupportResponse;
 import com.daycan.api.dto.member.response.report.MealSupportResponse;
-import com.daycan.api.dto.entry.document.BloodPressureEntry;
-import com.daycan.api.dto.entry.document.ToiletEntry;
-import com.daycan.api.dto.entry.document.report.CardFooter;
-import com.daycan.api.dto.entry.document.TemperatureEntry;
+import com.daycan.domain.entry.document.vital.BloodPressureEntry;
+import com.daycan.domain.entry.document.vital.ToiletEntry;
+import com.daycan.domain.entry.document.report.CardFooter;
+import com.daycan.domain.entry.document.vital.TemperatureEntry;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.enums.ProgramType;
 import com.daycan.service.document.CareReportService;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member/reports")
-@Tag(name = "🧾 고령자 리포트 API",
+@Tag(name = "\uD83D\uDCE8 고령자 리포트 API",
     description = "고령자의 일일 상태 리포트를 조회하는 API입니다. 식사, 건강, 신체/인지 활동별 리포트를 각각 조회할 수 있습니다.")
 public class MemberReportController {
   private final CareReportService careReportService;

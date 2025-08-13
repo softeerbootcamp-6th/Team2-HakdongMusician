@@ -1,9 +1,9 @@
 package com.daycan.service.center;
 
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.CenterErrorStatus;
+import com.daycan.common.response.status.error.CenterErrorStatus;
 import com.daycan.domain.entity.Center;
-import com.daycan.api.dto.center.response.CenterResponse;
+import com.daycan.api.dto.center.response.centermanage.CenterResponse;
 import com.daycan.repository.jpa.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

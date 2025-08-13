@@ -1,9 +1,9 @@
 package com.daycan.api.dto.center.request;
 
-import com.daycan.api.dto.entry.document.sheet.CognitiveEntry;
-import com.daycan.api.dto.entry.document.sheet.HealthCareEntry;
-import com.daycan.api.dto.entry.document.sheet.PhysicalEntry;
-import com.daycan.api.dto.entry.document.sheet.RecoveryProgramEntry;
+import com.daycan.domain.entry.document.sheet.CognitiveEntry;
+import com.daycan.domain.entry.document.sheet.HealthCareEntry;
+import com.daycan.domain.entry.document.sheet.PhysicalEntry;
+import com.daycan.domain.entry.document.sheet.RecoveryProgramEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -21,7 +21,7 @@ public record CareSheetRequest(
 
     @Schema(description = "수급자 memberId", example = "101")
     @NotNull @Positive
-    Long memberId,   // ← 기존 recipientId(String) 대체
+    Long memberId,
 
     @Schema(description = "이용 날짜", example = "2025-08-01")
     @NotNull

@@ -1,6 +1,6 @@
 package com.daycan.domain;
 
-import com.daycan.common.response.status.MemberErrorStatus;
+import com.daycan.common.response.status.error.MemberErrorStatus;
 import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

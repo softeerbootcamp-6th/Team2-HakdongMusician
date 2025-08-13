@@ -1,7 +1,7 @@
 package com.daycan.api.dto.common;
 
-import com.daycan.api.dto.entry.document.report.ReportEntry;
-import com.daycan.api.dto.entry.document.report.CardFooter;
+import com.daycan.domain.entry.document.report.ReportEntry;
+import com.daycan.domain.entry.document.report.CardFooter;
 import java.util.List;
 
 public record FullReportDto(

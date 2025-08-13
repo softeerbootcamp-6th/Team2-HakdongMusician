@@ -2,7 +2,7 @@ package com.daycan.common.exceptions.handler;
 
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.common.response.status.CommonErrorStatus;
+import com.daycan.common.response.status.error.CommonErrorStatus;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;

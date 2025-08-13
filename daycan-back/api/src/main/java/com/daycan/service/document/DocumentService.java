@@ -1,28 +1,31 @@
 package com.daycan.service.document;
 
-import com.daycan.api.dto.entry.document.report.ReportStatus;
-import com.daycan.api.dto.entry.document.sheet.SheetStatus;
-import com.daycan.common.response.status.MemberErrorStatus;
+import com.daycan.api.dto.center.request.AttendanceAction;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
+import com.daycan.domain.entity.Center;
+import com.daycan.domain.entry.document.report.ReportStatus;
+import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.entity.Member;
-import com.daycan.api.dto.center.request.CareSheetRequest;
-import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.CommonErrorStatus;
 import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
-import com.daycan.api.dto.center.response.CareReportCountResponse;
-import com.daycan.api.dto.center.response.CareSheetCountResponse;
-import com.daycan.api.dto.center.response.DocumentCountResponse;
-import com.daycan.api.dto.center.response.DocumentStatusResponse;
-import com.daycan.common.exceptions.DocumentNonCreatedException;
+import com.daycan.common.exceptions.ApplicationException;
+import com.daycan.common.response.status.error.CommonErrorStatus;
+import com.daycan.api.dto.center.response.document.DocumentCountResponse;
+import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
+import com.daycan.domain.model.DocumentMonthlyStatusRow;
 import com.daycan.repository.jpa.DocumentRepository;
-import com.daycan.repository.jpa.MemberRepository;
+
+import com.daycan.repository.query.DocumentQueryRepository;
+import com.daycan.service.member.MemberService;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,41 +35,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class DocumentService {
 
   private final DocumentRepository documentRepository;
-  private final MemberRepository memberRepository;
-  private final CareSheetService careSheetService;
-
-  @Transactional
-  public Long writeCareSheet(CareSheetRequest req) {
-    Long documentId;
-    try {
-      documentId = careSheetService.writeSheet(req);
-    } catch (DocumentNonCreatedException e) {
-      Member member = requireActiveMember(req.memberId());
-      findOrCreateDocument(member, req.date());
-      documentId = careSheetService.writeSheet(req);
-    }
-
-    return documentId;
-  }
+  private final DocumentQueryRepository documentQueryRepository;
+  private final MemberService memberService;
 
   /**
    * [Upsert] members 중 (memberId + date) 없는 것만 INSERT
    */
   @Transactional
   public void upsertAll(List<Member> members, LocalDate date) {
-    if (members.isEmpty()) return;
+    if (members.isEmpty()) {
+      return;
+    }
 
     // 이제 Long memberId 집합
     Set<Long> existing = documentRepository.findMemberIdsByDate(date);
 
     List<Document> toInsert = members.stream()
         .filter(m -> !existing.contains(m.getId()))
-        .map(m -> Document.builder()
-            .member(m)
-            .center(m.getCenter())          // 작성 시점 센터 박제
-            .docDate(date)
-            .status(DocumentStatus.SHEET_PENDING)
-            .build())
+        .map(m -> createDocument(m, date))
         .toList();
 
     if (toInsert.isEmpty()) {
@@ -85,42 +71,8 @@ public class DocumentService {
     log.info("[DocumentService] {}: {} documents inserted (upsert)", date, toInsert.size());
   }
 
-  // ───────────────────────── private helpers ─────────────────────────
-
-  private Document findOrCreateDocument(Member member, LocalDate date) {
-    return documentRepository.findByMemberIdAndDocDate(member.getId(), date)
-        .orElseGet(() -> createDocument(member, date));
-  }
-
-  private Document createDocument(Member member, LocalDate date) {
-    Document document = Document.builder()
-        .member(member)
-        .center(member.getCenter())       // 박제
-        .docDate(date)
-        .status(DocumentStatus.SHEET_PENDING)
-        .build();
-
-    try {
-      return documentRepository.save(document);
-    } catch (DataIntegrityViolationException e) {
-      log.warn("[DocumentService] 중복 삽입 발생 → 재조회 시도: memberId={}, date={}",
-          member.getId(), date);
-      return documentRepository.findByMemberIdAndDocDate(member.getId(), date)
-          .orElseThrow(() -> new IllegalStateException("중복 문서 재조회 실패"));
-    }
-  }
-
-  private Member requireActiveMember(Long memberId) {
-    Member m = memberRepository.findById(memberId)
-        .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, memberId));
-    if (!m.isActive()) {
-      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, "비활성 회원");
-    }
-    return m;
-  }
-
   @Transactional(readOnly = true)
-  public List<DocumentStatusResponse> getDocumentStatusList(int page) {
+  public List<DocumentStatusResponse> getDocumentStatusList(Pageable page) {
     // TODO: 실제 구현 전까지 임시 반환 그대로 유지
     return List.of(new DocumentStatusResponse(
         LocalDate.now(),
@@ -130,7 +82,7 @@ public class DocumentService {
   }
 
   @Transactional(readOnly = true)
-  public DocumentCountResponse getDocumentCount(Long centerId) {
+  public DocumentCountResponse getDocumentCount(Long centerId, LocalDate date) {
     try {
       List<DocumentStatus> incompleteSheetStatuses = List.of(DocumentStatus.SHEET_PENDING);
       List<DocumentStatus> incompleteReportStatuses = Arrays.asList(
@@ -139,25 +91,107 @@ public class DocumentService {
           DocumentStatus.REPORT_REVIEWED
       );
 
-      LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
-
-      long accSheet = documentRepository.countIncompleteFromDateByCenter(
-          incompleteSheetStatuses, firstDayOfMonth, centerId);
       long todaySheet = documentRepository.countIncompleteOnDateByCenter(
-          incompleteSheetStatuses, LocalDate.now(), centerId);
+          incompleteSheetStatuses, date, centerId);
 
-      long accReport = documentRepository.countIncompleteFromDateByCenter(
-          incompleteReportStatuses, firstDayOfMonth, centerId);
       long todayReport = documentRepository.countIncompleteOnDateByCenter(
-          incompleteReportStatuses, LocalDate.now(), centerId);
+          incompleteReportStatuses, date, centerId);
 
       return new DocumentCountResponse(
-          new CareReportCountResponse((int) todaySheet, (int) (accSheet - todaySheet)),
-          new CareSheetCountResponse((int) (accReport - todayReport), (int) todayReport)
+          (int)todaySheet, (int)todayReport
       );
     } catch (Exception e) {
       log.error("문서 카운트 조회 중 오류 발생", e);
       throw new ApplicationException(CommonErrorStatus.INTERNAL_ERROR);
     }
   }
+
+  @Transactional(readOnly = true)
+  public List<DocumentStatusResponse> getDocumentStatusListByMemberAndMonth(
+      Center center, Long memberId, YearMonth month) {
+
+    Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
+
+    LocalDate start = month.atDay(1);
+    LocalDate end = month.atEndOfMonth();
+
+    List<DocumentMonthlyStatusRow> rows =
+        documentQueryRepository.findMemberStatusInRange(member.getId(), start, end);
+
+    return rows.stream()
+        .map(DocumentMonthlyStatusRow::toResponse)
+        .toList();
+  }
+
+  protected int markAttendanceList(List<Member> members, LocalDate date, AttendanceAction action) {
+    if (members == null || members.isEmpty()) {
+      return 0;
+    }
+
+    List<Document> documents = findDocumentsByMemberAndDate(members, date);
+    int updated = 0;
+    for (Document doc : documents) {
+      if (markAttendance(doc, action)) { // 변경 발생 시 true 리턴하도록 설계
+        updated++;
+      }
+    }
+    return updated;
+  }
+
+
+  protected void findOrCreateDocument(Member member, LocalDate date) {
+    documentRepository.findByMemberIdAndDate(member.getId(), date)
+        .orElseGet(() -> createDocument(member, date));
+  }
+
+  // ───────────────────────── private helpers ─────────────────────────
+
+  private List<Document> findDocumentsByMemberAndDate(
+      List<Member> members, LocalDate date) {
+    return documentRepository.findDocumentByDateAndMemberIn(date, members);
+  }
+
+  private boolean markAttendance(Document doc, AttendanceAction action) {
+    DocumentStatus cur = doc.getStatus();
+
+    switch (action) {
+      case ABSENT -> {
+        if (cur == DocumentStatus.NOT_APPLICABLE) {
+          return false; // 이미 결석
+        }
+        doc.markSheetNotApplicable();
+        return true;
+      }
+      case PRESENT -> {
+        if (cur == DocumentStatus.NOT_APPLICABLE) {
+          doc.markSheetPending();
+          return true;
+        }
+        if (cur == DocumentStatus.SHEET_PENDING) {
+          return false; // 그대로
+        }
+        return false;
+      }
+    }
+    return false;
+  }
+
+
+  private Document createDocument(Member member, LocalDate date) {
+    Document document = Document.create(
+        member,
+        member.getCenter(),
+        date
+    );
+    try {
+      return documentRepository.save(document);
+    } catch (DataIntegrityViolationException e) {
+      log.warn("[DocumentService] 중복 삽입 발생 → 재조회 시도: memberId={}, date={}",
+          member.getId(), date);
+      return documentRepository.findByMemberIdAndDate(member.getId(), date)
+          .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.DOCUMENT_NOT_FOUND));
+    }
+  }
+
+
 }

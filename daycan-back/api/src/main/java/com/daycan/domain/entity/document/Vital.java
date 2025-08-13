@@ -1,7 +1,7 @@
 package com.daycan.domain.entity.document;
 
 
-import com.daycan.common.response.status.DocumentErrorStatus;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
@@ -49,7 +49,6 @@ public class Vital extends BaseTimeEntity {
 
   @Builder
   public Vital(
-      Long id,
       Document document,
       Integer bloodPressureSystolic,
       Integer bloodPressureDiastolic,
@@ -61,7 +60,6 @@ public class Vital extends BaseTimeEntity {
         || numberOfStool == null || numberOfUrine == null) {
       throw new ApplicationException(DocumentErrorStatus.VITAL_NOT_NULL);
     }
-    this.id = id;
     this.document = document;
     this.bloodPressureSystolic = bloodPressureSystolic;
     this.bloodPressureDiastolic = bloodPressureDiastolic;
@@ -94,6 +92,10 @@ public class Vital extends BaseTimeEntity {
     if (numberOfUrine != null) {
       this.numberOfUrine = numberOfUrine;
     }
+  }
+
+  public void linkDocument(Document doc) {
+    this.document = doc;
   }
 
 }

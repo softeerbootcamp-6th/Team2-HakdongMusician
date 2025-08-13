@@ -2,12 +2,12 @@ package com.daycan.service.center;
 
 import com.daycan.domain.entity.Center;
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.StaffErrorStatus;
+import com.daycan.common.response.status.error.StaffErrorStatus;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;
 import com.daycan.api.dto.center.request.AdminStaffRequest;
-import com.daycan.api.dto.center.response.AdminStaffResponse;
+import com.daycan.api.dto.center.response.centermanage.AdminStaffResponse;
 import com.daycan.repository.jpa.CenterRepository;
 import com.daycan.repository.jpa.StaffRepository;
 import java.util.List;

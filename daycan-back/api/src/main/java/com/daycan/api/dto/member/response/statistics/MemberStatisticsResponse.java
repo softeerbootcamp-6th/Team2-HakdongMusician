@@ -1,6 +1,6 @@
 package com.daycan.api.dto.member.response.statistics;
 
-import com.daycan.api.dto.entry.statistics.HealthStatisticsEntry;
+import com.daycan.domain.entry.statistics.HealthStatisticsEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "회원 건강 통계 응답")

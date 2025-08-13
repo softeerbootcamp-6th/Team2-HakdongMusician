@@ -12,7 +12,7 @@ import com.daycan.auth.dto.Token;
 import com.daycan.auth.security.JwtTokenProvider;
 import com.daycan.auth.security.PasswordHasher;
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.status.AuthErrorStatus;
+import com.daycan.common.response.status.error.AuthErrorStatus;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.entity.Member;
 import com.daycan.repository.jpa.CenterRepository;

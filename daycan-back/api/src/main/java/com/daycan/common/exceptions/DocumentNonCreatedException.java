@@ -1,6 +1,6 @@
 package com.daycan.common.exceptions;
 
-import com.daycan.common.response.status.DocumentErrorStatus;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 
 public class DocumentNonCreatedException extends ApplicationException {
 
