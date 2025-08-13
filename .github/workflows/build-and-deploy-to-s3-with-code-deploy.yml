@@ -64,28 +64,30 @@ jobs:
       - name: Make daycan.env file
         working-directory: daycan-back
         run: |
-          echo "🔨 Making daycan.env file..."
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> daycan.env
-          echo "DB_PORT=3306" >> daycan.env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> daycan.env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> daycan.env
-          echo "SPRING_PROFILES_ACTIVE=develop" >> daycan.env
-          echo "DAYCAN_PORT=8080" >> daycan.env
+          cat > daycan.env <<'EOF'
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=3306
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          SPRING_PROFILES_ACTIVE=develop
+          DAYCAN_PORT=8080
+          TZ=Asia/Seoul
           
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> daycan.env
-
-          # OpenAI
-          echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}" >> daycan.env
-          echo "OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}" >> daycan.env
-
-          echo "CLOVA_URL=${{ secrets.CLOVA_URL }}" >> daycan.env
-          echo "CLOVA_KEY=${{ secrets.CLOVA_KEY }}" >> daycan.env
+          JAVA_XMS=-Xms256m
+          JAVA_XMX=-Xmx512m
+          JAVA_GC=-XX:+UseG1GC
+          JAVA_OOM=-XX:+ExitOnOutOfMemoryError
+          JAVA_HEAPDUMP=-XX:HeapDumpPath=/var/log/daycan/heapdump.hprof
+          JAVA_GCLOG=-Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags
           
-          echo "APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}" >> daycan.env
-          echo "APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}" >> daycan.env
-          
-          echo "JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -XX:HeapDumpPath=/var/log/daycan/heapdump.hprof -Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags"      
-          echo 'TZ=Asia/Seoul' >> daycan.env
+          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}
+          OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}
+          CLOVA_URL=${{ secrets.CLOVA_URL }}
+          CLOVA_KEY=${{ secrets.CLOVA_KEY }}
+          APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}
+          APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}
+          EOF
 
           echo "✅ daycan.env file created successfully!"
 
