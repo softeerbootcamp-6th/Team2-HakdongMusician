@@ -89,6 +89,7 @@ export const LoginPage = () => {
                 width={16}
                 height={16}
                 color={COLORS.gray[900]}
+                stroke={COLORS.white}
               />
             ) : (
               <Icon

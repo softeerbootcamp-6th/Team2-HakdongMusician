@@ -1,6 +1,13 @@
 import { COLORS } from "@daycan/ui";
 import { style } from "@vanilla-extract/css";
 
+export const infoModalContent = style({
+  padding: "24px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+});
+
 export const pointCalculateContainer = style({
   display: "flex",
   flexDirection: "row",

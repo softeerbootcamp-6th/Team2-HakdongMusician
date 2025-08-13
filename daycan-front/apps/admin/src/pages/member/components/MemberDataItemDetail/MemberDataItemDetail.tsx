@@ -8,6 +8,8 @@ import {
   memberDataItemDetailBottomButton,
   editButton,
 } from "./MemberDataItemDetail.css";
+import { useState } from "react";
+import { HistoryModal } from "../HistoryModal/HistoryModal";
 
 interface MemberDataItemDetailProps {
   detailCard?: React.ReactNode;
@@ -31,7 +33,7 @@ export const MemberDataItemDetail = ({
   const handleDeleteClick = () => {
     onDeleteButtonClick(memberId);
   };
-
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   return (
     <div className={memberDataItemDetailContainer}>
       <div className={memberDataItemDetailContent}>
@@ -42,6 +44,7 @@ export const MemberDataItemDetail = ({
             <Button
               size="fullWidth"
               style={{ backgroundColor: COLORS.gray[600], color: COLORS.white }}
+              onClick={() => setIsHistoryModalOpen(true)}
             >
               기록지 및 리포트 내역
               <Icon
@@ -70,6 +73,11 @@ export const MemberDataItemDetail = ({
           </div>
         </div>
       </div>
+      <HistoryModal
+        memberId={memberId}
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
+      />
     </div>
   );
 };

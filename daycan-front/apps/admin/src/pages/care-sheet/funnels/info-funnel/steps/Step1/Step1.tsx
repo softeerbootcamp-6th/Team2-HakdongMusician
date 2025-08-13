@@ -97,6 +97,7 @@ export const Step1 = () => {
             width={24}
             height={24}
             color={isToday ? COLORS.primary[300] : COLORS.gray[50]}
+            stroke={COLORS.white}
           />
         </div>
         <div
