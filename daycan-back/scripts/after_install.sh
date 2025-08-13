@@ -10,7 +10,7 @@ if command -v sed >/dev/null 2>&1; then
 fi
 
 
-cp /opt/daycan/daycan.env /etc/daycan/daycan.env
+cp -f /opt/daycan/daycan.env /etc/daycan/daycan.env
 chmod 640 /etc/daycan/daycan.env
 chown root:daycan /etc/daycan/daycan.env
 
@@ -25,10 +25,12 @@ Type=simple
 User=daycan
 Group=daycan
 WorkingDirectory=/opt/daycan/app
-EnvironmentFile=-/etc/daycan/daycan.env
-ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/daycan/app/app.jar \
-  --server.port=${DAYCAN_PORT:-8080} \
-  --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-main}
+
+
+EnvironmentFile=/etc/daycan/daycan.env
+EnvironmentFile=-/opt/daycan/daycan.env
+ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/daycan/app/app.jar --server.port=$DAYCAN_PORT --spring.profiles.active=$SPRING_PROFILES_ACTIVE
+
 Restart=on-failure
 RestartSec=5
 LimitNOFILE=65535
@@ -51,3 +53,5 @@ UNIT
 
 # systemd 반영
 systemctl daemon-reload
+systemctl enable daycan || true
+systemctl restart daycan
