@@ -6,6 +6,7 @@ echo "🔍 Starting service validation..."
 PORT="${DAYCAN_PORT:-8080}"
 BASE_URL="http://127.0.0.1:${PORT}"
 
+
 # 30번 시도 (총 60초 대기)
 for i in {1..30}; do
   echo "[$i/30] Checking service health..."
