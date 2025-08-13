@@ -2,7 +2,7 @@ name: Build and Deploy to S3 with CodeDeploy
 
 on:
   push:
-    branches: [ "main", "back-develop" ]
+    branches: [ "main" ]
     paths:
       - 'daycan-back/**'
 
