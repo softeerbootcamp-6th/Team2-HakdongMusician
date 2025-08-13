@@ -37,7 +37,12 @@ WorkingDirectory=/opt/daycan/app
 EnvironmentFile=/etc/daycan/daycan.env
 
 # ExecStart 재정의: JVM 옵션을 토큰 단위로 전달
-ExecStart=/usr/bin/java  -jar /opt/daycan/app/app.jar
+ExecStart=/bin/bash -lc '/usr/bin/java \
+  $JAVA_XMS $JAVA_XMX $JAVA_GC $JAVA_OOM $JAVA_HEAPDUMP $JAVA_GCLOG \
+  -jar /opt/daycan/app/app.jar \
+  --server.port=$DAYCAN_PORT \
+  --spring.profiles.active=$SPRING_PROFILES_ACTIVE'
+
 
 Restart=on-failure
 RestartSec=5
