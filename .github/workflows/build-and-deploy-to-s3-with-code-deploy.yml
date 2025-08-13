@@ -78,24 +78,13 @@ jobs:
           echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}" >> daycan.env
           echo "OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}" >> daycan.env
 
-          # CLOVA OCR
           echo "CLOVA_URL=${{ secrets.CLOVA_URL }}" >> daycan.env
           echo "CLOVA_KEY=${{ secrets.CLOVA_KEY }}" >> daycan.env
           
-          # S3
           echo "APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}" >> daycan.env
           echo "APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}" >> daycan.env
           
-          echo 'JAVA_OPTS=\
-          -Xms256m \                                # JVM 초기 힙 크기 256MB
-          -Xmx512m \                                # JVM 최대 힙 크기 512MB
-          -XX:+UseG1GC \                            # G1 Garbage Collector 사용
-          -XX:-TieredCompilation \                  # Tiered Compilation 비활성화 → C2 서버 컴파일러만 사용
-          -XX:+HeapDumpOnOutOfMemoryError \         # OOM 발생 시 힙 덤프 생성
-          -XX:HeapDumpPath=/var/log/daycan/heapdump.hprof \  # 힙 덤프 저장 경로
-          -Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags \  # GC 로그 기록 (시간, 업타임, 레벨, 태그 포함)
-          -XX:+ExitOnOutOfMemoryError' >> daycan.env # OOM 발생 시 프로세스 즉시 종료
-          
+          echo "JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -XX:HeapDumpPath=/var/log/daycan/heapdump.hprof -Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags"      
           echo 'TZ=Asia/Seoul' >> daycan.env
 
           echo "✅ daycan.env file created successfully!"
