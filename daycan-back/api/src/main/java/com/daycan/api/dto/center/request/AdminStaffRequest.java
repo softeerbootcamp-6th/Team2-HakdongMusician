@@ -18,7 +18,7 @@ public record AdminStaffRequest(
     @EnumCheck
     Gender gender,
 
-    @Schema(description = "역할(권한)", example = "CENTER_ADMIN", requiredMode = RequiredMode.REQUIRED)
+    @Schema(description = "역할(권한)", example = "ROLE_SOCIAL_WORKER", requiredMode = RequiredMode.REQUIRED)
     @EnumCheck
     StaffRole staffRole,
 

@@ -49,7 +49,6 @@ public class Vital extends BaseTimeEntity {
 
   @Builder
   public Vital(
-      Long id,
       Document document,
       Integer bloodPressureSystolic,
       Integer bloodPressureDiastolic,
@@ -61,7 +60,6 @@ public class Vital extends BaseTimeEntity {
         || numberOfStool == null || numberOfUrine == null) {
       throw new ApplicationException(DocumentErrorStatus.VITAL_NOT_NULL);
     }
-    this.id = id;
     this.document = document;
     this.bloodPressureSystolic = bloodPressureSystolic;
     this.bloodPressureDiastolic = bloodPressureDiastolic;

@@ -3,10 +3,12 @@ package com.daycan.api.dto.center.response.sheet;
 import com.daycan.domain.entry.document.sheet.CognitiveEntry;
 import com.daycan.domain.entry.document.sheet.HealthCareEntry;
 import com.daycan.domain.entry.document.sheet.PhysicalEntry;
+import com.daycan.domain.entry.document.sheet.ProgramEntry;
 import com.daycan.domain.entry.document.sheet.RecoveryProgramEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Schema(description = "기록지 정보 응답")
 public record CareSheetResponse(

@@ -37,7 +37,7 @@ public class CenterStaffController {
   @Operation(summary = "종사자 목록 조회", description = "직무, 성별, 이름으로 필터링하여 종사자 목록을 조회합니다.")
   public ResponseWrapper<List<AdminStaffResponse>> getStaffList(
       @AuthenticatedUser CenterDetails centerDetails,
-      @Parameter(description = "직무/역할 (DIRECTOR: 센터장, SOCIAL_WORKER: 사회복지사, CAREGIVER: 요양보호사)", example = "SOCIAL_WORKER") @RequestParam(required = false) StaffRole staffRole,
+      @Parameter(description = "직무/역할 (DIRECTOR: 센터장, SOCIAL_WORKER: 사회복지사, CAREGIVER: 요양보호사)", example = "ROLE_SOCIAL_WORKER") @RequestParam(required = false) StaffRole staffRole,
       @Parameter(description = "성별 (MALE, FEMALE)", example = "FEMALE") @RequestParam(required = false) Gender gender,
       @Parameter(description = "종사자 이름 (부분 검색 가능)", example = "김간호") @RequestParam(required = false) String name) {
     Center center = centerDetails.getCenter();

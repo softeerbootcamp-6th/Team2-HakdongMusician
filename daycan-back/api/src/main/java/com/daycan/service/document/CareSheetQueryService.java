@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CareSheetQueryService {
   private final DocumentQueryRepository documentQueryRepository;
+  private final DocumentService documentService;
 
 
   /**
@@ -33,6 +34,7 @@ public class CareSheetQueryService {
    * @return 해당 날짜에 작성된 기록지의 개수
    */
   protected CareSheetView findCareSheetViewByMemberAndDate(Long memberId, LocalDate date) {
+
     return documentQueryRepository.fetchSheetWithVital(memberId, date)
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.SHEET_NOT_FOUND));
   }

@@ -1,7 +1,12 @@
 package com.daycan.repository.query;
 
 import com.daycan.domain.entity.QMember;
+import com.daycan.domain.entity.document.CareSheet;
+import com.daycan.domain.entity.document.PersonalProgram;
 import com.daycan.domain.entity.document.QCareReport;
+import com.daycan.domain.entity.document.Vital;
+import com.daycan.domain.entry.document.sheet.MealEntry;
+import com.daycan.domain.entry.document.sheet.RecoveryProgramEntry;
 import com.daycan.domain.entry.document.vital.BloodPressureEntry;
 import com.daycan.domain.entry.document.vital.TemperatureEntry;
 import com.daycan.domain.entry.document.sheet.CognitiveEntry;
@@ -19,14 +24,18 @@ import com.daycan.domain.model.CareSheetInitVO;
 import com.daycan.domain.model.CareSheetMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,11 +67,13 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
             CareSheetInitVO.class,
             doc,                       // Document 엔티티 통째로
             careSheet.id.isNull(),          // CareSheet 없으면 isNew=true
-            staff                        // Staff (없으면 null)
+            staff,
+            doc.member
         ))
         .from(doc)
         .leftJoin(careSheet).on(careSheet.id.eq(doc.id)) // 공유 PK(= doc.id) 기반
         .leftJoin(staff).on(staff.id.eq(writerId)) // writerId로 단일 행만 붙임
+        .on(writerId != null ? staff.id.eq(writerId) : Expressions.TRUE.isTrue())
         .where(doc.member.id.eq(memberId),
             doc.date.eq(date))
         .fetchOne();
@@ -72,67 +83,57 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
 
   @Override
   public Optional<CareSheetView> fetchSheetWithVital(Long memberId, LocalDate date) {
-    Map<Long, CareSheetView> result = qf
+    List<Tuple> rows = qf
+        .select(
+            doc.id,                 // 0
+            doc.member.id,          // 1
+            doc.member.username,    // 2
+            doc.date,               // 3
+            careSheet,              // 4 (엔티티)
+            vital,                  // 5 (엔티티)
+            staff.id,               // 6
+            personalProgram         // 7 (엔티티)
+        )
         .from(doc)
         .leftJoin(careSheet).on(careSheet.id.eq(doc.id))
         .leftJoin(vital).on(vital.id.eq(doc.id))
         .leftJoin(staff).on(staff.eq(careSheet.writer))
         .leftJoin(personalProgram).on(personalProgram.careSheet.eq(careSheet))
-        .where(doc.member.id.eq(memberId), doc.date.eq(date))
-        .transform(GroupBy.groupBy(doc.id).as(
-            Projections.constructor(CareSheetView.class,
-                doc.id,
-                staff.id,
-                doc.member.id,
-                doc.member.username,
-                doc.date,
-                careSheet.arrivalTime,
-                careSheet.endTime,
-                careSheet.vehicleNumber,
-                Projections.constructor(PhysicalEntry.class,
-                    careSheet.washCare,
-                    careSheet.mobilityCare,
-                    careSheet.bathingCare,
-                    careSheet.bathingDurationMinutes,
-                    careSheet.bathingType,
-                    Projections.constructor(MealSupport.class,
-                        careSheet.breakfast.provided,
-                        careSheet.breakfast.type,
-                        careSheet.breakfast.amount),
-                    Projections.constructor(MealSupport.class,
-                        careSheet.lunch.provided,
-                        careSheet.lunch.type,
-                        careSheet.lunch.amount),
-                    Projections.constructor(MealSupport.class,
-                        careSheet.dinner.provided,
-                        careSheet.dinner.type,
-                        careSheet.dinner.amount),
-                    vital.numberOfStool,
-                    vital.numberOfUrine,
-                    careSheet.physicalComment
-                ),
-                Projections.constructor(CognitiveEntry.class,
-                    careSheet.cognitiveSupport,
-                    careSheet.communicationSupport,
-                    careSheet.cognitiveComment
-                ),
-                Projections.constructor(HealthCareEntry.class,
-                    careSheet.healthCare,
-                    careSheet.nursingCare,
-                    careSheet.emergencyService,
-                    Projections.constructor(
-                        BloodPressureEntry.class, vital.bloodPressureSystolic, vital.bloodPressureDiastolic),
-                    Projections.constructor(TemperatureEntry.class, vital.temperature),
-                    careSheet.healthComment
-                ),
-                GroupBy.list(
-                    Projections.constructor(ProgramEntry.class, personalProgram.type, personalProgram.programName, personalProgram.score)
-                ),
-                careSheet.functionalComment
-            )
-        ));
+        .where(
+            doc.member.id.eq(memberId),
+            doc.date.eq(date)
+        )
+        .fetch();
 
-    return result.values().stream().findFirst();
+    if (rows.isEmpty()) return Optional.empty();
+
+    Tuple first = rows.get(0);
+
+    Long docId       = first.get(doc.id);
+    Long baseMemberId= first.get(doc.member.id);
+    String memberCode= first.get(doc.member.username);
+    LocalDate theDate= first.get(doc.date);
+
+    CareSheet cs     = first.get(careSheet);       // 모든 row에서 동일(조인 중복만 존재)
+    Vital vt         = first.get(vital);
+    Long writerId    = first.get(staff.id);
+
+    // 중복 제거하며 프로그램 모으기
+    Map<Long, PersonalProgram> programMap = new LinkedHashMap<>();
+    for (Tuple r : rows) {
+      PersonalProgram pp = r.get(personalProgram);
+      if (pp != null) {
+        Long ppId = pp.getId();
+        if (!programMap.containsKey(ppId)) programMap.put(ppId, pp);
+      }
+    }
+    List<PersonalProgram> programs = new ArrayList<>(programMap.values());
+
+    CareSheetView view = new CareSheetView(
+        docId, writerId, baseMemberId, memberCode, theDate,
+        cs, vt, programs
+    );
+    return Optional.of(view);
   }
 
 

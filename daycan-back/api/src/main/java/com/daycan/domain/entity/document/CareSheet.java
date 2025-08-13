@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
 
@@ -32,8 +33,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "care_sheet")
@@ -183,6 +182,66 @@ public class CareSheet extends BaseTimeEntity {
       personalProgramList.forEach(this::addPersonalProgram);
     }
   }
+
+  @Builder
+  private CareSheet(
+      Document document,
+      Staff writer,
+      LocalTime arrivalTime,
+      LocalTime endTime,
+      String vehicleNumber,
+      String signatureUrl,
+      boolean washCare,
+      boolean mobilityCare,
+      boolean bathingCare,
+      String bathingDurationMinutes,
+      String bathingType,
+      Meal breakfast,
+      Meal lunch,
+      Meal dinner,
+      boolean cognitiveSupport,
+      boolean communicationSupport,
+      boolean healthCare,
+      boolean nursingCare,
+      boolean emergencyService,
+      boolean motionTraining,
+      boolean cognitiveProgram,
+      boolean cognitiveInitiativeProgram,
+      boolean physicalTherapy,
+      String functionalComment,
+      String cognitiveComment,
+      String healthComment,
+      String physicalComment
+  ) {
+    this.document = document;   // @MapsId라 flush 때 id가 doc.id로 들어감
+    this.writer = writer;
+    this.arrivalTime = arrivalTime;
+    this.endTime = endTime;
+    this.vehicleNumber = vehicleNumber;
+    this.signatureUrl = signatureUrl;
+    this.washCare = washCare;
+    this.mobilityCare = mobilityCare;
+    this.bathingCare = bathingCare;
+    this.bathingDurationMinutes = bathingDurationMinutes;
+    this.bathingType = bathingType;
+    this.breakfast = breakfast;
+    this.lunch = lunch;
+    this.dinner = dinner;
+    this.cognitiveSupport = cognitiveSupport;
+    this.communicationSupport = communicationSupport;
+    this.healthCare = healthCare;
+    this.nursingCare = nursingCare;
+    this.emergencyService = emergencyService;
+    this.motionTraining = motionTraining;
+    this.cognitiveProgram = cognitiveProgram;
+    this.cognitiveInitiativeProgram = cognitiveInitiativeProgram;
+    this.physicalTherapy = physicalTherapy;
+    this.functionalComment = functionalComment;
+    this.cognitiveComment = cognitiveComment;
+    this.healthComment = healthComment;
+    this.physicalComment = physicalComment;
+  }
+
 
   public void update(
       LocalTime arrivalTime,

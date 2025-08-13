@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "혈압 기록 항목")
 public record BloodPressureEntry(
-    @Schema(description = "수축기 혈압")
+    @Schema(description = "수축기 혈압", example = "120")
     int systolic,
-    @Schema(description = "이완기 혈압")
+    @Schema(description = "이완기 혈압", example = "80")
     int diastolic
 ) {
 

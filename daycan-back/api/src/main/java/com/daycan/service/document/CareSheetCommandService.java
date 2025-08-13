@@ -40,10 +40,10 @@ public class CareSheetCommandService {
    * <p>
    * Vital 정보 갱신
    * <p>
-   *
+   * <p>
    *   todo: insert 쿼리 하나로 처리할 수 있는 방법 생각하기
    */
-  protected Long  writeSheet(CareSheetRequest req) {
+  protected Long writeSheet(CareSheetRequest req) {
 
     // memberId & docDate로 조회(문서 + 작성자 + 신규여부)
     CareSheetInitVO careSheetInitVO = documentQueryRepository

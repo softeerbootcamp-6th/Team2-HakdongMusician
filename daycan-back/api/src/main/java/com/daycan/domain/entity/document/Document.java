@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
     indexes = {
         @Index(name = "idx_document_member", columnList = "member_id"),
         @Index(name = "idx_document_center", columnList = "center_id"),
-        @Index(name = "idx_document_doc_date", columnList = "doc_date")
+        @Index(name = "idx_document_date", columnList = "date")
     }
 )
 
@@ -86,7 +86,7 @@ public class Document extends BaseTimeEntity {
     }catch (NullPointerException e){
       throw new ApplicationException(DocumentErrorStatus.NULL_MEMBER_OR_CENTER);
     }
-    this.markSheetPending();
+    this.status = DocumentStatus.SHEET_PENDING; // 초기 상태
     validateCenterMember(); // 생성 시 불변식 보장
   }
 

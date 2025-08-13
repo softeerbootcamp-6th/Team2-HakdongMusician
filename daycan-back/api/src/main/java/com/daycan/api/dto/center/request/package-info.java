@@ -1,5 +1,4 @@
 /**
- * Center API 의 요청 DTO가 포함된 패키지입니다.
+ * 이 패키지는 센터 관련 요청 DTO를 포함합니다.
  */
-
 package com.daycan.api.dto.center.request;

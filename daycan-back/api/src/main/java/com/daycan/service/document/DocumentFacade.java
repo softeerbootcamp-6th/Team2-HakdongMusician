@@ -96,11 +96,6 @@ public class DocumentFacade {
     return PageResponse.of(page, CareSheetMetaView::toResponse);
   }
 
-  @Transactional(readOnly = true)
-  public List<DocumentStatusResponse> getDocumentStatusList(int page) {
-    return documentService.getDocumentStatusList(page);
-  }
-
   private Set<DocumentStatus> toDocumentStatuses(List<SheetStatus> sheets) {
     // 필터 비지정 시: 시트 관점 3가지만 허용
     if (sheets == null || sheets.isEmpty()) {

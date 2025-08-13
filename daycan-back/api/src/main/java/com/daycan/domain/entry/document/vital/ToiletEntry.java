@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "배변/배뇨 기록 항목")
 public record ToiletEntry(
-    @Schema(description = "대변 횟수")
+    @Schema(description = "대변 횟수", example = "2")
     int numberOfStool,
-    @Schema(description = "소변 횟수")
+    @Schema(description = "소변 횟수", example = "7")
     int numberOfUrine
 ) {
 

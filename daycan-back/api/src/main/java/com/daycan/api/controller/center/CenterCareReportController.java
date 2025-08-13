@@ -42,8 +42,12 @@ public class CenterCareReportController {
       @ParameterObject @ModelAttribute @Valid
       ReportQueryParameters query,
 
+      @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
+      @PathVariable
       LocalDate date,
       // 스프링이 query-param <-> record 바인딩
+      @Parameter(description = "페이지네이션 정보", required = true)
+      @ParameterObject @Valid
       Pageable pageable               // page, size, sort 파라미터 처리
   ) {
 

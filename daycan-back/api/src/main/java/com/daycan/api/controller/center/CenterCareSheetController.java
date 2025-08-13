@@ -90,14 +90,14 @@ public class CenterCareSheetController {
 
       @Schema(description = "페이지 정보", example = "0")
       @ParameterObject
-      Pageable page,
+      Pageable pageable,
 
-      @Parameter(description = "작성자 ID (선택)", example = "1", required = false)
+      @Parameter(description = "작성자 ID (optional)", example = "1", required = false)
       @RequestParam(required = false)
       Long writerId
   ) {
     return documentFacade.getCareSheetMetaListByDate(
-        centerDetails.getCenter(), date, writerId, queryParameters.statuses(), page
+        centerDetails.getCenter(), date, writerId, queryParameters.statuses(), pageable
     );
   }
 

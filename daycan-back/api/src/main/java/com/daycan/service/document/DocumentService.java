@@ -10,8 +10,6 @@ import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.CommonErrorStatus;
-import com.daycan.api.dto.center.response.report.CareReportCountResponse;
-import com.daycan.api.dto.center.response.sheet.CareSheetCountResponse;
 import com.daycan.api.dto.center.response.document.DocumentCountResponse;
 import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
@@ -27,6 +25,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,7 +72,7 @@ public class DocumentService {
   }
 
   @Transactional(readOnly = true)
-  public List<DocumentStatusResponse> getDocumentStatusList(int page) {
+  public List<DocumentStatusResponse> getDocumentStatusList(Pageable page) {
     // TODO: 실제 구현 전까지 임시 반환 그대로 유지
     return List.of(new DocumentStatusResponse(
         LocalDate.now(),
@@ -83,7 +82,7 @@ public class DocumentService {
   }
 
   @Transactional(readOnly = true)
-  public DocumentCountResponse getDocumentCount(Long centerId) {
+  public DocumentCountResponse getDocumentCount(Long centerId, LocalDate date) {
     try {
       List<DocumentStatus> incompleteSheetStatuses = List.of(DocumentStatus.SHEET_PENDING);
       List<DocumentStatus> incompleteReportStatuses = Arrays.asList(
@@ -92,21 +91,14 @@ public class DocumentService {
           DocumentStatus.REPORT_REVIEWED
       );
 
-      LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
-
-      long accSheet = documentRepository.countIncompleteFromDateByCenter(
-          incompleteSheetStatuses, firstDayOfMonth, centerId);
       long todaySheet = documentRepository.countIncompleteOnDateByCenter(
-          incompleteSheetStatuses, LocalDate.now(), centerId);
+          incompleteSheetStatuses, date, centerId);
 
-      long accReport = documentRepository.countIncompleteFromDateByCenter(
-          incompleteReportStatuses, firstDayOfMonth, centerId);
       long todayReport = documentRepository.countIncompleteOnDateByCenter(
-          incompleteReportStatuses, LocalDate.now(), centerId);
+          incompleteReportStatuses, date, centerId);
 
       return new DocumentCountResponse(
-          new CareReportCountResponse((int) todaySheet, (int) (accSheet - todaySheet)),
-          new CareSheetCountResponse((int) (accReport - todayReport), (int) todayReport)
+          (int)todaySheet, (int)todayReport
       );
     } catch (Exception e) {
       log.error("문서 카운트 조회 중 오류 발생", e);

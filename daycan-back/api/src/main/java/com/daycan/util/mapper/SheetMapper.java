@@ -27,7 +27,6 @@ public final class SheetMapper {
 
   public static CareSheet toEntity(Document document, CareSheetRequest req, Staff staff) {
     return CareSheet.builder()
-        .id(document.getId())// 공유 PK
         .document(document)  // @MapsId 매핑
         .writer(staff)
         .arrivalTime(req.startTime())
@@ -100,7 +99,6 @@ public final class SheetMapper {
 
   public static Vital toVital(Document document, CareSheetRequest req) {
     return Vital.builder()
-        .id(document.getId())
         .document(document)
         .bloodPressureSystolic(req.healthCare().bloodPressure().systolic())
         .bloodPressureDiastolic(req.healthCare().bloodPressure().diastolic())
