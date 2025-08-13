@@ -1,4 +1,7 @@
 spring:
+  config:
+    activate:
+      on-profile: develop
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/daycan?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME}
