@@ -1,5 +1,0 @@
-- 00 > 공통 or 미정의
-- 10 > auth
-- 20 > center
-- 30 > member
-- 40 > staff
