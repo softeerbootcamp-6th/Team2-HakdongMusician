@@ -56,6 +56,7 @@ export const CardLayout = ({
           width={32}
           height={32}
           color={COLORS.blue[500]}
+          stroke={COLORS.white}
         />
         <Body type="large" weight={600}>
           오늘의

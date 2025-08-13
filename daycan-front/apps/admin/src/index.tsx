@@ -8,5 +8,6 @@ import { THEME } from "@daycan/ui";
 createRoot(document.getElementById("root")!).render(
   <div className={THEME}>
     <App />
+    <div id="modal-root" />
   </div>
 );

@@ -2,6 +2,7 @@ import { style } from "@vanilla-extract/css";
 
 export const memberEditAuthModalContent = style({
   width: "700px",
+  padding: "24px",
   height: "100%",
 });
 

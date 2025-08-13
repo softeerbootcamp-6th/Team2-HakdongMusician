@@ -24,6 +24,16 @@ export type TRoutes = {
 
 export const routes: TRoutes[] = [
   {
+    path: "/",
+    layout: <MainLayout />,
+    children: [
+      {
+        path: "",
+        element: <CareSheetPage />,
+      },
+    ],
+  },
+  {
     path: "/member",
     layout: <MainLayout />,
     children: [
@@ -42,10 +52,6 @@ export const routes: TRoutes[] = [
       {
         path: "edit/:memberId",
         element: <MemberRegisterPage mode="edit" />,
-      },
-      {
-        path: "care-sheet",
-        element: <CareSheetPage />,
       },
     ],
   },

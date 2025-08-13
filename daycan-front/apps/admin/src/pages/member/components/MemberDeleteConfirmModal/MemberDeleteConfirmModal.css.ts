@@ -2,7 +2,8 @@ import { style } from "@vanilla-extract/css";
 
 export const memberDeleteConfirmModalContainer = style({
   width: "700px",
-  height: "140px",
+  padding: "24px",
+  height: "181px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",

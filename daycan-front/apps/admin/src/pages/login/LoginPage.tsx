@@ -101,6 +101,7 @@ export const LoginPage = () => {
               width={16}
               height={16}
               color={isChecked ? COLORS.gray[900] : COLORS.gray[100]}
+              stroke={COLORS.white}
             />
             <Body type="small" weight={400} style={{ color: COLORS.gray[700] }}>
               로그인 상태 유지
