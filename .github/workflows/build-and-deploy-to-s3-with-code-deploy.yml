@@ -7,15 +7,16 @@ on:
       - 'daycan-back/**'
   workflow_dispatch:
 
-# 중복 배포 방지
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+
 
 
 permissions:
   contents: read
   id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   AWS_REGION: ap-northeast-2
@@ -63,23 +64,39 @@ jobs:
       - name: Make daycan.env file
         working-directory: daycan-back
         run: |
+          echo "🔨 Making daycan.env file..."
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> daycan.env
+          echo "DB_PORT=3306" >> daycan.env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> daycan.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> daycan.env
+          echo "SPRING_PROFILES_ACTIVE=develop" >> daycan.env
+          echo "DAYCAN_PORT=8080" >> daycan.env
           
-          echo "DB_HOST=${{ secrets.DB_HOST }}"
-          echo "DB_PORT=3306"
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}"
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
-          echo "SPRING_PROFILES_ACTIVE=prod"   # 네 프로필명에 맞춰 수정 가능
-          echo "DAYCAN_PORT=8080"
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}"
-          echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}"
-          echo "OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}"
-          echo "CLOVA_URL=${{ secrets.CLOVA_URL }}"
-          echo "CLOVA_KEY=${{ secrets.CLOVA_KEY }}"
-          echo "APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}"
-          echo "APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}"
-          echo 'JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseG1GC -XX:-TieredCompilation -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/daycan/heapdump.hprof -Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags -XX:+ExitOnOutOfMemoryError'
-          echo "TZ=Asia/Seoul"
-          } > daycan.env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> daycan.env
+
+          # OpenAI
+          echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}" >> daycan.env
+          echo "OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}" >> daycan.env
+
+          # CLOVA OCR
+          echo "CLOVA_URL=${{ secrets.CLOVA_URL }}" >> daycan.env
+          echo "CLOVA_KEY=${{ secrets.CLOVA_KEY }}" >> daycan.env
+          
+          # S3
+          echo "APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}" >> daycan.env
+          echo "APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}" >> daycan.env
+          
+          echo 'JAVA_OPTS=\
+          -Xms256m \                                # JVM 초기 힙 크기 256MB
+          -Xmx512m \                                # JVM 최대 힙 크기 512MB
+          -XX:+UseG1GC \                            # G1 Garbage Collector 사용
+          -XX:-TieredCompilation \                  # Tiered Compilation 비활성화 → C2 서버 컴파일러만 사용
+          -XX:+HeapDumpOnOutOfMemoryError \         # OOM 발생 시 힙 덤프 생성
+          -XX:HeapDumpPath=/var/log/daycan/heapdump.hprof \  # 힙 덤프 저장 경로
+          -Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags \  # GC 로그 기록 (시간, 업타임, 레벨, 태그 포함)
+          -XX:+ExitOnOutOfMemoryError' >> daycan.env # OOM 발생 시 프로세스 즉시 종료
+          
+          echo 'TZ=Asia/Seoul' >> daycan.env
 
           echo "✅ daycan.env file created successfully!"
 
