@@ -6,9 +6,25 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update      # 운영 RDS에 DROP 방지
+      ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQLDialect
+
+jwt:
+  custom:
+    secretKey: ${JWT_SECRET_KEY}
+  access-token:
+    expire-length: 3600000 #1시간
+  refresh-token:
+    expire-length: 604800000 #일주일
+
+app:
+  aws:
+    region: ${APP_AWS_REGION:ap-northeast-2}
+  s3:
+    bucket: ${APP_S3_BUCKET}
+
+
 springdoc:
   swagger-ui:
     path: /api

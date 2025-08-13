@@ -1,36 +1,54 @@
 package com.daycan.domain.entity;
 
 
+import com.daycan.common.response.status.error.CenterErrorStatus;
+import com.daycan.common.response.status.error.MemberErrorStatus;
+import com.daycan.domain.Account;
 import com.daycan.domain.enums.Gender;
+import com.daycan.domain.entry.member.MemberCommand;
+
+import com.daycan.common.exceptions.ApplicationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
-@Table(name = "member")
-public class Member {
+@Table(
+    name = "member",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_member_username", columnNames = {"username"})
+    },
+    indexes = {
+        @Index(name = "idx_member_center", columnList = "center_id"),
+        @Index(name = "idx_member_active", columnList = "active")
+    }
+)
+public class Member extends Account {
 
-  /**
-   * 장기요양인정번호 (PK)
-   */
   @Id
-  @Column(name = "username", length = 11, nullable = false)
-  private String username;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "center_id", nullable = false)
+  private Center center; // 소속 센터(1:1 전제)
 
   @Column(name = "name", nullable = false)
   private String name;
@@ -54,30 +72,91 @@ public class Member {
   @Column(name = "guardian_relation")
   private String guardianRelation;
 
-  @Column(name = "guardian_relation_birth_date")
-  private LocalDate guardianRelationBirthDate;
+  @Column(name = "guardian_birth_date")
+  private LocalDate guardianBirthDate;
 
   @Column(name = "guardian_phone_number")
   private String guardianPhoneNumber;
 
-  @Column(name = "accept_report")
-  private Boolean acceptReport;
+  @Column(name = "accept_report", nullable = false)
+  private Boolean acceptReport = Boolean.FALSE;
 
   @Column(name = "guardian_avatar_url")
   private String guardianAvatarUrl;
 
-  @Column(name = "organization_id", length = 11, nullable = false)
-  private String organizationId;
+  @Version
+  private Long version;
 
-  @Column(name = "password", length = 100, nullable = false)
-  private String password;
+  protected Member() {
+  }
+  public void validateCenter(Center center) {
+    if (!this.center.getId().equals(center.getId())) {
+      throw new ApplicationException(CenterErrorStatus.MEMBER_NOT_ALLOWED, "해당 센터에 속하지 않는 회원입니다.");
+    }
+  }
 
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+  public static Member createNew(String username,
+      Center center,
+      String name, Gender gender, LocalDate birthDate,
+      String hashedPassword) {
+    if (isBlank(username) || center == null || isBlank(name) || gender == null || birthDate == null
+        || isBlank(hashedPassword)) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "필수 파라미터가 누락되었습니다.");
+    }
+    Member m = new Member();
+    m.username = username; // 정규화된 값 전달 전제
+    m.center = center;
+    m.name = name;
+    m.gender = gender;
+    m.birthDate = birthDate;
+    m.changePassword(hashedPassword); // Account 메서드
+    m.active = Boolean.TRUE;
+    return m;
+  }
 
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+  public void changeCenter(Center newCenter) {
+    if (newCenter == null) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "center 누락");
+    }
+    this.center = newCenter;
+  }
 
-  @Column(name = "deleted_at")
-  private LocalDateTime deletedAt;
+  public void apply(MemberCommand cmd) {
+    if (cmd.name() != null) {
+      this.name = cmd.name();
+    }
+    if (cmd.gender() != null) {
+      this.gender = cmd.gender();
+    }
+    if (cmd.birthDate() != null) {
+      this.birthDate = cmd.birthDate();
+    }
+    if (cmd.careLevel() != null) {
+      this.careLevel = cmd.careLevel();
+    }
+    if (cmd.avatarUrl() != null) {
+      this.avatarUrl = cmd.avatarUrl();
+    }
+    if (cmd.guardianName() != null) {
+      this.guardianName = cmd.guardianName();
+    }
+    if (cmd.guardianRelation() != null) {
+      this.guardianRelation = cmd.guardianRelation();
+    }
+    if (cmd.guardianBirthDate() != null) {
+      this.guardianBirthDate = cmd.guardianBirthDate();
+    }
+    if (cmd.guardianPhoneNumber() != null) {
+      this.guardianPhoneNumber = cmd.guardianPhoneNumber();
+    }
+    if (cmd.guardianAvatarUrl() != null) {
+      this.guardianAvatarUrl = cmd.guardianAvatarUrl();
+    }
+    if (cmd.acceptReport() != null) {
+      this.acceptReport = cmd.acceptReport();
+    }
+    if (cmd.hashedPassword() != null) {
+      this.changePassword(cmd.hashedPassword());
+    }
+  }
 }

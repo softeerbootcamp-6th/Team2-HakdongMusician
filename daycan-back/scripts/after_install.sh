@@ -5,6 +5,11 @@ set -euo pipefail
 chown -R daycan:daycan /opt/daycan
 chmod -R 755 /opt/daycan/scripts
 
+if command -v sed >/dev/null 2>&1; then
+  find /opt/daycan/scripts -type f -name "*.sh" -exec sed -i -e 's/\r$//' {} \; || true
+fi
+
+
 cp /opt/daycan/daycan.env /etc/daycan/daycan.env
 chmod 640 /etc/daycan/daycan.env
 chown root:daycan /etc/daycan/daycan.env
@@ -28,6 +33,17 @@ Restart=on-failure
 RestartSec=5
 LimitNOFILE=65535
 SuccessExitStatus=143
+SyslogIdentifier=daycan
+KillSignal=SIGTERM
+TimeoutStopSec=30s
+CPUQuota=80%
+OOMScoreAdjust=300
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/log/daycan /opt/daycan
+
 
 [Install]
 WantedBy=multi-user.target

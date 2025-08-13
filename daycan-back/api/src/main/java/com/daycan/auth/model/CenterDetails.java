@@ -10,7 +10,7 @@ public class CenterDetails extends UserDetails {
 
   public CenterDetails(Center center) {
     this.center = center;
-    this.username = center.getUsername();
+    this.username = center.getCenterCode();
     this.userType = UserType.CENTER;
   }
 

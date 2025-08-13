@@ -2,8 +2,8 @@ package com.daycan.auth.security.resolver;
 
 import com.daycan.auth.model.UserDetails;
 import com.daycan.auth.annotation.AuthenticatedUser;
-import com.daycan.common.exception.ApplicationException;
-import com.daycan.common.response.status.AuthErrorStatus;
+import com.daycan.common.exceptions.ApplicationException;
+import com.daycan.common.response.status.error.AuthErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
