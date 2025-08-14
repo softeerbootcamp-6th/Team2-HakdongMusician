@@ -21,9 +21,9 @@ public interface DocumentQueryRepository {
       Long memberId, LocalDate date
   );
 
-  Page<CareSheetMetaView> findMetaViewsByCenterAndDate(
+  List<CareSheetMetaView> findMetaViewsByCenterAndDate(
       Long centerId, LocalDate date, Long writerId,
-      List<DocumentStatus> statuses, Pageable pageable
+      List<DocumentStatus> statuses
   );
 
   List<DocumentMonthlyStatusRow> findMemberStatusInRange(

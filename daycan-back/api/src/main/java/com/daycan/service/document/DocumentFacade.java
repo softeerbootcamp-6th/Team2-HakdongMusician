@@ -7,7 +7,6 @@ import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
 import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
 import com.daycan.common.exceptions.DocumentNonCreatedException;
-import com.daycan.common.response.PageResponse;
 import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.model.CareSheetMetaView;
@@ -81,19 +80,20 @@ public class DocumentFacade {
   }
 
   @Transactional(readOnly = true)
-  public PageResponse<List<CareSheetMetaResponse>> getCareSheetMetaListByDate(
+  public List<CareSheetMetaResponse> getCareSheetMetaListByDate(
       Center center,
       LocalDate date,
       Long writerId,
-      List<SheetStatus> sheetStatuses,
-      Pageable pageable
+      List<SheetStatus> sheetStatuses
   ) {
     Set<DocumentStatus> docStatuses = toDocumentStatuses(sheetStatuses); // private 메서드로 변환
 
-    Page<CareSheetMetaView> page = careSheetQueryService.findCareSheetMetaViewByDate(
-        center, date, writerId, docStatuses.stream().toList(), pageable
-    );
-    return PageResponse.of(page, CareSheetMetaView::toResponse);
+    return careSheetQueryService.findCareSheetMetaViewByDate(
+            center, date, writerId, docStatuses.stream().toList()
+        )
+        .stream()
+        .map(CareSheetMetaView::toResponse)
+        .toList();
   }
 
   private Set<DocumentStatus> toDocumentStatuses(List<SheetStatus> sheets) {
@@ -116,7 +116,6 @@ public class DocumentFacade {
     }
     return result;
   }
-
 
 
 }

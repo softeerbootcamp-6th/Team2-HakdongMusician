@@ -72,16 +72,6 @@ public class DocumentService {
   }
 
   @Transactional(readOnly = true)
-  public List<DocumentStatusResponse> getDocumentStatusList(Pageable page) {
-    // TODO: 실제 구현 전까지 임시 반환 그대로 유지
-    return List.of(new DocumentStatusResponse(
-        LocalDate.now(),
-        new DocumentStatusResponse.CareSheetStatusResponse(1L, SheetStatus.DONE),
-        new DocumentStatusResponse.CareReportStatusResponse(1L, ReportStatus.DONE)
-    ));
-  }
-
-  @Transactional(readOnly = true)
   public DocumentCountResponse getDocumentCount(Long centerId, LocalDate date) {
     try {
       List<DocumentStatus> incompleteSheetStatuses = List.of(DocumentStatus.SHEET_PENDING);

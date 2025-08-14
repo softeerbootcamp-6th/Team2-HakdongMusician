@@ -6,7 +6,6 @@ import com.daycan.domain.entity.Center;
 import com.daycan.domain.entry.member.MemberCommand;
 import com.daycan.domain.entry.member.PasswordEntry;
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.response.PageResponse;
 import com.daycan.common.response.status.error.CenterErrorStatus;
 import com.daycan.common.response.status.error.CommonErrorStatus;
 import com.daycan.domain.entity.Member;
@@ -19,8 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,31 +33,21 @@ public class MemberService {
    * 센터별 회원 목록 조회 (필터링 + 페이징)
    */
   @Transactional(readOnly = true)
-  public PageResponse<List<AdminMemberResponse>> getMemberListWithPaging(
+  public List<AdminMemberResponse> getMemberList(
       Long centerId,
       Gender gender,
       Integer careLevel,
-      String name,
-      Pageable pageable
+      String name
   ) {
-    Page<Member> page = memberRepository.findPageByCenterWithFilters(
+    List<Member> memberList = memberRepository.findPageByCenterWithFilters(
         centerId,
         gender,
         careLevel,
-        name,
-        pageable
-    );
+        name);
 
-    List<AdminMemberResponse> list = page.getContent().stream()
+    return memberList.stream()
         .map(this::convertToAdminMemberResponse)
         .toList();
-
-    return new PageResponse<>(
-        page.getNumber(),
-        list,
-        (int) page.getTotalElements(),
-        page.getTotalPages()
-    );
   }
 
   /**
