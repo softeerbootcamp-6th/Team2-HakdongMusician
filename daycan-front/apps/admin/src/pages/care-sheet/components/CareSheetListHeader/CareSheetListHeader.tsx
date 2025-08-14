@@ -1,85 +1,38 @@
-import { Body, COLORS, Icon } from "@daycan/ui";
-import {
-  headerContainer,
-  cell,
-  headerCheckboxWrapper,
-} from "./CareSheetListHeader.css";
+import { ListHeaderLayout } from "@/components";
 
 interface CareSheetListHeaderProps {
   isAllSelected: boolean;
   isIndeterminate: boolean;
-  onSelectAll: (checked: boolean) => void;
+  onSelectAll?: (checked: boolean) => void;
+  showCheckbox?: boolean;
 }
 
 export const CareSheetListHeader = ({
   isAllSelected,
   isIndeterminate,
   onSelectAll,
+  showCheckbox = false,
 }: CareSheetListHeaderProps) => {
+  const columns = [
+    { key: "order", label: "순서" },
+    { key: "status", label: "작성 상태" },
+    { key: "recipientName", label: "수급자 이름" },
+    { key: "birthDate", label: "생년월일" },
+    { key: "gender", label: "성별" },
+    { key: "attendance", label: "출석 여부" },
+    { key: "writer", label: "작성자" },
+  ];
+
+  const gridTemplate = "auto 80px 100px 1fr 120px 80px 100px 120px";
+
   return (
-    <div className={headerContainer}>
-      <div className={cell}>
-        <div
-          className={headerCheckboxWrapper}
-          onClick={() => onSelectAll(!isAllSelected)}
-        >
-          <Icon
-            name={
-              isAllSelected
-                ? "checked"
-                : isIndeterminate
-                  ? "unchecked"
-                  : "unchecked"
-            }
-            width={20}
-            height={20}
-            color={COLORS.gray[300]}
-          />
-        </div>
-      </div>
-      <div className={cell}>
-        <Body type="small" weight={500} color={COLORS.gray[600]}>
-          순서
-        </Body>
-      </div>
-      <div className={cell}>
-        <Body type="small" weight={500} color={COLORS.gray[600]}>
-          작성 상태
-        </Body>
-      </div>
-      <div
-        className={cell}
-        style={{
-          gap: "8px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-      >
-        <Body type="small" weight={500} color={COLORS.gray[600]}>
-          수급자 이름
-        </Body>
-      </div>
-      <div className={cell}>
-        <Body type="small" weight={500} color={COLORS.gray[600]}>
-          생년월일
-        </Body>
-      </div>
-      <div className={cell}>
-        <Body type="small" weight={500} color={COLORS.gray[600]}>
-          성별
-        </Body>
-      </div>
-      <div className={cell}>
-        <Body type="small" weight={500} color={COLORS.gray[600]}>
-          출석 여부
-        </Body>
-      </div>
-      <div className={cell}>
-        <Body type="small" weight={500} color={COLORS.gray[600]}>
-          작성자
-        </Body>
-      </div>
-    </div>
+    <ListHeaderLayout
+      isAllSelected={isAllSelected}
+      isIndeterminate={isIndeterminate}
+      onSelectAll={onSelectAll}
+      showCheckbox={showCheckbox}
+      columns={columns}
+      gridTemplate={gridTemplate}
+    />
   );
 };
