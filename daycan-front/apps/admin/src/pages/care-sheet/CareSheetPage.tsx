@@ -2,25 +2,64 @@ import { PageToolbar } from "@/components/PageToolbar";
 import { Body, Heading, COLORS } from "@daycan/ui";
 import { careSheetContainer } from "./CareSheetPage.css";
 import { CareSheetList } from "./components/CareSheetList";
-import {
-  mockCareSheetPendingDoneList,
-  mockCareSheetNotApplicableList,
-} from "./constants/dummy";
+import { useCareSheets } from "./hooks/useCareSheet";
 
 export const CareSheetPage = () => {
-  // 출석인원 처리 (결석 처리)
-  const handleProcessApplicable = (checkedIds: number[]) => {
-    console.log("결석 처리할 ID들:", checkedIds);
-    // TODO: API 요청 보내기
-    // 예: updateCareSheetStatus()
-  };
+  const {
+    // 데이터 상태
+    applicableCareSheets,
+    notApplicableCareSheets,
 
-  // 결석인원 처리 (출석 처리)
-  const handleProcessNotApplicable = (checkedIds: number[]) => {
-    console.log("출석 처리할 ID들:", checkedIds);
-    // TODO: API 요청 보내기
-    // 예: updateCareSheetStatus()
-  };
+    isLoading,
+    error,
+    timeLeft,
+    hasCheckedApplicableItems,
+    hasCheckedNotApplicableItems,
+
+    // 체크 관련 상태
+    checkedCareSheetIds,
+
+    // 선택 상태 (각 리스트별)
+    isAllSelectedApplicable,
+    isIndeterminateApplicable,
+    isAllSelectedNotApplicable,
+    isIndeterminateNotApplicable,
+
+    // 액션 핸들러
+    handleProcessApplicable,
+    handleProcessNotApplicable,
+    handleApplicableSelectAll,
+    handleNotApplicableSelectAll,
+    handleItemCheck,
+  } = useCareSheets();
+
+  // 로딩 상태 처리
+  if (isLoading) {
+    return (
+      <div className={careSheetContainer}>
+        <PageToolbar>
+          <Heading>기록지 관리</Heading>
+        </PageToolbar>
+        <Body type="large" weight={600} color={COLORS.gray[700]}>
+          로딩 중...
+        </Body>
+      </div>
+    );
+  }
+
+  // 에러 상태 처리
+  if (error) {
+    return (
+      <div className={careSheetContainer}>
+        <PageToolbar>
+          <Heading>기록지 관리</Heading>
+        </PageToolbar>
+        <Body type="large" weight={600} color={COLORS.red[500]}>
+          에러가 발생했습니다: {error.message}
+        </Body>
+      </div>
+    );
+  }
 
   return (
     <div className={careSheetContainer}>
@@ -35,16 +74,29 @@ export const CareSheetPage = () => {
 
       {/* 출석 인원 */}
       <CareSheetList
-        careSheets={mockCareSheetPendingDoneList}
+        careSheets={applicableCareSheets.result}
         status="APPLICABLE"
         onProcessItems={handleProcessApplicable}
+        timeLeft={timeLeft}
+        hasCheckedItems={hasCheckedApplicableItems}
+        isAllSelected={isAllSelectedApplicable}
+        isIndeterminate={isIndeterminateApplicable}
+        onSelectAll={handleApplicableSelectAll}
+        checkedCareSheetIds={checkedCareSheetIds}
+        onItemCheck={handleItemCheck}
       />
 
       {/* 결석 인원 */}
       <CareSheetList
-        careSheets={mockCareSheetNotApplicableList}
+        careSheets={notApplicableCareSheets.result}
         status="NOT_APPLICABLE"
         onProcessItems={handleProcessNotApplicable}
+        hasCheckedItems={hasCheckedNotApplicableItems}
+        isAllSelected={isAllSelectedNotApplicable}
+        isIndeterminate={isIndeterminateNotApplicable}
+        onSelectAll={handleNotApplicableSelectAll}
+        checkedCareSheetIds={checkedCareSheetIds}
+        onItemCheck={handleItemCheck}
       />
     </div>
   );
