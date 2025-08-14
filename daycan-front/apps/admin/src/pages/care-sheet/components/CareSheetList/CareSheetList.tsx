@@ -9,52 +9,47 @@ import {
 import type { CareSheetListItemType } from "../../constants/dummy";
 import { CareSheetListItem } from "../CareSheetListItem";
 import { CareSheetListHeader } from "../CareSheetListHeader";
-import { useCareSheet } from "../../hooks/useCareSheet";
 
 interface CareSheetListProps {
-  careSheets: CareSheetListItemType;
+  careSheets: CareSheetListItemType[];
   status: "NOT_APPLICABLE" | "APPLICABLE";
-  onProcessItems?: (checkedIds: number[]) => void;
+  onProcessItems?: () => void;
+  timeLeft?: string;
+  hasCheckedItems: boolean;
+  // 전체 선택 상태를 props로 받기
+  isAllSelected: boolean;
+  isIndeterminate: boolean;
+  onSelectAll: (checked: boolean) => void;
+  // 체크 관련 상태와 핸들러도 props로 받기
+  checkedCareSheetIds: Set<number>;
+  onItemCheck: (careSheetId: number, checked: boolean) => void;
 }
 
 export const CareSheetList = ({
   careSheets,
   status,
   onProcessItems,
+  timeLeft,
+  hasCheckedItems,
+  isAllSelected,
+  isIndeterminate,
+  onSelectAll,
+  checkedCareSheetIds,
+  onItemCheck,
 }: CareSheetListProps) => {
-  const {
-    timeLeft,
-    filteredCareSheets,
-    isCheckedItems,
-    isAllSelected,
-    isIndeterminate,
-    hasCheckedItems,
-    handleSelectAll,
-    handleItemCheck,
-    getCheckedIds,
-  } = useCareSheet({ careSheets, status });
-
-  // 처리 버튼 클릭 시 체크된 ID들 수집해서 전달
-  const handleProcessClick = () => {
-    if (onProcessItems && hasCheckedItems) {
-      const checkedIds = getCheckedIds();
-      onProcessItems(checkedIds);
-    }
-  };
-
   // 상황에 따른 제목과 버튼 텍스트 설정
   const getSectionInfo = () => {
     if (status === "APPLICABLE") {
       return {
         title: "출석인원",
         buttonText: "결석 처리",
-        count: filteredCareSheets.length,
+        count: careSheets.length,
       };
     } else {
       return {
         title: "결석인원",
         buttonText: "출석 처리",
-        count: filteredCareSheets.length,
+        count: careSheets.length,
       };
     }
   };
@@ -76,7 +71,7 @@ export const CareSheetList = ({
       <div className={headerContainer}>
         <div
           className={headerButton}
-          onClick={handleProcessClick}
+          onClick={onProcessItems}
           style={{
             cursor: hasCheckedItems ? "pointer" : "not-allowed",
           }}
@@ -94,20 +89,28 @@ export const CareSheetList = ({
       <CareSheetListHeader
         isAllSelected={isAllSelected}
         isIndeterminate={isIndeterminate}
-        onSelectAll={handleSelectAll}
+        onSelectAll={onSelectAll}
+        showCheckbox={true}
       />
       <div className={itemsContainer}>
-        {filteredCareSheets.map((careSheet, index) => (
-          <CareSheetListItem
-            key={careSheet.careSheetId}
-            careSheet={careSheet}
-            index={index}
-            isChecked={isCheckedItems.has(careSheet.careSheetId)}
-            onCheckChange={(checked) =>
-              handleItemCheck(careSheet.careSheetId, checked)
-            }
-          />
-        ))}
+        {careSheets.map((careSheet, index) => {
+          // 상태에 따라 선택 가능 여부 결정
+          const isSelectable =
+            status === "APPLICABLE" ? careSheet.status !== "SHEET_DONE" : true; // 결석 인원은 모두 선택 가능
+
+          return (
+            <CareSheetListItem
+              key={careSheet.careSheetId}
+              careSheet={careSheet}
+              index={index}
+              isChecked={checkedCareSheetIds.has(careSheet.careSheetId)}
+              onCheckChange={(checked) =>
+                onItemCheck(careSheet.careSheetId, checked)
+              }
+              isSelectable={isSelectable}
+            />
+          );
+        })}
       </div>
     </div>
   );
