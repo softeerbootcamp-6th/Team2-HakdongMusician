@@ -3,7 +3,7 @@ import { ReportListItem } from "../ReportListItem/ReportListItem";
 import { Body, COLORS } from "@daycan/ui";
 import type { ReportListItemType } from "../ReportListItem/ReportListItem";
 import { reportListContainer } from "./ReportList.css";
-import { useReports } from "../../hooks/useReports";
+import { useReports } from "../../hooks/useReport";
 
 interface ReportListProps {
   reports?: ReportListItemType[];
