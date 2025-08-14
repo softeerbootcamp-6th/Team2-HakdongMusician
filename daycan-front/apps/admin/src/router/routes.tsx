@@ -1,9 +1,17 @@
 import { LoginLayout } from "@/layout/login";
-import { MainLayout, ReportLayout, MobileLayout } from "../layout";
-import { LoginPage } from "@/pages";
+import { MainLayout, MobileLayout } from "../layout";
+import {
+  LoginPage,
+  MemberPage,
+  MemberRegisterPage,
+  CareSheetPage,
+  NotFoundPage,
+  ReportPage,
+} from "@/pages";
 import {
   HomeFunnelStepContainer,
   InfoFunnelStepContainer,
+  DiagnosisFunnelStepContainer,
 } from "@/pages/care-sheet/funnels";
 
 export type TRoutes = {
@@ -23,17 +31,47 @@ export const routes: TRoutes[] = [
     children: [
       {
         path: "",
-        element: <div>HomePage</div>, // => 여기 Outlet으로 렌더됨
+        element: <CareSheetPage />,
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
+      {
+        path: "care-sheet",
+        element: <CareSheetPage />,
+      },
+    ],
+  },
+  {
+    path: "/member",
+    layout: <MainLayout />,
+    children: [
+      // {
+      //   path: "",
+      //   element: <div>HomePage</div>, // => 여기 Outlet으로 렌더됨
+      // },
+      {
+        path: "",
+        element: <MemberPage />,
+      },
+      {
+        path: "new",
+        element: <MemberRegisterPage mode="register" />,
+      },
+      {
+        path: "edit/:memberId",
+        element: <MemberRegisterPage mode="edit" />,
       },
     ],
   },
   {
     path: "/report",
-    layout: <ReportLayout />,
+    layout: <MainLayout />,
     children: [
       {
         path: "",
-        element: <div>ReportPage</div>, // => 여기 Outlet으로 렌더됨
+        element: <ReportPage />, // => 여기 Outlet으로 렌더됨
       },
     ],
   },
@@ -48,7 +86,7 @@ export const routes: TRoutes[] = [
     ],
   },
   {
-    path: "/care-sheet",
+    path: "/care-sheet/new",
     layout: <MobileLayout />,
     children: [
       {
@@ -58,6 +96,10 @@ export const routes: TRoutes[] = [
       {
         path: "info",
         element: <InfoFunnelStepContainer />,
+      },
+      {
+        path: "diagnosis",
+        element: <DiagnosisFunnelStepContainer />,
       },
     ],
   },

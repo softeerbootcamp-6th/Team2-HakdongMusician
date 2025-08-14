@@ -4,6 +4,7 @@ import { Icon } from "@/components/Icon";
 import {
   ToastOptions,
   ToastContainer as _ToastContainer,
+  Slide,
 } from "react-toastify";
 
 import { toast, toastIcon, toastContainer } from "./style.css";
@@ -60,11 +61,13 @@ export const Toast = ({ data }: ToastProps) => {
 export const ToastContainer = () => {
   return (
     <_ToastContainer
-      position="bottom-center"
+      position="top-center"
       className={toastContainer}
       autoClose={3000}
       closeButton={false}
       hideProgressBar
+      newestOnTop
+      transition={Slide}
       toastStyle={{
         background: "transparent",
         boxShadow: "none",

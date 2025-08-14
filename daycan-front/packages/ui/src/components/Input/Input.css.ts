@@ -1,5 +1,6 @@
 import { recipe, RecipeVariants } from "@vanilla-extract/recipes";
 import { COLORS } from "@/styles/colors";
+import { style } from "@vanilla-extract/css";
 
 export const input = recipe({
   base: {
@@ -12,6 +13,22 @@ export const input = recipe({
     borderRadius: "8px",
     border: `1px solid ${COLORS.gray[200]}`,
     boxSizing: "border-box",
+    boxShadow: `0px 0px 4px rgba(0, 0, 0, 0.05)`,
+    width: "100%",
+    height: "100%",
+    padding: "16px 24px",
+    transition: "all 0.2s ease-in-out",
+    ":hover": {
+      border: `1px solid ${COLORS.gray[300]}`,
+      boxShadow: `0px 0px 8px rgba(59, 130, 246, 0.15)`,
+      backgroundColor: COLORS.gray[100],
+    },
+
+    ":focus-within": {
+      border: `2px solid ${COLORS.gray[300]}`,
+      backgroundColor: COLORS.white,
+      outline: "none",
+    },
   },
   variants: {
     variant: {
@@ -76,4 +93,52 @@ export const input = recipe({
   },
 });
 
+export const inputElement = recipe({
+  base: {
+    background: "transparent",
+    border: "none",
+    outline: "none",
+    width: "100%",
+    selectors: {
+      "&::placeholder": {
+        color: COLORS.gray[500],
+        fontWeight: 500,
+        fontFamily: "Pretendard, sans-serif",
+        lineHeight: "150%",
+      },
+      "&:-webkit-autofill": {
+        WebkitTextFillColor: "#000",
+        boxShadow: "0 0 0px 1000px transparent inset",
+        transition: "background-color 5000s ease-in-out 0s",
+      },
+      "&:-webkit-autofill:hover": {
+        WebkitTextFillColor: "#000",
+      },
+      "&:-webkit-autofill:focus": {
+        WebkitTextFillColor: "#000",
+      },
+    },
+  },
+  variants: {
+    fontSize: {
+      xsmall: {
+        fontSize: "13px",
+      },
+      small: {
+        fontSize: "15px",
+      },
+      medium: {
+        fontSize: "17px",
+      },
+      large: {
+        fontSize: "19px",
+      },
+    },
+  },
+  defaultVariants: {
+    fontSize: "xsmall",
+  },
+});
+
 export type InputVariants = RecipeVariants<typeof input>;
+export type InputElementVariants = RecipeVariants<typeof inputElement>;

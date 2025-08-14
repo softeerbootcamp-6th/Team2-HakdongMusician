@@ -18,12 +18,17 @@ export { default as UpIcon } from "./svg/up.svg";
 export { default as DownIcon } from "./svg/down.svg";
 export { default as ChevronLeftIcon } from "./svg/chevron-left.svg";
 export { default as ChevronRightIcon } from "./svg/chevron-right.svg";
+export { default as ChevronDownIcon } from "./svg/chevron-down.svg";
 
 // 상태 아이콘들
 export { default as GoodIcon } from "./svg/good.svg";
 export { default as BadIcon } from "./svg/bad.svg";
 export { default as WarningFilledIcon } from "./svg/warning-filled.svg";
 export { default as WarningOutlineIcon } from "./svg/warning-outline.svg";
+export { default as CheckedIcon } from "./svg/check-box-checked.svg";
+export { default as UncheckedIcon } from "./svg/check-box-unchecked.svg";
+export { default as PlusBoxIcon } from "./svg/plus-box.svg";
+export { default as MinusBoxIcon } from "./svg/minus-box.svg";
 
 // 기능 아이콘들
 export { default as CalendarIcon } from "./svg/calendar.svg";
@@ -36,12 +41,19 @@ export { default as TwoPanelIcon } from "./svg/two-panel.svg";
 export { default as LockIcon } from "./svg/lock-24.svg";
 export { default as RecordIcon } from "./svg/record.svg";
 export { default as ReportIcon } from "./svg/report.svg";
+export { default as BlockIcon } from "./svg/block.svg";
+export { default as DeleteIcon } from "./svg/delete.svg";
+export { default as AlarmIcon } from "./svg/alarm.svg";
+export { default as AlignUpIcon } from "./svg/align-up.svg";
+export { default as AlignDownIcon } from "./svg/align-down.svg";
 
 // 카메라/이미지 관련 아이콘들
 export { default as FlipCameraIcon } from "./svg/flip_camera_ios.svg";
 export { default as ReplaceImageIcon } from "./svg/replace_image.svg";
 export { default as AddPhotoByCameraIcon } from "./svg/add-photo-by-camera.svg";
 export { default as AddPhotoIcon } from "./svg/add-photo.svg";
+export { default as PhotoAlternateIcon } from "./svg/photo-alternate.svg";
+export { default as PhotoDeleteButtonIcon } from "./svg/photo-delete-button.svg";
 
 // 로고 아이콘들
 export { default as FullLogo32Icon } from "./svg/full-logo-32.svg";
@@ -57,3 +69,6 @@ export { default as StampGoodIcon } from "./svg/stamp-good.svg";
 export { default as StampBadIcon } from "./svg/stamp-bad.svg";
 export { default as BrainIcon } from "./svg/brain.svg";
 export { default as ActivityIcon } from "./svg/activity.svg";
+export { default as TransportationIcon } from "./svg/transportation.svg";
+
+// 기타 아이콘들

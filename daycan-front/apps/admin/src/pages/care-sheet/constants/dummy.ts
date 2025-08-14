@@ -108,3 +108,80 @@ export const mockElderlyResults: SearchResultItem[] = [
     role: "고령자",
   },
 ];
+
+export const mockCareSheetPendingDoneList: CareSheetListType = {
+  page: 0,
+  result: [
+    {
+      careSheetId: 1001,
+      status: "SHEET_DONE",
+      memberMeta: {
+        memberId: "MEM12345",
+        name: "김순애",
+        birthDate: "1943-09-12",
+        gender: "FEMALE",
+      },
+      isAttending: true,
+      writerName: "양동성",
+      writerId: 501,
+    },
+    {
+      careSheetId: 1003,
+      status: "SHEET_PENDING",
+      memberMeta: {
+        memberId: "MEM12347",
+        name: "이철수",
+        birthDate: "1940-07-22",
+        gender: "MALE",
+      },
+      isAttending: true,
+      writerName: "최지영",
+      writerId: 503,
+    },
+  ],
+  totalElement: 2,
+  totalPage: 1,
+};
+
+export const mockCareSheetNotApplicableList: CareSheetListType = {
+  page: 0,
+  result: [
+    {
+      careSheetId: 1001,
+      status: "NOT_APPLICABLE",
+      memberMeta: {
+        memberId: "MEM12345",
+        name: "김순애",
+        birthDate: "1943-09-12",
+        gender: "FEMALE",
+      },
+      isAttending: false,
+      writerName: "양동성",
+      writerId: 501,
+    },
+  ],
+  totalElement: 1,
+  totalPage: 1,
+};
+
+//임시 타입일 뿐, 추후에 API 내에서 정의한 타입으로 대체될 예정입니다.
+export type CareSheetListType = {
+  page: number;
+  result: CareSheetListItemType[];
+  totalElement: number;
+  totalPage: number;
+};
+
+export type CareSheetListItemType = {
+  careSheetId: number;
+  status: "NOT_APPLICABLE" | "SHEET_PENDING" | "SHEET_DONE";
+  memberMeta: {
+    memberId: string;
+    name: string;
+    birthDate: string;
+    gender: "FEMALE" | "MALE";
+  };
+  isAttending: boolean;
+  writerName: string;
+  writerId: number;
+};

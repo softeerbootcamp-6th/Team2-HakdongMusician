@@ -110,7 +110,7 @@ section {
 /* Reset */
 body {
   line-height: 1;
-  font-family: -apple-system, BlinkMacSystemFont, "Pretendard", sans-serif;
+  font-family: "Pretendard", sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;

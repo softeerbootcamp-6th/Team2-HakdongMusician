@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SemiCircularGaugeChart, UpDownIcon } from "@/components";
+import { SemiCircularGaugeChart, UpDownIcon } from "../../../../components";
 import { Body, COLORS, Icon } from "@daycan/ui";
 import {
   container,

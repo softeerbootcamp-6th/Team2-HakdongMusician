@@ -1,0 +1,124 @@
+import { InfoSectionLayout } from "../InfoSectionLayout/InfoSectionLayout";
+import { memberInfoSectionContainer } from "./MemberInfoSection.css";
+import { InfoSectionRow } from "../InfoSectionRow";
+import { GenderSelector } from "../GenderSelector";
+import { CareLevelDropDown } from "../CareLevelDropDown";
+import { CARE_LEVEL_OPTIONS } from "@/constants/memberRegister";
+import { Body, COLORS } from "@daycan/ui";
+import { labelContainer } from "../InfoSectionRow/InfoSectionRow.css";
+
+interface MemberInfoSectionProps {
+  form: {
+    name: string;
+    gender: string;
+    birthDate: string;
+    careLevel: number;
+    careNumber: string;
+    avatarUrl?: string;
+  };
+  onUpdate: (field: string, value: string | number) => void;
+  errors: Record<string, string>;
+  showErrors: boolean;
+}
+
+export const MemberInfoSection = ({
+  form,
+  onUpdate,
+  errors,
+  showErrors,
+}: MemberInfoSectionProps) => {
+  // 또 부모로 이동해서 부모에게 전달
+  // 등록 페이지에서 상태값 변환
+  const handleImageChange = (file: File | null) => {
+    if (file) {
+      // 로컬 URL 생성하여 미리보기
+      const imageUrl = URL.createObjectURL(file);
+
+      onUpdate("avatarUrl", imageUrl);
+    } else {
+      // 이미지 제거
+      onUpdate("avatarUrl", "");
+    }
+  };
+
+  const handleGenderSelect = (gender: string) => {
+    onUpdate("gender", gender);
+  };
+
+  return (
+    <InfoSectionLayout
+      title="수급자 정보"
+      profileImage={form.avatarUrl}
+      onImageChange={handleImageChange}
+    >
+      <div className={memberInfoSectionContainer}>
+        <InfoSectionRow
+          label="성함"
+          placeholder="이름 입력"
+          value={form.name}
+          name="name"
+          maxLength={10}
+          onChange={(e) => onUpdate("name", e.target.value)}
+          errorMessage={showErrors ? errors.name : ""}
+          showError={showErrors && !!errors.name}
+        />
+        <InfoSectionRow
+          label="생년월일"
+          placeholder="YYYY-MM-DD"
+          value={form.birthDate}
+          name="birthDate"
+          onChange={(e) => onUpdate("birthDate", e.target.value)}
+          errorMessage={showErrors ? errors.birthDate : ""}
+          showError={showErrors && !!errors.birthDate}
+        />
+        <GenderSelector
+          selectedGender={form.gender}
+          onGenderSelect={handleGenderSelect}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 24,
+            width: "100%",
+          }}
+        >
+          <div className={labelContainer}>
+            <div
+              style={{
+                width: "133px",
+                height: "29px",
+              }}
+            >
+              <Body
+                weight={600}
+                type="large"
+                style={{
+                  color: COLORS.gray[700],
+                }}
+              >
+                장기요양등급
+              </Body>
+            </div>
+          </div>
+          <CareLevelDropDown
+            options={CARE_LEVEL_OPTIONS}
+            value={form.careLevel}
+            placeholder="장기요양등급 선택"
+            onChange={(value: number) => onUpdate("careLevel", value)}
+          />
+        </div>
+        <InfoSectionRow
+          label="장기요양인정번호"
+          placeholder="장기요양인정번호 입력"
+          value={form.careNumber}
+          name="careNumber"
+          maxLength={11}
+          onChange={(e) => onUpdate("careNumber", e.target.value)}
+          errorMessage={showErrors ? errors.careNumber : ""}
+          showError={showErrors && !!errors.careNumber}
+        />
+      </div>
+    </InfoSectionLayout>
+  );
+};

@@ -14,7 +14,7 @@ import { ICON_NAMES } from "@/constants/iconNames";
 
 export const Sidebar = () => {
   const { handleMenuClick, isMenuSelected, count, handleNewRecordClick } =
-    useSidebar();
+    useSidebar(PAGE_KEYS.RECIPIENT);
 
   return (
     /* Sidebar */
@@ -36,27 +36,16 @@ export const Sidebar = () => {
           </Body>
           <div className={menuItemWrapper}>
             <MenuItemHeader
-              pageKey={PAGE_KEYS.RECORD_SHEET}
+              pageKey={PAGE_KEYS.CARE_SHEET}
               iconName={ICON_NAMES.RECORD}
-              label={PAGE_KEYS.RECORD_SHEET}
-              isSelected={isMenuSelected(PAGE_KEYS.RECORD_SHEET)}
+              label={PAGE_KEYS.CARE_SHEET}
+              isSelected={isMenuSelected(PAGE_KEYS.CARE_SHEET)}
               onClick={handleMenuClick}
             />
             <div className={menuItem}>
               <Chip style={{ backgroundColor: COLORS.gray[600] }} round="s">
                 <Body type="xsmall" color={COLORS.gray[300]}>
                   {SIDEBAR_TEXTS.REQUIRED_WRITING}
-                </Body>
-              </Chip>
-              <Body type="xsmall" color={COLORS.white}>
-                {count}
-                {SIDEBAR_TEXTS.CASE_COUNT}
-              </Body>
-            </div>
-            <div className={menuItem}>
-              <Chip style={{ backgroundColor: COLORS.gray[600] }} round="s">
-                <Body type="xsmall" color={COLORS.gray[300]}>
-                  {SIDEBAR_TEXTS.DATE_DELAYED}
                 </Body>
               </Chip>
               <Body type="xsmall" color={COLORS.white}>

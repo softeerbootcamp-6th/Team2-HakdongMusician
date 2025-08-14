@@ -6,6 +6,8 @@ export interface FunnelProviderProps<TSteps extends readonly string[]> {
   steps: TSteps;
   funnelId?: string; // 여러 Funnel을 구분하기 위한 ID
   onComplete?: (funnelState: FunnelState) => void; // 퍼널 완료 시 상태와 함께 호출
+  initialStep?: Step; // 최초 진입 스텝
+  initialState?: FunnelState; // 최초 펀널 상태 주입
   children: ReactNode;
 }
 
@@ -13,10 +15,19 @@ export function FunnelProvider<TSteps extends readonly Step[]>({
   steps,
   funnelId,
   onComplete,
+  initialStep,
+  initialState,
   children,
 }: FunnelProviderProps<TSteps>) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [funnelState, setFunnelState] = useState<FunnelState>({});
+  const initialIndex = (() => {
+    if (!initialStep) return 0;
+    const idx = steps.indexOf(initialStep);
+    return idx >= 0 ? idx : 0;
+  })();
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [funnelState, setFunnelState] = useState<FunnelState>(
+    initialState ?? {}
+  );
   const [stepHistory, setStepHistory] = useState<FunnelStepState[]>([]);
 
   const value = useMemo(() => {

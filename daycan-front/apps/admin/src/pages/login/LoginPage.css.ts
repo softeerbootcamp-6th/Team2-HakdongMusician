@@ -13,7 +13,6 @@ export const loginContainer = style({
 });
 
 export const loginCard = style({
-  marginTop: "auto",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
