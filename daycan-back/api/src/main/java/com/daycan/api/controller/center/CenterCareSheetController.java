@@ -8,7 +8,6 @@ import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
-import com.daycan.common.response.PageResponse;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.service.document.DocumentFacade;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -76,7 +74,7 @@ public class CenterCareSheetController {
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "조회 성공")
   })
-  public PageResponse<List<CareSheetMetaResponse>> getCareSheetList(
+  public ResponseWrapper<List<CareSheetMetaResponse>> getCareSheetList(
       @AuthenticatedUser
       CenterDetails centerDetails,
 
@@ -88,16 +86,14 @@ public class CenterCareSheetController {
       @Schema(description = "조회 날짜", example = "2025-08-04")
       LocalDate date,
 
-      @Schema(description = "페이지 정보", example = "0")
-      @ParameterObject
-      Pageable pageable,
-
       @Parameter(description = "작성자 ID (optional)", example = "1", required = false)
       @RequestParam(required = false)
       Long writerId
   ) {
-    return documentFacade.getCareSheetMetaListByDate(
-        centerDetails.getCenter(), date, writerId, queryParameters.statuses(), pageable
+    return ResponseWrapper.onSuccess(
+        documentFacade.getCareSheetMetaListByDate(
+            centerDetails.getCenter(), date, writerId, queryParameters.statuses()
+        )
     );
   }
 

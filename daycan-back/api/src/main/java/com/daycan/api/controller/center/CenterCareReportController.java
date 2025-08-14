@@ -9,7 +9,6 @@ import com.daycan.domain.entry.document.report.ReportEntry;
 import com.daycan.api.dto.center.request.ReportQueryParameters;
 import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
-import com.daycan.common.response.PageResponse;
 import com.daycan.domain.entry.document.report.CardFooter;
 import com.daycan.domain.enums.Gender;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +19,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,17 +36,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class CenterCareReportController {
 
   @GetMapping(value = "/{date}")
-  public PageResponse<List<CareReportMetaResponse>> getReportList(
+  public ResponseWrapper<List<CareReportMetaResponse>> getReportList(
       @ParameterObject @ModelAttribute @Valid
       ReportQueryParameters query,
 
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
-      LocalDate date,
-      // 스프링이 query-param <-> record 바인딩
-      @Parameter(description = "페이지네이션 정보", required = true)
-      @ParameterObject @Valid
-      Pageable pageable               // page, size, sort 파라미터 처리
+      LocalDate date
   ) {
 
     /* mock 데이터 생성 (임시) */
@@ -73,12 +67,8 @@ public class CenterCareReportController {
             ReportStatus.PENDING)
     );
 
-    return new PageResponse<>(
-        0,
-        mock,
-        pageable.getPageNumber(),
-        pageable.getPageSize()
-    );
+    return ResponseWrapper.onSuccess(
+        mock);
   }
 
   @Operation(

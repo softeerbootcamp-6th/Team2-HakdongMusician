@@ -39,15 +39,14 @@ public class CareSheetQueryService {
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.SHEET_NOT_FOUND));
   }
 
-  protected Page<CareSheetMetaView> findCareSheetMetaViewByDate(
+  protected  List<CareSheetMetaView>findCareSheetMetaViewByDate(
       Center center,
       LocalDate date,
       Long writerId,
-      List<DocumentStatus> docStatuses,
-      Pageable pageable
+      List<DocumentStatus> docStatuses
   ) {
     return documentQueryRepository.findMetaViewsByCenterAndDate(
-        center.getId(), date, writerId, docStatuses, pageable
+        center.getId(), date, writerId, docStatuses
     );
   }
 

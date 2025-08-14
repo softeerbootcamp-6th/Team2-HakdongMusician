@@ -19,11 +19,9 @@ import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
@@ -46,14 +44,6 @@ public class CenterDocumentController {
     return ResponseWrapper.onSuccess(
         documentService.getDocumentCount(center.getId(), date)
     );
-  }
-
-  @GetMapping("/status")
-  @Operation(summary = "기록지, 리포트 상태 조회", description = "page마다 10개의 기록지와 리포트 상태를 조회합니다. 1페이지부터 시작합니다.")
-  public List<DocumentStatusResponse> getDocumentStatusList(
-      @Parameter(description = "페이지", example = "1")
-      @RequestParam(required = true) Pageable page) {
-    return documentService.getDocumentStatusList(page);
   }
 
   @GetMapping("/{memberId}/{month:\\d{4}-\\d{2}}")
