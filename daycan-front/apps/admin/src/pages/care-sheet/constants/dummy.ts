@@ -109,7 +109,7 @@ export const mockElderlyResults: SearchResultItem[] = [
   },
 ];
 
-export const mockCareSheetPendingDoneList: CareSheetListItemType = {
+export const mockCareSheetPendingDoneList: CareSheetListType = {
   page: 0,
   result: [
     {
@@ -138,38 +138,12 @@ export const mockCareSheetPendingDoneList: CareSheetListItemType = {
       writerName: "최지영",
       writerId: 503,
     },
-    {
-      careSheetId: 1004,
-      status: "SHEET_DONE",
-      memberMeta: {
-        memberId: "MEM12348",
-        name: "정미영",
-        birthDate: "1948-11-08",
-        gender: "FEMALE",
-      },
-      isAttending: true,
-      writerName: "박준호",
-      writerId: 504,
-    },
-    {
-      careSheetId: 1005,
-      status: "SHEET_PENDING",
-      memberMeta: {
-        memberId: "MEM12349",
-        name: "한영수",
-        birthDate: "1942-05-30",
-        gender: "MALE",
-      },
-      isAttending: true,
-      writerName: "이수진",
-      writerId: 505,
-    },
   ],
-  totalElement: 4,
+  totalElement: 2,
   totalPage: 1,
 };
 
-export const mockCareSheetNotApplicableList: CareSheetListItemType = {
+export const mockCareSheetNotApplicableList: CareSheetListType = {
   page: 0,
   result: [
     {
@@ -191,21 +165,23 @@ export const mockCareSheetNotApplicableList: CareSheetListItemType = {
 };
 
 //임시 타입일 뿐, 추후에 API 내에서 정의한 타입으로 대체될 예정입니다.
-export type CareSheetListItemType = {
+export type CareSheetListType = {
   page: number;
-  result: {
-    careSheetId: number;
-    status: "NOT_APPLICABLE" | "SHEET_PENDING" | "SHEET_DONE";
-    memberMeta: {
-      memberId: string;
-      name: string;
-      birthDate: string;
-      gender: "FEMALE" | "MALE";
-    };
-    isAttending: boolean;
-    writerName: string;
-    writerId: number;
-  }[];
+  result: CareSheetListItemType[];
   totalElement: number;
   totalPage: number;
+};
+
+export type CareSheetListItemType = {
+  careSheetId: number;
+  status: "NOT_APPLICABLE" | "SHEET_PENDING" | "SHEET_DONE";
+  memberMeta: {
+    memberId: string;
+    name: string;
+    birthDate: string;
+    gender: "FEMALE" | "MALE";
+  };
+  isAttending: boolean;
+  writerName: string;
+  writerId: number;
 };
