@@ -2,7 +2,6 @@ package com.daycan.api.controller.center;
 
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
-import com.daycan.common.response.PageResponse;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.enums.Gender;
@@ -39,16 +38,15 @@ public class CenterMemberController {
 
   @GetMapping("")
   @Operation(summary = "수급자 목록 조회", description = "성별, 장기요양등급, 이름으로 필터링하여 수급자 목록을 조회합니다.")
-  public ResponseWrapper<PageResponse<List<AdminMemberResponse>>> getMemberList(
+  public ResponseWrapper<List<AdminMemberResponse>> getMemberList(
       @AuthenticatedUser CenterDetails centerDetails,
       @Parameter(description = "성별 (MALE, FEMALE)", example = "MALE") @RequestParam(required = false) Gender gender,
       @Parameter(description = "장기요양등급 (1~5등급)", example = "3") @RequestParam(required = false) @Valid @Min(1) @Max(5) Integer careLevel,
-      @Parameter(description = "수급자 이름 (부분 검색 가능)", example = "홍길동") @RequestParam(required = false) String name,
-      @ParameterObject Pageable pageable) {
+      @Parameter(description = "수급자 이름 (부분 검색 가능)", example = "홍길동") @RequestParam(required = false) String name) {
     Center center = centerDetails.getCenter();
 
-    PageResponse<List<AdminMemberResponse>> memberList = memberService.getMemberListWithPaging(
-        center.getId(), gender, careLevel, name, pageable);
+    List<AdminMemberResponse> memberList = memberService.getMemberList(
+        center.getId(), gender, careLevel, name);
 
     return ResponseWrapper.onSuccess(memberList);
   }

@@ -4,8 +4,6 @@ import com.daycan.domain.entity.Member;
 import com.daycan.domain.enums.Gender;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,7 +22,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
   // --- 센터별 조회 (1 Member - 1 Center) ---
   List<Member> findByCenterIdAndDeletedAtIsNull(Long centerId);
-  Page<Member> findByCenterIdAndDeletedAtIsNull(Long centerId, Pageable pageable);
 
   // --- 센터별 필터링 (리스트) ---
   @Query("""
@@ -51,12 +48,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         and (:careLevel is null or m.careLevel = :careLevel)
         and (:name is null or m.name like concat('%', :name, '%'))
       """)
-  Page<Member> findPageByCenterWithFilters(
+  List<Member> findPageByCenterWithFilters(
       @Param("centerId") Long centerId,
       @Param("gender") Gender gender,
       @Param("careLevel") Integer careLevel,
-      @Param("name") String name,
-      Pageable pageable
+      @Param("name") String name
   );
 
   // --- 센터별 이름 검색 ---

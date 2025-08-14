@@ -138,12 +138,11 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
 
 
   @Override
-  public Page<CareSheetMetaView> findMetaViewsByCenterAndDate(
+  public List<CareSheetMetaView> findMetaViewsByCenterAndDate(
       Long centerId,
       LocalDate date,
       Long writerId,
-      List<DocumentStatus> statuses,
-      Pageable pageable
+      List<DocumentStatus> statuses
   ) {
     BooleanExpression writerFilter =
         (writerId == null) ? null : staff.id.eq(writerId);
@@ -151,7 +150,7 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
     BooleanExpression statusFilter = docStatusIn(statuses);
 
     // content
-    List<CareSheetMetaView> content = qf
+    return qf
         .select(Projections.constructor(CareSheetMetaView.class, doc, member, staff))
         .from(doc)
         .join(doc.member, member)
@@ -164,27 +163,7 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
             statusFilter
         )
         .orderBy(doc.updatedAt.desc())
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
         .fetch();
-
-    // count (writerId는 exists 서브쿼리로)
-    QCareSheet cs2 = new QCareSheet("cs2");
-    JPAQuery<Long> countQuery = qf
-        .select(doc.count())
-        .from(doc)
-        .where(
-            doc.center.id.eq(centerId),
-            doc.date.eq(date),
-            (writerId == null) ? null :
-                JPAExpressions.selectOne()
-                    .from(cs2)
-                    .where(cs2.id.eq(doc.id), cs2.writer.id.eq(writerId))
-                    .exists(),
-            statusFilter
-        );
-
-    return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
   }
 
   private BooleanExpression docStatusIn(List<DocumentStatus> statuses) {
