@@ -1,10 +1,12 @@
 import { LoginLayout } from "@/layout/login";
-import { MainLayout, ReportLayout, MobileLayout } from "../layout";
+import { MainLayout, MobileLayout } from "../layout";
 import {
   LoginPage,
   MemberPage,
   MemberRegisterPage,
   CareSheetPage,
+  NotFoundPage,
+  ReportPage,
 } from "@/pages";
 import {
   HomeFunnelStepContainer,
@@ -29,6 +31,14 @@ export const routes: TRoutes[] = [
     children: [
       {
         path: "",
+        element: <CareSheetPage />,
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
+      {
+        path: "care-sheet",
         element: <CareSheetPage />,
       },
     ],
@@ -57,11 +67,11 @@ export const routes: TRoutes[] = [
   },
   {
     path: "/report",
-    layout: <ReportLayout />,
+    layout: <MainLayout />,
     children: [
       {
         path: "",
-        element: <div>ReportPage</div>, // => 여기 Outlet으로 렌더됨
+        element: <ReportPage />, // => 여기 Outlet으로 렌더됨
       },
     ],
   },
