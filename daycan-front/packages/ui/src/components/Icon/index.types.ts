@@ -50,6 +50,9 @@ import {
   PhotoDeleteButtonIcon,
   AddPhotoIcon,
   AddPhotoByCameraIcon,
+  AlarmIcon,
+  AlignUpIcon,
+  AlignDownIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -108,4 +111,7 @@ export const iconMap = {
   photoDeleteButton: PhotoDeleteButtonIcon,
   addPhoto: AddPhotoIcon,
   addPhotoByCamera: AddPhotoByCameraIcon,
+  alarm: AlarmIcon,
+  alignUp: AlignUpIcon,
+  alignDown: AlignDownIcon,
 };
