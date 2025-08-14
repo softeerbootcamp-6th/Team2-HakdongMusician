@@ -2,25 +2,29 @@ name: Build and Deploy to S3 with CodeDeploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "back-develop" ]
     paths:
       - 'daycan-back/**'
+  workflow_dispatch:
 
 permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   AWS_REGION: ap-northeast-2
-  S3_BUCKET: ${{ secrets.S3_BUCKET }}                    # S3 버킷명
-  CODEDEPLOY_APP: ${{ secrets.CODEDEPLOY_APP }}          # 기존에 생성된 CodeDeploy 애플리케이션명
-  CODEDEPLOY_GROUP: ${{ secrets.CODEDEPLOY_GROUP }}      # 기존에 생성된 CodeDeploy 배포 그룹명
+  S3_BUCKET: ${{ secrets.S3_BUCKET }}
+  CODEDEPLOY_APP: ${{ secrets.CODEDEPLOY_APP }}
+  CODEDEPLOY_GROUP: ${{ secrets.CODEDEPLOY_GROUP }}
 
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
 
-    # daycan-back 디렉토리에서 작업 (루트 Gradle 프로젝트)
     defaults:
       run:
         working-directory: daycan-back/api
@@ -46,7 +50,7 @@ jobs:
             exit 1
           fi
 
-      # TODO:테스트 단계 추가
+      # TODO: 테스트 단계 추가
       - name: Build with Gradle
         run: |
           echo "🔨 Building Spring Boot application (api module)..."
@@ -56,74 +60,73 @@ jobs:
       - name: Make daycan.env file
         working-directory: daycan-back
         run: |
-          echo "🔨 Making daycan.env file..."
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> daycan.env
-          echo "DB_PORT=3306" >> daycan.env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> daycan.env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> daycan.env
-          echo "SPRING_PROFILES_ACTIVE=develop" >> daycan.env
-          echo "DAYCAN_PORT=8080" >> daycan.env
-          
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> daycan.env
+          cat > daycan.env <<'EOF'
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=3306
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          SPRING_PROFILES_ACTIVE=develop
+          DAYCAN_PORT=8080
+          TZ=Asia/Seoul
 
-          # OpenAI
-          echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}" >> daycan.env
-          echo "OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}" >> daycan.env
+          JAVA_XMS=-Xms256m
+          JAVA_XMX=-Xmx512m
+          JAVA_GC=-XX:+UseG1GC
+          JAVA_OOM=-XX:+ExitOnOutOfMemoryError
+          JAVA_HEAPDUMP=-XX:HeapDumpPath=/var/log/daycan/heapdump.hprof
+          JAVA_GCLOG=-Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags
 
-          # CLOVA OCR
-          echo "CLOVA_URL=${{ secrets.CLOVA_URL }}" >> daycan.env
-          echo "CLOVA_KEY=${{ secrets.CLOVA_KEY }}" >> daycan.env
-          
-          # S3
-          echo "APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}" >> daycan.env
-          echo "APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}" >> daycan.env
-          
-          echo 'JAVA_OPTS=\
-          -Xms256m \                                # JVM 초기 힙 크기 256MB
-          -Xmx512m \                                # JVM 최대 힙 크기 512MB
-          -XX:+UseG1GC \                            # G1 Garbage Collector 사용
-          -XX:-TieredCompilation \                  # Tiered Compilation 비활성화 → C2 서버 컴파일러만 사용
-          -XX:+HeapDumpOnOutOfMemoryError \         # OOM 발생 시 힙 덤프 생성
-          -XX:HeapDumpPath=/var/log/daycan/heapdump.hprof \  # 힙 덤프 저장 경로
-          -Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags \  # GC 로그 기록 (시간, 업타임, 레벨, 태그 포함)
-          -XX:+ExitOnOutOfMemoryError' >> daycan.env # OOM 발생 시 프로세스 즉시 종료
-          
-          echo 'TZ=Asia/Seoul' >> daycan.env
-
+          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}
+          OPEN_AI_URL=${{ secrets.OPEN_AI_URL }}
+          CLOVA_URL=${{ secrets.CLOVA_URL }}
+          CLOVA_KEY=${{ secrets.CLOVA_KEY }}
+          APP_AWS_REGION=${{ secrets.APP_AWS_REGION }}
+          APP_S3_BUCKET=${{ secrets.APP_S3_BUCKET }}
+          EOF
           echo "✅ daycan.env file created successfully!"
+
+      - name: Validate env format (no leading spaces / bad lines)
+        working-directory: daycan-back
+        run: |
+          sed -n '1,200p' daycan.env
+          if awk '/^[[:space:]]+[^#]/ {print "ERR: leading spaces at line", NR; bad=1} END{exit bad}' daycan.env; then
+            echo "✅ No leading spaces"
+          else
+            echo "❌ Leading spaces found in env lines"
+            exit 1
+          fi
+          if grep -nE '^[[:space:]]*-[Xx]+' daycan.env; then
+            echo "Invalid standalone JVM option lines found"
+            exit 1
+          fi
 
       - name: Prepare CodeDeploy bundle
         working-directory: daycan-back/api
         run: |
           echo "📋 Preparing CodeDeploy deployment bundle..."
-          # 타임스탬프와 커밋 해시로 고유한 배포 ID 생성
           TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
           COMMIT_HASH=${GITHUB_SHA::7}
           JAR_FILE=$(ls -t build/libs/*.jar | grep -v 'plain.jar' | head -n 1)
-          
-          # 배포 번들 디렉토리 생성
+
           mkdir -p deployment-bundle/app
           mkdir -p deployment-bundle/scripts
-          
-          # JAR 파일을 app.jar로 복사
+
           cp "$JAR_FILE" deployment-bundle/app/app.jar
           echo "✅ Copied JAR file to deployment bundle"
-          
-          # appspec.yml과 scripts 복사 (상위 디렉토리에서)
+
           cp ../appspec.yml deployment-bundle/
           cp ../daycan.env deployment-bundle/
           cp -r ../scripts/* deployment-bundle/scripts/
           echo "✅ Copied appspec.yml and scripts"
-          
-          # 스크립트에 실행 권한 부여
+
           chmod +x deployment-bundle/scripts/*.sh
-          
-          # 배포 번들 압축
+
           BUNDLE_NAME="daycan-back-${TIMESTAMP}-${COMMIT_HASH}.zip"
           cd deployment-bundle
           zip -r "../$BUNDLE_NAME" .
           cd ..
-          
+
           echo "UPLOAD_FILE=$BUNDLE_NAME" >> $GITHUB_ENV
           echo "S3_KEY=deploy/daycan-back/$BUNDLE_NAME" >> $GITHUB_ENV
           echo "DEPLOYMENT_ID=${TIMESTAMP}-${COMMIT_HASH}" >> $GITHUB_ENV
@@ -151,7 +154,7 @@ jobs:
             --revision "revisionType=S3,s3Location={bucket=${S3_BUCKET},key=${S3_KEY},bundleType=zip}" \
             --description "Deploy ${GITHUB_SHA} from ${GITHUB_REF_NAME} (${DEPLOYMENT_ID})" \
             --query "deploymentId" --output text)
-          
+
           echo "CODEDEPLOY_ID=$DEPLOYMENT_ID_RESULT" | tee -a $GITHUB_ENV
           echo "deployment_id=$DEPLOYMENT_ID_RESULT" >> $GITHUB_OUTPUT
           echo "✅ CodeDeploy deployment created: $DEPLOYMENT_ID_RESULT"
