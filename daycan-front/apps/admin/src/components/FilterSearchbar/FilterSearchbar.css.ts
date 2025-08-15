@@ -4,5 +4,5 @@ export const filterSearchbarContent = style({
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-  padding: "16px 0px",
+  marginTop: "16px",
 });

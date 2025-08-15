@@ -11,7 +11,6 @@ export const itemContainer = recipe({
     backgroundColor: COLORS.white,
     borderBottom: `1px solid ${COLORS.gray[200]}`,
     alignItems: "center",
-    cursor: "pointer",
     transition: "all 0.2s ease",
   },
   variants: {
