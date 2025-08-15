@@ -5,7 +5,7 @@ import { recipe } from "@vanilla-extract/recipes";
 export const cardLayout = style({
   width: "100%",
   height: "100%",
-  padding: "24px 10px",
+  padding: "12px 10px",
   boxSizing: "border-box",
   display: "flex",
   alignItems: "start",
@@ -20,9 +20,9 @@ export const cardLayoutHeader = recipe({
   base: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "start",
-    justifyContent: "start",
-    alignSelf: "start",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
     gap: 8,
     width: "100%",
   },
