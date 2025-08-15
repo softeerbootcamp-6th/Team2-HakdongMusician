@@ -25,7 +25,7 @@ public enum AuthErrorStatus implements Status {
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, 40410,"사용자를 찾을 수 없습니다."),
 
   // 500
-  UNKNOWN_AUTH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,50010, "인증 중 알 수 없는 오류가 발생했습니다."),
+  UNKNOWN_AUTH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,50000, "인증 중 알 수 없는 오류가 발생했습니다."),
   ;
 
   private final HttpStatus httpStatus;

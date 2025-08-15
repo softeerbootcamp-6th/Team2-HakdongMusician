@@ -1,21 +1,24 @@
 package com.daycan.domain.model;
 
+import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.entity.document.Document;
+import com.daycan.domain.entry.document.report.ReportStatus;
 import com.daycan.domain.entry.document.sheet.SheetStatus;
+import com.daycan.domain.entry.member.GuardianMetaEntry;
 import com.daycan.domain.entry.member.MemberMetaEntry;
 import com.daycan.domain.enums.DocumentStatus;
 import io.micrometer.common.lang.Nullable;
 
 
-public record CareSheetMetaView(
+public record DocumentMetaView(
     Document document,
     Member member,
     @Nullable Staff writer
 ) {
-  public CareSheetMetaResponse toResponse() {
+  public CareSheetMetaResponse toSheetResponse() {
     // careSheetId: 존재하면 id, 없으면 null
     Long careSheetId = document.getCareSheet() != null
         ? document.getCareSheet().getId()
@@ -47,5 +50,32 @@ public record CareSheetMetaView(
         writerName,
         writerId
     );
+  }
+
+  public CareReportMetaResponse toReportResponse() {
+    MemberMetaEntry memberMeta = new MemberMetaEntry(
+        member.getUsername(),
+        member.getName(),
+        member.getBirthDate(),
+        member.getGender()
+    );
+
+    // guardianName/Phone이 모두 비어있으면 null
+    GuardianMetaEntry guardianMeta = hasText(member.getGuardianName()) || hasText(member.getGuardianPhoneNumber())
+        ? new GuardianMetaEntry(member.getGuardianName(), member.getGuardianPhoneNumber())
+        : null;
+
+    ReportStatus status = document.getStatus().toReportStatus(document.getId());
+
+    return new CareReportMetaResponse(
+        document.getId(),   // CareReport와 공유 PK
+        memberMeta,
+        guardianMeta,
+        status
+    );
+  }
+
+  private static boolean hasText(String s) {
+    return s != null && !s.isBlank();
   }
 }

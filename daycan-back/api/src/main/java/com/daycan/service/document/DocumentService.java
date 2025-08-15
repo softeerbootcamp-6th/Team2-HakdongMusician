@@ -128,6 +128,11 @@ public class DocumentService {
     return updated;
   }
 
+  protected boolean isValidCenterDocument(Center center, Long documentId) {
+    Document document = documentRepository.findById(documentId)
+        .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.DOCUMENT_NOT_FOUND));
+    return document.getCenter().equals(center);
+  }
 
   protected void findOrCreateDocument(Member member, LocalDate date) {
     documentRepository.findByMemberIdAndDate(member.getId(), date)

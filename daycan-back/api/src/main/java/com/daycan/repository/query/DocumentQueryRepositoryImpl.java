@@ -5,15 +5,6 @@ import com.daycan.domain.entity.document.CareSheet;
 import com.daycan.domain.entity.document.PersonalProgram;
 import com.daycan.domain.entity.document.QCareReport;
 import com.daycan.domain.entity.document.Vital;
-import com.daycan.domain.entry.document.sheet.MealEntry;
-import com.daycan.domain.entry.document.sheet.RecoveryProgramEntry;
-import com.daycan.domain.entry.document.vital.BloodPressureEntry;
-import com.daycan.domain.entry.document.vital.TemperatureEntry;
-import com.daycan.domain.entry.document.sheet.CognitiveEntry;
-import com.daycan.domain.entry.document.sheet.HealthCareEntry;
-import com.daycan.domain.entry.document.sheet.MealSupport;
-import com.daycan.domain.entry.document.sheet.PhysicalEntry;
-import com.daycan.domain.entry.document.sheet.ProgramEntry;
 import com.daycan.domain.entity.document.QCareSheet;
 import com.daycan.domain.entity.document.QDocument;
 import com.daycan.domain.entity.QStaff;
@@ -21,28 +12,23 @@ import com.daycan.domain.entity.document.QPersonalProgram;
 import com.daycan.domain.entity.document.QVital;
 import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.model.CareSheetInitVO;
-import com.daycan.domain.model.CareSheetMetaView;
+import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -137,21 +123,75 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
   }
 
 
+
+  public Optional<CareSheetView> fetchSheetWithVital(Long sheetId){
+    List<Tuple> rows = qf
+        .select(
+            doc.id,                 // 0
+            doc.member.id,          // 1
+            doc.member.username,    // 2
+            doc.date,               // 3
+            careSheet,              // 4 (엔티티)
+            vital,                  // 5 (엔티티)
+            staff.id,               // 6
+            personalProgram         // 7 (엔티티)
+        )
+        .from(doc)
+        .leftJoin(careSheet).on(careSheet.id.eq(doc.id))
+        .leftJoin(vital).on(vital.id.eq(doc.id))
+        .leftJoin(staff).on(staff.eq(careSheet.writer))
+        .leftJoin(personalProgram).on(personalProgram.careSheet.eq(careSheet))
+        .where(careSheet.id.eq(sheetId)) // CareSheet PK(= Document PK)
+        .fetch();
+
+    if (rows.isEmpty()) return Optional.empty();
+
+    Tuple first       = rows.get(0);
+    Long docId        = first.get(doc.id);
+    Long baseMemberId = first.get(doc.member.id);
+    String memberCode = first.get(doc.member.username);
+    LocalDate theDate = first.get(doc.date);
+
+    CareSheet cs   = first.get(careSheet);
+    Vital vt       = first.get(vital);
+    Long writerId  = first.get(staff.id);
+
+    // 중복 제거하며 프로그램 모으기
+    Map<Long, PersonalProgram> programMap = new LinkedHashMap<>();
+    for (Tuple r : rows) {
+      PersonalProgram pp = r.get(personalProgram);
+      if (pp != null) {
+        programMap.putIfAbsent(pp.getId(), pp);
+      }
+    }
+    List<PersonalProgram> programs = new ArrayList<>(programMap.values());
+
+    return Optional.of(new CareSheetView(
+        docId, writerId, baseMemberId, memberCode, theDate,
+        cs, vt, programs
+    ));
+
+  }
+
   @Override
-  public List<CareSheetMetaView> findMetaViewsByCenterAndDate(
+  public List<DocumentMetaView> findDocumentMetaViewList(
       Long centerId,
       LocalDate date,
       Long writerId,
-      List<DocumentStatus> statuses
+      List<DocumentStatus> statuses,
+      String nameLike
   ) {
     BooleanExpression writerFilter =
         (writerId == null) ? null : staff.id.eq(writerId);
 
     BooleanExpression statusFilter = docStatusIn(statuses);
 
+    BooleanExpression nameFilter = hasText(nameLike)
+        ? member.name.containsIgnoreCase(nameLike.trim())
+        : null;
     // content
     return qf
-        .select(Projections.constructor(CareSheetMetaView.class, doc, member, staff))
+        .select(Projections.constructor(DocumentMetaView.class, doc, member, staff))
         .from(doc)
         .join(doc.member, member)
         .leftJoin(doc.careSheet, careSheet)
@@ -160,16 +200,13 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
             doc.center.id.eq(centerId),
             doc.date.eq(date),
             writerFilter,
-            statusFilter
+            statusFilter,
+            nameFilter
         )
         .orderBy(doc.updatedAt.desc())
         .fetch();
   }
 
-  private BooleanExpression docStatusIn(List<DocumentStatus> statuses) {
-    if (statuses == null || statuses.isEmpty()) return null;
-    return doc.status.in(statuses);
-  }
 
 
   @Override
@@ -193,6 +230,20 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
         .fetch();
   }
 
+  private BooleanExpression docStatusIn(List<DocumentStatus> statuses) {
+    if (statuses == null || statuses.isEmpty()) {
+      return null;
+    }
+    EnumSet<DocumentStatus> set = EnumSet.noneOf(DocumentStatus.class);
+    for (DocumentStatus s : statuses) {
+      if (s != null) set.add(s);
+    }
+    return set.isEmpty() ? null : doc.status.in(set);
+  }
+
+  private static boolean hasText(String s) {
+    return s != null && !s.isBlank();
+  }
 
 }
 

@@ -2,9 +2,13 @@ package com.daycan.domain.entity.document;
 
 import static jakarta.persistence.CascadeType.*;
 
+import com.daycan.common.exceptions.ApplicationException;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.entry.document.sheet.Meal;
+import com.daycan.domain.enums.ProgramScore;
+import com.daycan.domain.enums.ProgramType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -25,6 +29,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -157,12 +162,30 @@ public class CareSheet extends BaseTimeEntity {
   public void linkDocument(Document doc) {
     this.document = doc;
   }
-  public void addPersonalProgram(PersonalProgram personalProgram) {
-    if (personalPrograms == null) {
-      personalPrograms = new ArrayList<>();
+
+  public boolean addPersonalProgram(PersonalProgram p) {
+    if (p == null) {
+      return false; // 조용히 무시
     }
-    personalPrograms.add(personalProgram);
-    personalProgram.setCareSheet(this); // 주인 쪽도 세팅
+
+    if (p.getProgramName() == null || p.getType() == null) {
+      throw new ApplicationException(DocumentErrorStatus.PERSONAL_PROGRAM_INVALID_ARGUMENT);
+    }
+
+    // 이미 있으면 점수만 갱신하고 추가 안 함
+    for (PersonalProgram cur : personalPrograms) {
+      if (p.getProgramName().equals(cur.getProgramName()) && p.getType() == cur.getType()) {
+        if (p.getScore() != null && p.getScore() != cur.getScore()) {
+          cur.update(cur.getProgramName(), cur.getType(), p.getScore());
+        }
+        return false; // 새로운 insert 스케줄링 안 됨
+      }
+    }
+
+    // 새로 추가
+    personalPrograms.add(p);
+    p.setCareSheet(this);
+    return true;
   }
 
   public void removePersonalProgram(PersonalProgram personalProgram) {
@@ -180,6 +203,25 @@ public class CareSheet extends BaseTimeEntity {
     }
     if (personalProgramList != null) {
       personalProgramList.forEach(this::addPersonalProgram);
+    }
+  }
+
+  /**
+   * 편의 오버로드: 바로 값으로 추가
+   */
+  public boolean addPersonalProgram(String name, ProgramType type, ProgramScore score) {
+    return addPersonalProgram(new PersonalProgram(name, type, score));
+  }
+
+  /**
+   * 교체 모드: 중복 없이 싹 갈아끼우기
+   */
+  public void replacePersonalPrograms(Collection<PersonalProgram> newOnes) {
+    personalPrograms.clear();
+    if (newOnes != null) {
+      for (PersonalProgram p : newOnes) {
+        addPersonalProgram(p);
+      }
     }
   }
 

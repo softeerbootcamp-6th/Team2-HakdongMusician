@@ -3,10 +3,10 @@ package com.daycan.repository.jpa;
 import com.daycan.domain.entity.document.PersonalProgram;
 
 import com.daycan.domain.enums.ProgramScore;
+import com.daycan.domain.enums.ProgramType;
 import java.time.LocalDate;
 import java.util.Collection;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.stereotype.Repository;
@@ -18,6 +18,8 @@ public interface PersonalProgramRepository extends JpaRepository<PersonalProgram
 
   // 문서 단위 전체
   List<PersonalProgram> findByCareSheetId(Long careSheetId);
+
+  long countByCareSheetId(Long careSheetId);
 
   // CareSheet + 프로그램명
   List<PersonalProgram> findByCareSheetIdAndProgramName(Long careSheetId, String programName);
@@ -38,7 +40,9 @@ public interface PersonalProgramRepository extends JpaRepository<PersonalProgram
   // CareSheet 단위 일괄 삭제
   void deleteByCareSheetId(Long careSheetId);
 
-  // 페이징 예시
-  Page<PersonalProgram> findByCareSheetId(Long careSheetId, Pageable pageable);
+  boolean existsByCareSheet_IdAndProgramNameAndType(Long careSheetId, String programName, ProgramType type);
+  Optional<PersonalProgram> findByCareSheet_IdAndProgramNameAndType(Long careSheetId, String programName, ProgramType type);
 
+  long countByCareSheet_Id(Long careSheetId);
+  List<PersonalProgram> findByCareSheet_Id(Long careSheetId);
 }

@@ -3,13 +3,17 @@ package com.daycan.service.document;
 import com.daycan.api.dto.center.request.AttendanceAction;
 import com.daycan.api.dto.center.request.CareSheetRequest;
 import com.daycan.api.dto.center.response.centermanage.AttendanceResultResponse;
+import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
-import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
+import com.daycan.api.dto.common.FullReportDto;
+import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.exceptions.DocumentNonCreatedException;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
+import com.daycan.domain.entry.document.report.ReportStatus;
 import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.enums.DocumentStatus;
-import com.daycan.domain.model.CareSheetMetaView;
+import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.entity.Member;
@@ -20,12 +24,12 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Pageable;
 
 
 @Service
@@ -37,6 +41,7 @@ public class DocumentFacade {
   private final CareSheetQueryService careSheetQueryService;
   private final MemberService memberService;
   private final DocumentService documentService;
+  private final CareReportService careReportService;
 
   @Transactional
   public Long writeCareSheet(Center center, CareSheetRequest req) {
@@ -71,6 +76,15 @@ public class DocumentFacade {
   }
 
   @Transactional(readOnly = true)
+  public CareSheetResponse getCareSheetById(Center center, Long sheetId) {
+    if (!documentService.isValidCenterDocument(center, sheetId)) {
+      throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ACCESS, sheetId);
+    }
+    CareSheetView sheet = careSheetQueryService.findCareSheetViewById(sheetId);
+    return sheet.toResponse();
+  }
+
+  @Transactional(readOnly = true)
   public CareSheetResponse getCareSheetByMemberAndDate(
       Center center, Long memberId, LocalDate localDate) {
     Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
@@ -86,36 +100,83 @@ public class DocumentFacade {
       Long writerId,
       List<SheetStatus> sheetStatuses
   ) {
-    Set<DocumentStatus> docStatuses = toDocumentStatuses(sheetStatuses); // private 메서드로 변환
+    return getMetaListByDate(
+        center, date, writerId, null,
+        sheetStatuses,
+        DocumentStatus::allSheetStatuses,
+        DocumentStatus::from,
+        DocumentMetaView::toSheetResponse
+    );
+  }
 
-    return careSheetQueryService.findCareSheetMetaViewByDate(
-            center, date, writerId, docStatuses.stream().toList()
+  @Transactional(readOnly = true)
+  public List<CareReportMetaResponse> getCareReportMetaListByDate(
+      Center center,
+      LocalDate date,
+      List<ReportStatus> reportStatuses,
+      String nameLike
+  ) {
+    return getMetaListByDate(
+        center, date, null, nameLike,
+        reportStatuses,
+        DocumentStatus::allReportStatuses,
+        DocumentStatus::from,
+        DocumentMetaView::toReportResponse
+    );
+  }
+
+  @Transactional(readOnly = true)
+  public FullReportDto getCareReportByMemberIdAndDate(Center center, Long memberId, LocalDate date) {
+    Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
+    return careReportService.getReport(member.getId(), date);
+  }
+
+  @Transactional(readOnly = true)
+  public FullReportDto getCareReportByMemberIdAndReportId(Center center, Long reportId) {
+    if (!documentService.isValidCenterDocument(center, reportId)) {
+      throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ACCESS, reportId);
+    }
+    return careReportService.getReport(reportId);
+  }
+
+  private <S, R> List<R> getMetaListByDate(
+      Center center,
+      LocalDate date,
+      Long writerId,
+      String nameLike,
+      List<S> statuses,
+      Supplier<EnumSet<DocumentStatus>> allSupplier,
+      Function<S, DocumentStatus> statusMapper,
+      Function<DocumentMetaView, R> responseMapper
+  ) {
+    Set<DocumentStatus> docStatuses = toDocumentStatuses(statuses, allSupplier, statusMapper);
+
+    return careSheetQueryService.findDocumentMetaViewByDate(
+            center, date, writerId, List.copyOf(docStatuses), nameLike
         )
         .stream()
-        .map(CareSheetMetaView::toResponse)
+        .map(responseMapper)
         .toList();
   }
 
-  private Set<DocumentStatus> toDocumentStatuses(List<SheetStatus> sheets) {
-    // 필터 비지정 시: 시트 관점 3가지만 허용
-    if (sheets == null || sheets.isEmpty()) {
-      return EnumSet.of(
-          DocumentStatus.NOT_APPLICABLE,
-          DocumentStatus.SHEET_PENDING,
-          DocumentStatus.SHEET_DONE
-      );
+
+  private <T> Set<DocumentStatus> toDocumentStatuses(
+      List<T> statuses,
+      Supplier<EnumSet<DocumentStatus>> allSupplier,
+      Function<T, DocumentStatus> mapper
+  ) {
+    if (statuses == null || statuses.isEmpty()) {
+      return allSupplier.get();
     }
 
     EnumSet<DocumentStatus> result = EnumSet.noneOf(DocumentStatus.class);
-    for (SheetStatus s : sheets) {
-      for (DocumentStatus ds : DocumentStatus.values()) {
-        if (ds.toSheetStatus() == s) {
-          result.add(ds);
-        }
+    for (T s : statuses) {
+      if (s == null) {
+        result.addAll(allSupplier.get());
+      } else {
+        result.add(mapper.apply(s));
       }
     }
     return result;
   }
-
-
 }

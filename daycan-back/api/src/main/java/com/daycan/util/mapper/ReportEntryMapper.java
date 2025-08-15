@@ -28,7 +28,7 @@ public class ReportEntryMapper {
   private static final String WARN_HIGH_FEVER = "고열 주의";
   private static final String WARN_HYPERTENSION = "고혈압 의심";
 
-  /* ───────── 식사 ───────── */
+
   public static List<ReportEntry> mealEntries(CareReport r) {
     return List.of(
         ReportEntry.fromMeal(KEY_BREAKFAST, r.getBreakfastComment()),
@@ -37,7 +37,6 @@ public class ReportEntryMapper {
     );
   }
 
-  /* ───────── 건강 ───────── */
   public static List<ReportEntry> healthEntries(CareReport r) {
     Vital v = r.getDocument().getVital();
 
@@ -68,7 +67,6 @@ public class ReportEntryMapper {
     );
   }
 
-  /* ───────── 프로그램(인지·신체) ───────── */
   public static List<ReportEntry> programEntries(List<ProgramComment> list) {
     return list.stream()
         .map(p -> ReportEntry.fromProgram(
@@ -80,5 +78,5 @@ public class ReportEntryMapper {
   }
 
   private ReportEntryMapper() {
-  } // util-class
+  }
 }

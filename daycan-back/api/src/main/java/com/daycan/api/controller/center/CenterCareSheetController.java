@@ -9,6 +9,7 @@ import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
+import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.service.document.DocumentFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,6 +64,24 @@ public class CenterCareSheetController {
     );
   }
 
+  @GetMapping("/{sheetId}")
+  @Operation(summary = "기록지 단건 조회", description = "수급자 ID와 날짜로 기록지를 조회합니다.")
+  public ResponseWrapper<CareSheetResponse> getCareSheetByRecipientAndDate(
+      @AuthenticatedUser
+      CenterDetails centerDetails,
+
+      @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      @Schema(description = "기록지 id", example = "1") Long sheetId
+  ) {
+    CareSheetResponse response = documentFacade.getCareSheetById(
+        centerDetails.getCenter(),
+        sheetId
+    );
+    return ResponseWrapper.onSuccess(
+        response
+    );
+  }
+
   // 리스트 조회
   @GetMapping("/{date}")
   @Operation(
@@ -79,20 +98,19 @@ public class CenterCareSheetController {
       CenterDetails centerDetails,
 
       @ParameterObject @ModelAttribute @Valid
-      SheetQueryParameters queryParameters,
+      SheetQueryParameters query,
 
       @PathVariable
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       @Schema(description = "조회 날짜", example = "2025-08-04")
       LocalDate date,
 
-      @Parameter(description = "작성자 ID (optional)", example = "1", required = false)
-      @RequestParam(required = false)
-      Long writerId
+      @RequestParam(required = false) Long writerId
   ) {
+    List<SheetStatus> statuses = query.statuses();
     return ResponseWrapper.onSuccess(
         documentFacade.getCareSheetMetaListByDate(
-            centerDetails.getCenter(), date, writerId, queryParameters.statuses()
+            centerDetails.getCenter(), date, writerId, statuses
         )
     );
   }

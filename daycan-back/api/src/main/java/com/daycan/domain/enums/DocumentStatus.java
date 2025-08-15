@@ -2,6 +2,7 @@ package com.daycan.domain.enums;
 
 import com.daycan.domain.entry.document.report.ReportStatus;
 import com.daycan.domain.entry.document.sheet.SheetStatus;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
@@ -26,15 +27,16 @@ public enum DocumentStatus {
 
   private static final Map<DocumentStatus, Set<DocumentStatus>> ALLOWED = Map.of(
       NOT_APPLICABLE, Set.of(SHEET_PENDING),
-      SHEET_PENDING,  Set.of(SHEET_DONE),
-      SHEET_DONE,     Set.of(REPORT_PENDING),
+      SHEET_PENDING, Set.of(SHEET_DONE),
+      SHEET_DONE, Set.of(REPORT_PENDING),
       REPORT_PENDING, Set.of(REPORT_CREATED),
       REPORT_CREATED, Set.of(REPORT_REVIEWED),
-      REPORT_REVIEWED,Set.of(REPORT_SENDING, REPORT_RESERVED),
-      REPORT_RESERVED,Set.of(REPORT_SENDING),
+      REPORT_REVIEWED, Set.of(REPORT_SENDING, REPORT_RESERVED),
+      REPORT_RESERVED, Set.of(REPORT_SENDING),
       REPORT_SENDING, Set.of(REPORT_DONE),
-      REPORT_DONE,    Set.of()
+      REPORT_DONE, Set.of()
   );
+
   public boolean canTransitTo(DocumentStatus next) {
     return ALLOWED.getOrDefault(this, Set.of()).contains(next);
   }
@@ -44,21 +46,22 @@ public enum DocumentStatus {
       case NOT_APPLICABLE -> SheetStatus.NOT_APPLICABLE;
       case SHEET_PENDING -> SheetStatus.PENDING;
       case SHEET_DONE,
-           REPORT_PENDING, REPORT_CREATED, REPORT_REVIEWED, REPORT_SENDING, REPORT_RESERVED, REPORT_DONE
-          -> SheetStatus.DONE;
+           REPORT_PENDING, REPORT_CREATED, REPORT_REVIEWED, REPORT_SENDING, REPORT_RESERVED,
+           REPORT_DONE -> SheetStatus.DONE;
     };
   }
 
   public ReportStatus toReportStatus(Long careReportId) {
     return switch (this) {
       case NOT_APPLICABLE, SHEET_PENDING -> ReportStatus.NOT_APPLICABLE;
-      case SHEET_DONE     -> (careReportId == null ? ReportStatus.NOT_APPLICABLE : ReportStatus.PENDING);
-      case REPORT_PENDING   -> ReportStatus.PENDING;
-      case REPORT_CREATED   -> ReportStatus.CREATED;
-      case REPORT_REVIEWED  -> ReportStatus.REVIEWED;
-      case REPORT_SENDING   -> ReportStatus.SENDING;
-      case REPORT_RESERVED  -> ReportStatus.RESERVED;
-      case REPORT_DONE      -> ReportStatus.DONE;
+      case SHEET_DONE ->
+          (careReportId == null ? ReportStatus.NOT_APPLICABLE : ReportStatus.PENDING);
+      case REPORT_PENDING -> ReportStatus.PENDING;
+      case REPORT_CREATED -> ReportStatus.CREATED;
+      case REPORT_REVIEWED -> ReportStatus.REVIEWED;
+      case REPORT_SENDING -> ReportStatus.SENDING;
+      case REPORT_RESERVED -> ReportStatus.RESERVED;
+      case REPORT_DONE -> ReportStatus.DONE;
     };
   }
 
@@ -68,7 +71,8 @@ public enum DocumentStatus {
     if (report != null && report != ReportStatus.NOT_APPLICABLE) {
       // 안전장치: 리포트가 진행/완료인데 시트가 DONE이 아니라면 모순
       if (sheet != null && sheet != SheetStatus.DONE) {
-        throw new IllegalArgumentException("Report status requires SheetStatus.DONE (sheet=" + sheet + ", report=" + report + ")");
+        throw new IllegalArgumentException(
+            "Report status requires SheetStatus.DONE (sheet=" + sheet + ", report=" + report + ")");
       }
       return switch (report) {
         case PENDING -> REPORT_PENDING;
@@ -82,7 +86,9 @@ public enum DocumentStatus {
     }
 
     // 리포트 축이 없으면 시트 축으로 결정
-    if (sheet == null) return NOT_APPLICABLE;
+    if (sheet == null) {
+      return NOT_APPLICABLE;
+    }
     return switch (sheet) {
       case NOT_APPLICABLE -> NOT_APPLICABLE;
       case PENDING -> SHEET_PENDING;
@@ -91,15 +97,32 @@ public enum DocumentStatus {
   }
 
 
+  // 편의 생성자: 리포트 축만으로 결정 (시트는 자동으로 DONE 가정)
+  public static DocumentStatus from(ReportStatus report) {
+    return from(SheetStatus.DONE, report);
+  }
 
-    // 편의 생성자: 리포트 축만으로 결정 (시트는 자동으로 DONE 가정)
-    public static DocumentStatus from(ReportStatus report) {
-      return from(SheetStatus.DONE, report);
-    }
+  // 편의 생성자: 시트 축만으로 결정 (리포트는 아직 시작 전으로 가정)
+  public static DocumentStatus from(SheetStatus sheet) {
+    return from(sheet, ReportStatus.NOT_APPLICABLE);
+  }
 
-    // 편의 생성자: 시트 축만으로 결정 (리포트는 아직 시작 전으로 가정)
-    public static DocumentStatus from(SheetStatus sheet) {
-      return from(sheet, ReportStatus.NOT_APPLICABLE);
-    }
+  public static EnumSet<DocumentStatus> allReportStatuses() {
+    return EnumSet.of(
+        DocumentStatus.REPORT_PENDING,
+        DocumentStatus.REPORT_CREATED,
+        DocumentStatus.REPORT_REVIEWED,
+        DocumentStatus.REPORT_SENDING,
+        DocumentStatus.REPORT_RESERVED,
+        DocumentStatus.REPORT_DONE
+    );
+  }
 
+  public static EnumSet<DocumentStatus> allSheetStatuses() {
+    return EnumSet.of(
+        DocumentStatus.NOT_APPLICABLE,
+        DocumentStatus.SHEET_PENDING,
+        DocumentStatus.SHEET_DONE
+    );
+  }
 }
