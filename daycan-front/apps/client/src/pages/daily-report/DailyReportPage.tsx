@@ -9,17 +9,37 @@ import {
   HealthImproveCard,
   CognitiveCard,
 } from "./components";
+import { useDailyReport } from "./hooks/useDailyReport";
 
 export const DailyReportPage = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [name, setName] = useState<string>("김수진");
   const [isMale, setIsMale] = useState<boolean>(true);
 
+  const {
+    isLoading,
+    error,
+    getMealCardData,
+    getHealthCheckCardData,
+    getHealthImproveCardData,
+    getCognitiveCardData,
+    getHealthIndexCardData,
+    getHealthIndexDescription,
+  } = useDailyReport();
+
   useEffect(() => {
     setName("김수진");
     setDate(new Date());
     setIsMale(false);
   }, []);
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div>에러가 발생했습니다: {error}</div>;
+  }
 
   return (
     <div className={container}>
@@ -35,85 +55,27 @@ export const DailyReportPage = () => {
         cardsData={[
           {
             id: 1,
-            content: (
-              <CognitiveCard
-                columns={[
-                  {
-                    key: "노래부르기",
-                    value: "오늘은 노래부르기 활동을 했어요!",
-                    specificDescription:
-                      "노래부르기 활동을 통해서, 몸과 마음을 단련시켰어요.",
-                  },
-                ]}
-              />
-            ),
+            content: <CognitiveCard columns={getCognitiveCardData()} />,
           },
           {
             id: 2,
-            content: (
-              <HealthImproveCard
-                columns={[
-                  {
-                    key: "게이트 볼",
-                    value: "게이트 볼을 통해서, 몸과 마음을 단련시켰어요.",
-                  },
-                ]}
-              />
-            ),
+            content: <HealthImproveCard columns={getHealthImproveCardData()} />,
           },
           {
             id: 3,
-            content: (
-              <HealthCheckCard
-                rows={[
-                  {
-                    key: "혈압",
-                    value: "120/80",
-                  },
-                  {
-                    key: "체온",
-                    value: "36.5℃",
-                  },
-                ]}
-              />
-            ),
+            content: <HealthCheckCard rows={getHealthCheckCardData()} />,
           },
           {
             id: 4,
-            content: (
-              <MealCard
-                rows={[
-                  {
-                    key: "아침",
-                    value: "오늘은 아침을 했어요!",
-                    warningDescription: "반찬 투정을 하셨어요",
-                  },
-                  {
-                    key: "점심",
-                    value: "오늘은 점심을 했어요!",
-                    warningDescription:
-                      "차은우가 먹여주는 게 아니라면 안 먹는대요",
-                  },
-                  {
-                    key: "저녁",
-                    value: "오늘은 저녁을 했어요!",
-                  },
-                ]}
-              />
-            ),
+            content: <MealCard rows={getMealCardData()} />,
           },
           {
             id: 5,
             content: (
               <HealthIndexCard
                 index={85}
-                description="대충 진짜 너무 잘 하셔서 스껄하시다는 뜻 ㅎㅎ 와우와우와우~!!"
-                indexCardData={[
-                  { title: "식사", value: 15 },
-                  { title: "건강", value: 15 },
-                  { title: "신체", value: 15 },
-                  { title: "인지", value: 15 },
-                ]}
+                description={getHealthIndexDescription()}
+                indexCardData={getHealthIndexCardData()}
               />
             ),
           },
