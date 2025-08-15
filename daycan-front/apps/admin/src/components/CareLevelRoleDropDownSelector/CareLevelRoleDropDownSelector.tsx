@@ -6,23 +6,27 @@ import {
   dropDownPanel,
   dropDownOption,
   dropDownIcon,
-} from "./CareLevelDropDown.css";
+} from "./CareLevelRoleDropDownSelector.css";
 
-export interface CareLevelDropDownProps {
-  options: { value: number; label: string }[];
-  value?: number;
+export interface CareLevelRoleDropDownSelectorProps {
+  options: { value: number | string; label: string }[];
+  value?: number | string;
   placeholder?: string;
-  onChange: (value: number) => void;
+  onChange: (value: number | string) => void;
   disabled?: boolean;
+  label?: string;
+  hideLabel?: boolean;
 }
 
-export const CareLevelDropDown = ({
+export const CareLevelRoleDropDownSelector = ({
   options,
   value,
   placeholder = "선택해주세요",
   onChange,
   disabled = false,
-}: CareLevelDropDownProps) => {
+  label,
+  hideLabel = false,
+}: CareLevelRoleDropDownSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +53,7 @@ export const CareLevelDropDown = ({
     }
   };
 
-  const handleOptionSelect = (optionValue: number) => {
+  const handleOptionSelect = (optionValue: number | string) => {
     onChange(optionValue);
     setIsOpen(false);
   };
@@ -59,14 +63,19 @@ export const CareLevelDropDown = ({
 
   return (
     <div className={dropDownContainer} ref={dropdownRef}>
+      {!hideLabel && label && (
+        <div style={{ marginBottom: "8px" }}>
+          <Body weight={600} type="large" style={{ color: COLORS.gray[700] }}>
+            {label}
+          </Body>
+        </div>
+      )}
       <div className={dropDownButton} onClick={handleToggle}>
         <Body
           type="large"
           weight={500}
           color={
-            displayText !== "장기요양등급 선택"
-              ? COLORS.gray[900]
-              : COLORS.gray[500]
+            displayText !== placeholder ? COLORS.gray[900] : COLORS.gray[500]
           }
         >
           {displayText}
