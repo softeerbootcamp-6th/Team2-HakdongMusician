@@ -6,7 +6,6 @@ import type {
 } from "./types";
 import { safeRequest } from "@daycan/api";
 import { privateInstance } from "../instance";
-import { handleError } from "@/services/error/handleError";
 
 /**
  * 리포트 리스트 조회
@@ -20,22 +19,16 @@ export const getReportList = async (
   statuses?: TReportStatus[],
   memberNameLike?: string
 ): Promise<TReportListItem[] | null> => {
-  try {
-    const response = await safeRequest.get<TReportListItem[]>(
-      privateInstance,
-      `/admin/report/${yyyymm}`,
-      {
-        params: {
-          statuses,
-          memberNameLike,
-        },
-      }
-    );
-    return response;
-  } catch (error) {
-    handleError(error);
-    return Promise.resolve(null);
-  }
+  return await safeRequest.get<TReportListItem[]>(
+    privateInstance,
+    `/admin/report/${yyyymm}`,
+    {
+      params: {
+        statuses,
+        memberNameLike,
+      },
+    }
+  );
 };
 
 /**
@@ -48,16 +41,10 @@ export const getReport = async (
   yyyymmdd: YearMonthDay,
   memberId: string
 ): Promise<TReportReadResponse | null> => {
-  try {
-    const response = await safeRequest.get<TReportReadResponse>(
-      privateInstance,
-      `/admin/report/${yyyymmdd}/${memberId}`
-    );
-    return response;
-  } catch (error) {
-    handleError(error);
-    return Promise.resolve(null);
-  }
+  return await safeRequest.get<TReportReadResponse>(
+    privateInstance,
+    `/admin/report/${yyyymmdd}/${memberId}`
+  );
 };
 
 /**
@@ -66,17 +53,13 @@ export const getReport = async (
  * @author 홍규진
  */
 export const sendReport = async (reportId: number): Promise<void> => {
-  try {
-    await safeRequest.patch(
-      privateInstance,
-      `/admin/care-report/${reportId}/send`,
-      {
-        reportId,
-      }
-    );
-  } catch (error) {
-    handleError(error);
-  }
+  return await safeRequest.patch(
+    privateInstance,
+    `/admin/care-report/${reportId}/send`,
+    {
+      reportId,
+    }
+  );
 };
 
 /**
@@ -85,12 +68,8 @@ export const sendReport = async (reportId: number): Promise<void> => {
  * @author 홍규진
  */
 export const reviewReport = async (reportId: number): Promise<void> => {
-  try {
-    await safeRequest.patch(
-      privateInstance,
-      `/admin/care-report/${reportId}/review`
-    );
-  } catch (error) {
-    handleError(error);
-  }
+  return await safeRequest.patch(
+    privateInstance,
+    `/admin/care-report/${reportId}/review`
+  );
 };

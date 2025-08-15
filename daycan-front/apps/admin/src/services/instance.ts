@@ -1,4 +1,4 @@
-import { applyDevLoggingInterceptor } from "@daycan/api";
+// import { applyDevLoggingInterceptor } from "@daycan/api";
 import axios from "axios";
 
 export const publicInstance = axios.create({
@@ -12,5 +12,5 @@ export const privateInstance = axios.create({
   },
 });
 
-applyDevLoggingInterceptor(publicInstance);
-applyDevLoggingInterceptor(privateInstance);
+// applyDevLoggingInterceptor(publicInstance);
+// applyDevLoggingInterceptor(privateInstance);

@@ -5,23 +5,13 @@ import type {
   TmemberPatchRequest,
 } from "./types";
 import { privateInstance } from "../instance";
-import { handleError } from "@/services/error/handleError";
 
 /**
  * 수급자 목록을 조회합니다.
  * @author 홍규진
  */
 export const getMemberList = async (): Promise<TMember[] | null> => {
-  try {
-    const response = await safeRequest.get<TMember[]>(
-      privateInstance,
-      "/admin/member"
-    );
-    return response;
-  } catch (error) {
-    handleError(error);
-    return Promise.resolve(null);
-  }
+  return await safeRequest.get<TMember[]>(privateInstance, "/admin/member");
 };
 
 /**
@@ -29,16 +19,10 @@ export const getMemberList = async (): Promise<TMember[] | null> => {
  * @author 홍규진
  */
 export const getMember = async (memberId: string): Promise<TMember | null> => {
-  try {
-    const response = await safeRequest.get<TMember>(
-      privateInstance,
-      `/admin/member/${memberId}`
-    );
-    return response;
-  } catch (error) {
-    handleError(error);
-    return Promise.resolve(null);
-  }
+  return await safeRequest.get<TMember>(
+    privateInstance,
+    `/admin/member/${memberId}`
+  );
 };
 
 /**
@@ -48,11 +32,7 @@ export const getMember = async (memberId: string): Promise<TMember | null> => {
 export const createMember = async (
   data: TMemberCreateRequest
 ): Promise<void> => {
-  try {
-    await safeRequest.post(privateInstance, "/admin/member", data);
-  } catch (error) {
-    handleError(error);
-  }
+  return await safeRequest.post(privateInstance, "/admin/member", data);
 };
 
 /**
@@ -63,11 +43,7 @@ export const updateMember = async (
   id: string,
   data: TmemberPatchRequest
 ): Promise<void> => {
-  try {
-    await safeRequest.patch(privateInstance, `/admin/member/${id}`, data);
-  } catch (error) {
-    handleError(error);
-  }
+  return await safeRequest.patch(privateInstance, `/admin/member/${id}`, data);
 };
 
 /**
@@ -75,9 +51,5 @@ export const updateMember = async (
  * @author 홍규진
  */
 export const deleteMember = async (id: string): Promise<void> => {
-  try {
-    await safeRequest.delete(privateInstance, `/admin/member/${id}`);
-  } catch (error) {
-    handleError(error);
-  }
+  return await safeRequest.delete(privateInstance, `/admin/member/${id}`);
 };

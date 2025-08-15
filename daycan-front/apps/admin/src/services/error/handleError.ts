@@ -6,10 +6,10 @@ import {
   ServerError,
 } from "@daycan/api";
 import { useToast } from "@daycan/ui";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { showToast } = useToast();
 
   // 에러 타입별로 다른 처리
@@ -48,7 +48,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
       (error.code >= 40100 && error.code < 40200) ||
       (error.code >= 40300 && error.code < 40400)
     ) {
-      navigate("/login");
+      // window.location.href = "/login";
     }
   } else if (error instanceof ClientError) {
     // 클라이언트 에러 (400, 404 등)

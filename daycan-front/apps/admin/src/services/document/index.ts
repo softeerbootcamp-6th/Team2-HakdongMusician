@@ -1,7 +1,6 @@
 import { safeRequest } from "@daycan/api";
 import type { TDocumentByMonth, TDocumentCount } from "./types";
 import type { YearMonth } from "@/types/date";
-import { handleError } from "@/services/error/handleError";
 import { privateInstance } from "../instance";
 
 /**
@@ -12,16 +11,10 @@ export const getDocumentByMonth = async (
   memberId: string,
   yyyymm: YearMonth
 ): Promise<TDocumentByMonth[]> => {
-  try {
-    const response = await safeRequest.get<TDocumentByMonth[]>(
-      privateInstance,
-      `/admin/document/${memberId}/${yyyymm}`
-    );
-    return response;
-  } catch (error) {
-    handleError(error);
-    return Promise.resolve([]);
-  }
+  return await safeRequest.get<TDocumentByMonth[]>(
+    privateInstance,
+    `/admin/document/${memberId}/${yyyymm}`
+  );
 };
 
 /**
@@ -31,14 +24,8 @@ export const getDocumentByMonth = async (
 export const getDocumentCount = async (
   yyyymm: YearMonth
 ): Promise<TDocumentCount | null> => {
-  try {
-    const response = await safeRequest.get<TDocumentCount>(
-      privateInstance,
-      `/admin/document/count/${yyyymm}`
-    );
-    return response;
-  } catch (error) {
-    handleError(error);
-    return Promise.resolve(null);
-  }
+  return await safeRequest.get<TDocumentCount>(
+    privateInstance,
+    `/admin/document/count/${yyyymm}`
+  );
 };

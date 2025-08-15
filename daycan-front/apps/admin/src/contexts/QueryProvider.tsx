@@ -1,24 +1,63 @@
 import {
   QueryClient,
   QueryClientProvider as _QueryClientProvider,
+  QueryCache,
+  MutationCache,
 } from "@tanstack/react-query";
 import { type ReactNode } from "react";
+import { AuthError, ClientError } from "@daycan/api";
+import { showToast } from "@/utils/toastUtils";
+import { handleError } from "@/services/error";
 
 /**
  * 이미 QueryClient는 Context API를 통해 구현되어있기에
  * 따로 Context API를 통해 관리하지 않습니다.
+ * 에러 처리는 모두 통일성 있게 handleError 함수를 통해 처리합니다.
+ * packages/api 에서 정의한 customError 타입을 사용합니다.
+ * 각 에러 타입별로 다른 토스트 메시지를 표시할 수 있도록 설정합니다.
+ * N개의 API 호출에서 N개의 try catch 문을 작성하는 것보다 훨씬 깔끔합니다.
  * @author 홍규진
  */
 export function QueryClientProvider({ children }: { children: ReactNode }) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60, // 1분 동안 fresh
-        gcTime: 1000 * 60 * 5, // 언마운트 후 5분 동안 캐시 유지
+        // 실패 재시도 정책 (네트워크/서버 에러만 재시도)
+        retry(failureCount, error: unknown) {
+          if (error instanceof AuthError || error instanceof ClientError) {
+            return false; // 401/403/4xx는 재시도 안함
+          }
+          return failureCount < 2; // 네트워크/서버 에러는 2번까지 재시도
+        },
+        staleTime: 1000 * 60, // 1분
+        gcTime: 1000 * 60 * 5, // 5분
         refetchOnWindowFocus: false,
-        retry: 1,
+      },
+      mutations: {
+        retry: false, // 뮤테이션은 기본적으로 재시도 안함
       },
     },
+    queryCache: new QueryCache({
+      onError: (error) => {
+        handleError(error, "pc");
+      },
+    }),
+    mutationCache: new MutationCache({
+      onError: (error, _variables, _ctx, mutation) => {
+        // 조용한 에러 처리 설정이 있으면 스킵
+        if (mutation.meta?.silentError) return;
+        handleError(error, "pc");
+      },
+      onSuccess: (_data, _variables, _ctx, mutation) => {
+        // 성공 메시지가 설정되어 있으면 표시
+        if (mutation.meta?.successMessage) {
+          showToast({
+            message: String(mutation.meta.successMessage),
+            type: "success",
+          });
+        }
+      },
+    }),
   });
 
   return (

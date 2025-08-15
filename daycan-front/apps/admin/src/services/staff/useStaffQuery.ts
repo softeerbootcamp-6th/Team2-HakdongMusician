@@ -15,7 +15,7 @@ export const STAFF_QUERY_KEY = {
  * @author 홍규진
  */
 export const useStaffListQuery = () => {
-  useQuery({
+  return useQuery({
     queryKey: STAFF_QUERY_KEY.list(),
     queryFn: () => getStaffList(),
     ...DEFAULT_QUERY_OPTIONS,
@@ -29,7 +29,7 @@ export const useStaffListQuery = () => {
  * @author 홍규진
  */
 export const useStaffDetailQuery = (staffId: number) => {
-  useQuery({
+  return useQuery({
     queryKey: STAFF_QUERY_KEY.detail(staffId),
     queryFn: () => getStaff(staffId),
     ...DEFAULT_QUERY_OPTIONS,

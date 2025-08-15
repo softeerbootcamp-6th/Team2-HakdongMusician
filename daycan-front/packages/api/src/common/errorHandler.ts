@@ -39,6 +39,8 @@ export function parseError(err: unknown): never {
      * 40100 - 401 에러 + 비즈니스 에러 코드 (인증 에러)
      * 40000 - 400 에러 + 비즈니스 에러 코드
      */
+    console.log("backEndCode", backEndCode);
+    console.log("backEndMessage", backEndMessage);
     if (backEndCode >= 40100 && backEndCode < 40200) {
       // 401 에러 - 인증 에러 (로그인이 필요하거나 토큰이 만료된 경우)
       throw new AuthError(backEndCode, backEndMessage);
