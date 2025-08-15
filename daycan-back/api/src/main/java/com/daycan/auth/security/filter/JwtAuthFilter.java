@@ -57,6 +57,10 @@ public class JwtAuthFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     HttpServletResponse res = (HttpServletResponse) response;
 
+    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+      chain.doFilter(request, response);
+      return;
+    }
     // 경로 제외 하기
     if (isExcluded(req)) {
       log.debug("인증 제외 경로: {}", req.getRequestURI());

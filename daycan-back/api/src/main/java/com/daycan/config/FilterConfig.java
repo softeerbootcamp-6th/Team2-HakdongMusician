@@ -6,13 +6,40 @@ import com.daycan.auth.security.JwtTokenProvider;
 import com.daycan.auth.security.filter.JwtAuthFilter;
 import com.daycan.auth.security.filter.LoginFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class FilterConfig {
+
+  @Bean
+  public FilterRegistrationBean<CorsFilter> corsFilter() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    // 프론트 오리진만 정확히 열기
+    config.setAllowedOriginPatterns(List.of(
+        "http://localhost:5173",
+        "http://localhost:5174"
+    ));
+    config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setExposedHeaders(List.of("Set-Cookie"));
+    config.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+
+    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+    bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    return bean;
+  }
   /**
    * 로그인 필터 등록
    * - /auth/login 경로에 대해 LoginFilter를 적용

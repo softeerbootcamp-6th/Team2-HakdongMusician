@@ -32,6 +32,10 @@ public class LoginFilter implements Filter {
     HttpServletRequest  req = (HttpServletRequest) request;
     HttpServletResponse res = (HttpServletResponse) response;
 
+    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+      chain.doFilter(request, response);
+      return;
+    }
     /* /auth/login POST 만 처리 */
     if (!req.getRequestURI().equals("/auth/login") ||
         !req.getMethod().equalsIgnoreCase("POST")) {
