@@ -1,43 +1,77 @@
 import { Button, COLORS, Icon } from "@daycan/ui";
 import {
-  memberDataItemDetailContainer,
   memberDataItemDetailContent,
   memberDataItemDetailCardContainer,
   memberDataItemDetailButtonContainer,
   memberDataItemDetailTopButton,
   memberDataItemDetailBottomButton,
   editButton,
+  memberDataItemDetailContainer,
 } from "./MemberDataItemDetail.css";
 import { useState } from "react";
 import { HistoryModal } from "../HistoryModal/HistoryModal";
+import { EditAuthModal, DeleteConfirmModal } from "@/components/index";
+import type { MemberData } from "@/pages/member/constants/member";
+import { useNavigate } from "react-router-dom";
 
 interface MemberDataItemDetailProps {
-  detailCard?: React.ReactNode;
+  children?: React.ReactNode;
+  renderContent?: (member: MemberData) => React.ReactNode;
   memberId: string;
-  onEditButtonClick: (memberId: string) => void;
-  onDeleteButtonClick: (memberId: string) => void;
+  member: MemberData;
 }
 
 export const MemberDataItemDetail = ({
-  detailCard,
+  children,
+  renderContent,
   memberId,
-  onEditButtonClick,
-  onDeleteButtonClick,
+  member,
 }: MemberDataItemDetailProps) => {
-  // 수정 버튼 클릭 시 부모 컴포넌트로 이벤트 전달
-  const handleEditClick = () => {
-    onEditButtonClick(memberId);
+  const navigate = useNavigate();
+  //모달 상태
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [isMemberEditAuthModalOpen, setIsMemberEditAuthModalOpen] =
+    useState(false);
+  const [isMemberDeleteConfirmModalOpen, setIsMemberDeleteConfirmModalOpen] =
+    useState(false);
+
+  // 수정 버튼 클릭 시 모달 열기
+  const handleEditButtonClick = () => {
+    setIsMemberEditAuthModalOpen(true);
   };
 
-  // 삭제 버튼 클릭 시 부모 컴포넌트로 이벤트 전달
-  const handleDeleteClick = () => {
-    onDeleteButtonClick(memberId);
+  // 삭제 버튼 클릭 시 모달 열기
+  const handleDeleteButtonClick = () => {
+    setIsMemberDeleteConfirmModalOpen(true);
   };
-  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+
+  const handleCloseDeleteModal = () => {
+    setIsMemberDeleteConfirmModalOpen(false);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsMemberEditAuthModalOpen(false);
+  };
+
+  // 삭제 확인 시 처리
+  const handleDeleteConfirm = () => {
+    setIsMemberDeleteConfirmModalOpen(false);
+    // TODO: 삭제 API 호출
+    console.log("delete member", memberId);
+  };
+
+  const handleEditAccessConfirm = () => {
+    setIsMemberEditAuthModalOpen(false);
+
+    navigate(`/member/edit/${memberId}`);
+  };
+
   return (
-    <div className={memberDataItemDetailContainer}>
-      <div className={memberDataItemDetailContent}>
-        <div className={memberDataItemDetailCardContainer}>{detailCard}</div>
+    <div className={memberDataItemDetailContent}>
+      <div className={memberDataItemDetailContainer}>
+        <div className={memberDataItemDetailCardContainer}>
+          {children || (renderContent && renderContent(member))}
+        </div>
 
         <div className={memberDataItemDetailButtonContainer}>
           <div className={memberDataItemDetailTopButton}>
@@ -57,7 +91,7 @@ export const MemberDataItemDetail = ({
           <div className={memberDataItemDetailBottomButton}>
             <Button
               size="small"
-              onClick={handleEditClick}
+              onClick={handleEditButtonClick}
               className={editButton}
             >
               수정
@@ -66,17 +100,32 @@ export const MemberDataItemDetail = ({
               variant="error"
               size="small"
               style={{ width: "58px", height: "32px" }}
-              onClick={handleDeleteClick}
+              onClick={handleDeleteButtonClick}
             >
               삭제
             </Button>
           </div>
         </div>
       </div>
+
       <HistoryModal
         memberId={memberId}
         isOpen={isHistoryModalOpen}
         onClose={() => setIsHistoryModalOpen(false)}
+      />
+
+      <EditAuthModal
+        isOpen={isMemberEditAuthModalOpen}
+        onClose={handleCloseEditModal}
+        onEditAccessConfirm={handleEditAccessConfirm}
+        unitId={memberId}
+      />
+
+      <DeleteConfirmModal
+        isOpen={isMemberDeleteConfirmModalOpen}
+        onClose={handleCloseDeleteModal}
+        onDeleteConfirm={handleDeleteConfirm}
+        unitName={member.name}
       />
     </div>
   );
