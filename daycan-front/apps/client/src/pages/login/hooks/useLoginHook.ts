@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { useLoginMutation } from "@/services/auth/useAuthMutation";
 
 // 상태 타입 정의
 interface LoginState {
@@ -83,6 +84,7 @@ const loginReducer = (state: LoginState, action: LoginAction): LoginState => {
 
 export const useLoginHook = () => {
   const [state, dispatch] = useReducer(loginReducer, initialState);
+  const loginMutation = useLoginMutation();
 
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: "SET_ID", payload: e.target.value });
@@ -92,17 +94,28 @@ export const useLoginHook = () => {
     dispatch({ type: "SET_PASSWORD", payload: e.target.value });
   };
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!state.isFilled) {
       dispatch({
         type: "SET_ERROR_MESSAGE",
         payload: "아이디와 비밀번호를 입력해주세요.",
       });
       return;
-    } else {
-      dispatch({ type: "CLEAR_ERROR_MESSAGE" });
     }
+
+    // 에러 메시지 초기화
+    dispatch({ type: "CLEAR_ERROR_MESSAGE" });
+
+    // 로그인 API 호출
+    await loginMutation.mutateAsync({
+      username: state.id,
+      password: state.password,
+    });
+
+    // 성공 시 폼 리셋
+    resetForm();
   };
 
   const setIsChecked = (value: boolean) => {
@@ -125,6 +138,7 @@ export const useLoginHook = () => {
     errorMessage: state.errorMessage,
     isChecked: state.isChecked,
     isModalOpen: state.isModalOpen,
+    isLoading: loginMutation.isPending,
 
     // 액션 핸들러
     handleIdChange,
