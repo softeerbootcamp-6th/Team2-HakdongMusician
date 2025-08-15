@@ -1,28 +1,32 @@
 import { Modal, Input, Button, Heading, Body, COLORS } from "@daycan/ui";
 import { useState } from "react";
 import {
-  memberEditAuthModalContent,
-  memberEditAuthModalForm,
-  memberEditAuthModalButton,
-  memberEditAuthModalFormHeader,
-  memberEditAuthModalFormBody,
-  memberEditAuthModalErrorMessage,
-} from "./MemberEditAuthModal.css";
+  editAuthModalContent,
+  editAuthModalForm,
+  editAuthModalButton,
+  editAuthModalFormHeader,
+  editAuthModalFormBody,
+  editAuthModalErrorMessage,
+} from "./EditAuthModal.css";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
-interface MemberEditAuthModalProps {
+/* 
+  unitId: memberId, staffId를 포괄적으로 사용하기 위한 Id
+*/
+
+interface EditAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEditAccessConfirm: (memberId: string) => void;
-  memberId: string;
+  onEditAccessConfirm: (unitId: string) => void;
+  unitId: string;
 }
 
-export const MemberEditAuthModal = ({
+export const EditAuthModal = ({
   isOpen,
   onClose,
   onEditAccessConfirm,
-  memberId,
-}: MemberEditAuthModalProps) => {
+  unitId,
+}: EditAuthModalProps) => {
   const [centerId, setCenterId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +48,7 @@ export const MemberEditAuthModal = ({
       // const response = await authenticateUser(centerId, password);
       if (centerId === "test" && password === "test") {
         setIsLoading(false);
-        onEditAccessConfirm(memberId);
+        onEditAccessConfirm(unitId);
       } else {
         throw new Error(
           "인증에 실패했습니다. 아이디와 비밀번호를 확인해주세요."
@@ -69,9 +73,9 @@ export const MemberEditAuthModal = ({
       onClose={handleClose}
       title="센터 아이디와 비밀번호를 입력해 주세요."
     >
-      <div className={memberEditAuthModalContent}>
-        <form className={memberEditAuthModalForm} onSubmit={handleSubmit}>
-          <div className={memberEditAuthModalFormHeader}>
+      <div className={editAuthModalContent}>
+        <form className={editAuthModalForm} onSubmit={handleSubmit}>
+          <div className={editAuthModalFormHeader}>
             <Heading type="xsmall" weight={600}>
               센터 아이디와 비밀번호를 입력해 주세요.
             </Heading>
@@ -79,7 +83,7 @@ export const MemberEditAuthModal = ({
               정보를 수정하거나 삭제할 때는 계정 확인이 필요해요
             </Body>
           </div>
-          <div className={memberEditAuthModalFormBody}>
+          <div className={editAuthModalFormBody}>
             <Input
               inputSize="pcTextFieldLarge"
               placeholder="아이디"
@@ -100,7 +104,7 @@ export const MemberEditAuthModal = ({
               color={COLORS.gray[500]}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <div className={memberEditAuthModalErrorMessage}>
+            <div className={editAuthModalErrorMessage}>
               <ErrorMessage
                 message="아이디 또는 비밀번호가 잘못되었어요. 다시 입력해 주세요."
                 isVisible={isError}
@@ -108,7 +112,7 @@ export const MemberEditAuthModal = ({
             </div>
           </div>
 
-          <div className={memberEditAuthModalButton}>
+          <div className={editAuthModalButton}>
             <Button
               variant="unEmphasized"
               onClick={handleClose}

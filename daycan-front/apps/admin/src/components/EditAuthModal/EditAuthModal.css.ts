@@ -1,24 +1,24 @@
 import { style } from "@vanilla-extract/css";
 
-export const memberEditAuthModalContent = style({
+export const editAuthModalContent = style({
   width: "700px",
   padding: "24px",
   height: "100%",
 });
 
-export const memberEditAuthModalForm = style({
+export const editAuthModalForm = style({
   display: "flex",
   flexDirection: "column",
 });
 
-export const memberEditAuthModalFormHeader = style({
+export const editAuthModalFormHeader = style({
   display: "flex",
   flexDirection: "column",
   gap: "8px",
   marginBottom: "12px",
 });
 
-export const memberEditAuthModalFormBody = style({
+export const editAuthModalFormBody = style({
   display: "flex",
   flexDirection: "column",
   gap: "8px",
@@ -28,12 +28,12 @@ export const memberEditAuthModalFormBody = style({
   alignItems: "center",
 });
 
-export const memberEditAuthModalErrorMessage = style({
+export const editAuthModalErrorMessage = style({
   display: "flex",
   width: "532px",
 });
 
-export const memberEditAuthModalButton = style({
+export const editAuthModalButton = style({
   display: "flex",
   justifyContent: "flex-end",
   padding: "10px 0px",
