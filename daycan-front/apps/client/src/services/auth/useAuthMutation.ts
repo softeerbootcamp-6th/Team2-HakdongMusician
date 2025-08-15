@@ -2,9 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import { login, reIssueToken } from ".";
 import type { TLoginResponse } from "./types";
 import { useToast } from "@daycan/ui";
+import { useNavigate } from "react-router-dom";
 
 export const useLoginMutation = () => {
   const { showToast } = useToast();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: ({
       username,
@@ -24,6 +26,7 @@ export const useLoginMutation = () => {
           variant: "mobile",
         },
       });
+      navigate("/");
     },
   });
 };
