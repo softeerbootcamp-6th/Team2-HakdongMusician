@@ -33,6 +33,7 @@ export const StatisticsPage = () => {
     handlePeriodChange,
     handleChevronClick,
   } = useStatistics();
+
   const navigate = useNavigate();
   return (
     <div className={statisticsPageContainer}>

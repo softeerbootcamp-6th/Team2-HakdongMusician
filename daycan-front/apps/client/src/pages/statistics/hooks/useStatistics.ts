@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DUMMY_API_RESPONSE } from "../constants/dummy";
+import { DUMMY_MONTH_API_RESPONSE } from "../constants/dummy";
 import {
   getDateRanges,
   parseSingleMetricToChartData,
@@ -12,7 +12,7 @@ export const useStatistics = () => {
   const [currentDateIndex, setCurrentDateIndex] = useState(0);
 
   // result 부분만 추출
-  const resultData = DUMMY_API_RESPONSE.result;
+  const resultData = DUMMY_MONTH_API_RESPONSE;
 
   // API 데이터를 여러 차트로 나누어 파싱
   const temperatureData = parseSingleMetricToChartData(
