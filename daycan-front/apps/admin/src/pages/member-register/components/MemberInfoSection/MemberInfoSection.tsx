@@ -1,9 +1,8 @@
 import { InfoSectionLayout } from "../InfoSectionLayout/InfoSectionLayout";
 import { memberInfoSectionContainer } from "./MemberInfoSection.css";
 import { InfoSectionRow } from "../InfoSectionRow";
-import { GenderSelector } from "../GenderSelector";
-import { CareLevelDropDown } from "../CareLevelDropDown";
-import { CARE_LEVEL_OPTIONS } from "@/constants/memberRegister";
+import { GenderSelector, CareLevelRoleDropDownSelector } from "@/components";
+import { CARE_LEVEL_OPTIONS } from "@/pages/member/constants/memberRegister";
 import { Body, COLORS } from "@daycan/ui";
 import { labelContainer } from "../InfoSectionRow/InfoSectionRow.css";
 
@@ -101,11 +100,11 @@ export const MemberInfoSection = ({
               </Body>
             </div>
           </div>
-          <CareLevelDropDown
+          <CareLevelRoleDropDownSelector
             options={CARE_LEVEL_OPTIONS}
             value={form.careLevel}
             placeholder="장기요양등급 선택"
-            onChange={(value: number) => onUpdate("careLevel", value)}
+            onChange={(value) => onUpdate("careLevel", value as number)}
           />
         </div>
         <InfoSectionRow

@@ -6,7 +6,7 @@ import {
   validatePassword,
 } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { API_ELDER_DUMMY_DATA } from "@/constants/memberDummyData";
+import { API_ELDER_DUMMY_DATA } from "@/pages/member/constants/memberDummyData";
 import { useToast } from "@daycan/ui";
 
 interface MemberRegisterForm {
