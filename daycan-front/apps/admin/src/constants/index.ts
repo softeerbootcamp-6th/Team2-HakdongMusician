@@ -1,5 +1,4 @@
-export * from "./memberRegister";
-export * from "./memberDummyData";
-export * from "./memberList";
+export * from "../pages/member/constants/memberRegister";
+export * from "../pages/member/constants/memberDummyData";
 export * from "./iconNames";
 export * from "./sidebar";
