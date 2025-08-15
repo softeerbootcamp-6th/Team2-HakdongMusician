@@ -15,7 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.ArrayList;
@@ -39,9 +38,6 @@ public class CareReport extends BaseTimeEntity {
   @MapsId
   @JoinColumn(name = "id")
   private Document document;
-
-  @Version
-  private Long version;
 
   /* ─── 식사 ─── */
   @Column(length = 300)

@@ -17,8 +17,8 @@ public class CareSheetPrefillKey {
   @Column(name = "writer_id", nullable = false)
   private Long writerId;
 
-  @Column(name = "doc_date", nullable = false)
-  private LocalDate docDate;
+  @Column(name = "date", nullable = false)
+  private LocalDate date;
 
   @Column(name = "member_id", nullable = false)
   private Long memberId;

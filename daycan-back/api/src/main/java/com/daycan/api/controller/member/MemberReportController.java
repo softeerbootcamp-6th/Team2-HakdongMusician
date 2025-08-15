@@ -57,7 +57,7 @@ public class MemberReportController {
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate date
   ) {
-    FullReportDto report = careReportService.getReport(memberDetails.getMember().getUsername(), date);
+    FullReportDto report = careReportService.getReport(memberDetails.getMember().getId(), date);
     return ResponseWrapper.onSuccess(report);
   }
 

@@ -1,8 +1,7 @@
 package com.daycan.api.controller.center;
 
-import com.daycan.domain.entry.document.report.ReportStatus;
-import com.daycan.domain.entry.member.GuardianMetaEntry;
-import com.daycan.domain.entry.member.MemberMetaEntry;
+import com.daycan.auth.annotation.AuthenticatedUser;
+import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.domain.entry.document.report.ReportEntry;
@@ -10,7 +9,8 @@ import com.daycan.api.dto.center.request.ReportQueryParameters;
 import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
 import com.daycan.domain.entry.document.report.CardFooter;
-import com.daycan.domain.enums.Gender;
+import com.daycan.service.document.CareReportService;
+import com.daycan.service.document.DocumentFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,10 +34,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/admin/care-report")
 @Tag(name = "\uD83D\uDCCB 리포트 관리", description = "관리자용 리포트 관련 API")
+@RequiredArgsConstructor
 public class CenterCareReportController {
+
+  private final DocumentFacade documentFacade;
 
   @GetMapping(value = "/{date}")
   public ResponseWrapper<List<CareReportMetaResponse>> getReportList(
+      @AuthenticatedUser
+      CenterDetails centerDetails,
+
       @ParameterObject @ModelAttribute @Valid
       ReportQueryParameters query,
 
@@ -44,31 +51,17 @@ public class CenterCareReportController {
       @PathVariable
       LocalDate date
   ) {
+    String nameLike = query.memberNameLikeNorm().orElse(null);
 
-    /* mock 데이터 생성 (임시) */
-    List<CareReportMetaResponse> mock = List.of(
-        new CareReportMetaResponse(1L,
-            new MemberMetaEntry(
-                "MEM12345", "오애순",
-                LocalDate.of(1943, 9, 12),
-                Gender.FEMALE),
-            new GuardianMetaEntry(
-                "양금명",
-                "010-1234-5678"),
-            ReportStatus.REVIEWED),
-        new CareReportMetaResponse(2L,
-            new MemberMetaEntry(
-                "MEM12345", "오애순",
-                LocalDate.of(1943, 9, 12),
-                Gender.FEMALE),
-            new GuardianMetaEntry(
-                "양금명",
-                "010-1234-5678"),
-            ReportStatus.PENDING)
+    List<CareReportMetaResponse> response = documentFacade.getCareReportMetaListByDate(
+        centerDetails.getCenter(),
+        date,
+        query.statuses(),
+        nameLike
     );
-
     return ResponseWrapper.onSuccess(
-        mock);
+        response
+    );
   }
 
   @Operation(
@@ -79,6 +72,9 @@ public class CenterCareReportController {
   )
   @GetMapping("/{date}/{memberId}")
   public ResponseWrapper<FullReportDto> getReport(
+      @AuthenticatedUser
+      CenterDetails centerDetails,
+
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -88,50 +84,10 @@ public class CenterCareReportController {
       @PathVariable
       Long memberId
   ) {
-    // Mock data 생성
-    List<ReportEntry> mealEntries = List.of(
-        new ReportEntry("아침", "밥, 김치", null, null),
-        new ReportEntry("점심", "불고기, 나물", null, null),
-        new ReportEntry("저녁", "죽", null, null)
+    FullReportDto response = documentFacade.getCareReportByMemberIdAndDate(
+        centerDetails.getCenter(),
+        memberId, date
     );
-    // warning, additionalInfo must be null for meal entries
-
-    List<ReportEntry> healthEntries = List.of(
-        new ReportEntry("혈압", "120/80 mmHg", null, null),
-        new ReportEntry("체온", "38.1도", "정상(36~37.5)보다 높음", null),
-        new ReportEntry("용변", "대변 1회, 소변 4회", null, null)
-    );
-
-    List<ReportEntry> physicalEntries = List.of(
-        new ReportEntry("노래 부르기 활동", "노래 부르기는 기분 전환과 정서적 안정, 인지 능력 향상에 도움이 되는 활동이에요.", null,
-            "좋아하는 노래가 나오자 밝은 표정으로 따라 부르며 즐겁게 참여하셨어요!")
-        , new ReportEntry("스트레칭", "신체 건강 유지에 도움", null, "김동성 할아버지께서는 매일 아침 산책을 즐기십니다.")
-    );
-
-    List<ReportEntry> cognitiveEntries = List.of(
-        new ReportEntry("민화투", "김동성 할아버지께서는 타짜이십니다", null, null)
-    );
-
-    FullReportDto response = new FullReportDto(
-        85,         // totalScore
-        -2,          // changeAmount
-        20,         // mealScore
-        25,         // healthScore
-        20,         // physicalScore
-        20,         // cognitiveScore
-        mealEntries,
-        CardFooter.of(30, "식사에 대한 설명이 들어갈겁니다아"),
-
-        healthEntries,
-        CardFooter.of(30, "식사에 대한 설명이 들어갈겁니다아"),
-
-        physicalEntries,
-        CardFooter.of(30, "식사에 대한 설명이 들어갈겁니다아"),
-
-        cognitiveEntries,
-        CardFooter.of(30, "식사에 대한 설명이 들어갈겁니다아")
-    );
-
     return ResponseWrapper.onSuccess(response);
   }
 

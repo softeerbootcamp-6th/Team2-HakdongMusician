@@ -15,6 +15,7 @@ import com.daycan.repository.jpa.MemberRepository;
 import com.daycan.util.mapper.ReportEntryMapper;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -27,64 +28,85 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CareReportService {
 
-  private final CareReportRepository reportRepo;
+  private final CareReportRepository careReportRepository;
   private final MemberRepository memberRepository;
 
   @Transactional(readOnly = true)
-  public FullReportDto getReport(String username, LocalDate date) {
+  public FullReportDto getReport(Long memberId, LocalDate date) {
+    if (!memberRepository.existsById(memberId)) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
+    }
+    return buildFromPair(() ->
+        careReportRepository.findTopByMemberAndDateBeforeEq(
+            memberId, date, PageRequest.of(0, 2)));
+  }
 
-    Long memberId = memberRepository.findByUsername(username)
-        .map(Member::getId)
-        .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, username));
+  @Transactional(readOnly = true)
+  public FullReportDto getReport(Long documentId) {
+    return buildFromPair(() ->
+        careReportRepository.findTopByIdBeforeEq(
+            documentId, PageRequest.of(0, 2)));
+  }
 
-    // 최신 2건
-    List<CareReport> pair = reportRepo.findTopByMemberAndDateBeforeEq(
-        memberId, date, PageRequest.of(0, 2));
-
+  private FullReportDto buildFromPair(Supplier<List<CareReport>> loader) {
+    List<CareReport> pair = loader.get();
     if (pair.isEmpty()) {
       throw new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND);
     }
-
     CareReport current = pair.get(0);
-    int totalScore = totalScore(current);
-    Integer changeAmount = pair.size() > 1 ? scoreChangeAmount(current, pair.get(1)) : null;
+    CareReport previous = (pair.size() > 1) ? pair.get(1) : null;
+
+    int total = totalScore(current);
+    Integer change = (previous == null) ? null : total - totalScore(previous);
 
     SectionBundle meal = buildMealSection(current);
     SectionBundle health = buildHealthSection(current);
     SectionBundle physical = buildProgramSection(
-        current.getPhysicalProgramComments(), current.getPhysicalScore(), current.getPhysicalFooterComment());
+        current.getPhysicalProgramComments(), current.getPhysicalScore(),
+        current.getPhysicalFooterComment());
     SectionBundle cognitive = buildProgramSection(
-        current.getCognitiveProgramComments(), current.getCognitiveScore(), current.getCognitiveFooterComment());
+        current.getCognitiveProgramComments(), current.getCognitiveScore(),
+        current.getCognitiveFooterComment());
 
-    return assembleDto(totalScore, changeAmount, meal, health, physical, cognitive);
+    return assembleDto(total, change, meal, health, physical, cognitive);
   }
 
-  // 이하 기존 private helpers 동일 …
+
+  // private helpers
   private int totalScore(CareReport r) {
     return r.getMealScore() + r.getVitalScore() + r.getPhysicalScore() + r.getCognitiveScore();
   }
-  private Integer scoreChangeAmount(CareReport current, CareReport previous) {
-    return previous == null ? null : totalScore(current) - totalScore(previous);
-  }
   private SectionBundle buildMealSection(CareReport r) {
-    return new SectionBundle(ReportEntryMapper.mealEntries(r), CardFooter.of(r.getMealScore(), r.getMealFooterComment()));
+    return new SectionBundle(ReportEntryMapper.mealEntries(r),
+        CardFooter.of(r.getMealScore(), r.getMealFooterComment()));
   }
+
   private SectionBundle buildHealthSection(CareReport r) {
-    return new SectionBundle(ReportEntryMapper.healthEntries(r), CardFooter.of(r.getVitalScore(), r.getHealthFooterComment()));
+    return new SectionBundle(ReportEntryMapper.healthEntries(r),
+        CardFooter.of(r.getVitalScore(), r.getHealthFooterComment()));
   }
-  private SectionBundle buildProgramSection(List<ProgramComment> programs, int score, String footerMemo) {
-    return new SectionBundle(ReportEntryMapper.programEntries(programs), CardFooter.of(score, footerMemo));
+
+  private SectionBundle buildProgramSection(List<ProgramComment> programs, int score,
+      String footerMemo) {
+    return new SectionBundle(ReportEntryMapper.programEntries(programs),
+        CardFooter.of(score, footerMemo));
   }
-  private FullReportDto assembleDto(Integer total, Integer change, SectionBundle meal, SectionBundle health,
+
+  private FullReportDto assembleDto(Integer total, Integer change, SectionBundle meal,
+      SectionBundle health,
       SectionBundle physical, SectionBundle cognitive) {
     return new FullReportDto(
         total, change,
-        meal.footer().score(), health.footer().score(), physical.footer().score(), cognitive.footer().score(),
+        meal.footer().score(), health.footer().score(), physical.footer().score(),
+        cognitive.footer().score(),
         meal.entries(), meal.footer(),
         health.entries(), health.footer(),
         physical.entries(), physical.footer(),
         cognitive.entries(), cognitive.footer()
     );
   }
-  private record SectionBundle(List<ReportEntry> entries, CardFooter footer) {}
+
+  private record SectionBundle(List<ReportEntry> entries, CardFooter footer) {
+
+  }
 }

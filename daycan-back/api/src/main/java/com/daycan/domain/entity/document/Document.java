@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
     name = "document",
     uniqueConstraints = @UniqueConstraint(
         name = "uk_document_member_date",
-        columnNames = {"member_id", "doc_date"}
+        columnNames = {"member_id", "date"}
     ),
     indexes = {
         @Index(name = "idx_document_member", columnList = "member_id"),
@@ -77,7 +77,7 @@ public class Document extends BaseTimeEntity {
   private CareReport careReport;
 
 
-  // ---- 생성 일원화 ----
+  // 생성 일원화
   private Document(Member member, Center center, LocalDate date) {
     try{
       this.member = Objects.requireNonNull(member);
@@ -94,7 +94,7 @@ public class Document extends BaseTimeEntity {
     return new Document(member, center, docDate);
   }
 
-  // ---- 상태 전이(업데이트) ----
+  // 상태 전이
   public void transitTo(DocumentStatus next) {
     if (!status.canTransitTo(next)) {
       throw new ApplicationException(DocumentErrorStatus.INVALID_STATUS_TRANSITION);
@@ -167,7 +167,6 @@ public class Document extends BaseTimeEntity {
     }
   }
 
-  @PrePersist
   private void prePersist() {
     if (status == null) {
       status = DocumentStatus.SHEET_PENDING;

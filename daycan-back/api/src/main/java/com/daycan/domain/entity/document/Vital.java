@@ -31,19 +31,19 @@ public class Vital extends BaseTimeEntity {
   @JoinColumn(name = "id", nullable = false, updatable = false)
   private Document document;
 
-  @Column(name = "blood_pressure_systolic", nullable = false, updatable = false)
+  @Column(name = "blood_pressure_systolic", nullable = false)
   private Integer bloodPressureSystolic;
 
-  @Column(name = "blood_pressure_diastolic", nullable = false, updatable = false)
+  @Column(name = "blood_pressure_diastolic", nullable = false)
   private Integer bloodPressureDiastolic;
 
-  @Column(name = "temperature", precision = 3, scale = 1, nullable = false, updatable = false)
+  @Column(name = "temperature", precision = 3, scale = 1, nullable = false)
   private BigDecimal temperature;
 
-  @Column(name = "number_of_stool", nullable = false, updatable = false)
+  @Column(name = "number_of_stool", nullable = false)
   private Integer numberOfStool;
 
-  @Column(name = "number_of_urine", nullable = false, updatable = false)
+  @Column(name = "number_of_urine", nullable = false)
   private Integer numberOfUrine;
   protected Vital() {}
 

@@ -21,9 +21,10 @@ public class WebConfig implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
         .allowedOrigins("http://localhost:5173","http://localhost:5174")
-        .allowedMethods("*")
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
         .allowedHeaders("*")
-        .allowCredentials(true);
+        .allowCredentials(true)
+        .maxAge(3600); // CORS preflight 요청의 캐시 시간 (1시간)
   }
 
   @Override
