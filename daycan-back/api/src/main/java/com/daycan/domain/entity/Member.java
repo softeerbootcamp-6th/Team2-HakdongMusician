@@ -159,4 +159,15 @@ public class Member extends Account {
       this.changePassword(cmd.hashedPassword());
     }
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Member))
+      return false;
+    Member other = (Member) o;
+    if (this.id == null || other.id == null) {
+      return false; // id가 없는 경우 비교 불가
+    }
+    return this.id.equals(other.id) && this.center.equals(other.center);
+  }
 }
