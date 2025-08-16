@@ -3,7 +3,7 @@ package com.daycan.api.controller.center;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.api.dto.center.response.image.PresignResponse;
 
-import com.daycan.external.S3Service;
+import com.daycan.external.storage.StorageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "\uD83D\uDEE2 S3 관련 API", description = "이미지 업로드 및 presigned URL 관련 API")
 public class CenterImageController {
 
-  private final S3Service s3Service;
+  private final StorageService storageService;
 
   /**
    * 한 장 업로드용 presigned URL 발급 (주로 프로필)
@@ -36,7 +36,7 @@ public class CenterImageController {
       @RequestParam @NotBlank String contentType          // image/jpeg ...
   ) {
     return ResponseWrapper.onSuccess(
-        s3Service.presignSingle(extension, contentType)
+        storageService.presignSingle(extension, contentType)
     );
   }
 
@@ -51,7 +51,7 @@ public class CenterImageController {
       @RequestParam @NotBlank String contentType
   ) {
     return ResponseWrapper.onSuccess(
-        s3Service.presignOcrBatch(count, extension, contentType)
+        storageService.presignOcrBatch(count, extension, contentType)
     );
   }
 
