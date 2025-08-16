@@ -132,14 +132,4 @@ public class Vital extends BaseTimeEntity {
         this.healthScore
     );
   }
-
-  // 평균 헬퍼는 임베디드에 위임
-  public double avgSystolic()    { return aggregate.avgSystolic(); }
-  public double avgDiastolic()   { return aggregate.avgDiastolic(); }
-  public double avgTemperature() { return aggregate.avgTemperature(); }
-  public double avgStool()       { return aggregate.avgStool(); }
-  public double avgUrine()       { return aggregate.avgUrine(); }
-  public double avgHealthScore() { return aggregate.avgHealthScore(); }
-
-
 }
