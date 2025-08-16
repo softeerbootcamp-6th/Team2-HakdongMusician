@@ -63,7 +63,6 @@ public class PersonalProgram extends BaseTimeEntity {
   @Column(nullable = false)
   private ProgramScore score;
 
-  // --- 도메인 생성자 ---
   public PersonalProgram(String programName, ProgramType type, ProgramScore score) {
     this.programName = Objects.requireNonNull(programName, "programName");
     this.type = Objects.requireNonNull(type, "type");

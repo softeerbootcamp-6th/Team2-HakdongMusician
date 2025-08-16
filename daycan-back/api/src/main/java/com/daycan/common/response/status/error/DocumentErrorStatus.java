@@ -15,6 +15,7 @@ public enum DocumentErrorStatus implements Status {
 
   PERSONAL_PROGRAM_INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, 40053,
       "개인 프로그램의 인자 값이 잘못되었습니다. personal program의 이름과 타입은 null일 수 없습니다."),
+  INVALID_DOCUMENT_ID(HttpStatus.BAD_REQUEST, 40054 ,"문서 ID가 잘못되었습니다"),
 
   // 403
   INVALID_DOCUMENT_ACCESS(HttpStatus.FORBIDDEN, 40350, "해당 문서에 접근할 수 없습니다."),
