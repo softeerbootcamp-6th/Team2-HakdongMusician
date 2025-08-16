@@ -24,4 +24,7 @@ public interface VitalRepository extends JpaRepository<Vital, Long> {
       Long memberId, LocalDate date);
 
   List<Vital> findByDocument_Member_IdAndDocument_DateIn(Long memberId, List<LocalDate> dates);
+
+  Optional<Vital> findByDocument_Member_idAndDocument_Date(
+      Long memberId, LocalDate date);
 }
