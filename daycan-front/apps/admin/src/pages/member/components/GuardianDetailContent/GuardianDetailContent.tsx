@@ -1,6 +1,6 @@
 import { DetailCardLayout } from "../DetailCardLayout/DetailCardLayout";
 import guardianImage from "@/assets/images/guardian.png";
-import type { MemberData } from "@/types";
+import type { MemberData } from "../../constants/member";
 import { Heading } from "@daycan/ui";
 import {
   guardianDetailContainer,
