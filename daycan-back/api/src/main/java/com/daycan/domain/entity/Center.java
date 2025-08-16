@@ -86,4 +86,12 @@ public class Center extends Account {
     }
     return this.id != null && this.id.equals(c.getId());
   }
+
+  @Override
+  public int hashCode() {
+    if (this.id == null) {
+      return 0;
+    }
+    return this.id.hashCode();
+  }
 }

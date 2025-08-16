@@ -50,5 +50,6 @@ public abstract class Account extends BaseTimeEntity {
   }
 
   public abstract boolean equals(Object o);
+  public abstract int hashCode();
 }
 

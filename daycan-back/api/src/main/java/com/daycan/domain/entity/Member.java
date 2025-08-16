@@ -170,4 +170,12 @@ public class Member extends Account {
     }
     return this.id.equals(other.id) && this.center.equals(other.center);
   }
+
+  @Override
+  public int hashCode() {
+    if (this.id == null) {
+      return 0;
+    }
+    return this.id.hashCode();
+  }
 }
