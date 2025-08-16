@@ -104,7 +104,7 @@ public class Member extends Account {
       throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "필수 파라미터가 누락되었습니다.");
     }
     Member m = new Member();
-    m.username = username; // 정규화된 값 전달 전제
+    m.username = username;
     m.center = center;
     m.name = name;
     m.gender = gender;

@@ -19,26 +19,23 @@ public record DocumentMetaView(
     @Nullable Staff writer
 ) {
   public CareSheetMetaResponse toSheetResponse() {
-    // careSheetId: 존재하면 id, 없으면 null
     Long careSheetId = document.getCareSheet() != null
         ? document.getCareSheet().getId()
         : null;
 
-    // SheetStatus: DocumentStatus → SheetStatus
     SheetStatus sheetStatus = SheetStatus.from(document.getStatus());
 
-    // isAttending: NOT_APPLICABLE 이면 false, 나머지는 true
     boolean isAttending = document.getStatus() != DocumentStatus.NOT_APPLICABLE;
 
-    // member 메타 (필드명은 너 엔티티에 맞춰)
     MemberMetaEntry memberMeta = new MemberMetaEntry(
-        member.getUsername(),   // 예: 장기요양인정번호(문자열). 필드명이 다르면 수정
+        member().getId(),
+        member.getUsername(),
         member.getName(),
         member.getBirthDate(),
-        member.getGender()
+        member.getGender(),
+        member.getAvatarUrl()
     );
 
-    // writer는 없을 수 있음
     String writerName = writer != null ? writer.getName() : null;
     Long writerId     = writer != null ? writer.getId()   : null;
 
@@ -54,13 +51,14 @@ public record DocumentMetaView(
 
   public CareReportMetaResponse toReportResponse() {
     MemberMetaEntry memberMeta = new MemberMetaEntry(
+        member().getId(),
         member.getUsername(),
         member.getName(),
         member.getBirthDate(),
-        member.getGender()
+        member.getGender(),
+        member.getAvatarUrl()
     );
 
-    // guardianName/Phone이 모두 비어있으면 null
     GuardianMetaEntry guardianMeta = hasText(member.getGuardianName()) || hasText(member.getGuardianPhoneNumber())
         ? new GuardianMetaEntry(member.getGuardianName(), member.getGuardianPhoneNumber())
         : null;
@@ -68,7 +66,7 @@ public record DocumentMetaView(
     ReportStatus status = document.getStatus().toReportStatus(document.getId());
 
     return new CareReportMetaResponse(
-        document.getId(),   // CareReport와 공유 PK
+        document.getId(),
         memberMeta,
         guardianMeta,
         status

@@ -3,6 +3,7 @@ package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.document.Vital;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,12 +15,13 @@ public interface VitalRepository extends JpaRepository<Vital, Long> {
 
   Optional<Vital> findByDocumentId(Long documentId);
 
-  // 멤버 + 일자 조합으로 바로 찾고 싶을 때 (Document 조인)
-  @Query("""
-      select v from Vital v
-      where v.document.member.id = :memberId
-        and v.document.date = :date
-      """)
-  Optional<Vital> findByMemberAndDate(@Param("memberId") Long memberId,
-      @Param("date") LocalDate date);
+  Optional<Vital> findTopByDocument_Member_IdAndDocument_DateBeforeOrderByDocument_DateDesc(
+      Long memberId, LocalDate date);
+
+  boolean existsByDocument_Member_IdAndDocument_DateAfter(Long memberId, LocalDate date);
+
+  List<Vital> findByDocument_Member_IdAndDocument_DateGreaterThanEqualOrderByDocument_DateAsc(
+      Long memberId, LocalDate date);
+
+  List<Vital> findByDocument_Member_IdAndDocument_DateIn(Long memberId, List<LocalDate> dates);
 }

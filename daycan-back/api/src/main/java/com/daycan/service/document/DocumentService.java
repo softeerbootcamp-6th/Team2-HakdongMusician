@@ -3,8 +3,6 @@ package com.daycan.service.document;
 import com.daycan.api.dto.center.request.AttendanceAction;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.Center;
-import com.daycan.domain.entry.document.report.ReportStatus;
-import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
@@ -25,7 +23,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +35,6 @@ public class DocumentService {
   private final DocumentQueryRepository documentQueryRepository;
   private final MemberService memberService;
 
-  /**
-   * [Upsert] members 중 (memberId + date) 없는 것만 INSERT
-   */
   @Transactional
   public void upsertAll(List<Member> members, LocalDate date) {
     if (members.isEmpty()) {
@@ -128,18 +122,16 @@ public class DocumentService {
     return updated;
   }
 
-  protected boolean isValidCenterDocument(Center center, Long documentId) {
+  protected boolean isInvalidCenterDocument(Center center, Long documentId) {
     Document document = documentRepository.findById(documentId)
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.DOCUMENT_NOT_FOUND));
-    return document.getCenter().equals(center);
+    return !document.getCenter().equals(center);
   }
 
   protected void findOrCreateDocument(Member member, LocalDate date) {
     documentRepository.findByMemberIdAndDate(member.getId(), date)
         .orElseGet(() -> createDocument(member, date));
   }
-
-  // ───────────────────────── private helpers ─────────────────────────
 
   private List<Document> findDocumentsByMemberAndDate(
       List<Member> members, LocalDate date) {
