@@ -1,10 +1,6 @@
 import { PageToolbar } from "@/components/PageToolbar";
 import { Body, Button, Heading, Icon, Input } from "@daycan/ui";
-import {
-  staffButton,
-  staffPageContainer,
-  staffSearchContainer,
-} from "./StaffPage.css";
+import { staffButton, staffPageContainer } from "./StaffPage.css";
 import { StaffList } from "./components";
 import { STAFF_DUMMY } from "./constants/staffDummy";
 import { useNavigate } from "react-router-dom";
@@ -15,10 +11,11 @@ import { FilterSearchbar } from "@/components";
 
 export const StaffPage = () => {
   const navigate = useNavigate();
+  // TODO:[보길]
   /*
    * 종사자 get API 호출 후 staffs로 뿌려주기
    */
-  const [staffs, setStaffs] = useState(STAFF_DUMMY.result);
+  const [staffs] = useState(STAFF_DUMMY);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // 필터링 훅 사용

@@ -10,7 +10,7 @@ import {
   staffFormFieldLabel,
   staffFormFieldInput,
 } from "./StaffFormFields.css";
-import { staffRoleOptions } from "@/pages/staff-register/constants/staffMap";
+import { STAFF_ROLE_OPTIONS } from "@/pages/staff-register/constants/staffMap";
 
 interface StaffFormField {
   label: string;
@@ -68,7 +68,7 @@ export const StaffFormFields = ({
               />
             ) : field.name === "staffRole" ? (
               <CareLevelRoleDropDownSelector
-                options={staffRoleOptions}
+                options={STAFF_ROLE_OPTIONS}
                 value={field.value}
                 onChange={handleStaffRoleSelect}
                 placeholder="직무를 선택해 주세요"

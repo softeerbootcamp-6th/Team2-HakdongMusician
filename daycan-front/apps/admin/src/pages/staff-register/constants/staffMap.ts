@@ -6,7 +6,7 @@ export const ROLE_MAP = {
 } as const;
 
 // 직무 옵션 정의
-export const staffRoleOptions = [
+export const STAFF_ROLE_OPTIONS = [
   { value: "SOCIAL_WORKER", label: "사회복지사" },
   { value: "CAREGIVER", label: "요양보호사" },
   { value: "DIRECTOR", label: "센터장" },

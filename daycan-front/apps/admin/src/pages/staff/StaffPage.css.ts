@@ -1,4 +1,3 @@
-import { COLORS } from "@daycan/ui";
 import { style } from "@vanilla-extract/css";
 
 export const staffPageContainer = style({
