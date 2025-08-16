@@ -22,7 +22,7 @@ export const StaffRegisterPage = ({ mode }: StaffRegisterPageProps) => {
     if (mode !== "edit" || !staffId) return null;
     const id = Number(staffId);
     if (isNaN(id)) return null;
-    return STAFF_DUMMY.result.find((staff) => staff.staffId === id) || null;
+    return STAFF_DUMMY.find((staff) => staff.staffId === id) || null;
   }, [mode, staffId]);
 
   // 폼 데이터 관리 커스텀 훅 - mode와 initialData 전달

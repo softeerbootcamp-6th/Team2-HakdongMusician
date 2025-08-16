@@ -4,10 +4,10 @@ import {
 } from "./MemberDataList.css.ts";
 import { MemberDataListHeader } from "../MemberDataListHeader";
 import { MemberDataItem } from "../MemberDataItem/MemberDataItem.tsx";
-import type { MemberData } from "@/pages/member/constants/member.ts";
+import type { TMember } from "@/pages/member/constants/memberDummyData";
 
 interface MemberDataListProps {
-  members: MemberData[];
+  members: TMember[];
 }
 
 export const MemberDataList = ({ members }: MemberDataListProps) => {

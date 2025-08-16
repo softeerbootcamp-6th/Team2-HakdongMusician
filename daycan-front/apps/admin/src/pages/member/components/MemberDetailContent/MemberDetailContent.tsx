@@ -1,7 +1,7 @@
 import { Heading } from "@daycan/ui";
 import { DetailCardLayout } from "../DetailCardLayout/DetailCardLayout";
 import memberImage from "@/assets/images/elder.png";
-import type { MemberData } from "@/pages/member/constants/member";
+import type { TMember } from "@/pages/member/constants/memberDummyData";
 import {
   memberDetailContainer,
   memberDetailContentContainer,
@@ -11,7 +11,7 @@ import { MemberDetailItemRow } from "../MemberDetailItemRow";
 import { formatBirthDate, formatGender } from "@/utils/util";
 
 interface MemberDetailContentProps {
-  member: MemberData;
+  member: TMember;
 }
 
 export const MemberDetailContent = ({ member }: MemberDetailContentProps) => {

@@ -9,13 +9,13 @@ import {
 } from "@/utils/index.ts";
 import { profileImage } from "./MemberDataItem.css.ts";
 import profileImg from "@/assets/images/profile.png";
-import type { MemberData } from "@/pages/member/constants/member.ts";
+import type { TMember } from "@/pages/member/constants/memberDummyData";
 import { useState } from "react";
 import { ListItemLayout } from "@/components/ListItemLayout/ListItemLayout.tsx";
 import { MEMBER_GRID_TEMPLATE } from "../../constants/memberGrid";
 
 interface MemberDataItemProps {
-  member: MemberData;
+  member: TMember;
   index: number;
 }
 

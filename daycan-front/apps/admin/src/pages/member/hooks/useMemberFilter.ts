@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { MemberListResponse } from "@/pages/member/constants/memberDummyData";
+import type { TMember } from "@/pages/member/constants/memberDummyData";
 
 /*
  * useMemberFilter 커스텀 훅은
@@ -10,7 +10,7 @@ import type { MemberListResponse } from "@/pages/member/constants/memberDummyDat
  * 검색창은 이름으로 검색합니다.
  * @author 소보길
  */
-export const useMemberFilter = (initialMembers: MemberListResponse) => {
+export const useMemberFilter = (initialMembers: TMember[]) => {
   const [selectedCareGrade, setSelectedCareGrade] = useState<string | null>(
     null
   );

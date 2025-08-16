@@ -4,7 +4,7 @@ import { memberContainer, memberButton } from "./MemberPage.css.ts";
 import { MemberDataList } from "./components/MemberDataList";
 import { Filter } from "@/components/Filter";
 import { useRef, useState } from "react";
-import { API_ELDER_DUMMY_DATA } from "@/constants/index.ts";
+import { API_ELDER_DUMMY_DATA } from "./constants/memberDummyData";
 import { useMemberFilter } from "./hooks/useMemberFilter.ts";
 import { useNavigate } from "react-router-dom";
 import { FilterSearchbar } from "@/components";
@@ -12,7 +12,7 @@ import { FilterSearchbar } from "@/components";
 export const MemberPage = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [members, setMembers] = useState(API_ELDER_DUMMY_DATA.result);
+  const [members] = useState(API_ELDER_DUMMY_DATA);
 
   const handleNewMember = () => {
     navigate("/member/new");
