@@ -81,8 +81,18 @@ export const useStaffForm = (
   }, [mode, staffFormData]);
 
   // 폼 제출 여부 확인, 수정모드의 경우 hasFormChanged또한 실행해서 확인
+  // avatarUrl은 선택사항이므로 검증에서 제외
   const isFormReadyForSubmission = useMemo(() => {
-    const isFilled = Object.values(staffFormData).every((val) => val !== "");
+    const requiredFields = [
+      "name",
+      "gender",
+      "staffRole",
+      "birthDate",
+      "phoneNumber",
+    ];
+    const isFilled = requiredFields.every(
+      (field) => staffFormData[field as keyof StaffListResponse] !== ""
+    );
     return mode === "register" ? isFilled : isFilled && hasFormChanged();
   }, [staffFormData, mode, hasFormChanged]);
 
