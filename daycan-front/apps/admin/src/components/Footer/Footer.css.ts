@@ -15,6 +15,13 @@ export const footerContent = style({
   width: "775px",
   flexDirection: "column",
   gap: "12px",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      width: "90%",
+      minWidth: "320px",
+    },
+  },
 });
 
 export const footerLogo = style({
@@ -42,6 +49,12 @@ export const footerDivider = style({
   width: "1px",
   height: "6px",
   backgroundColor: COLORS.gray[300],
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      display: "none",
+    },
+  },
 });
 
 export const footerLogoLinks = style({
@@ -55,4 +68,12 @@ export const footerInfo = style({
   display: "flex",
   flexDirection: "row",
   gap: "44px",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      flexDirection: "column",
+      gap: "16px",
+      alignItems: "flex-start",
+    },
+  },
 });

@@ -10,6 +10,14 @@ export const container = style({
   alignItems: "center",
   justifyContent: "center",
   boxSizing: "border-box",
+  "@media": {
+    "screen and (max-width: 768px)": {
+      width: "100%",
+      minHeight: "600px",
+      minWidth: "320px",
+      backgroundColor: COLORS.white,
+    },
+  },
 });
 
 export const section = style({
@@ -22,4 +30,13 @@ export const section = style({
   minHeight: "726px",
   marginBottom: "20px",
   flexShrink: 0,
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      width: "100%",
+      minHeight: "600px",
+      minWidth: "320px",
+      backgroundColor: COLORS.white,
+    },
+  },
 });
