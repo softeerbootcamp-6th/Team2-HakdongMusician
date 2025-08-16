@@ -4,6 +4,7 @@ import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.CenterErrorStatus;
 import com.daycan.domain.entity.Center;
 import com.daycan.api.dto.center.response.centermanage.CenterResponse;
+import com.daycan.external.storage.StorageService;
 import com.daycan.repository.jpa.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CenterService {
 
   private final CenterRepository centerRepository;
+  private final StorageService storageService;
 
   public CenterResponse getCenterInfo(Long centerId) {
     Center center = centerRepository.findById(centerId)
@@ -24,7 +26,7 @@ public class CenterService {
         center.getName(),
         center.getCenterCode(),
         center.getPhoneNumber(),
-        center.getLogoUrl()
+        storageService.presignGet(center.getLogoUrl())
     );
   }
 }

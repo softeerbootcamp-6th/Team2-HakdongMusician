@@ -88,18 +88,6 @@ public class CenterCareReportController {
     return ResponseWrapper.onSuccess(response);
   }
 
-  /**
-   * 생성된 리포트 검토(수정) API
-   * <pre>
-   * ⟶ 리포트 조회 → 검토 후 수정된 리포트 전송
-   * ⟶ 수정 사항이 없으면 조회된 값 그대로 전송
-   * ⟶ 전송 시 CareReportStatus.REVIEWED 로 상태 변경
-   * </pre>
-   *
-   * @param reportId 검토 대상 리포트 PK
-   * @param request  수정‧검토 내용
-   * @return 성공 시 200 OK / body: { "success": true, "data": null }
-   */
   @Operation(
       summary = "리포트 검토(수정)",
       description = """

@@ -5,7 +5,7 @@ import com.daycan.auth.model.MemberDetails;
 import com.daycan.api.dto.common.NumberValue;
 
 
-import com.daycan.api.dto.member.response.statistics.MemberStatisticsResponse;
+import com.daycan.api.dto.member.response.MemberStatisticsResponse;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.service.member.MemberFacade;
 import io.swagger.v3.oas.annotations.Operation;

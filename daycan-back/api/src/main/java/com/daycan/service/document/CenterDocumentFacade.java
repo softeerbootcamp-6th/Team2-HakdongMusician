@@ -18,6 +18,7 @@ import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.entity.Member;
+import com.daycan.external.storage.StorageService;
 import com.daycan.service.member.MemberService;
 
 import java.time.LocalDate;
@@ -43,6 +44,7 @@ public class CenterDocumentFacade {
   private final MemberService memberService;
   private final DocumentService documentService;
   private final CareReportService careReportService;
+  private final StorageService storageService;
 
   @Transactional
   public Long writeCareSheet(Center center, CareSheetRequest req) {
@@ -168,6 +170,7 @@ public class CenterDocumentFacade {
             center, date, writerId, List.copyOf(docStatuses), nameLike
         )
         .stream()
+        .map(v -> v.withAvatarUrl(getPresignedUrl(v.avatarUrl())))
         .map(responseMapper)
         .toList();
   }
@@ -191,5 +194,8 @@ public class CenterDocumentFacade {
       }
     }
     return result;
+  }
+  private String getPresignedUrl(String key) {
+    return storageService.presignGet(key);
   }
 }

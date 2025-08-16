@@ -42,7 +42,6 @@ public class CenterCareSheetController {
 
   private final CenterDocumentFacade centerDocumentFacade;
 
-  // 단건 조회
   @GetMapping("/{date}/{memberId}")
   @Operation(summary = "기록지 단건 조회", description = "수급자 ID와 날짜로 기록지를 조회합니다.")
   public ResponseWrapper<CareSheetResponse> getCareSheetByRecipientAndDate(

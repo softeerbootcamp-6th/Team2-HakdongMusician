@@ -19,6 +19,7 @@ public enum DocumentErrorStatus implements Status {
 
   // 403
   INVALID_DOCUMENT_ACCESS(HttpStatus.FORBIDDEN, 40350, "해당 문서에 접근할 수 없습니다."),
+  INVALID_REPORT_ACCESS(HttpStatus.FORBIDDEN, 40351, "해당 리포트에 접근할 수 없습니다."),
   // 404
   DOCUMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 40450, "존재하지 않는 문서."),
   SHEET_NOT_FOUND(HttpStatus.NOT_FOUND, 40451, "존재하지 않는 기록지"),

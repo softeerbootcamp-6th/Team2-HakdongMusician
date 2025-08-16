@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CareSheetQueryService {
   private final DocumentQueryRepository documentQueryRepository;
-  private final DocumentService documentService;
-  private final DocumentRepository documentRepository;
 
 
   /**

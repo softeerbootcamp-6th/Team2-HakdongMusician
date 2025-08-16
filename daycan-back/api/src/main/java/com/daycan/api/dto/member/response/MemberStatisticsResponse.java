@@ -1,4 +1,4 @@
-package com.daycan.api.dto.member.response.statistics;
+package com.daycan.api.dto.member.response;
 
 import com.daycan.domain.entry.statistics.HealthStatisticsEntry;
 import io.swagger.v3.oas.annotations.media.Schema;

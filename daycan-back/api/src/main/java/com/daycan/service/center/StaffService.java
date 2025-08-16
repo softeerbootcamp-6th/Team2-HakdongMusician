@@ -8,7 +8,7 @@ import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;
 import com.daycan.api.dto.center.request.AdminStaffRequest;
 import com.daycan.api.dto.center.response.centermanage.AdminStaffResponse;
-import com.daycan.repository.jpa.CenterRepository;
+import com.daycan.external.storage.StorageService;
 import com.daycan.repository.jpa.StaffRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StaffService {
 
   private final StaffRepository staffRepository;
-  private final CenterRepository centerRepository; // ← 추가
+  private final StorageService storageService;
 
   @Transactional(readOnly = true)
   public List<AdminStaffResponse> getStaffList(Long centerId, StaffRole staffRole, Gender gender,
@@ -79,10 +79,6 @@ public class StaffService {
   }
 
 
-  /*
-   * ---- helper method ----
-   */
-
   private AdminStaffResponse toAdminResponse(Staff s) {
     return new AdminStaffResponse(
         s.getId(),
@@ -92,7 +88,14 @@ public class StaffService {
         s.getStaffRole(),
         s.getBirthDate(),
         s.getPhoneNumber(),
-        s.getAvatarUrl()
+        presignGet(s.getAvatarUrl())
     );
+  }
+
+  private String presignGet(String url) {
+    if (url == null || url.isBlank()) {
+      return null;
+    }
+    return storageService.presignGet(url);
   }
 }

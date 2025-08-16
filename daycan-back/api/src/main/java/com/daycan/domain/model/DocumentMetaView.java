@@ -16,8 +16,13 @@ import io.micrometer.common.lang.Nullable;
 public record DocumentMetaView(
     Document document,
     Member member,
-    @Nullable Staff writer
+    @Nullable Staff writer,
+    String avatarUrl
 ) {
+  public DocumentMetaView withAvatarUrl(String newUrl) {
+    return new DocumentMetaView(document, member, writer, newUrl);
+  }
+
   public CareSheetMetaResponse toSheetResponse() {
     Long careSheetId = document.getCareSheet() != null
         ? document.getCareSheet().getId()
@@ -33,7 +38,7 @@ public record DocumentMetaView(
         member.getName(),
         member.getBirthDate(),
         member.getGender(),
-        member.getAvatarUrl()
+        avatarUrl
     );
 
     String writerName = writer != null ? writer.getName() : null;
@@ -56,7 +61,7 @@ public record DocumentMetaView(
         member.getName(),
         member.getBirthDate(),
         member.getGender(),
-        member.getAvatarUrl()
+        avatarUrl
     );
 
     GuardianMetaEntry guardianMeta = hasText(member.getGuardianName()) || hasText(member.getGuardianPhoneNumber())

@@ -1,7 +1,7 @@
 package com.daycan.service.document;
 
 
-import com.daycan.api.dto.member.response.statistics.MemberStatisticsResponse;
+import com.daycan.api.dto.member.response.MemberStatisticsResponse;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.common.response.status.error.StatisticsErrorStatus;

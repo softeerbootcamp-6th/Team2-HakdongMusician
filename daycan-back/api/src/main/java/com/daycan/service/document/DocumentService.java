@@ -41,7 +41,6 @@ public class DocumentService {
       return;
     }
 
-    // 이제 Long memberId 집합
     Set<Long> existing = documentRepository.findMemberIdsByDate(date);
 
     List<Document> toInsert = members.stream()

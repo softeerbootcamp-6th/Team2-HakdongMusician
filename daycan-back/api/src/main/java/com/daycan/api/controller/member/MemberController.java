@@ -1,6 +1,7 @@
 package com.daycan.api.controller.member;
 
 import com.daycan.api.dto.member.response.MemberHomeResponse;
+import com.daycan.api.dto.member.response.MemberReportResponse;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.MemberDetails;
 import com.daycan.api.dto.common.FullReportDto;
@@ -39,15 +40,17 @@ public class MemberController {
           """
   )
   @GetMapping("report/{date}")
-  public ResponseWrapper<FullReportDto> getReport(
+  public ResponseWrapper<MemberReportResponse> getReport(
       @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
       @PathVariable
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate date
   ) {
-    FullReportDto report = memberFacade.getReport(memberDetails.getMember().getId(), date);
-    return ResponseWrapper.onSuccess(report);
+    MemberReportResponse report = memberFacade.getReport(memberDetails.getMember(), date);
+    return ResponseWrapper.onSuccess(
+        report
+    );
   }
 
   @GetMapping("/home/{date}")
