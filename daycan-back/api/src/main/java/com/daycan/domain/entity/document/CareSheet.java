@@ -6,7 +6,6 @@ import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.entity.Staff;
-import com.daycan.domain.entry.document.sheet.Meal;
 import com.daycan.domain.enums.ProgramScore;
 import com.daycan.domain.enums.ProgramType;
 import jakarta.persistence.AttributeOverride;
@@ -24,7 +23,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
 
@@ -32,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -137,8 +134,8 @@ public class CareSheet extends BaseTimeEntity {
   @OneToMany(
       mappedBy = "careSheet",
       fetch = FetchType.LAZY,
-      cascade = ALL,      // CareSheet 저장/삭제 시 함께 반영해야 하면
-      orphanRemoval = true            // 교체 전략이면 orphan 제거
+      cascade = ALL,
+      orphanRemoval = true
   )
   @OrderBy("id ASC")
   private List<PersonalProgram> personalPrograms;

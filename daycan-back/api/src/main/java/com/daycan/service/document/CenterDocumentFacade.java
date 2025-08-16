@@ -2,6 +2,7 @@ package com.daycan.service.document;
 
 import com.daycan.api.dto.center.request.AttendanceAction;
 import com.daycan.api.dto.center.request.CareSheetRequest;
+import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.api.dto.center.response.centermanage.AttendanceResultResponse;
 import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
@@ -35,9 +36,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DocumentFacade {
+public class CenterDocumentFacade {
 
-  private final CareSheetCommandService careSheetCommandService;
+  private final CareSheetWriteService careSheetWriteService;
   private final CareSheetQueryService careSheetQueryService;
   private final MemberService memberService;
   private final DocumentService documentService;
@@ -45,16 +46,16 @@ public class DocumentFacade {
 
   @Transactional
   public Long writeCareSheet(Center center, CareSheetRequest req) {
-    Long documentId;
+    Long docId;
     try {
-      documentId = careSheetCommandService.writeSheet(req);
+      docId = careSheetWriteService.writeSheet(req);
     } catch (DocumentNonCreatedException e) {
       Member member = memberService.requireActiveMember(req.memberId());
       documentService.findOrCreateDocument(member, req.date());
-      documentId = careSheetCommandService.writeSheet(req);
+      docId = careSheetWriteService.writeSheet(req);
     }
 
-    return documentId;
+    return docId;
   }
 
   @Transactional
@@ -77,7 +78,7 @@ public class DocumentFacade {
 
   @Transactional(readOnly = true)
   public CareSheetResponse getCareSheetById(Center center, Long sheetId) {
-    if (!documentService.isValidCenterDocument(center, sheetId)) {
+    if (documentService.isInvalidCenterDocument(center, sheetId)) {
       throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ACCESS, sheetId);
     }
     CareSheetView sheet = careSheetQueryService.findCareSheetViewById(sheetId);
@@ -128,15 +129,27 @@ public class DocumentFacade {
   @Transactional(readOnly = true)
   public FullReportDto getCareReportByMemberIdAndDate(Center center, Long memberId, LocalDate date) {
     Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
-    return careReportService.getReport(member.getId(), date);
+    return careReportService.getReport(member.getId(), date).fullReportDto();
   }
 
   @Transactional(readOnly = true)
   public FullReportDto getCareReportByMemberIdAndReportId(Center center, Long reportId) {
-    if (!documentService.isValidCenterDocument(center, reportId)) {
+    if (documentService.isInvalidCenterDocument(center, reportId)) {
       throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ACCESS, reportId);
     }
-    return careReportService.getReport(reportId);
+    return careReportService.getReport(reportId).fullReportDto();
+  }
+
+  @Transactional
+  public void reviewReport(Center center,Long id ,ReportReviewRequest request) {
+    if(!id.equals(request.reportId())){
+      throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ID);
+    }
+    if (documentService.isInvalidCenterDocument(center, request.reportId())) {
+      throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ACCESS);
+    }
+    careReportService.reviewReport(request);
+
   }
 
   private <S, R> List<R> getMetaListByDate(

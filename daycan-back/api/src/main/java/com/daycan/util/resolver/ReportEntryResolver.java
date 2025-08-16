@@ -1,16 +1,13 @@
-package com.daycan.util.mapper;
+package com.daycan.util.resolver;
 
 import com.daycan.domain.entity.document.CareReport;
 import com.daycan.domain.entry.ProgramComment;
 import com.daycan.domain.entity.document.Vital;
 import com.daycan.domain.entry.document.report.ReportEntry;
+import com.daycan.util.prefiller.VitalCommenter;
 import java.util.List;
 
-public class ReportEntryMapper {
-
-  /* ───── threshold 상수 ───── */
-  private static final double HIGH_TEMPERATURE_THRESHOLD = 37.5;
-  private static final int HIGH_SYSTOLIC_THRESHOLD = 140;
+public class ReportEntryResolver {
 
   /* ───── 문자열 상수 ───── */
   private static final String KEY_BREAKFAST = "아침";
@@ -25,9 +22,6 @@ public class ReportEntryMapper {
   private static final String UNIT_TEMPERATURE = "℃";
   private static final String UNIT_BLOOD_PRESS = " mmHg";
 
-  private static final String WARN_HIGH_FEVER = "고열 주의";
-  private static final String WARN_HYPERTENSION = "고혈압 의심";
-
 
   public static List<ReportEntry> mealEntries(CareReport r) {
     return List.of(
@@ -40,13 +34,9 @@ public class ReportEntryMapper {
   public static List<ReportEntry> healthEntries(CareReport r) {
     Vital v = r.getDocument().getVital();
 
-    String tempWarn = (v.getTemperature() != null &&
-        v.getTemperature().doubleValue() > HIGH_TEMPERATURE_THRESHOLD)
-        ? WARN_HIGH_FEVER : null;
-
-    String bpWarn = (v.getBloodPressureSystolic() != null &&
-        v.getBloodPressureSystolic() > HIGH_SYSTOLIC_THRESHOLD)
-        ? WARN_HYPERTENSION : null;
+    String tempWarn = VitalCommenter.warningCommentTemp(v.getTemperature().doubleValue());
+    String bpWarn = VitalCommenter.warningCommentBp(v.getBloodPressureSystolic(),
+        v.getBloodPressureDiastolic());
 
     return List.of(
         ReportEntry.fromHealth(
@@ -61,9 +51,9 @@ public class ReportEntryMapper {
             bpWarn
         ),
         ReportEntry.fromHealth(KEY_STOOL,
-            String.valueOf(v.getNumberOfStool()), null),
+            String.valueOf(v.getNumberOfStool()), ""),
         ReportEntry.fromHealth(KEY_URINE,
-            String.valueOf(v.getNumberOfUrine()), null)
+            String.valueOf(v.getNumberOfUrine()), "")
     );
   }
 
@@ -77,6 +67,6 @@ public class ReportEntryMapper {
         .toList();
   }
 
-  private ReportEntryMapper() {
+  private ReportEntryResolver() {
   }
 }

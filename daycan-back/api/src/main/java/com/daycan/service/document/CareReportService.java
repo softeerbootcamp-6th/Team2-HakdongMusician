@@ -1,18 +1,23 @@
 package com.daycan.service.document;
 
+import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.common.response.status.error.MemberErrorStatus;
-import com.daycan.domain.entity.Member;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
+import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.CareReport;
 
 import com.daycan.domain.entry.ProgramComment;
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.domain.entry.document.report.ReportEntry;
 import com.daycan.domain.entry.document.report.CardFooter;
+import com.daycan.domain.enums.DocumentStatus;
+import com.daycan.domain.model.ReportReview;
+import com.daycan.domain.model.ReportWithDto;
 import com.daycan.repository.jpa.CareReportRepository;
 import com.daycan.repository.jpa.MemberRepository;
-import com.daycan.util.mapper.ReportEntryMapper;
+import com.daycan.util.resolver.ReportEntryResolver;
+import com.daycan.util.resolver.ReportReviewAssembler;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
@@ -32,7 +37,7 @@ public class CareReportService {
   private final MemberRepository memberRepository;
 
   @Transactional(readOnly = true)
-  public FullReportDto getReport(Long memberId, LocalDate date) {
+  public ReportWithDto getReport(Long memberId, LocalDate date) {
     if (!memberRepository.existsById(memberId)) {
       throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
     }
@@ -42,13 +47,35 @@ public class CareReportService {
   }
 
   @Transactional(readOnly = true)
-  public FullReportDto getReport(Long documentId) {
+  public ReportWithDto getReport(Long documentId) {
     return buildFromPair(() ->
         careReportRepository.findTopByIdBeforeEq(
             documentId, PageRequest.of(0, 2)));
   }
 
-  private FullReportDto buildFromPair(Supplier<List<CareReport>> loader) {
+
+  public boolean isReportOpened(Long memberId, LocalDate date) {
+   return careReportRepository.findByDocumentMemberIdAndDocumentDate(memberId, date)
+        .map(CareReport::isOpened)
+        .orElse(false);
+  }
+
+  protected void reviewReport(ReportReviewRequest request) {
+    CareReport report = careReportRepository.findById(request.reportId())
+        .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND));
+
+    DocumentStatus st = report.getDocument().getStatus();
+    if (st != DocumentStatus.REPORT_CREATED && st != DocumentStatus.REPORT_PENDING
+        && st != DocumentStatus.REPORT_REVIEWED) {
+      throw new ApplicationException(DocumentErrorStatus.INVALID_STATUS_FOR_REPORT);
+    }
+
+    ReportReview review = ReportReviewAssembler.from(request);
+    report.applyReview(review, true);
+    report.getDocument().markReviewed();
+  }
+
+  private ReportWithDto buildFromPair(Supplier<List<CareReport>> loader) {
     List<CareReport> pair = loader.get();
     if (pair.isEmpty()) {
       throw new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND);
@@ -68,7 +95,10 @@ public class CareReportService {
         current.getCognitiveProgramComments(), current.getCognitiveScore(),
         current.getCognitiveFooterComment());
 
-    return assembleDto(total, change, meal, health, physical, cognitive);
+    return new ReportWithDto(
+        current
+        ,assembleDto(total, change, meal, health, physical, cognitive)
+    );
   }
 
 
@@ -77,18 +107,18 @@ public class CareReportService {
     return r.getMealScore() + r.getVitalScore() + r.getPhysicalScore() + r.getCognitiveScore();
   }
   private SectionBundle buildMealSection(CareReport r) {
-    return new SectionBundle(ReportEntryMapper.mealEntries(r),
+    return new SectionBundle(ReportEntryResolver.mealEntries(r),
         CardFooter.of(r.getMealScore(), r.getMealFooterComment()));
   }
 
   private SectionBundle buildHealthSection(CareReport r) {
-    return new SectionBundle(ReportEntryMapper.healthEntries(r),
+    return new SectionBundle(ReportEntryResolver.healthEntries(r),
         CardFooter.of(r.getVitalScore(), r.getHealthFooterComment()));
   }
 
   private SectionBundle buildProgramSection(List<ProgramComment> programs, int score,
       String footerMemo) {
-    return new SectionBundle(ReportEntryMapper.programEntries(programs),
+    return new SectionBundle(ReportEntryResolver.programEntries(programs),
         CardFooter.of(score, footerMemo));
   }
 

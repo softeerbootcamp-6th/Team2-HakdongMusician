@@ -16,6 +16,7 @@ public enum CommonErrorStatus implements Status {
   CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, 40001, "파라미터 검증에 실패했습니다."),
   INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, 40002,
       "잘못된 파일 형식입니다. 지원하지 않는 파일입니다."),
+  INVALID_URL(HttpStatus.BAD_REQUEST, 40003, "잘못된 URL입니다."),
 
   // 404
   NOT_FOUND(HttpStatus.NOT_FOUND, 40403, "찾지 못했습니다"),

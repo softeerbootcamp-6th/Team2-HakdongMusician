@@ -1,5 +1,6 @@
 package com.daycan.domain.entry.document.sheet;
 
+import com.daycan.domain.entity.document.Meal;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -14,7 +15,17 @@ public record MealSupport(
 ) {
 
   @AssertTrue(message = "식사를 제공한 경우, 식사 정보는 필수입니다.")
-  public  boolean isValidProvidedEntry() {
+  public boolean isValidProvidedEntry() {
     return !provided || (entry != null);
+  }
+
+  public static MealSupport from(Meal m) {
+    return new MealSupport(
+        m.isProvided(),
+        new MealEntry(
+            m.getType(),
+            m.getAmount()
+        )
+    );
   }
 }

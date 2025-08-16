@@ -75,4 +75,23 @@ public class Center extends Account {
     if (logoUrl != null) this.logoUrl = logoUrl;
     if (carNumbers != null) this.carNumbers = carNumbers;
   }
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Center)) {
+      return false;
+    }
+    Center c = (Center) o;
+    if (this.id == null || c.getId() == null) {
+      return false;
+    }
+    return this.id != null && this.id.equals(c.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    if (this.id == null) {
+      return 0;
+    }
+    return this.id.hashCode();
+  }
 }
