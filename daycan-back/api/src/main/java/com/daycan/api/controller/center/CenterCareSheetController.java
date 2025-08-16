@@ -64,8 +64,8 @@ public class CenterCareSheetController {
     );
   }
 
-  @GetMapping("/{sheetId}")
-  @Operation(summary = "기록지 단건 조회", description = "수급자 ID와 날짜로 기록지를 조회합니다.")
+  @GetMapping("/{sheetId:\\d+}")
+  @Operation(summary = "기록지 단건 조회", description = "기록지 id로 기록지를 조회합니다.")
   public ResponseWrapper<CareSheetResponse> getCareSheetByRecipientAndDate(
       @AuthenticatedUser
       CenterDetails centerDetails,
@@ -83,7 +83,7 @@ public class CenterCareSheetController {
   }
 
   // 리스트 조회
-  @GetMapping("/{date}")
+  @GetMapping("/{date:\\d{4}-\\d{2}-\\d{2}}")
   @Operation(
       summary = "기록지 리스트 조회",
       description = """

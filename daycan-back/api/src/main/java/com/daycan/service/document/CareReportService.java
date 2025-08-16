@@ -72,6 +72,7 @@ public class CareReportService {
 
     ReportReview review = ReportReviewAssembler.from(request);
     report.applyReview(review, true);
+    report.getDocument().markReviewed();
   }
 
   private ReportWithDto buildFromPair(Supplier<List<CareReport>> loader) {

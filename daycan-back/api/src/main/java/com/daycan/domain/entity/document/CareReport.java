@@ -22,8 +22,10 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -191,30 +193,45 @@ public class CareReport extends BaseTimeEntity {
   }
 
   public void applyReview(ReportReview review, boolean replacePrograms) {
-    if (review == null) return;
+    if (review == null)
+      return;
 
-    this.updateMealSection(
-        review.breakfast(), review.lunch(), review.dinner(),
-        null,                               // 리뷰에 점수 없음 → 스코어 미변경
-        review.mealMemo()
-    );
-
-    this.updateVitalSection(null, review.healthMemo());
-
-    if (review.physicalMemo() != null) {
-      this.physicalFooterComment = review.physicalMemo();
-    }
-    if (review.cognitiveMemo() != null) {
-      this.cognitiveFooterComment = review.cognitiveMemo();
+    if (hasAnyText(review.breakfast(), review.lunch(), review.dinner(), review.mealMemo())) {
+      this.updateMealSection(
+          nullIfBlank(review.breakfast()),
+          nullIfBlank(review.lunch()),
+          nullIfBlank(review.dinner()),
+          null, // 리뷰에 점수 없음 → 스코어 미변경
+          nullIfBlank(review.mealMemo())
+      );
     }
 
-    if (review.cognitiveNotes() != null) {
-      this.syncCognitiveProgramNotes(review.cognitiveNotes(), replacePrograms);
+    // ── 건강(바이탈) 메모만 있을 때만 업데이트
+    if (hasText(review.healthMemo())) {
+      this.updateVitalSection(null, review.healthMemo().trim());
     }
-    if (review.physicalNotes() != null) {
-      this.syncPhysicalProgramNotes(review.physicalNotes(), replacePrograms);
+
+    // ── 푸터 메모: 값 있을 때만 대입
+    if (hasText(review.physicalMemo())) {
+      this.physicalFooterComment = review.physicalMemo().trim();
+    }
+    if (hasText(review.cognitiveMemo())) {
+      this.cognitiveFooterComment = review.cognitiveMemo().trim();
+    }
+
+    // ── 프로그램 노트: null/empty/blank 키·값 제거 후 남아있을 때만 동기화
+    if (notEmpty(review.cognitiveNotes())) {
+      Map<String, ProgramNote> filtered = filterNotes(review.cognitiveNotes());
+      if (!filtered.isEmpty())
+        this.syncCognitiveProgramNotes(filtered, replacePrograms);
+    }
+    if (notEmpty(review.physicalNotes())) {
+      Map<String, ProgramNote> filtered = filterNotes(review.physicalNotes());
+      if (!filtered.isEmpty())
+        this.syncPhysicalProgramNotes(filtered, replacePrograms);
     }
   }
+
 
   public List<ProgramComment> getCognitiveProgramComments() {
     return List.copyOf(cognitiveProgramComments);
@@ -224,8 +241,47 @@ public class CareReport extends BaseTimeEntity {
     return List.copyOf(physicalProgramComments);
   }
 
+  private boolean hasText(String s) {
+    return s != null && !s.trim().isEmpty();
+  }
 
-  private static List<ProgramComment> syncProgramNotesInternal(
+  private boolean hasAnyText(String... ss) {
+    if (ss == null) return false;
+    for (String s : ss) if (hasText(s)) return true;
+    return false;
+  }
+
+  private static <K, V> boolean notEmpty(Map<K, V> m) {
+    return m != null && !m.isEmpty();
+  }
+
+  private String nullIfBlank(String s) {
+    return hasText(s) ? s.trim() : null;
+  }
+
+  private Map<String, ProgramNote> filterNotes(Map<String, ProgramNote> notes) {
+    return notes.entrySet().stream()
+        .filter(e -> hasText(e.getKey()))
+        .map(e -> Map.entry(e.getKey().trim(), normalizeNote(e.getValue())))
+        .filter(e -> e.getValue() != null) // benefit·personal 모두 blank면 제거
+        .collect(Collectors.toMap(
+            Map.Entry::getKey,
+            Map.Entry::getValue,
+            (a, b) -> b,
+            LinkedHashMap::new
+        ));
+  }
+
+  private ProgramNote normalizeNote(ProgramNote n) {
+    if (n == null) return null;
+    String benefit = nullIfBlank(n.benefit());
+    String personal = nullIfBlank(n.personalNote());
+    if (benefit == null && personal == null) return null;
+    return new ProgramNote(benefit, personal);
+  }
+
+
+  private List<ProgramComment> syncProgramNotesInternal(
       List<ProgramComment> current,
       Map<String, ProgramNote> dict,
       boolean replaceAll
@@ -288,7 +344,7 @@ public class CareReport extends BaseTimeEntity {
     if (footer != null) this.physicalFooterComment = footer;
   }
 
-  private static List<ProgramComment> toProgramComments(List<String> names) {
+  private List<ProgramComment> toProgramComments(List<String> names) {
     if (names == null || names.isEmpty()) return new ArrayList<>();
     List<ProgramComment> list = new ArrayList<>(names.size());
     for (String n : names) {
@@ -307,9 +363,9 @@ public class CareReport extends BaseTimeEntity {
     return (src == null) ? new ArrayList<>() : new ArrayList<>(src);
   }
 
-  private static boolean isBlank(String s) { return s == null || s.isBlank(); }
-  private static String safeName(String s) { return (s == null) ? "" : s.trim(); }
-  private static String norm(String s)      { return safeName(s).toLowerCase(); }
-  private static String nullOrNot(String s)        { return (s == null || s.isBlank()) ? null : s; }
+  private boolean isBlank(String s) { return s == null || s.isBlank(); }
+  private String safeName(String s) { return (s == null) ? "" : s.trim(); }
+  private String norm(String s)      { return safeName(s).toLowerCase(); }
+  private String nullOrNot(String s)        { return (s == null || s.isBlank()) ? null : s; }
 
 }
