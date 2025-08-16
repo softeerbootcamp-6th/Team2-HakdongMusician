@@ -9,6 +9,7 @@
  *   <li><b>3*</b> – 수급자(Member)</li>
  *   <li><b>4*</b> – 종사자(Staff)</li>
  *   <li><b>5*</b> – 문서(Document)</li>
+ *   <li><b>6*</b> – 통계</li>
  * </ul>
  *
  * <p>정의 규칙: <code>{http-staus}{suffix}</code> 형식
