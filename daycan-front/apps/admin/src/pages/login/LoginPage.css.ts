@@ -10,6 +10,15 @@ export const loginContainer = style({
   justifyContent: "center",
 
   background: COLORS.gray[50],
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      width: "100%",
+      minHeight: "600px",
+      minWidth: "320px",
+      backgroundColor: COLORS.white,
+    },
+  },
 });
 
 export const loginCard = style({
@@ -20,6 +29,15 @@ export const loginCard = style({
   borderRadius: "20px",
   width: "718px",
   height: "726px",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      flex: "1 1 auto",
+      width: "100%",
+      minHeight: "auto",
+      backgroundColor: COLORS.white,
+    },
+  },
 });
 
 export const loginHeader = style({
@@ -29,6 +47,12 @@ export const loginHeader = style({
   alignItems: "center",
   textAlign: "center",
   gap: "16px",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      marginTop: "185px",
+    },
+  },
 });
 
 export const headerContent = style({
@@ -45,6 +69,15 @@ export const form = style({
   marginTop: "48px",
   gap: "8px",
   width: "532px",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      width: "90%",
+      minWidth: "320px",
+      margin: "0px",
+      marginTop: "48px",
+    },
+  },
 });
 
 export const inputGroup = style({
@@ -85,6 +118,22 @@ export const checkContainer = style({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  margin: "12px 93px 0px 93px",
+  marginTop: "12px",
   width: "532px",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      width: "90%",
+      minWidth: "320px",
+    },
+  },
+});
+
+export const subDescription = style({
+  color: COLORS.gray[800],
+  "@media": {
+    "screen and (max-width: 768px)": {
+      display: "none",
+    },
+  },
 });
