@@ -12,6 +12,7 @@ import profileImg from "@/assets/images/profile.png";
 import type { MemberData } from "@/pages/member/constants/member.ts";
 import { useState } from "react";
 import { ListItemLayout } from "@/components/ListItemLayout/ListItemLayout.tsx";
+import { MEMBER_GRID_TEMPLATE } from "../../constants/memberGrid";
 
 interface MemberDataItemProps {
   member: MemberData;
@@ -106,11 +107,9 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
     },
   ];
 
-  const gridTemplate = "33px 105px 144px 1fr 40px 132px 110px 120px 80px";
-
   return (
     <>
-      <ListItemLayout columns={columns} gridTemplate={gridTemplate} />
+      <ListItemLayout columns={columns} gridTemplate={MEMBER_GRID_TEMPLATE} />
       {/* 상세보기시 등장하는 컴포넌트 */}
       {isExpanded && (
         <MemberDataItemDetail memberId={member.memberId} member={member}>

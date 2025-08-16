@@ -11,6 +11,7 @@ import { useState } from "react";
 import { StaffDetailContent } from "../StaffDetailContent";
 import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
 import { ListItemLayout } from "@/components";
+import { STAFF_GRID_TEMPLATE } from "../../constants/staffGrid";
 
 interface StaffListItemProps {
   staff: StaffListResponse;
@@ -123,11 +124,9 @@ export const StaffListItem = ({ staff, index }: StaffListItemProps) => {
     },
   ];
 
-  const gridTemplate = "33px 130px 144px 1fr 132px 132px 100px 100px";
-
   return (
     <div>
-      <ListItemLayout columns={columns} gridTemplate={gridTemplate} />
+      <ListItemLayout columns={columns} gridTemplate={STAFF_GRID_TEMPLATE} />
       {isExpanded && <StaffDetailContent staff={staff} />}
     </div>
   );

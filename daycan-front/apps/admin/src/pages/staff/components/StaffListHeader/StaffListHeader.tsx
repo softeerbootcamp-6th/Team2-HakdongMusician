@@ -1,4 +1,5 @@
 import { ListHeaderLayout } from "@/components";
+import { STAFF_GRID_TEMPLATE } from "../../constants/staffGrid";
 
 export const StaffListHeader = () => {
   const columns = [
@@ -12,7 +13,7 @@ export const StaffListHeader = () => {
     // { key: "more", label: "..." },
   ];
 
-  const gridTemplate = "33px 130px 144px 1fr 132px 132px 100px 100px";
-
-  return <ListHeaderLayout columns={columns} gridTemplate={gridTemplate} />;
+  return (
+    <ListHeaderLayout columns={columns} gridTemplate={STAFF_GRID_TEMPLATE} />
+  );
 };

@@ -1,4 +1,5 @@
 import { ListHeaderLayout } from "@/components/ListHeaderLayout/ListHeaderLayout.tsx";
+import { MEMBER_GRID_TEMPLATE } from "../../constants/memberGrid";
 
 export const MemberDataListHeader = () => {
   const columns = [
@@ -12,7 +13,7 @@ export const MemberDataListHeader = () => {
     { key: "guardianPhone", label: "보호자 연락처" },
   ];
 
-  const gridTemplate = "33px 105px 144px 1fr 40px 132px 110px 120px 80px";
-
-  return <ListHeaderLayout columns={columns} gridTemplate={gridTemplate} />;
+  return (
+    <ListHeaderLayout columns={columns} gridTemplate={MEMBER_GRID_TEMPLATE} />
+  );
 };
