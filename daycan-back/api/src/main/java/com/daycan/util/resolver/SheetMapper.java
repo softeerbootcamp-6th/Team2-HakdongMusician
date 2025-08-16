@@ -1,11 +1,11 @@
-package com.daycan.util.mapper;
+package com.daycan.util.resolver;
 
 import com.daycan.domain.entity.document.CareSheet;
 import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.entity.document.PersonalProgram;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.entity.document.Vital;
-import com.daycan.domain.entry.document.sheet.Meal;
+import com.daycan.domain.entity.document.Meal;
 import com.daycan.api.dto.center.request.CareSheetRequest;
 
 import com.daycan.domain.entry.document.sheet.CognitiveEntry;

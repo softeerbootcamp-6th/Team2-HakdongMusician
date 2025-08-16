@@ -4,13 +4,10 @@ import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.api.dto.common.FullReportDto;
-import com.daycan.domain.entry.document.report.ReportEntry;
 import com.daycan.api.dto.center.request.ReportQueryParameters;
 import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
-import com.daycan.domain.entry.document.report.CardFooter;
-import com.daycan.service.document.CareReportService;
-import com.daycan.service.document.DocumentFacade;
+import com.daycan.service.document.CenterDocumentFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CenterCareReportController {
 
-  private final DocumentFacade documentFacade;
+  private final CenterDocumentFacade centerDocumentFacade;
 
   @GetMapping(value = "/{date}")
   public ResponseWrapper<List<CareReportMetaResponse>> getReportList(
@@ -53,7 +50,7 @@ public class CenterCareReportController {
   ) {
     String nameLike = query.memberNameLikeNorm().orElse(null);
 
-    List<CareReportMetaResponse> response = documentFacade.getCareReportMetaListByDate(
+    List<CareReportMetaResponse> response = centerDocumentFacade.getCareReportMetaListByDate(
         centerDetails.getCenter(),
         date,
         query.statuses(),
@@ -84,7 +81,7 @@ public class CenterCareReportController {
       @PathVariable
       Long memberId
   ) {
-    FullReportDto response = documentFacade.getCareReportByMemberIdAndDate(
+    FullReportDto response = centerDocumentFacade.getCareReportByMemberIdAndDate(
         centerDetails.getCenter(),
         memberId, date
     );
@@ -113,14 +110,15 @@ public class CenterCareReportController {
   )
   @PutMapping("/{reportId}/review")
   public ResponseWrapper<Void> reviewReport(
+      @AuthenticatedUser
+      CenterDetails centerDetails,
       @PathVariable Long reportId,
       @Valid @RequestBody ReportReviewRequest request
   ) {
-    /* body 에도 reportId 가 포함돼 있으므로 불일치 방지용 체크 */
-//    if (!reportId.equals(request.reportId())) {
-//      throw new IllegalArgumentException("PathVariable reportId 와 body 의 reportId 가 다릅니다.");
-//    }
 
+    centerDocumentFacade.reviewReport(
+        centerDetails.getCenter(),reportId, request
+    );
     return ResponseWrapper.onSuccess(null);
   }
 
