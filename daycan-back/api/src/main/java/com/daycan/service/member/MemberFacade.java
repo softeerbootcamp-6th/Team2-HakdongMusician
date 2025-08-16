@@ -2,6 +2,7 @@ package com.daycan.service.member;
 
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.api.dto.member.response.MemberHomeResponse;
+import com.daycan.api.dto.member.response.statistics.MemberStatisticsResponse;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.model.MemberWeeklyScoreView;
 import com.daycan.domain.model.ReportWithDto;
@@ -9,6 +10,7 @@ import com.daycan.external.storage.StorageService;
 import com.daycan.service.document.CareReportService;
 import com.daycan.service.document.VitalService;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,5 +46,20 @@ public class MemberFacade {
         weeklyScoreView.weeklyAvg(),
         weeklyScoreView.lastWeekAvg()
     );
+  }
+
+  @Transactional(readOnly = true)
+  public Number getOverallScore(Member member, LocalDate date) {
+    return vitalService.getOverallScore(member, date);
+  }
+
+  @Transactional(readOnly = true)
+  public MemberStatisticsResponse getMemberStatistics(Member member, LocalDate startDate, LocalDate endDate) {
+    return vitalService.getVitals(member.getId(), startDate, endDate);
+  }
+
+  @Transactional(readOnly = true)
+  public MemberStatisticsResponse getMemberStatistics(Member member, YearMonth startMonth, YearMonth endMonth) {
+    return vitalService.getVitals(member.getId(), startMonth, endMonth);
   }
 }
