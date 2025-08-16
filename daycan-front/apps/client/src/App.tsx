@@ -6,13 +6,13 @@ import { ScrollToTop } from "./components";
 
 function App() {
   return (
-    <QueryClientProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <QueryClientProvider>
         <ScrollToTop />
         <Router />
         <ToastContainer />
-      </BrowserRouter>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 

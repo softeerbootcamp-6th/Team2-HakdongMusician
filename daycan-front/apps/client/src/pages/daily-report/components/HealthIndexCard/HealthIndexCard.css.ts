@@ -10,7 +10,7 @@ export const container = style({
   alignItems: "center",
   justifyContent: "start",
   backgroundColor: COLORS.white,
-  padding: "16px 20px",
+  padding: "12px 10px",
   borderRadius: 16,
   boxSizing: "border-box",
 });
@@ -67,7 +67,7 @@ export const indexCardContainer = style({
   borderRadius: 9,
   boxSizing: "border-box",
   marginTop: 15,
-  gap: 2,
+  gap: 1,
 });
 
 export const indexCard = style({
@@ -77,9 +77,9 @@ export const indexCard = style({
   alignItems: "center",
   justifyContent: "center",
   border: `1px solid ${COLORS.gray[100]}`,
-  padding: "8px 10px",
+  padding: "8px 4px",
   borderRadius: 9,
-  gap: 5,
+  gap: 2,
 });
 
 export const indexValue = style({

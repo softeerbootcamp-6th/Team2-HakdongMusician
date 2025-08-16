@@ -12,6 +12,8 @@
   "dependencies": {
     "@daycan/hooks": "workspace:*",
     "@daycan/ui": "workspace:*",
+    "@daycan/api": "workspace:*",
+    "axios": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@vanilla-extract/css": "catalog:",
     "jotai": "catalog:",

@@ -3,15 +3,18 @@
   "private": false,
   "version": "0.0.0",
   "type": "module",
-  "main": "index.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/daycan-api.es.js",
+      "require": "./dist/daycan-api.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "build": "vite build"
   },
   "peerDependencies": {
-    "@tanstack/react-query": "catalog:"
-  },
-  "dependencies": {
     "axios": "catalog:"
   },
   "devDependencies": {
@@ -20,6 +23,7 @@
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vite-plugin-dts": "catalog:"
   }
 }
