@@ -7,5 +7,3 @@ export { MemberDataItemDetail } from "./MemberDataItemDetail/MemberDataItemDetai
 export { MemberDataListHeader } from "./MemberDataListHeader/MemberDataListHeader";
 export { MemberDetailContent } from "./MemberDetailContent/MemberDetailContent";
 export { GuardianDetailContent } from "./GuardianDetailContent/GuardianDetailContent";
-export { MemberEditAuthModal } from "./MemberEditAuthModal/MemberEditAuthModal";
-export { MemberDeleteConfirmModal } from "./MemberDeleteConfirmModal/MemberDeleteConfirmModal";

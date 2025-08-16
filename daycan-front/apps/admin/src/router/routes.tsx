@@ -6,6 +6,8 @@ import {
   MemberRegisterPage,
   CareSheetPage,
   NotFoundPage,
+  StaffPage,
+  StaffRegisterPage,
   ReportPage,
 } from "@/pages";
 import {
@@ -62,6 +64,24 @@ export const routes: TRoutes[] = [
       {
         path: "edit/:memberId",
         element: <MemberRegisterPage mode="edit" />,
+      },
+    ],
+  },
+  {
+    path: "/staff",
+    layout: <MainLayout />,
+    children: [
+      {
+        path: "",
+        element: <StaffPage />,
+      },
+      {
+        path: "new",
+        element: <StaffRegisterPage mode="register" />,
+      },
+      {
+        path: "edit/:staffId",
+        element: <StaffRegisterPage mode="edit" />,
       },
     ],
   },

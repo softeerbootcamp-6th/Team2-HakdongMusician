@@ -5,3 +5,5 @@ export * from "./care-sheet";
 export * from "./member-register";
 export * from "./not-found";
 export * from "./report";
+export * from "./staff";
+export * from "./staff-register";

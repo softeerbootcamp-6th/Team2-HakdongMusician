@@ -1,6 +1,6 @@
 import { DetailCardLayout } from "../DetailCardLayout/DetailCardLayout";
 import guardianImage from "@/assets/images/guardian.png";
-import type { MemberData } from "@/types";
+import type { TMember } from "@/pages/member/constants/memberDummyData";
 import { Heading } from "@daycan/ui";
 import {
   guardianDetailContainer,
@@ -10,7 +10,7 @@ import {
 import { MemberDetailItemRow } from "../MemberDetailItemRow/MemberDetailItemRow";
 
 interface GuardianDetailContentProps {
-  member: MemberData;
+  member: TMember;
 }
 
 export const GuardianDetailContent = ({

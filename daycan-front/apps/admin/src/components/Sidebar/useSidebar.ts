@@ -18,8 +18,11 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.CARE_SHEET) => {
       case "/report":
         setSelectedMenu(PAGE_KEYS.REPORT_SENDING);
         break;
-      case "/care-sheet":
+      case "/":
         setSelectedMenu(PAGE_KEYS.CARE_SHEET);
+        break;
+      case "/staff":
+        setSelectedMenu(PAGE_KEYS.STAFF);
         break;
       default:
         break;
@@ -40,14 +43,13 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.CARE_SHEET) => {
         navigate("/member");
         break;
       case PAGE_KEYS.CARE_SHEET:
-        navigate("/care-sheet");
+        navigate("/");
         break;
       case PAGE_KEYS.REPORT_SENDING:
         navigate("/report");
         break;
       case PAGE_KEYS.STAFF:
-        // 종사자 관리 페이지가 구현되면 추가
-        console.log("종사자 관리 페이지로 이동");
+        navigate("/staff");
         break;
       default:
         break;
