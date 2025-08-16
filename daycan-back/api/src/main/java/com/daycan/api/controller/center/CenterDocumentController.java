@@ -39,7 +39,7 @@ public class CenterDocumentController {
       @Parameter(description = "조회할 날짜 (yyyy-MM)", example = "2025-08")
       @PathVariable @Valid @NotNull
       LocalDate date
-      ) {
+  ) {
     Center center = centerDetails.getCenter();
     return ResponseWrapper.onSuccess(
         documentService.getDocumentCount(center.getId(), date)
@@ -54,9 +54,11 @@ public class CenterDocumentController {
       @Parameter(description = "수급자 ID", example = "1")
       @PathVariable @Valid @NotNull
       Long memberId,
+
       @Parameter(description = "조회할 월 (yyyy-MM)", example = "2025-08")
       @PathVariable @Valid @NotNull
-      YearMonth month) {
+      YearMonth month
+  ) {
     List<DocumentStatusResponse> statusList = documentService.getDocumentStatusListByMemberAndMonth(
         centerDetails.getCenter(), memberId, month);
     return ResponseWrapper.onSuccess(statusList);

@@ -26,8 +26,6 @@ public class DocumentScheduler {
   @Transactional
   @SchedulerLock(name = "DocumentScheduler_preCreateDocuments", lockAtLeastFor = "1m", lockAtMostFor = "10m")
   @Scheduled(cron = "0 0 5 * * *", zone = "Asia/Seoul")  // 매일 05:00
-  // 람다로 이전 고려
-  // or 비동기 방식으로 DLQ 처리
   public void preCreateDocuments() {
 
     LocalDate today = LocalDate.now(KST);

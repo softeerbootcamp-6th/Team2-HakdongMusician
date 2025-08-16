@@ -2,8 +2,13 @@ package com.daycan.service.member;
 
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.api.dto.member.response.MemberHomeResponse;
-import com.daycan.api.dto.member.response.statistics.MemberStatisticsResponse;
+import com.daycan.api.dto.member.response.MemberReportResponse;
+import com.daycan.api.dto.member.response.MemberStatisticsResponse;
+import com.daycan.common.exceptions.ApplicationException;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.Member;
+import com.daycan.domain.entity.document.CareReport;
+import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.model.MemberWeeklyScoreView;
 import com.daycan.domain.model.ReportWithDto;
 import com.daycan.external.storage.StorageService;
@@ -26,10 +31,20 @@ public class MemberFacade {
   private final VitalService vitalService;
 
   @Transactional
-  public FullReportDto getReport(Long memberId, LocalDate date) {
-    ReportWithDto reportWithDto = careReportService.getReport(memberId, date);
-    reportWithDto.careReport().openThis();
-    return reportWithDto.fullReportDto();
+  public MemberReportResponse getReport(Member member, LocalDate date) {
+    ReportWithDto reportWithDto = careReportService.getReport(member.getId(), date);
+
+    CareReport report = reportWithDto.careReport();
+    // todo: 주석 해제
+//    if(report.getDocument().getStatus()!= DocumentStatus.REPORT_REVIEWED) {
+//      throw new ApplicationException(DocumentErrorStatus.INVALID_REPORT_ACCESS);
+//    }
+    report.openThis();
+    return new MemberReportResponse(
+        member.getName(),
+        member.getGender(),
+        reportWithDto.fullReportDto()
+    );
   }
 
   @Transactional(readOnly = true)

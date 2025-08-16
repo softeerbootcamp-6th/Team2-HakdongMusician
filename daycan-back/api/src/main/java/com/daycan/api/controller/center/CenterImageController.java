@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Pattern;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +53,15 @@ public class CenterImageController {
   ) {
     return ResponseWrapper.onSuccess(
         storageService.presignOcrBatch(count, extension, contentType)
+    );
+  }
+
+  @GetMapping("/presign/")
+  public ResponseWrapper<String> getPresignUrl(
+      @RequestParam @NotBlank String objectKey
+  ){
+    return ResponseWrapper.onSuccess(
+        storageService.presignGet(objectKey)
     );
   }
 
