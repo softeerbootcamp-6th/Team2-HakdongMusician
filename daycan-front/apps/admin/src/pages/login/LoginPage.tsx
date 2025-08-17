@@ -13,6 +13,7 @@ import {
 } from "./LoginPage.css";
 import { useAdminLoginHook } from "./hooks";
 import { ForgotCredentialsModal } from "./components/ForgotCredentialsModal";
+import { AdminLoginRouteModal } from "./components/AdminLoginRouteModal/AdminLoginRouteModal";
 export const LoginPage = () => {
   const {
     isFilled,
@@ -26,6 +27,8 @@ export const LoginPage = () => {
     setIsChecked,
     isModalOpen,
     setIsModalOpen,
+    isAdminLoginRouteModalOpen,
+    setIsAdminLoginRouteModalOpen,
     resetForm,
   } = useAdminLoginHook();
 
@@ -142,6 +145,11 @@ export const LoginPage = () => {
           setIsModalOpen(false);
           resetForm();
         }}
+      />
+
+      <AdminLoginRouteModal
+        isOpen={isAdminLoginRouteModalOpen}
+        onClose={() => setIsAdminLoginRouteModalOpen(false)}
       />
     </div>
   );
