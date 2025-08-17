@@ -53,6 +53,7 @@ import {
   AlarmIcon,
   AlignUpIcon,
   AlignDownIcon,
+  AlertNotFoundIcon,
 } from "@/assets";
 
 export const defaultIconSize = 16;
@@ -114,4 +115,5 @@ export const iconMap = {
   alarm: AlarmIcon,
   alignUp: AlignUpIcon,
   alignDown: AlignDownIcon,
+  alertNotFound: AlertNotFoundIcon,
 };
