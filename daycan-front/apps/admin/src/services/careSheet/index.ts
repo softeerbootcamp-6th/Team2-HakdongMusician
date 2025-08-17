@@ -15,11 +15,16 @@ import { privateInstance } from "@/services/instance";
  */
 export const getCareSheetList = async (
   date: YearMonthDay,
-  memberId: string
+  writerId?: number
 ): Promise<TCareSheetListItem[] | null> => {
   return await safeRequest.get<TCareSheetListItem[]>(
     privateInstance,
-    `/admin/care-sheet/${date}/${memberId}`
+    `/admin/care-sheet/${date}`,
+    {
+      params: {
+        writerId,
+      },
+    }
   );
 };
 
@@ -35,6 +40,20 @@ export const getCareSheet = async (
   return await safeRequest.get<TCareSheetReadResponse>(
     privateInstance,
     `/admin/care-sheet/${date}/${memberId}`
+  );
+};
+
+/**
+ * 기록지 단건 조회 함수
+ * /admin/care-sheet/{careSheetId}
+ * @author 홍규진
+ */
+export const getCareSheetDetail = async (
+  careSheetId: number
+): Promise<TCareSheetReadResponse | null> => {
+  return await safeRequest.get<TCareSheetReadResponse>(
+    privateInstance,
+    `/admin/care-sheet/${careSheetId}`
   );
 };
 

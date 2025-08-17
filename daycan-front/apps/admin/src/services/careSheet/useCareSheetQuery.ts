@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCareSheetList, getCareSheet } from "./index";
+import { getCareSheetList, getCareSheet, getCareSheetDetail } from "./index";
 
 import type { YearMonthDay } from "@/types/date";
 import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
@@ -11,11 +11,14 @@ import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
 export const careSheetKeys = {
   all: ["careSheets"] as const,
   lists: () => [...careSheetKeys.all, "list"] as const,
-  list: (date: YearMonthDay, memberId: number) =>
-    [...careSheetKeys.lists(), date, memberId] as const,
+  listByDate: (date: YearMonthDay) => [...careSheetKeys.lists(), date] as const,
   details: () => [...careSheetKeys.all, "detail"] as const,
-  detail: (date: YearMonthDay, memberId: number) =>
-    [...careSheetKeys.details(), date, memberId] as const,
+  detail: (careSheetId: number) =>
+    [...careSheetKeys.details(), careSheetId] as const,
+  detailByDate: (date: YearMonthDay) =>
+    [...careSheetKeys.details(), date] as const,
+  detailByMemberId: (memberId: number) =>
+    [...careSheetKeys.details(), memberId] as const,
 };
 
 /**
@@ -23,11 +26,11 @@ export const careSheetKeys = {
  * List 의 경우엔 추후에 Suspense 쿼리로 변환 후 사용할 예정
  * @author 홍규진
  */
-export const useGetCareSheetList = (date: YearMonthDay, memberId: number) => {
+export const useGetCareSheetList = (date: YearMonthDay, writerId?: number) => {
   return useQuery({
-    queryKey: careSheetKeys.list(date, memberId),
-    queryFn: () => getCareSheetList(date, String(memberId)),
-    enabled: !!date && !!memberId,
+    queryKey: careSheetKeys.listByDate(date),
+    queryFn: () => getCareSheetList(date, writerId),
+    enabled: !!date,
     ...DEFAULT_QUERY_OPTIONS,
   });
 };
@@ -38,9 +41,22 @@ export const useGetCareSheetList = (date: YearMonthDay, memberId: number) => {
  */
 export const useGetCareSheet = (date: YearMonthDay, memberId: number) => {
   return useQuery({
-    queryKey: careSheetKeys.detail(date, memberId),
+    queryKey: careSheetKeys.detailByDate(date),
     queryFn: () => getCareSheet(date, String(memberId)),
     enabled: !!date && !!memberId,
+    ...DEFAULT_QUERY_OPTIONS,
+  });
+};
+
+/**
+ * 특정 기록지의 단건 조회
+ * @author 홍규진
+ */
+export const useGetCareSheetDetail = (careSheetId: number, enabled = true) => {
+  return useQuery({
+    queryKey: careSheetKeys.detail(careSheetId),
+    queryFn: () => getCareSheetDetail(careSheetId),
+    enabled: !!careSheetId && enabled,
     ...DEFAULT_QUERY_OPTIONS,
   });
 };
