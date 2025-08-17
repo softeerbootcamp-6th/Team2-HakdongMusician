@@ -21,7 +21,7 @@ export const PhotoSelectBottomSheet = ({
     handleFileSelect,
     // removeImage,
     // handleImageConfirm,
-  } = usePhotoSelect(setIsBottomSheetOpen);
+  } = usePhotoSelect();
 
   return (
     <>

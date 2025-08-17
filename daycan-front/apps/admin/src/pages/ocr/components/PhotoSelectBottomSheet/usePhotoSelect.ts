@@ -1,27 +1,19 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetAtom } from "jotai";
-import { useFunnel } from "@daycan/hooks";
-import { homeFunnelDataAtom } from "../../atoms/homeAtom";
-import { infoFunnelDataAtom } from "../../../info-funnel/atoms/infoAtom";
-import { diagnosisFunnelDataAtom } from "../../../diagnosis-funnel/atoms/diagnosisAtom";
+// import { useFunnel } from "@daycan/hooks";
+// import { prefillCareSheetData } from "@/utils/careSheetPrefill";
+// import { getDefaultInfoData } from "@/utils/careSheetPrefill";
+// import { getDefaultDiagnosisData } from "@/utils/careSheetPrefill";
 
-export const usePhotoSelect = (
-  setIsBottomSheetOpen: (isOpen: boolean) => void
-) => {
+export const usePhotoSelect = () => {
   const navigate = useNavigate();
-  const { funnelState } = useFunnel();
+  // const { funnelState } = useFunnel();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [shouldAutoConfirm, setShouldAutoConfirm] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // 각 퍼널별 데이터 설정 함수 선언
-  const setHomeFunnelData = useSetAtom(homeFunnelDataAtom);
-  const setInfoFunnelData = useSetAtom(infoFunnelDataAtom);
-  const setDiagnosisFunnelData = useSetAtom(diagnosisFunnelDataAtom);
 
   // selectedImage가 설정되고 자동 확인이 필요한 경우 확인 함수 호출
   useEffect(() => {
@@ -141,83 +133,10 @@ export const usePhotoSelect = (
       const uploadedImageUrl = await simulateImageUpload(selectedImage);
       console.log("업로드된 이미지 URL:", uploadedImageUrl);
 
-      // 1. home-funnel 데이터 설정
-      setHomeFunnelData({
-        writerId: funnelState.STEP_0?.writerId || 1,
-      });
+      // OCR 데이터를 기반으로 care-sheet 폼에 기본값 설정
+      // prefillCareSheetData();
 
-      // 2. info-funnel에 기본 데이터 설정 (mock data)
-      setInfoFunnelData({
-        recipientId: "1", // 기본 수급자 ID
-        date: new Date().toISOString().split("T")[0], // 오늘 날짜
-        startTime: "09:10", // 기본 시작 시간
-        endTime: "17:20", // 기본 종료 시간
-        mobilityNumber: "", // 차량 번호
-      });
-
-      // 3. diagnosis-funnel에 기본 데이터 설정 (mock data)
-      setDiagnosisFunnelData({
-        physical: {
-          assistWashing: true,
-          assistMovement: true,
-          assistBathing: false,
-          breakfast: {
-            provided: true,
-            entry: {
-              mealType: "REGULAR",
-              amount: "MORE_HALF",
-            },
-            validProvidedEntry: false,
-          },
-          lunch: {
-            provided: false,
-            entry: {
-              mealType: "REGULAR",
-              amount: "FULL",
-            },
-            validProvidedEntry: false,
-          },
-          dinner: {
-            provided: true,
-            entry: {
-              mealType: "REGULAR",
-              amount: "FULL",
-            },
-            validProvidedEntry: false,
-          },
-          numberOfStool: 2,
-          numberOfUrine: 3,
-          note: "오늘은 목욕을 했어요",
-        },
-        cognitive: {
-          assistCognitiveCare: false,
-          assistCommunication: true,
-          note: "인지 테스트 결과 좋음",
-        },
-        healthCare: {
-          healthCare: false,
-          nursingCare: true,
-          emergencyService: true,
-          bloodPressure: {
-            systolic: 130,
-            diastolic: 90,
-          },
-          temperature: 36.5,
-          note: "",
-        },
-        recoveryProgram: {
-          motionTraining: true,
-          cognitiveProgram: true,
-          cognitiveEnhancement: true,
-          physicalTherapy: true,
-          programEntries: [],
-          note: "",
-        },
-      });
-
-      // 4. 바텀시트 닫기
-      setIsBottomSheetOpen(false);
-      // 5. diagnosis 페이지로 이동 (모든 데이터가 설정된 상태)
+      // diagnosis 페이지로 이동 (모든 데이터가 설정된 상태)
       navigate("/care-sheet/new/diagnosis");
     } catch (error) {
       console.error("이미지 업로드 실패:", error);
