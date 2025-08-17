@@ -7,6 +7,9 @@ import {
   CareSheetPage,
   NotFoundPage,
   ReportPage,
+  OCRPage,
+  OCRPhotoPage,
+  TodayCareSheetPage,
 } from "@/pages";
 import {
   HomeFunnelStepContainer,
@@ -100,6 +103,18 @@ export const routes: TRoutes[] = [
       {
         path: "diagnosis",
         element: <DiagnosisFunnelStepContainer />,
+      },
+      {
+        path: "ocr",
+        element: <OCRPage />,
+      },
+      {
+        path: "ocr/photo",
+        element: <OCRPhotoPage />,
+      },
+      {
+        path: "today",
+        element: <TodayCareSheetPage />,
       },
     ],
   },
