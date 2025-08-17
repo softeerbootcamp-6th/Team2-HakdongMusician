@@ -15,6 +15,7 @@ import {
   InfoFunnelStepContainer,
   DiagnosisFunnelStepContainer,
 } from "@/pages/care-sheet/funnels";
+import { NotFoundLayout } from "@/layout/not-found/NotFoundLayout";
 
 export type TRoutes = {
   path: string;
@@ -35,10 +36,7 @@ export const routes: TRoutes[] = [
         path: "",
         element: <CareSheetPage />,
       },
-      {
-        path: "*",
-        element: <NotFoundPage />,
-      },
+
       {
         path: "care-sheet",
         element: <CareSheetPage />,
@@ -120,6 +118,16 @@ export const routes: TRoutes[] = [
       {
         path: "diagnosis",
         element: <DiagnosisFunnelStepContainer />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    layout: <NotFoundLayout />,
+    children: [
+      {
+        path: "*",
+        element: <NotFoundPage />,
       },
     ],
   },
