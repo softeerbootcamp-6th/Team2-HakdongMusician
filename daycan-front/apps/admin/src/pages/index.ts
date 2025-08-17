@@ -8,3 +8,5 @@ export * from "./report";
 export * from "./ocr";
 export * from "./ocr-photo";
 export * from "./care-sheet-today";
+export * from "./staff";
+export * from "./staff-register";

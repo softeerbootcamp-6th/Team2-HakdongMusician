@@ -11,7 +11,6 @@ export const memberContainer = style({
 export const memberFilterContainer = style({
   display: "flex",
   flexDirection: "row",
-
   alignItems: "center",
 });
 

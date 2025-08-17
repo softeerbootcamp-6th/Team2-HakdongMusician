@@ -12,5 +12,39 @@ const formatCareGrade = (careLevel: number) => {
 const formatGender = (gender: string) => {
   return gender === "MALE" ? "남성" : "여성";
 };
+/*
+ (DIRECTOR: 센터장, SOCIAL_WORKER: 사회복지사, CAREGIVER: 요양보호사)
+*/
+const formatStaffRole = (staffRole: string) => {
+  switch (staffRole) {
+    case "DIRECTOR":
+      return "센터장";
+    case "SOCIAL_WORKER":
+      return "사회복지사";
+    case "CAREGIVER":
+      return "요양보호사";
+    default:
+      return "-";
+  }
+};
 
-export { formatBirthDate, formatCareGrade, formatGender };
+const colorByStaffRole = (staffRole: string) => {
+  switch (staffRole) {
+    case "DIRECTOR":
+      return "yellow";
+    case "SOCIAL_WORKER":
+      return "green";
+    case "CAREGIVER":
+      return "blue";
+    default:
+      return "grayLight";
+  }
+};
+
+export {
+  formatBirthDate,
+  formatCareGrade,
+  formatGender,
+  formatStaffRole,
+  colorByStaffRole,
+};

@@ -2,7 +2,6 @@ import { style } from "@vanilla-extract/css";
 
 export const detailCardLayout = style({
   display: "flex",
-  flex: 1,
   flexDirection: "column",
   gap: "12px",
 });

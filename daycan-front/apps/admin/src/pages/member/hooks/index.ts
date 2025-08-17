@@ -4,4 +4,4 @@
  * @author 소보길
  */
 
-export { useMember } from "./useMember";
+// export { useMember } from "./useMember";

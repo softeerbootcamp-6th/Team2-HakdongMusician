@@ -6,7 +6,7 @@ import {
   validatePassword,
 } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { API_ELDER_DUMMY_DATA } from "@/constants/memberDummyData";
+import { API_ELDER_DUMMY_DATA } from "@/pages/member/constants/memberDummyData";
 import { useToast } from "@daycan/ui";
 
 interface MemberRegisterForm {
@@ -58,7 +58,7 @@ export const useMemberRegisterForm = (
   const getInitialData = async () => {
     if (mode === "edit") {
       // 더미파일 가져와서 response에 저장
-      const response = API_ELDER_DUMMY_DATA.result.find(
+      const response = API_ELDER_DUMMY_DATA.find(
         (item) => item.memberId === memberId
       );
       if (!response) {

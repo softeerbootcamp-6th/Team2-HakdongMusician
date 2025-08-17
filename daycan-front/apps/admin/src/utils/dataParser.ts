@@ -3,7 +3,7 @@ import {
   type MemberInfo,
   type GuardianInfo,
   type MemberDetailInfo,
-} from "@/types/member";
+} from "@/pages/member/constants/member";
 // 성별 변환 함수
 export const convertGender = (gender: "MALE" | "FEMALE"): string => {
   return gender === "MALE" ? "남성" : "여성";
