@@ -11,17 +11,8 @@ export const PhotoSelectBottomSheet = ({
   isBottomSheetOpen,
   setIsBottomSheetOpen,
 }: PhotoSelectBottomSheetProps) => {
-  const {
-    // isProcessing,
-    // selectedImage,
-    fileInputRef,
-    // videoRef,
-    // canvasRef,
-    handlePhotoMethodSelect,
-    handleFileSelect,
-    // removeImage,
-    // handleImageConfirm,
-  } = usePhotoSelect();
+  const { fileInputRef, handlePhotoMethodSelect, handleFileSelect } =
+    usePhotoSelect();
 
   return (
     <>
@@ -73,72 +64,7 @@ export const PhotoSelectBottomSheet = ({
               style={{ display: "none" }}
               onChange={handleFileSelect}
             />
-
-            {/* 카메라 영역 */}
-            {/*
-            {!selectedImage && (
-              <div style={{ marginTop: "20px", textAlign: "center" }}>
-                <video
-                  ref={videoRef}
-                  style={{
-                    width: "100%",
-                    maxWidth: "300px",
-                    height: "auto",
-                    display: "none",
-                  }}
-                  autoPlay
-                  playsInline
-                  muted
-                />
-                <canvas ref={canvasRef} style={{ display: "none" }} />
-                {videoRef.current?.srcObject && (
-                  <Button
-                    variant="primary"
-                    onClick={capturePhoto}
-                    style={{ marginTop: "10px" }}
-                  >
-                    사진 촬영
-                  </Button>
-                )}
-              </div>
-            )}*/}
           </div>
-          {/* 선택된 이미지 표시 */}
-          {/*selectedImage && (
-            <div style={{ marginTop: "20px", textAlign: "center" }}>
-              <Body type="medium" weight={600} color={COLORS.gray[800]}>
-                선택된 이미지
-              </Body>
-              <img
-                src={selectedImage}
-                alt="선택된 이미지"
-                style={{
-                  width: "100%",
-                  maxWidth: "300px",
-                  height: "auto",
-                  marginTop: "10px",
-                  borderRadius: "8px",
-                  border: "2px solid #e0e0e0",
-                }}
-              />
-              <Button
-                variant="unEmphasized"
-                size="small"
-                onClick={removeImage}
-                style={{ marginRight: "10px" }}
-              >
-                다시 선택
-              </Button>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={handleImageConfirm}
-                disabled={isProcessing}
-              >
-                {isProcessing ? "처리 중..." : "확인"}
-              </Button>
-            </div>
-          )}*/}
           <Button
             variant="unEmphasized"
             onClick={() => setIsBottomSheetOpen(false)}

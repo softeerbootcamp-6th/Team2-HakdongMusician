@@ -12,8 +12,6 @@ export const usePhotoSelect = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [shouldAutoConfirm, setShouldAutoConfirm] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // selectedImage가 설정되고 자동 확인이 필요한 경우 확인 함수 호출
   useEffect(() => {
@@ -22,44 +20,6 @@ export const usePhotoSelect = () => {
       handleImageConfirm();
     }
   }, [selectedImage, shouldAutoConfirm]);
-
-  // 카메라 촬영 시작
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }, // 후면 카메라 우선
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      }
-    } catch (error) {
-      console.error("카메라 접근 실패:", error);
-      alert("카메라에 접근할 수 없습니다.");
-    }
-  };
-
-  // 사진 촬영
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const context = canvasRef.current.getContext("2d");
-      if (context) {
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-        context.drawImage(videoRef.current, 0, 0);
-
-        // 캔버스에서 이미지 데이터 URL 가져오기
-        const imageDataUrl = canvasRef.current.toDataURL("image/jpeg");
-        setSelectedImage(imageDataUrl);
-
-        // 스트림 정지
-        const stream = videoRef.current.srcObject as MediaStream;
-        if (stream) {
-          stream.getTracks().forEach((track) => track.stop());
-        }
-      }
-    }
-  };
 
   // 파일 선택
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,8 +73,8 @@ export const usePhotoSelect = () => {
     console.log("handlePhotoMethodSelect", photoMethod);
 
     if (photoMethod === "camera") {
-      // 카메라 시작
-      await startCamera();
+      // OCR 사진 촬영 페이지로 이동
+      navigate("/care-sheet/new/ocr/photo");
     } else {
       // 파일 선택 다이얼로그 열기
       fileInputRef.current?.click();
@@ -152,12 +112,8 @@ export const usePhotoSelect = () => {
 
     // refs
     fileInputRef,
-    videoRef,
-    canvasRef,
 
     // 함수들
-    startCamera,
-    capturePhoto,
     handleFileSelect,
     removeImage,
     handlePhotoMethodSelect,
