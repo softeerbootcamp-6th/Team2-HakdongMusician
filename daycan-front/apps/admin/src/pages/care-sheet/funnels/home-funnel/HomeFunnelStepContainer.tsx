@@ -1,7 +1,6 @@
 import { FunnelProvider, FunnelStep, type FunnelState } from "@daycan/hooks";
 import { Step0, Step1 } from "./steps";
 import { homeFunnelSteps } from "../../constants/steps";
-import { useNavigate } from "react-router-dom";
 import { useSetAtom, useAtomValue } from "jotai";
 import { homeFunnelDataAtom } from "./atoms/homeAtom";
 import { convertFunnelStateToHomeFunnelData } from "./utils/parseData";
@@ -10,7 +9,6 @@ import { getStoredValue } from "../utils/storage";
 import type { HomeFunnelData } from "./types/homeType";
 
 export const HomeFunnelStepContainer = () => {
-  const navigate = useNavigate();
   const setHomeFunnelData = useSetAtom(homeFunnelDataAtom);
   const homeData = useAtomValue(homeFunnelDataAtom);
 
@@ -25,8 +23,6 @@ export const HomeFunnelStepContainer = () => {
       "home-funnel 완료! 데이터를 jotai에 저장했습니다:",
       homeFunnelData
     );
-
-    navigate("/care-sheet/new/info");
   };
 
   // 기본값이 있으면 Step1로 프리필
