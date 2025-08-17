@@ -66,4 +66,3 @@ export const useStep2 = () => {
     toPrev,
   };
 };
-

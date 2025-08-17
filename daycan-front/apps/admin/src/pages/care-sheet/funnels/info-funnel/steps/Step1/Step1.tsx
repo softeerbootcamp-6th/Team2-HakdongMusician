@@ -16,7 +16,8 @@ import {
 } from "./Step1.css";
 import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useFunnel } from "@daycan/hooks";
-import { getRecipientName } from "../../utils/parsingData";
+import { getMemberName } from "../../utils/parsingData";
+import { formatYYYYMMDD, TODAY_DATE } from "@/utils/dateFormatter";
 
 export const Step1 = () => {
   const [date, setDate] = useState<Date>();
@@ -26,13 +27,16 @@ export const Step1 = () => {
     useFunnel();
 
   // 수급자 이름 가져오기
-  const recipientName = getRecipientName(funnelState);
+  const memberName = getMemberName(funnelState);
 
   // 기존 데이터가 있으면 로드
+  // 단 기존의 데이터는 "YYYY-MM-DD" 형식으로 들어옴. 이를 Date 객체로 변환
   useEffect(() => {
     const existingData = getStepState("STEP_1");
     if (existingData) {
-      setDate(existingData.date);
+      if (existingData.date) {
+        setDate(new Date(existingData.date));
+      }
       setIsToday(existingData.isToday || false);
     }
   }, [getStepState]);
@@ -47,7 +51,7 @@ export const Step1 = () => {
       setDate(today);
       updateState({
         isToday: newIsToday,
-        date: today,
+        date: TODAY_DATE,
       });
     } else {
       setDate(undefined);
@@ -61,7 +65,7 @@ export const Step1 = () => {
   const handleDateSelect = (date: Date) => {
     setDate(date);
     updateState({
-      date: date,
+      date: formatYYYYMMDD(date),
       isToday: false, // 다른 날짜 선택 시 오늘 선택 해제
     });
   };
@@ -72,7 +76,7 @@ export const Step1 = () => {
         <div>
           <>
             <div className={step1HighlightingHeadingContainer}>
-              <HighlightingHeading text={recipientName} />
+              <HighlightingHeading text={memberName} />
               <Heading type="medium" weight={600} color={COLORS.gray[800]}>
                 님이
               </Heading>
@@ -111,11 +115,7 @@ export const Step1 = () => {
           </Body>
           {date && !isToday && (
             <Body type="xsmall" weight={500} color={COLORS.primary[300]}>
-              {date.toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {formatYYYYMMDD(date)}
             </Body>
           )}
           <Icon

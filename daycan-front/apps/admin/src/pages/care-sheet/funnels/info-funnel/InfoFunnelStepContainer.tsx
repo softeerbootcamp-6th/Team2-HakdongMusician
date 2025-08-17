@@ -50,9 +50,9 @@ export const InfoFunnelStepContainer = () => {
 
     return {
       STEP_0: {
-        recipientId: d.recipientId,
+        memberId: d.memberId,
         searchQuery: "",
-        selectedMember: mockMembers.find((m) => m.id === d.recipientId),
+        selectedMember: mockMembers.find((m) => m.id === d.memberId),
       },
       STEP_1: {
         date: new Date(d.date),

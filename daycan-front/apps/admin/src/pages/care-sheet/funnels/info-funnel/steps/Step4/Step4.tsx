@@ -12,7 +12,7 @@ import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useEffect, useState } from "react";
 import { useFunnel } from "@daycan/hooks";
 import { step4Input, step4InputContainer } from "./Step4.css";
-import { getRecipientName } from "../../utils/parsingData";
+import { getMemberName } from "../../utils/parsingData";
 
 export const Step4 = () => {
   const { toNext, toPrev, updateState, getStepState, funnelState } =
@@ -21,7 +21,7 @@ export const Step4 = () => {
   const [carNumber, setCarNumber] = useState("");
 
   // 수급자 이름 가져오기
-  const recipientName = getRecipientName(funnelState);
+  const memberName = getMemberName(funnelState);
 
   // 기존 데이터가 있으면 로드
   useEffect(() => {
@@ -72,7 +72,7 @@ export const Step4 = () => {
   return (
     <InfoFunnelLayout>
       <div className={step4HighlightingHeadingContainer}>
-        <HighlightingHeading text={recipientName} />
+        <HighlightingHeading text={memberName} />
         <Heading type="medium" weight={600} color={COLORS.gray[800]}>
           님이
         </Heading>

@@ -7,11 +7,11 @@ import {
 import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useStep3 } from "./useStep3";
 import { useEffect, useRef, useState } from "react";
-import { Button, COLORS, Icon, Input } from "@daycan/ui";
+import { Button, COLORS, Icon } from "@daycan/ui";
 import {
   DIAGNOSIS_CONSTANTS,
-  type EvaluationLevel,
   type ProgramType,
+  type Score,
 } from "../../constants/diagnosis";
 import {
   addRowContainer,
@@ -21,6 +21,7 @@ import {
   nameInput,
   programRow,
   iconButton,
+  nameInputElement,
 } from "./Step3.css";
 
 export const Step3 = () => {
@@ -63,7 +64,7 @@ export const Step3 = () => {
 
   return (
     <DiagnosisLayout title="기능회복 훈련" nextTitle="기록지 검토">
-      <DiagnosisCardLayout title="훈련" isRequired={true}>
+      <DiagnosisCardLayout title="훈련">
         <RowCheckBox
           label="동작훈련"
           checked={isTrainingChecked}
@@ -93,10 +94,7 @@ export const Step3 = () => {
           onClick={() => setIsPhysicalTherapyChecked(!isPhysicalTherapyChecked)}
         />
       </DiagnosisCardLayout>
-      <DiagnosisCardLayout
-        title="신체-인지 기능 향상 프로그램"
-        isRequired={true}
-      >
+      <DiagnosisCardLayout title="신체-인지 기능 향상 프로그램">
         <div ref={areaRef}>
           {programEntries.map((entry, index) => (
             <div key={index} className={programRow}>
@@ -157,18 +155,15 @@ export const Step3 = () => {
               </div>
 
               <div className={nameInput}>
-                <Input
+                <input
+                  className={nameInputElement}
                   value={entry.name}
                   type="text"
-                  inputSize="full"
                   onChange={(e) =>
                     updateProgramEntry(index, {
                       name: (e.target as HTMLInputElement).value,
                     })
                   }
-                  style={{
-                    border: "none",
-                  }}
                   placeholder="프로그램 명"
                 />
               </div>
@@ -185,11 +180,7 @@ export const Step3 = () => {
                     setOpenTypeIndex(null);
                   }}
                 >
-                  {
-                    DIAGNOSIS_CONSTANTS.PROGRAM.EVALUATION_LABEL[
-                      entry.evaluation
-                    ]
-                  }
+                  {DIAGNOSIS_CONSTANTS.PROGRAM.SCORE_LABEL[entry.score]}
                   <Icon
                     name="chevronDown"
                     color={COLORS.gray[500]}
@@ -203,7 +194,7 @@ export const Step3 = () => {
                       className={dropdownItem}
                       onClick={() => {
                         updateProgramEntry(index, {
-                          evaluation: "HIGH" as EvaluationLevel,
+                          score: "HIGH" as Score,
                         });
                         setOpenEvalIndex(null);
                       }}
@@ -214,7 +205,7 @@ export const Step3 = () => {
                       className={dropdownItem}
                       onClick={() => {
                         updateProgramEntry(index, {
-                          evaluation: "MEDIUM" as EvaluationLevel,
+                          score: "MEDIUM" as Score,
                         });
                         setOpenEvalIndex(null);
                       }}
@@ -225,7 +216,7 @@ export const Step3 = () => {
                       className={dropdownItem}
                       onClick={() => {
                         updateProgramEntry(index, {
-                          evaluation: "LOW" as EvaluationLevel,
+                          score: "LOW" as Score,
                         });
                         setOpenEvalIndex(null);
                       }}

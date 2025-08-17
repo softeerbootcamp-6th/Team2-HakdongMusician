@@ -15,12 +15,12 @@ export const DIAGNOSIS_CONSTANTS = {
   // STEP_3 프로그램 관련 상수
   PROGRAM: {
     TYPES: ["PHYSICAL", "COGNITIVE"] as const,
-    EVALUATIONS: ["LOW", "MEDIUM", "HIGH"] as const,
+    SCORES: ["LOW", "MEDIUM", "HIGH"] as const,
     TYPE_LABEL: {
       PHYSICAL: "신체",
       COGNITIVE: "인지",
     } as const,
-    EVALUATION_LABEL: {
+    SCORE_LABEL: {
       HIGH: "상",
       MEDIUM: "중",
       LOW: "하",
@@ -29,8 +29,7 @@ export const DIAGNOSIS_CONSTANTS = {
 } as const;
 
 export type ProgramType = (typeof DIAGNOSIS_CONSTANTS.PROGRAM.TYPES)[number];
-export type EvaluationLevel =
-  (typeof DIAGNOSIS_CONSTANTS.PROGRAM.EVALUATIONS)[number];
+export type Score = (typeof DIAGNOSIS_CONSTANTS.PROGRAM.SCORES)[number];
 
 // 식사 코드/라벨 매핑 (UI ↔ API 변환용)
 export const MEAL_TYPE_CODE_TO_LABEL: Record<string, string> = {

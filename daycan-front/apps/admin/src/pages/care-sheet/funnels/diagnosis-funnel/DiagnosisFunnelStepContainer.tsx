@@ -67,12 +67,12 @@ export const DiagnosisFunnelStepContainer = () => {
           d.physical.dinner.entry.amount,
         urineCount: d.physical.numberOfUrine,
         stoolCount: d.physical.numberOfStool,
-        physicalActivity: d.physical.note,
+        physicalActivity: d.physical.comment,
       },
       STEP_1: {
         isCognitiveHelperChecked: d.cognitive.assistCognitiveCare,
         isCommunicationHelperChecked: d.cognitive.assistCommunication,
-        physicalActivity: d.cognitive.note,
+        physicalActivity: d.cognitive.comment,
       },
       STEP_2: {
         isHealthManagementChecked: d.healthCare.healthCare,
@@ -80,8 +80,8 @@ export const DiagnosisFunnelStepContainer = () => {
         isEmergencyServiceChecked: d.healthCare.emergencyService,
         systolic: d.healthCare.bloodPressure.systolic,
         diastolic: d.healthCare.bloodPressure.diastolic,
-        temperature: d.healthCare.temperature,
-        healthManageSpecialNote: d.healthCare.note,
+        temperature: d.healthCare.temperature.temperature,
+        healthManageSpecialNote: d.healthCare.comment,
       },
       STEP_3: {
         isTrainingChecked: d.recoveryProgram.motionTraining,
@@ -89,7 +89,7 @@ export const DiagnosisFunnelStepContainer = () => {
         isCognitiveFunctionEnhancementTrainingChecked:
           d.recoveryProgram.cognitiveEnhancement,
         isPhysicalTherapyChecked: d.recoveryProgram.physicalTherapy,
-        trainingSpecialNote: d.recoveryProgram.note,
+        trainingSpecialNote: d.recoveryProgram.comment,
         programEntries: d.recoveryProgram.programEntries,
       },
     } as FunnelState;

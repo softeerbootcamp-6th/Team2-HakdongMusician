@@ -10,7 +10,7 @@ import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useFunnel } from "@daycan/hooks";
 import { useEffect, useState } from "react";
 import { step2HighlightingHeadingContainer } from "./Step2.css";
-import { getRecipientName } from "../../utils/parsingData";
+import { getMemberName } from "../../utils/parsingData";
 
 export const Step2 = () => {
   const { toNext, toPrev, updateState, getStepState, funnelState } =
@@ -19,7 +19,7 @@ export const Step2 = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   // 수급자 이름 가져오기
-  const recipientName = getRecipientName(funnelState);
+  const memberName = getMemberName(funnelState);
 
   // 기존 데이터가 있으면 로드
   useEffect(() => {
@@ -45,7 +45,7 @@ export const Step2 = () => {
   return (
     <InfoFunnelLayout>
       <div className={step2HighlightingHeadingContainer}>
-        <HighlightingHeading text={recipientName} />
+        <HighlightingHeading text={memberName} />
         <Heading type="medium" weight={600} color={COLORS.gray[800]}>
           님이 언제 오셨나요?
         </Heading>

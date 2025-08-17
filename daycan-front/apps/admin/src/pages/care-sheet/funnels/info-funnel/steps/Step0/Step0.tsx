@@ -12,25 +12,25 @@ import { useFunnel } from "@daycan/hooks";
 export const Step0 = () => {
   const navigate = useNavigate();
   const { toNext, getStepState, updateState } = useFunnel();
-  const [recipientId, setRecipientId] = useState<string>();
+  const [memberId, setMemberId] = useState<number>();
   const [searchQuery, setSearchQuery] = useState("");
 
   // 기존 데이터가 있으면 로드
   useEffect(() => {
     const existingData = getStepState("STEP_0");
     if (existingData) {
-      setRecipientId(existingData.recipientId);
+      setMemberId(existingData.memberId);
       setSearchQuery(existingData.searchQuery || "");
     }
   }, [getStepState]);
 
   const handleMemberSelect = (member: Member) => {
-    setRecipientId(member.id);
+    setMemberId(member.id);
     setSearchQuery(member.name);
 
     // FunnelState에 데이터 저장
     updateState({
-      recipientId: member.id,
+      memberId: member.id,
       searchQuery: member.name,
       selectedMember: member,
     });
@@ -59,7 +59,7 @@ export const Step0 = () => {
       </div>
       <MemberList
         members={filteredMembers}
-        selectedMemberId={recipientId}
+        selectedMemberId={memberId}
         onMemberSelect={handleMemberSelect}
       />
       <StepButtons
@@ -69,7 +69,7 @@ export const Step0 = () => {
         onPrev={() => {
           navigate("/care-sheet/new");
         }}
-        isNextEnabled={!!recipientId}
+        isNextEnabled={!!memberId}
       />
     </InfoFunnelLayout>
   );
