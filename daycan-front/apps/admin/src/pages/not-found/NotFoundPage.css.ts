@@ -15,6 +15,13 @@ export const container = style({
   justifyContent: "center",
   padding: "24px",
   background: COLORS.gray[50],
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      display: "inline-block",
+      paddingTop: 80,
+    },
+  },
 });
 
 export const card = style({
@@ -24,12 +31,10 @@ export const card = style({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
+  minWidth: 350,
 });
 
 export const illust = style({
-  width: 112,
-  height: 112,
-  margin: "0 auto 16px",
   animation: `${float} 4s ease-in-out infinite`,
 });
 
@@ -40,4 +45,41 @@ export const actions = style({
   gap: 12,
   marginTop: 24,
   width: "100%",
+});
+
+export const pcDescriptionWrapper = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 18,
+
+  "@media": {
+    "screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+});
+
+export const mobileDescriptionWrapper = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 16,
+
+  "@media": {
+    "screen and (min-width: 768px)": {
+      display: "none",
+    },
+  },
+});
+
+export const alertNotFoundIcon = style({
+  "@media": {
+    "screen and (max-width: 768px)": {
+      width: 120,
+      height: 120,
+    },
+  },
 });

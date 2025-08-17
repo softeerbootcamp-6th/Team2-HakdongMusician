@@ -1,12 +1,27 @@
-import { Button, Heading, Body } from "@daycan/ui";
+import { Button, Heading, Body, Icon, COLORS } from "@daycan/ui";
 import { useNavigate } from "react-router-dom";
-import { container, card, illust, actions } from "./NotFoundPage.css";
+import {
+  container,
+  card,
+  illust,
+  actions,
+  pcDescriptionWrapper,
+  mobileDescriptionWrapper,
+  alertNotFoundIcon,
+} from "./NotFoundPage.css";
 
 export const NotFoundPage = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    navigate("/");
+    // TODO: 보길
+    // 일단 이렇게 해봤는데 따로 home 페이지를 만들어 보는것도 좋아 보기이도 합니다.
+    const pathname = window.location.pathname;
+    if (pathname.includes("/care-sheet/new")) {
+      navigate("/care-sheet/new");
+    } else {
+      navigate("/");
+    }
   };
 
   const handleGoBack = () => {
@@ -18,39 +33,39 @@ export const NotFoundPage = () => {
       <div className={card}>
         {/* 404 일러스트 */}
         <div className={illust}>
-          <svg
-            viewBox="0 0 112 112"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="56" cy="56" r="56" fill="#FEF3C7" />
-            <path
-              d="M40 40h32v32H40z"
-              fill="#F59E0B"
-              stroke="#92400E"
-              strokeWidth="2"
-            />
-            <text
-              x="56"
-              y="65"
-              textAnchor="middle"
-              fill="#92400E"
-              fontSize="24"
-              fontWeight="bold"
-            >
-              404
-            </text>
-          </svg>
+          <Icon
+            name="alertNotFound"
+            width={200}
+            height={200}
+            className={alertNotFoundIcon}
+          />
         </div>
 
         {/* 제목 */}
-        <Heading>페이지를 찾을 수 없습니다</Heading>
+        <div className={pcDescriptionWrapper}>
+          <Heading style={{ textAlign: "center" }}>
+            페이지를 찾을 수 없습니다 <br />
+            요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
+          </Heading>
 
-        {/* 설명 */}
-        <Heading>
-          요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
-        </Heading>
-        <Body type="medium">URL을 확인하거나 아래 버튼을 이용해주세요.</Body>
+          <Body type="medium">URL을 확인하거나 아래 버튼을 이용해주세요.</Body>
+        </div>
+
+        <div className={mobileDescriptionWrapper}>
+          <Body
+            type="large"
+            weight={600}
+            color={COLORS.gray[700]}
+            style={{ textAlign: "center" }}
+          >
+            페이지를 찾을 수 없습니다 <br />
+            요청하신 페이지가 존재하지 않거나 <br />
+            이동되었을 수 있습니다.
+          </Body>
+          <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
+            URL을 확인하거나 아래 버튼을 이용해주세요.
+          </Body>
+        </div>
 
         {/* 액션 버튼들 */}
         <div className={actions}>
