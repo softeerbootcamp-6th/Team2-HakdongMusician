@@ -134,7 +134,7 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
               color={form.acceptReport ? COLORS.primary[300] : COLORS.gray[200]}
             />
             <Body type="small" weight={600}>
-              수급자 정보 리포트 수신 동의
+              수급자 정보 리포트 수신 동의 (선택)
             </Body>
           </div>
           <Icon
