@@ -4,7 +4,6 @@ import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.common.response.status.error.MemberErrorStatus;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
-import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.CareReport;
 
 import com.daycan.domain.entry.ProgramComment;
@@ -51,6 +50,11 @@ public class CareReportService {
     return buildFromPair(() ->
         careReportRepository.findTopByIdBeforeEq(
             documentId, PageRequest.of(0, 2)));
+  }
+
+  @Transactional
+  public void saveReport(CareReport report) {
+    careReportRepository.save(report);
   }
 
 
