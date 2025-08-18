@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Heading, HighlightingHeading } from "@daycan/ui";
 import { StackCard } from "./components/StackCard/StackCard";
 import { container, heading, headingContainer } from "./DailyReportPage.css";
@@ -10,71 +9,106 @@ import {
   CognitiveCard,
 } from "./components";
 import { useDailyReport } from "./hooks/useDailyReport";
+import { Loading } from "@/components";
 
 export const DailyReportPage = () => {
-  const [date, setDate] = useState<Date>(new Date());
-  const [name, setName] = useState<string>("김수진");
-  const [isMale, setIsMale] = useState<boolean>(true);
-
   const {
-    isLoading,
-    error,
     getMealCardData,
     getHealthCheckCardData,
-    getHealthImproveCardData,
-    getCognitiveCardData,
+    getHealthIndexTotalScore,
+    getHealthIndexChangeAmount,
     getHealthIndexCardData,
-    getHealthIndexDescription,
+    getIndividualHealthImproveCards,
+    getIndividualCognitiveCards,
+    getMealCardFooter,
+    getHealthCardFooter,
+    getPhysicalCardFooter,
+    getCognitiveCardFooter,
+    isLoading,
+    isError,
   } = useDailyReport();
 
-  useEffect(() => {
-    setName("김수진");
-    setDate(new Date());
-    setIsMale(false);
-  }, []);
-
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <Loading />;
   }
 
-  if (error) {
-    return <div>에러가 발생했습니다: {error}</div>;
+  if (isError) {
+    return <div>Error</div>;
   }
+
+  // 개별 신체 건강 개선 카드들 생성
+  const healthImproveCards = getIndividualHealthImproveCards().map(
+    (cardData, index) => ({
+      id: 100 + index, // 숫자 ID
+      content: (
+        <HealthImproveCard
+          columns={cardData.data}
+          score={getPhysicalCardFooter().score}
+          additionalMemo={getPhysicalCardFooter().memo}
+        />
+      ),
+    })
+  );
+
+  // 개별 인지능력 카드들 생성
+  const cognitiveCards = getIndividualCognitiveCards().map(
+    (cardData, index) => ({
+      id: 200 + index, // 숫자 ID
+      content: (
+        <CognitiveCard
+          columns={cardData.data}
+          score={getCognitiveCardFooter().score}
+          additionalMemo={getCognitiveCardFooter().memo}
+        />
+      ),
+    })
+  );
 
   return (
     <div className={container}>
       <div className={headingContainer}>
         <div className={heading}>
-          <HighlightingHeading text={name} />
-          <Heading type="medium">{isMale ? "할아버지" : "할머니"}의</Heading>
+          <HighlightingHeading text={new Date().toLocaleDateString()} />
         </div>
-        <Heading type="medium">{date.toLocaleDateString()} 리포트예요</Heading>
+        <Heading type="medium">
+          데일리 리포트 입니다. <br />
+          카드를 넘기며 확인해보세요!
+        </Heading>
       </div>
 
       <StackCard
         cardsData={[
+          // 개별 인지능력 카드들 (인지 능력 카드는 모두 개별 카드로 처리)
+          ...cognitiveCards,
+          // 개별 신체 건강 개선 카드들 (신체 건강 개선 카드는 모두 개별 카드로 처리)
+          ...healthImproveCards,
+          // 기존 카드들
           {
             id: 1,
-            content: <CognitiveCard columns={getCognitiveCardData()} />,
+            content: (
+              <HealthCheckCard
+                rows={getHealthCheckCardData() ?? []}
+                score={getHealthCardFooter().score}
+                additionalMemo={getHealthCardFooter().memo}
+              />
+            ),
           },
           {
             id: 2,
-            content: <HealthImproveCard columns={getHealthImproveCardData()} />,
+            content: (
+              <MealCard
+                rows={getMealCardData() ?? []}
+                score={getMealCardFooter().score}
+                additionalMemo={getMealCardFooter().memo}
+              />
+            ),
           },
           {
             id: 3,
-            content: <HealthCheckCard rows={getHealthCheckCardData()} />,
-          },
-          {
-            id: 4,
-            content: <MealCard rows={getMealCardData()} />,
-          },
-          {
-            id: 5,
             content: (
               <HealthIndexCard
-                index={85}
-                description={getHealthIndexDescription()}
+                index={getHealthIndexTotalScore()}
+                changeAmount={getHealthIndexChangeAmount()}
                 indexCardData={getHealthIndexCardData()}
               />
             ),
