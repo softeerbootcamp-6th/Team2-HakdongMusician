@@ -47,7 +47,7 @@ export { default as DeleteIcon } from "./svg/delete.svg";
 export { default as AlarmIcon } from "./svg/alarm.svg";
 export { default as AlignUpIcon } from "./svg/align-up.svg";
 export { default as AlignDownIcon } from "./svg/align-down.svg";
-
+export { default as SingIcon } from "./svg/sing.svg";
 // 카메라/이미지 관련 아이콘들
 export { default as FlipCameraIcon } from "./svg/flip_camera_ios.svg";
 export { default as ReplaceImageIcon } from "./svg/replace_image.svg";
