@@ -107,8 +107,9 @@ public class CareReport extends BaseTimeEntity {
     linkDocument(doc); // 아래 불변식 통과해야 연결됨
   }
 
-  public void openThis(){
+  public CareReport openThis(){
     this.isOpen = true;
+    return this;
   }
 
   public Boolean isOpened() {

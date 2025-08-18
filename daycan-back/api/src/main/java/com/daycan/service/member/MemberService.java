@@ -172,7 +172,7 @@ public class MemberService {
   private AdminMemberResponse convertToAdminMemberResponse(Member m) {
     return AdminMemberResponse.builder()
         .id(m.getId())
-        .username(m.getUsername())
+        .careNumber(m.getUsername())
         .name(m.getName())
         .gender(m.getGender())
         .birthDate(m.getBirthDate())

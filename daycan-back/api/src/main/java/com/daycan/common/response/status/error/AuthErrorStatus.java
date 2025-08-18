@@ -16,7 +16,7 @@ public enum AuthErrorStatus implements Status {
   EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,40112 ,"토큰이 만료되었습니다."),
   INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, 40113,"토큰 서명이 유효하지 않습니다."),
   BLACKLISTED_TOKEN(HttpStatus.UNAUTHORIZED, 40114,"블랙리스트에 등록된 토큰입니다."),
-  TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, 40115,"사용이 중지된 토큰입니다."),
+  INVALID_REFRESH(HttpStatus.UNAUTHORIZED, 40115,"리프레시 토큰이 invalid 상태입니다."),
 
   // 403
   CENTER_ONLY(HttpStatus.FORBIDDEN, 40310,"접근이 금지된 사용자입니다."),

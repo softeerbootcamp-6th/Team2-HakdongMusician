@@ -17,7 +17,7 @@ public record CareSheetPrefillResponse(
     Long memberId,
 
     @Schema(description = "장기요양인정번호", example = "RP123456")
-    String memberCode,
+    String careNumber,
 
     @Schema(description = "이용 날짜", example = "2025-08-01")
     LocalDate date,
