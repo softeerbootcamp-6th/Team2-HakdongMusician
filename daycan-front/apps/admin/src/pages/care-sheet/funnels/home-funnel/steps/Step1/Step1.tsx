@@ -1,29 +1,40 @@
-import { Body, COLORS, HighlightingHeading } from "@daycan/ui";
+import { Body, COLORS, HighlightingHeading, Icon } from "@daycan/ui";
 import {
   careSheetPageContainer,
   careSheetPageContent,
   careSheetPageContentTitleContainer,
 } from "../Step0/Step0.css";
 import { Header, WritingMethodCard } from "../../components";
-import { PhotoSelectBottomSheet } from "../../components/PhotoSelectBottomSheet/PhotoSelectBottomSheet";
 import { StepButtons } from "../../../../components/StepButtons";
 import pictureMethod from "@/assets/png/picture-method.png";
 import selectMethod from "@/assets/png/select-method.png";
 import { useFunnel } from "@daycan/hooks";
 import { getWriterName } from "../../utils/parseData";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  todayWritedCareSheetContainer,
+  todayWritedCareSheetTitle,
+} from "./Step1.css";
+
+import { useGetCareSheetList } from "@/services/careSheet/useCareSheetQuery";
+import { CareSheetListItem } from "@/pages/care-sheet-today/components/CareSheetListItem";
+import { TODAY_DATE } from "@/utils/dateFormatter";
 
 // localStorage 키 상수
 const RECENT_METHOD_KEY = "careSheet:recentMethod";
 
 export const Step1 = () => {
+  const navigate = useNavigate();
   const { toPrev, toNext, funnelState } = useFunnel();
   const [recentMethod, setRecentMethod] = useState<string | null>(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   // 작성자 이름 가져오기
   const writerName = getWriterName(funnelState);
-
+  const { data: careSheetList } = useGetCareSheetList(
+    TODAY_DATE,
+    funnelState?.writerId
+  );
   // 컴포넌트 마운트 시 localStorage에서 최근 사용한 방법 불러오기
   useEffect(() => {
     const stored = localStorage.getItem(RECENT_METHOD_KEY);
@@ -36,11 +47,12 @@ export const Step1 = () => {
     // localStorage에 선택된 방법 저장
     localStorage.setItem(RECENT_METHOD_KEY, method);
     setRecentMethod(method);
+    toNext();
 
     if (method === "direct") {
-      toNext();
+      navigate("/care-sheet/new/info");
     } else {
-      setIsBottomSheetOpen(true);
+      navigate("/care-sheet/new/ocr");
     }
   };
 
@@ -72,10 +84,28 @@ export const Step1 = () => {
             handleMethodSelect("photo");
           }}
         />
-        <PhotoSelectBottomSheet
-          isBottomSheetOpen={isBottomSheetOpen}
-          setIsBottomSheetOpen={setIsBottomSheetOpen}
-        />
+        <div className={todayWritedCareSheetContainer}>
+          <div
+            className={todayWritedCareSheetTitle}
+            onClick={() => {
+              navigate("/care-sheet/new/today");
+            }}
+          >
+            <Body type="medium" weight={600} color={COLORS.gray[600]}>
+              오늘 작성한 기록지
+            </Body>
+            <Icon
+              name="chevronRight"
+              width={24}
+              height={24}
+              color={COLORS.gray[50]}
+              stroke={COLORS.gray[600]}
+            />
+          </div>
+          {careSheetList?.map((careSheet) => (
+            <CareSheetListItem careSheet={careSheet} />
+          ))}
+        </div>
         <StepButtons onPrev={toPrev} />
       </div>
     </div>

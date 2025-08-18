@@ -9,6 +9,9 @@ export const useStep0 = () => {
   const [isWashHelperChecked, setIsWashHelperChecked] = useState(false);
   const [isMoveHelperChecked, setIsMoveHelperChecked] = useState(false);
   const [isBathHelperChecked, setIsBathHelperChecked] = useState(false);
+  const [bathingDurationMinutes, setBathingDurationMinutes] =
+    useState<string>("30분");
+  const [bathingType, setBathingType] = useState<string>("전신입욕");
   const [isBreakfastChecked, setIsBreakfastChecked] = useState(false);
   const [isLunchChecked, setIsLunchChecked] = useState(false);
   const [isDinnerChecked, setIsDinnerChecked] = useState(false);
@@ -29,6 +32,8 @@ export const useStep0 = () => {
       setIsWashHelperChecked(existingData.isWashHelperChecked || false);
       setIsMoveHelperChecked(existingData.isMoveHelperChecked || false);
       setIsBathHelperChecked(existingData.isBathHelperChecked || false);
+      setBathingDurationMinutes(existingData.bathingDurationMinutes || null);
+      setBathingType(existingData.bathingType || null);
       setIsBreakfastChecked(existingData.isBreakfastChecked || false);
       setIsLunchChecked(existingData.isLunchChecked || false);
       setIsDinnerChecked(existingData.isDinnerChecked || false);
@@ -74,6 +79,8 @@ export const useStep0 = () => {
       isWashHelperChecked,
       isMoveHelperChecked,
       isBathHelperChecked,
+      bathingDurationMinutes,
+      bathingType,
       isBreakfastChecked,
       isLunchChecked,
       isDinnerChecked,
@@ -98,6 +105,10 @@ export const useStep0 = () => {
     setIsMoveHelperChecked,
     isBathHelperChecked,
     setIsBathHelperChecked,
+    bathingDurationMinutes,
+    setBathingDurationMinutes,
+    bathingType,
+    setBathingType,
     isBreakfastChecked,
     setIsBreakfastChecked,
     isLunchChecked,

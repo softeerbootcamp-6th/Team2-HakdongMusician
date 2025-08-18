@@ -24,6 +24,7 @@ export type TCareSheetListItem = {
     name: string;
     birthDate: YearMonthDay;
     gender: Gender;
+    avatarUrl: string;
   };
   isAttending: boolean;
   writerName: string;
@@ -111,13 +112,11 @@ export type TCareSheetReadResponse = {
     cognitiveProgram: boolean;
     cognitiveEnhancement: boolean;
     physicalTherapy: boolean;
-    programEntries: [
-      {
-        type: ProgramType;
-        name: string;
-        score: Score;
-      },
-    ];
+    programEntries: {
+      type: ProgramType;
+      name: string;
+      score: Score;
+    }[];
     comment: string;
   };
 };
@@ -191,13 +190,11 @@ export type TCareSheetWriteRequest = {
     cognitiveProgram: boolean;
     cognitiveEnhancement: boolean;
     physicalTherapy: boolean;
-    programEntries: [
-      {
-        type: ProgramType;
-        name: string;
-        score: Score;
-      },
-    ];
+    programEntries: {
+      type: ProgramType;
+      name: string;
+      score: Score;
+    }[];
     comment: string;
   };
   signatureUrl: string;

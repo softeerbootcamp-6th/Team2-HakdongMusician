@@ -19,10 +19,10 @@ export const useWriteCareSheet = () => {
     onSuccess: (_, request) => {
       // 해당 날짜와 수급자의 케어시트 캐시 무효화
       queryClient.invalidateQueries({
-        queryKey: careSheetKeys.detail(request.date, request.memberId),
+        queryKey: careSheetKeys.detailByDate(request.date),
       });
       queryClient.invalidateQueries({
-        queryKey: careSheetKeys.list(request.date, request.memberId),
+        queryKey: careSheetKeys.listByDate(request.date),
       });
     },
   });
@@ -42,10 +42,7 @@ export const useUpdateCareSheetAttendance = () => {
       // 해당 날짜의 모든 관련 수급자 케어시트 캐시 무효화
       request.memberIds.forEach((memberId) => {
         queryClient.invalidateQueries({
-          queryKey: careSheetKeys.detail(request.date, memberId),
-        });
-        queryClient.invalidateQueries({
-          queryKey: careSheetKeys.list(request.date, memberId),
+          queryKey: careSheetKeys.detailByMemberId(memberId),
         });
       });
     },

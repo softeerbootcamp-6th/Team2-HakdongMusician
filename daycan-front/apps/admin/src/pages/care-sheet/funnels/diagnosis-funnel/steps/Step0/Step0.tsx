@@ -40,7 +40,10 @@ export const Step0 = () => {
     stoolCount,
     physicalActivity,
     setPhysicalActivity,
-
+    bathingDurationMinutes,
+    setBathingDurationMinutes,
+    bathingType,
+    setBathingType,
     // 이벤트 핸들러들
     handleIncrementUrineCount,
     handleDecrementUrineCount,
@@ -69,6 +72,27 @@ export const Step0 = () => {
           label="목욕 도움"
           checked={isBathHelperChecked}
           onClick={() => setIsBathHelperChecked(!isBathHelperChecked)}
+          isExpandable={true}
+          expandableChildren={
+            <>
+              <>
+                <RowSegment
+                  label="방식"
+                  options={["전신입욕", "목욕의자", "침상"]}
+                  value={bathingType}
+                  onSegmentChange={setBathingType}
+                  fontSize="medium"
+                />
+              </>
+              <RowSegment
+                label="목욕 시간"
+                options={["30분", "1시간", "1시간 30분"]}
+                value={bathingDurationMinutes}
+                onSegmentChange={setBathingDurationMinutes}
+                fontSize="medium"
+              />
+            </>
+          }
         />
       </DiagnosisCardLayout>
       <DiagnosisCardLayout title="식사지원">
@@ -84,12 +108,14 @@ export const Step0 = () => {
                 options={["일반식", "죽", "유동식"]}
                 value={breakfastType}
                 onSegmentChange={setBreakfastType}
+                fontSize="medium"
               />
               <RowSegment
                 label="식사량"
                 options={["1인분", "1/2이상", "1/3이하"]}
                 value={breakfastAmount}
                 onSegmentChange={setBreakfastAmount}
+                fontSize="medium"
               />
             </>
           }
@@ -106,12 +132,14 @@ export const Step0 = () => {
                 options={["일반식", "죽", "유동식"]}
                 value={lunchType}
                 onSegmentChange={setLunchType}
+                fontSize="medium"
               />
               <RowSegment
                 label="식사량"
                 options={["1인분", "1/2이상", "1/3이하"]}
                 value={lunchAmount}
                 onSegmentChange={setLunchAmount}
+                fontSize="medium"
               />
             </>
           }
@@ -128,12 +156,14 @@ export const Step0 = () => {
                 options={["일반식", "죽", "유동식"]}
                 value={dinnerType}
                 onSegmentChange={setDinnerType}
+                fontSize="medium"
               />
               <RowSegment
                 label="식사량"
                 options={["1인분", "1/2이상", "1/3이하"]}
                 value={dinnerAmount}
                 onSegmentChange={setDinnerAmount}
+                fontSize="medium"
               />
             </>
           }

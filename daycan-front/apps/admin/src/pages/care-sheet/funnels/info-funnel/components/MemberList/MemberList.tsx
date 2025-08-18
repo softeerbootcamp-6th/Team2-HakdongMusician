@@ -4,7 +4,7 @@ import type { Member } from "./types";
 
 interface MemberListProps {
   members: Member[];
-  selectedMemberId?: string;
+  selectedMemberId?: number;
   onMemberSelect?: (member: Member) => void;
 }
 

@@ -45,7 +45,6 @@ export const segmentItem = recipe({
       compact: {
         width: "64px",
         height: "28px",
-        fontSize: "13px",
         borderRadius: "8px",
       },
     },
@@ -59,6 +58,24 @@ export const segmentItem = recipe({
       },
       spaceBetween: {
         justifyContent: "space-between",
+      },
+    },
+    fontSize: {
+      large: {
+        fontSize: "14px",
+        fontWeight: "500",
+      },
+      medium: {
+        fontSize: "12px",
+        fontWeight: "400",
+      },
+      small: {
+        fontSize: "10px",
+        fontWeight: "400",
+      },
+      xsmall: {
+        fontSize: "8px",
+        fontWeight: "400",
       },
     },
   },

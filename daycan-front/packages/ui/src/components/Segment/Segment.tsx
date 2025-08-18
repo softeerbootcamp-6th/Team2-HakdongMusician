@@ -9,6 +9,7 @@ export type SegmentProps = PropsWithChildren<
       options: string[];
       value: string;
       onSegmentChange: (val: string) => void;
+      fontSize: "large" | "medium" | "small" | "xsmall";
     }
 >;
 
@@ -19,6 +20,7 @@ export const Segment = ({
   options,
   onSegmentChange,
   value,
+  fontSize,
   ...props
 }: SegmentProps) => {
   return (
@@ -38,6 +40,7 @@ export const Segment = ({
               type={type}
               selected={isSelected}
               onClick={() => onSegmentChange(option)}
+              fontSize={fontSize}
             >
               {option}
             </SegmentItem>
