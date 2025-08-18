@@ -6,9 +6,10 @@ import {
   indexColumnDescriptionContainer,
   indexColumnDescriptionWarning,
 } from "./IndexColumn.css";
+import { getIconByRowKey } from "../../constants/iconMapping";
 
 interface IndexColumnProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode; // 선택적 prop으로 변경
   column: {
     key: string;
     value: string;
@@ -18,11 +19,13 @@ interface IndexColumnProps {
 }
 
 export const IndexColumn = ({ icon, column }: IndexColumnProps) => {
+  // icon이 제공되면 그것을 사용하고, 아니면 key에 따라 자동 매핑
+  const displayIcon = icon || getIconByRowKey(column.key);
   return (
     <>
       <div className={indexColumn}>
         <div className={indexColumnIconTitleContainer}>
-          {icon}
+          {displayIcon}
           <Body type="medium" weight={600}>
             {column.key}
           </Body>
