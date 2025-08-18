@@ -49,6 +49,7 @@ export const Toast = ({ data }: ToastProps) => {
           width={24}
           height={24}
           color={COLORS.primary[300]}
+          stroke={COLORS.black}
         />
       </div>
       <Body type="medium" weight={600} color={getTextColor()}>
@@ -63,7 +64,7 @@ export const ToastContainer = () => {
     <_ToastContainer
       position="top-center"
       className={toastContainer}
-      autoClose={3000}
+      autoClose={1000}
       closeButton={false}
       hideProgressBar
       newestOnTop

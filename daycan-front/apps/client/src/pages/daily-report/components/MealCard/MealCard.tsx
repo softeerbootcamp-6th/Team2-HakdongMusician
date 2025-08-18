@@ -1,32 +1,33 @@
-import { Icon } from "@daycan/ui";
 import { CardLayout } from "../CardLayout/CardLayout";
 import { IndexRow } from "../IndexRow/IndexRow";
 
-export const MealCard = ({
-  isDropdown = false,
-  rows,
-}: {
+interface MealCardProps {
   isDropdown?: boolean;
   rows: {
     key: string;
     value: string;
     warningDescription?: string;
   }[];
-}) => {
+  score: number;
+  additionalMemo?: string;
+}
+
+export const MealCard = ({
+  isDropdown = false,
+  rows,
+  score,
+  additionalMemo,
+}: MealCardProps) => {
   return (
     <CardLayout
       title="식사"
-      stampCount={15}
-      stampTotal={15}
-      stampDescription="오늘 식사를 완료했어요"
+      score={score}
+      scoreMax={15}
       isDropdown={isDropdown}
+      additionalMemo={additionalMemo}
     >
       {rows.map((row) => (
-        <IndexRow
-          key={row.key}
-          icon={<Icon name="meal" width={32} height={32} />}
-          row={row}
-        />
+        <IndexRow key={row.key} row={row} />
       ))}
     </CardLayout>
   );

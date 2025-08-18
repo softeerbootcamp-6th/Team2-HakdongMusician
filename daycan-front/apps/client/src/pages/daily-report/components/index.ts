@@ -7,3 +7,4 @@ export * from "./CardLayout";
 export * from "./IndexRow";
 export * from "./IndexColumn";
 export * from "./CognitiveCard";
+export * from "./FullScreenCardModal";

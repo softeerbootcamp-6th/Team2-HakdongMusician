@@ -6,6 +6,7 @@ import {
   reportsContentHeaderLeft,
   reportsContentHeaderRight,
   dateContainer,
+  emptyDataContainer,
 } from "./ReportsContent.css";
 import {
   HealthCheckCard,
@@ -15,11 +16,22 @@ import {
   MealCard,
 } from "../../../daily-report/components";
 import { useState } from "react";
-import { getDateString, isToday } from "../../../../utils/dateUtils";
+import {
+  formatYYYYMMDD,
+  getDateString,
+  isToday,
+} from "../../../../utils/dateUtils";
+import { useGetReportQuery } from "@/services/report/useReportQuery";
 
 export const ReportsContent = () => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const {
+    data: reportsData,
+    isLoading,
+    isError,
+  } = useGetReportQuery(formatYYYYMMDD(selectedDate));
+
   return (
     <div className={reportsContentContainer}>
       <div className={reportsContentHeader}>
@@ -36,24 +48,11 @@ export const ReportsContent = () => {
             }}
           />
           <div className={dateContainer}>
-            {isToday(selectedDate) && (
-              <Chip
-                round="default"
-                flexRule="center"
-                style={{
-                  backgroundColor: COLORS.gray[200],
-                  color: COLORS.gray[700],
-                  padding: "6px 12px",
-                  borderRadius: 4,
-                }}
-              >
-                오늘
-              </Chip>
-            )}
             <Body type="medium" weight={600} color={COLORS.gray[900]}>
               {getDateString(selectedDate)}
             </Body>
           </div>
+
           <Icon
             name="chevronRight"
             width={24}
@@ -65,6 +64,16 @@ export const ReportsContent = () => {
               );
             }}
           />
+          {isToday(selectedDate) && (
+            <Chip
+              round="l"
+              flexRule="center"
+              color="green"
+              style={{ padding: "8px 12px" }}
+            >
+              오늘
+            </Chip>
+          )}
         </div>
 
         <div className={reportsContentHeaderRight}>
@@ -93,56 +102,97 @@ export const ReportsContent = () => {
             initialDate={selectedDate}
           />
         )}
-        {/* TODO - API 명세 나온 후에, 아이콘 매핑 및 데이터 타입 수정 필요 */}
-        <HealthIndexCard
-          index={85}
-          description="대충 진짜 너무 잘 하셔서 스껄하시다는 뜻 ㅎㅎ 와우와우와우~!!"
-          indexCardData={[
-            { title: "식사", value: 15 },
-            { title: "건강", value: 15 },
-            { title: "신체", value: 15 },
-            { title: "인지", value: 15 },
-          ]}
-          isDropdown={true}
-        />
+        {isLoading ? (
+          <div className={emptyDataContainer}>
+            <Body type="medium">데이터를 불러오는 중...</Body>
+          </div>
+        ) : isError ? (
+          <div className={emptyDataContainer}>
+            <Body type="medium">데이터를 불러오는데 실패했습니다.</Body>
+          </div>
+        ) : reportsData ? (
+          <>
+            <HealthIndexCard
+              index={reportsData.fullReportDto.totalScore}
+              changeAmount={reportsData.fullReportDto.changeAmount}
+              indexCardData={[
+                { title: "식사", value: reportsData.fullReportDto.mealScore },
+                { title: "건강", value: reportsData.fullReportDto.healthScore },
+                {
+                  title: "신체",
+                  value: reportsData.fullReportDto.physicalScore,
+                },
+                {
+                  title: "인지",
+                  value: reportsData.fullReportDto.cognitiveScore,
+                },
+              ]}
+              isDropdown={true}
+            />
 
-        <MealCard
-          isDropdown={true}
-          rows={[
-            {
-              key: "아침",
-              value: "오늘은 아침을 했어요!",
-              warningDescription: "반찬 투정을 하셨어요",
-            },
-          ]}
-        />
-        <HealthCheckCard
-          isDropdown={true}
-          rows={[
-            {
-              key: "혈압",
-              value: "120/80",
-            },
-          ]}
-        />
-        <HealthImproveCard
-          isDropdown={true}
-          columns={[
-            {
-              key: "게이트 볼",
-              value: "게이트 볼을 통해서, 몸과 마음을 단련시켰어요.",
-            },
-          ]}
-        />
-        <CognitiveCard
-          isDropdown={true}
-          columns={[
-            {
-              key: "노래부르기",
-              value: "노래부르기 활동을 통해서, 몸과 마음을 단련시켰어요.",
-            },
-          ]}
-        />
+            <MealCard
+              isDropdown={true}
+              rows={reportsData.fullReportDto.mealEntries?.map((entry) => ({
+                key: entry.key,
+                value: entry.value,
+                warningDescription: entry.warning,
+              }))}
+              score={reportsData.fullReportDto.mealCardFooter?.score ?? 15}
+              additionalMemo={
+                reportsData.fullReportDto.mealCardFooter?.additionalMemo ?? ""
+              }
+            />
+
+            <HealthCheckCard
+              isDropdown={true}
+              rows={reportsData.fullReportDto.healthEntries?.map((entry) => ({
+                key: entry.key,
+                value: entry.value,
+                warningDescription: entry.warning,
+              }))}
+              score={reportsData.fullReportDto.healthCardFooter?.score ?? 15}
+              additionalMemo={
+                reportsData.fullReportDto.healthCardFooter?.additionalMemo ?? ""
+              }
+            />
+
+            <HealthImproveCard
+              isDropdown={true}
+              columns={reportsData.fullReportDto.physicalEntries?.map(
+                (entry) => ({
+                  key: entry.key,
+                  value: entry.value,
+                  specificDescription: entry.additionalInfo,
+                })
+              )}
+              score={reportsData.fullReportDto.physicalCardFooter?.score ?? 15}
+              additionalMemo={
+                reportsData.fullReportDto.physicalCardFooter?.additionalMemo ??
+                ""
+              }
+            />
+
+            <CognitiveCard
+              isDropdown={true}
+              columns={reportsData.fullReportDto.cognitiveEntries?.map(
+                (entry) => ({
+                  key: entry.key,
+                  value: entry.value,
+                  specificDescription: entry.additionalInfo,
+                })
+              )}
+              score={reportsData.fullReportDto.cognitiveCardFooter?.score ?? 15}
+              additionalMemo={
+                reportsData.fullReportDto.cognitiveCardFooter?.additionalMemo ??
+                ""
+              }
+            />
+          </>
+        ) : (
+          <div className={emptyDataContainer}>
+            <Body type="medium">데이터가 없습니다.</Body>
+          </div>
+        )}
       </div>
     </div>
   );

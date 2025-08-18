@@ -27,7 +27,7 @@ export interface ReportHistoryData {
   physicalEntries: Entry[];
   physicalCardFooter: CardFooter;
   cognitiveEntries: Entry[];
-  CognitiveCardFooter: CardFooter;
+  cognitiveCardFooter: CardFooter;
 }
 
 // ===== CareSheet 데이터 타입 정의 =====
@@ -191,7 +191,7 @@ export const useHistoryModal = () => {
             additionalInfo: "참여도: 높음",
           },
         ],
-        CognitiveCardFooter: {
+        cognitiveCardFooter: {
           score: 15,
           additionalMemo: "인지 활동 완료",
         },

@@ -4,7 +4,6 @@ import {
   LineChartComponent,
   RangeViolationIndicator,
 } from "./components";
-import { DUMMY_BAR } from "./constants/dummy";
 import { formatAveragesToString, formatSingleAverageToString } from "./utils";
 import {
   statisticsHeader,
@@ -22,6 +21,7 @@ export const StatisticsPage = () => {
   const {
     selectedPeriod,
     currentDate,
+    dailyScoreData,
     temperatureData,
     bloodPressureData,
     defecationData,
@@ -32,9 +32,84 @@ export const StatisticsPage = () => {
     urinationViolations,
     handlePeriodChange,
     handleChevronClick,
+    isLoading,
+    isError,
+    error,
   } = useStatistics();
 
   const navigate = useNavigate();
+
+  // 로딩 상태 처리
+  if (isLoading) {
+    return (
+      <div className={statisticsPageContainer}>
+        {/* 헤더 컴포넌트 */}
+        <div className={statisticsHeader}>
+          <Icon
+            name="chevronLeft"
+            width={24}
+            height={24}
+            color={COLORS.white}
+            onClick={() => navigate("/")}
+          />
+          <Body type="large" weight={600}>
+            변화 리포트
+          </Body>
+          <div></div>
+        </div>
+        {/* 로딩 메시지 */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <Body type="large">데이터를 불러오는 중...</Body>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태 처리
+  if (isError) {
+    return (
+      <div className={statisticsPageContainer}>
+        {/* 헤더 컴포넌트 */}
+        <div className={statisticsHeader}>
+          <Icon
+            name="chevronLeft"
+            width={24}
+            height={24}
+            color={COLORS.white}
+            onClick={() => navigate("/")}
+          />
+          <Body type="large" weight={600}>
+            변화 리포트
+          </Body>
+          <div></div>
+        </div>
+        {/* 에러 메시지 */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <Body type="large">데이터를 불러오는 중 오류가 발생했습니다.</Body>
+          <Body type="medium" color={COLORS.gray[500]}>
+            {error?.message || "알 수 없는 오류입니다."}
+          </Body>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={statisticsPageContainer}>
       {/* 헤더 컴포넌트 */}
@@ -56,7 +131,10 @@ export const StatisticsPage = () => {
         <Segment
           options={["1주일", "1개월", "6개월"]}
           value={selectedPeriod}
-          onSegmentChange={handlePeriodChange}
+          onSegmentChange={(value) =>
+            handlePeriodChange(value as "1주일" | "1개월" | "6개월")
+          }
+          fontSize="medium"
         />
         <div className={statisticsCalendarDateContainer}>
           <Icon
@@ -84,7 +162,16 @@ export const StatisticsPage = () => {
       <div className={statisticsChartContainer}>
         {/* API 데이터 - 건강지수 차트 */}
         <ChartLayout title="종합건강지수" iconName="health">
-          <BarChartComponent data={DUMMY_BAR} width={360} height={260} />
+          <BarChartComponent
+            data={dailyScoreData.data}
+            height={260}
+            averageValue={formatSingleAverageToString(
+              dailyScoreData.averages.dailyScoreValues,
+              "점"
+            )}
+            dataKeys={["dailyScoreValues"]}
+            unit="점"
+          />
         </ChartLayout>
 
         {/* API 데이터 - 체온 차트 */}
@@ -92,7 +179,6 @@ export const StatisticsPage = () => {
           <RangeViolationIndicator violation={temperatureViolations} />
           <LineChartComponent
             data={temperatureData.data}
-            width={360}
             height={260}
             averageValue={formatSingleAverageToString(
               temperatureData.averages.temperatureValues,
@@ -117,7 +203,6 @@ export const StatisticsPage = () => {
           />
           <LineChartComponent
             data={bloodPressureData.data}
-            width={360}
             height={260}
             averageValue={formatAveragesToString(
               bloodPressureData.averages,
@@ -141,7 +226,6 @@ export const StatisticsPage = () => {
           />
           <LineChartComponent
             data={defecationData.data}
-            width={360}
             height={260}
             averageValue={formatSingleAverageToString(
               defecationData.averages.defecationCountValues,
@@ -162,7 +246,6 @@ export const StatisticsPage = () => {
           />
           <LineChartComponent
             data={urinationData.data}
-            width={360}
             height={260}
             averageValue={formatSingleAverageToString(
               urinationData.averages.urinationCountValues,

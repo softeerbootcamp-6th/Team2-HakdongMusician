@@ -6,28 +6,30 @@ import {
   Greeting,
 } from "./components";
 import { container } from "./MainPage.css";
+import { useSuspenseGetMainDataQuery } from "@/services/main/useMainQuery";
+import { TODAY_DATE } from "@/utils/dateUtils";
 
 export const MainPage = () => {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const { data: mainData } = useSuspenseGetMainDataQuery(TODAY_DATE);
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
   return (
     <div className={container}>
-      {/* 000 보호자님 리포트가 도착했어요! */}
-      <Greeting parentName="홍큐티빠티스껄" isReportArrived={true} />
-
+      <Greeting
+        parentName={mainData?.name ?? "김수급"}
+        isReportArrived={mainData?.isReportArrived ?? false}
+      />
       {/* 이번 주 건강 요약하기 */}
       <SummaryCard
-        startDate="7월 15일"
-        endDate="7월 23일"
-        healthIndex={8}
-        healthIndexChange="down"
-        healthDescription="안정적인 한 주였어요."
-        gaugeValue={40}
+        startDate={new Date(oneWeekAgo).toLocaleDateString()}
+        endDate={new Date().toLocaleDateString()}
+        weeklyChangeAmount={mainData?.weeklyChangeAmount ?? 0}
+        weeklyScore={mainData?.weeklyScore ?? 0}
         onClickInfoModal={() => setIsInfoModalOpen(true)}
       />
-
       {/* 기록 확인하기 */}
       <RecordCheckCard />
-
       <InfoModal
         isOpen={isInfoModalOpen}
         onClose={() => setIsInfoModalOpen(false)}

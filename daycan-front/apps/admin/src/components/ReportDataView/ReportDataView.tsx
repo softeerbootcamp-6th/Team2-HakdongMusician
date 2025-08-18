@@ -38,6 +38,7 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
       <HealthIndexCard
         index={reportData.totalScore}
         description={`전체 점수: ${reportData.totalScore}점, 변화량: ${reportData.changeAmount}점`}
+        changeAmount={reportData.changeAmount}
         indexCardData={[
           { title: "식사", value: reportData.mealScore },
           { title: "건강", value: reportData.healthScore },
@@ -54,6 +55,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           value: entry.value,
           warningDescription: entry.warning,
         }))}
+        score={reportData.mealCardFooter?.score ?? 15}
+        additionalMemo={reportData.mealCardFooter?.additionalMemo ?? ""}
       />
 
       <HealthCheckCard
@@ -62,6 +65,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           key: entry.key,
           value: entry.value,
         }))}
+        score={reportData.healthCardFooter?.score ?? 15}
+        additionalMemo={reportData.healthCardFooter?.additionalMemo ?? ""}
       />
 
       <HealthImproveCard
@@ -70,6 +75,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           key: entry.key,
           value: entry.value,
         }))}
+        score={reportData.physicalCardFooter?.score ?? 15}
+        additionalMemo={reportData.physicalCardFooter?.additionalMemo ?? ""}
       />
 
       <CognitiveCard
@@ -78,6 +85,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           key: entry.key,
           value: entry.value,
         }))}
+        score={reportData.cognitiveCardFooter?.score ?? 15}
+        additionalMemo={reportData.cognitiveCardFooter?.additionalMemo ?? ""}
       />
     </div>
   );

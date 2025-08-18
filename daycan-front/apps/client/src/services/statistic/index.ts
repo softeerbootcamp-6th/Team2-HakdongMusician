@@ -1,31 +1,31 @@
 import { safeRequest } from "@daycan/api";
-import type { TStatistic } from "./types";
+import type { TDailyStatistic, TMonthlyStatistic } from "./types";
 import type { YearMonth, YearMonthDay } from "@/types/date";
 import { privateInstance } from "../instance";
 
 /**
- * 통계 데이터 조회 startDate와 endDate 사이의 데이터를 조회함
+ * 일별 통계 데이터 조회 (1주일/1달 기간용)
  * @author 홍규진
  */
 export const getStatisticData = async (
   startDate: YearMonthDay,
   endDate: YearMonthDay
-): Promise<TStatistic[]> => {
-  return await safeRequest.get<TStatistic[]>(
+): Promise<TDailyStatistic> => {
+  return await safeRequest.get<TDailyStatistic>(
     privateInstance,
     `/member/statistics/vitals/from/${startDate}/to/${endDate}`
   );
 };
 
 /**
- * 통계 데이터 조회 startDate와 endDate 사이의 데이터를 조회함
+ * 월별 통계 데이터 조회 (6개월 기간용)
  * @author 홍규진
  */
 export const getStatisticMonthData = async (
   startDate: YearMonth,
   endDate: YearMonth
-): Promise<TStatistic[]> => {
-  return await safeRequest.get<TStatistic[]>(
+): Promise<TMonthlyStatistic> => {
+  return await safeRequest.get<TMonthlyStatistic>(
     privateInstance,
     `/member/statistics/vitals/from/${startDate}/to/${endDate}`
   );

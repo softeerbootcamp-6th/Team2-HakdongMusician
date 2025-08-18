@@ -23,11 +23,13 @@ const STATISTIC_QUERY_KEY = {
  */
 export const useGetStatisticDataQuery = (
   startDate: YearMonthDay,
-  endDate: YearMonthDay
+  endDate: YearMonthDay,
+  enabled = true
 ) => {
   return useQuery({
     queryKey: STATISTIC_QUERY_KEY.day(startDate, endDate),
     queryFn: () => getStatisticData(startDate, endDate),
+    enabled,
   });
 };
 
@@ -38,10 +40,12 @@ export const useGetStatisticDataQuery = (
  */
 export const useGetStatisticMonthDataQuery = (
   startDate: YearMonth,
-  endDate: YearMonth
+  endDate: YearMonth,
+  enabled = true
 ) => {
   return useQuery({
     queryKey: STATISTIC_QUERY_KEY.month(startDate, endDate),
     queryFn: () => getStatisticMonthData(startDate, endDate),
+    enabled,
   });
 };

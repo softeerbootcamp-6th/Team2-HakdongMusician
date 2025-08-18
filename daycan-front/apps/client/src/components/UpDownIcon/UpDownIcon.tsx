@@ -15,7 +15,7 @@ export const UpDownIcon = ({ value }: { value: number }) => {
         weight={500}
         color={value > 0 ? COLORS.red[500] : COLORS.blue[500]}
       >
-        {value}
+        {Math.abs(value)}
       </Body>
     </div>
   );

@@ -6,6 +6,7 @@ import {
   ServerError,
 } from "@daycan/api";
 import { useToast } from "@daycan/ui";
+import { reIssueToken } from "../auth";
 
 export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
   const { showToast } = useToast();
@@ -46,7 +47,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
       (error.code >= 40100 && error.code < 40200) ||
       (error.code >= 40300 && error.code < 40400)
     ) {
-      //   window.location.href = "/login";
+      reIssueToken(localStorage.getItem("refreshToken") ?? "");
     }
   } else if (error instanceof ClientError) {
     // 클라이언트 에러 (400, 404 등)
@@ -107,46 +108,5 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
     });
 
     console.error("❓ Unknown Error:", error);
-  }
-};
-
-// 특정 에러 타입별 전용 처리 함수들
-export const handleNetworkError = (error: NetworkError) => {
-  console.error("🌐 Network Error Details:", {
-    message: error.message,
-    timestamp: new Date().toISOString(),
-    userAgent: navigator.userAgent,
-  });
-
-  // 네트워크 상태 체크
-  if (!navigator.onLine) {
-    console.log("오프라인 상태입니다");
-  }
-};
-
-export const handleAuthError = (error: AuthError) => {
-  console.error("🔐 Auth Error Details:", {
-    code: error.code,
-    message: error.message,
-    timestamp: new Date().toISOString(),
-  });
-
-  // 인증 토큰 만료 체크
-  if (error.code >= 40100 && error.code < 40200) {
-    // 토큰 갱신 또는 로그아웃 처리
-    console.log("인증 토큰이 만료되었습니다");
-  }
-};
-
-export const handleServerError = (error: ServerError) => {
-  console.error("🖥️ Server Error Details:", {
-    code: error.code,
-    message: error.message,
-    timestamp: new Date().toISOString(),
-  });
-
-  // 서버 상태 체크 또는 재시도 로직
-  if (error.code >= 50000) {
-    console.log("서버 내부 오류가 발생했습니다");
   }
 };
