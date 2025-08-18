@@ -9,3 +9,4 @@ export { Footer } from "./Footer/Footer";
 export { Header } from "./Header/Header";
 export { UpDownIcon } from "./UpDownIcon";
 export { ScrollToTop } from "./ScrollToTop";
+export { Loading } from "./Loading";
