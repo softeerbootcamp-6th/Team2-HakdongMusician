@@ -14,14 +14,7 @@ export const NotFoundPage = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    // TODO: 보길
-    // 일단 이렇게 해봤는데 따로 home 페이지를 만들어 보는것도 좋아 보기이도 합니다.
-    const pathname = window.location.pathname;
-    if (pathname.includes("/care-sheet/new")) {
-      navigate("/care-sheet/new");
-    } else {
-      navigate("/");
-    }
+    navigate("/");
   };
 
   const handleGoBack = () => {

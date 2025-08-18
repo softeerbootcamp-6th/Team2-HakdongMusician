@@ -9,9 +9,11 @@ import {
   loginHeader,
   checkContainer,
   headerContent,
+  subDescription,
 } from "./LoginPage.css";
 import { useAdminLoginHook } from "./hooks";
 import { ForgotCredentialsModal } from "./components/ForgotCredentialsModal";
+import { AdminLoginRouteModal } from "./components/AdminLoginRouteModal/AdminLoginRouteModal";
 export const LoginPage = () => {
   const {
     isFilled,
@@ -25,6 +27,8 @@ export const LoginPage = () => {
     setIsChecked,
     isModalOpen,
     setIsModalOpen,
+    isAdminLoginRouteModalOpen,
+    setIsAdminLoginRouteModalOpen,
     resetForm,
   } = useAdminLoginHook();
 
@@ -43,7 +47,7 @@ export const LoginPage = () => {
             >
               센터종사자 로그인
             </Heading>
-            <Body type="small" weight={400} style={{ color: COLORS.gray[800] }}>
+            <Body type="small" weight={400} className={subDescription}>
               어떻게 치매까지 사랑하겠어, 엄마를 사랑하는 거지...
             </Body>
           </div>
@@ -55,7 +59,7 @@ export const LoginPage = () => {
             <Input
               type="text"
               variant="grayLight"
-              inputSize="pcTextFieldLarge"
+              inputSize="full"
               placeholder="아이디"
               color="grayLight"
               value={email}
@@ -67,7 +71,7 @@ export const LoginPage = () => {
             <Input
               type="password"
               variant="grayLight"
-              inputSize="pcTextFieldLarge"
+              inputSize="full"
               placeholder="비밀번호"
               color="grayLight"
               value={password}
@@ -141,6 +145,11 @@ export const LoginPage = () => {
           setIsModalOpen(false);
           resetForm();
         }}
+      />
+
+      <AdminLoginRouteModal
+        isOpen={isAdminLoginRouteModalOpen}
+        onClose={() => setIsAdminLoginRouteModalOpen(false)}
       />
     </div>
   );

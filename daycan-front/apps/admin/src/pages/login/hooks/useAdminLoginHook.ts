@@ -8,6 +8,7 @@ interface AdminLoginState {
   errorMessage: string;
   isChecked: boolean;
   isModalOpen: boolean;
+  isAdminLoginRouteModalOpen: boolean; // 추가
 }
 
 // 액션 타입 정의
@@ -18,6 +19,7 @@ type AdminLoginAction =
   | { type: "CLEAR_ERROR_MESSAGE" }
   | { type: "SET_IS_CHECKED"; payload: boolean }
   | { type: "SET_IS_MODAL_OPEN"; payload: boolean }
+  | { type: "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN"; payload: boolean } // 추가
   | { type: "RESET_FORM" };
 
 // 초기 상태
@@ -28,6 +30,7 @@ const initialState: AdminLoginState = {
   errorMessage: "",
   isChecked: false,
   isModalOpen: false,
+  isAdminLoginRouteModalOpen: false, // 추가
 };
 
 // 리듀서 함수
@@ -72,6 +75,12 @@ const adminLoginReducer = (
       return {
         ...state,
         isModalOpen: action.payload,
+      };
+
+    case "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN": // 추가
+      return {
+        ...state,
+        isAdminLoginRouteModalOpen: action.payload,
       };
 
     case "RESET_FORM":
@@ -122,6 +131,9 @@ export const useAdminLoginHook = () => {
       email: state.email,
       password: state.password,
     });
+
+    // 로그인 성공 시 라우팅 모달 열기
+    dispatch({ type: "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN", payload: true });
   };
 
   const setIsChecked = (value: boolean) => {
@@ -130,6 +142,10 @@ export const useAdminLoginHook = () => {
 
   const setIsModalOpen = (value: boolean) => {
     dispatch({ type: "SET_IS_MODAL_OPEN", payload: value });
+  };
+
+  const setIsAdminLoginRouteModalOpen = (value: boolean) => {
+    dispatch({ type: "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN", payload: value });
   };
 
   const resetForm = () => {
@@ -144,6 +160,7 @@ export const useAdminLoginHook = () => {
     errorMessage: state.errorMessage,
     isChecked: state.isChecked,
     isModalOpen: state.isModalOpen,
+    isAdminLoginRouteModalOpen: state.isAdminLoginRouteModalOpen, // 추가
 
     // 액션 핸들러
     handleEmailChange,
@@ -151,6 +168,7 @@ export const useAdminLoginHook = () => {
     handleLogin,
     setIsChecked,
     setIsModalOpen,
+    setIsAdminLoginRouteModalOpen, // 추가
     resetForm,
   };
 };

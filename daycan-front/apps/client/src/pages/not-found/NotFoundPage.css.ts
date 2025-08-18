@@ -31,7 +31,7 @@ export const card = style({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  minWidth: 350,
+  // minWidth: 350,
 });
 
 export const illust = style({

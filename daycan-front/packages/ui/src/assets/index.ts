@@ -29,6 +29,7 @@ export { default as CheckedIcon } from "./svg/check-box-checked.svg";
 export { default as UncheckedIcon } from "./svg/check-box-unchecked.svg";
 export { default as PlusBoxIcon } from "./svg/plus-box.svg";
 export { default as MinusBoxIcon } from "./svg/minus-box.svg";
+export { default as AlertNotFoundIcon } from "./svg/alert-not-found.svg";
 
 // 기능 아이콘들
 export { default as CalendarIcon } from "./svg/calendar.svg";

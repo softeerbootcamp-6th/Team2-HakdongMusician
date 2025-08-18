@@ -10,3 +10,4 @@ export { MainPage } from "./main";
 export { DailyReportPage } from "./daily-report";
 export { ReportsPage } from "./reports";
 export { StatisticsPage } from "./statistics";
+export { NotFoundPage } from "./not-found";

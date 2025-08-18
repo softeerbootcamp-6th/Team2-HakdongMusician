@@ -5,6 +5,7 @@ import {
   DailyReportPage,
   ReportsPage,
   StatisticsPage,
+  NotFoundPage,
 } from "@/pages";
 import { MainLayout, MobileLayout, LoginLayout } from "@/layout";
 
@@ -27,6 +28,10 @@ export const routes: TRoutes[] = [
         path: "",
         element: <MainPage />,
       },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
     ],
   },
   {
@@ -48,10 +53,6 @@ export const routes: TRoutes[] = [
       {
         path: "statistics",
         element: <StatisticsPage />,
-      },
-      {
-        path: "*",
-        element: <div>NotFound</div>,
       },
     ],
   },
