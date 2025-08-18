@@ -63,3 +63,12 @@ export const normalRangeLegendItem = style({
 export const normalRangeLegendText = style({
   color: COLORS.gray[600],
 });
+
+export const emptyStateContainer = style({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: COLORS.gray[50],
+  borderRadius: "8px",
+  border: `1px solid ${COLORS.gray[200]}`,
+});
