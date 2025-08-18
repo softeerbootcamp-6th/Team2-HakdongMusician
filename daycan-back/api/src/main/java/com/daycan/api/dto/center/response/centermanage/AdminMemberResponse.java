@@ -11,7 +11,7 @@ import lombok.Builder;
 public record AdminMemberResponse(
     @Schema(description = "수급자 ID", example = "1") Long id,
 
-    @Schema(description = "장기요양인정번호", example = "AA1234567") String username,
+    @Schema(description = "장기요양인정번호", example = "AA1234567") String careNumber,
 
     @Schema(description = "수급자명", example = "홍길동") String name,
 

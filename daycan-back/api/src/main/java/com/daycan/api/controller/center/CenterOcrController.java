@@ -88,7 +88,7 @@ public class CenterOcrController {
     CareSheetPrefillResponse mock = new CareSheetPrefillResponse(
         7L,                          // writerId
         45L,                         // memberId
-        "RP123456",                  // memberCode
+        "RP123456",                  // careNumber
         LocalDate.of(2025, 8, 1),    // date
         LocalTime.of(9, 0),          // startTime
         LocalTime.of(17, 0),         // endTime

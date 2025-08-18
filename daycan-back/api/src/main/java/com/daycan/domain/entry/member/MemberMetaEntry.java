@@ -12,7 +12,7 @@ public record MemberMetaEntry(
     Long memberId,
 
     @Schema(description = "장기요양인정번호", example = "RP123456")
-    String memberCode,
+    String careNumber,
 
     @Schema(description = "수급자 이름", example = "김순애")
     String name,
