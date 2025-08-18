@@ -11,18 +11,22 @@ export type TReportCardFooter = {
 };
 
 export type TReport = {
-  totalScore: number;
-  changeAmount: number;
-  mealScore: number;
-  healthScore: number;
-  physicalScore: number;
-  cognitiveScore: number;
-  mealEntries: TReportEntry[];
-  mealCardFooter: TReportCardFooter;
-  healthEntries: TReportEntry[];
-  healthCardFooter: TReportCardFooter;
-  physicalEntries: TReportEntry[];
-  physicalCardFooter: TReportCardFooter;
-  cognitiveEntries: TReportEntry[];
-  CognitiveCardFooter: TReportCardFooter;
+  memberName: string;
+  gender: "MALE" | "FEMALE";
+  fullReportDto: {
+    totalScore: number;
+    changeAmount: number;
+    mealScore: number;
+    healthScore: number;
+    physicalScore: number;
+    cognitiveScore: number;
+    mealEntries: TReportEntry[];
+    mealCardFooter: TReportCardFooter;
+    healthEntries: TReportEntry[];
+    healthCardFooter: TReportCardFooter;
+    physicalEntries: TReportEntry[];
+    physicalCardFooter: TReportCardFooter;
+    cognitiveEntries: TReportEntry[];
+    cognitiveCardFooter: TReportCardFooter;
+  };
 };

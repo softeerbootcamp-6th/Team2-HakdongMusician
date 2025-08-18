@@ -8,5 +8,8 @@ import { privateInstance } from "../instance";
  * @author 홍규진
  */
 export const getReport = async (yyyymmdd: YearMonthDay): Promise<TReport> => {
-  return await safeRequest.get<TReport>(privateInstance, `/report/${yyyymmdd}`);
+  return await safeRequest.get<TReport>(
+    privateInstance,
+    `member/report/${yyyymmdd}`
+  );
 };
