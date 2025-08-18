@@ -46,6 +46,13 @@ export const cardLayoutFooter = style({
   width: "100%",
 });
 
+export const cardLayoutFooterStampContainer = style({
+  display: "flex",
+  width: 38,
+  alignItems: "center",
+  justifyContent: "center",
+});
+
 export const cardLayoutFooterStampDescription = style({
   display: "flex",
   flexDirection: "column",
@@ -106,6 +113,26 @@ export const arrowIcon = recipe({
         transform: "rotate(0deg)",
       },
     },
+  },
+});
+
+export const overflowMessage = style({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.3)",
+  borderRadius: "16px",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+  zIndex: 10,
+
+  ":hover": {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
 });
 

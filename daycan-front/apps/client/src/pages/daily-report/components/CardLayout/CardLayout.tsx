@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Body, COLORS, Icon } from "@daycan/ui";
 import {
   cardLayout,
@@ -9,14 +9,16 @@ import {
   arrowIcon,
   arrowIconContainer,
   content,
+  overflowMessage,
+  cardLayoutFooterStampContainer,
 } from "./CardLayout.css";
 
 interface CardLayoutProps {
   children: React.ReactNode;
   title: string;
-  stampCount: number;
-  stampTotal: number;
-  stampDescription: string;
+  score: number;
+  scoreMax: number;
+  additionalMemo?: string;
   isDropdown?: boolean;
 }
 
@@ -25,21 +27,32 @@ interface CardLayoutProps {
 export const CardLayout = ({
   children,
   title,
-  stampCount,
-  stampTotal,
-  stampDescription,
+  score,
+  scoreMax,
+  additionalMemo,
   isDropdown = false,
 }: CardLayoutProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const toggleExpanded = () => {
     if (isDropdown) {
       setIsExpanded(!isExpanded);
     }
   };
-  function getStampIcon(stampCount: number) {
+
+  // 콘텐츠가 넘치는지 감지
+  useEffect(() => {
+    if (contentRef.current) {
+      const { scrollHeight, clientHeight } = contentRef.current;
+      setIsOverflowing(scrollHeight > clientHeight);
+    }
+  }, [children, isExpanded]);
+
+  function getStampIcon(score: number) {
     //total을 기준으로 수정 필요
-    if (stampCount >= 8 && stampCount <= 15) {
+    if (score >= 8 && score <= 15) {
       return "stampGood";
     }
     return "stampBad";
@@ -79,23 +92,38 @@ export const CardLayout = ({
       {(!isDropdown || isExpanded) && (
         <>
           <div
+            ref={contentRef}
             className={isDropdown ? dropdownContent({ isExpanded }) : content}
+            style={{ position: "relative" }}
           >
             {children}
+
+            {/* 콘텐츠가 넘칠 때 메시지 오버레이 */}
+            {isOverflowing && !isDropdown && (
+              <div className={overflowMessage}>
+                <Body type="medium" weight={600} color={COLORS.white}>
+                  터치해서 자세한 정보를 확인하세요!
+                </Body>
+              </div>
+            )}
           </div>
+
+          {/* 스탬프 + 메모 영역 */}
           <div className={cardLayoutFooter}>
-            <Icon
-              name={getStampIcon(stampCount)}
-              width={60}
-              height={60}
-              color={COLORS.white}
-            />
+            <div className={cardLayoutFooterStampContainer}>
+              <Icon
+                name={getStampIcon(score)}
+                width={38}
+                height={38}
+                color={COLORS.white}
+              />
+            </div>
             <div className={cardLayoutFooterStampDescription}>
               <Body type="large" weight={600} color={COLORS.gray[700]}>
-                {stampCount}/{stampTotal}
+                {score}/{scoreMax}
               </Body>
               <Body type="medium" weight={400} color={COLORS.gray[700]}>
-                {stampDescription}
+                {additionalMemo ?? ""}
               </Body>
             </div>
           </div>
