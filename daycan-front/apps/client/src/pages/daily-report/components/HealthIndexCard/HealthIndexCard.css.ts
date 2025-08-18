@@ -66,7 +66,7 @@ export const indexCardContainer = style({
   backgroundColor: COLORS.white,
   borderRadius: 9,
   boxSizing: "border-box",
-  marginTop: 15,
+  marginTop: 24,
   gap: 1,
 });
 
@@ -88,10 +88,6 @@ export const indexValue = style({
   alignItems: "center",
   justifyContent: "center",
   gap: 4,
-});
-
-export const indexDescription = style({
-  marginTop: 18,
 });
 
 export const dropdownContent = recipe({

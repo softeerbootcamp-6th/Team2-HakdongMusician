@@ -8,7 +8,6 @@ import {
   indexCard,
   indexCardContainer,
   indexValue,
-  indexDescription,
   indexChartDescription,
   dropdownContent,
   arrowIcon,
@@ -17,7 +16,8 @@ import {
 
 interface HealthIndexCardProps {
   index: number;
-  description: string;
+  description?: string;
+  changeAmount: number;
   indexCardData: {
     title: string;
     value: number;
@@ -28,10 +28,24 @@ interface HealthIndexCardProps {
 export const HealthIndexCard = ({
   index,
   description,
+  changeAmount,
   indexCardData,
   isDropdown = false,
 }: HealthIndexCardProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
+
+  // changeAmount에 따라 자동으로 description 생성
+  const getAutoDescription = () => {
+    if (changeAmount > 0) {
+      return `전체 점수가 ${changeAmount}점 증가했습니다. 🎉`;
+    } else if (changeAmount < 0) {
+      return `전체 점수가 ${Math.abs(changeAmount)}점 감소했습니다. 😢`;
+    } else {
+      return `전체 점수가 동일합니다. 😊`;
+    }
+  };
+
+  const finalDescription = description || getAutoDescription();
 
   const toggleExpanded = () => {
     if (isDropdown) {
@@ -49,10 +63,14 @@ export const HealthIndexCard = ({
         <Body type="large" weight={600}>
           건강지수
         </Body>
-        <Body type="xsmall" weight={500} color={COLORS.red[500]}>
+        <Body
+          type="xsmall"
+          weight={500}
+          color={changeAmount > 0 ? COLORS.red[500] : COLORS.blue[500]}
+        >
           이전 기록 대비
         </Body>
-        <UpDownIcon value={10} />
+        <UpDownIcon value={changeAmount} />
         <div className={arrowIconContainer}>
           {isDropdown && (
             <Icon
@@ -84,7 +102,7 @@ export const HealthIndexCard = ({
               }}
             />
             <Body type="small" weight={500} className={indexChartDescription}>
-              {description}
+              {finalDescription}
             </Body>
           </div>
           <div className={indexCardContainer}>
@@ -134,15 +152,6 @@ export const HealthIndexCard = ({
               </div>
             </div>
           </div>
-
-          <Body
-            type="xsmall"
-            weight={400}
-            color={COLORS.gray[600]}
-            className={indexDescription}
-          >
-            카드를 옆으로 넘겨 상세 정보를 확인해 보세요!
-          </Body>
         </div>
       )}
     </div>
