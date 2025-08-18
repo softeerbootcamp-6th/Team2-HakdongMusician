@@ -49,7 +49,7 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
     return qf
         .select(
             doc.date,
-            vital.temperature,
+            vital.temperature.doubleValue(),
             vital.bloodPressureDiastolic,
             vital.bloodPressureSystolic,
             vital.numberOfStool,
