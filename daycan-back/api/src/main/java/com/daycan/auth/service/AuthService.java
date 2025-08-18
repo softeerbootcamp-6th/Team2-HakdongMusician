@@ -20,6 +20,7 @@ import com.daycan.repository.jpa.MemberRepository;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -34,6 +35,7 @@ public class AuthService {
 
 
   // 1) 로그인
+  @Transactional(readOnly = true)
   public UserDetails authenticate(String username, String rawPw, UserType userType) {
     return switch (userType) {
       case CENTER -> {
@@ -61,6 +63,7 @@ public class AuthService {
   }
 
   // 2) 토큰 발급  (RefreshToken 저장 or 갱신)
+  @Transactional
   public LoginResponse issueTokens(UserDetails principal) {
 
     Token access = jwtTokenProvider.createAccessToken(principal.getUniqueIdentifier());
@@ -80,11 +83,14 @@ public class AuthService {
   }
 
   // 토큰 재발급 : RTR
-  public LoginResponse reissue(String rawRefreshToken, String rawOldAccessToken) {
-
-    /*  저장된 RefreshToken 존재‧만료 확인 */
+  @Transactional
+  public LoginResponse reissue(String rawRefreshToken) {
     RefreshToken saved = refreshTokenRepository.findByToken(rawRefreshToken)
-        .orElseThrow(() -> new ApplicationException(AuthErrorStatus.BLACKLISTED_TOKEN));
+        .orElseThrow(() -> new ApplicationException(AuthErrorStatus.INVALID_REFRESH));
+
+    if(blacklistService.isBlacklisted(rawRefreshToken, TokenType.REFRESH) ) {
+      throw new ApplicationException(AuthErrorStatus.BLACKLISTED_TOKEN);
+    }
 
     if (saved.isExpired()) {
       throw new ApplicationException(AuthErrorStatus.EXPIRED_TOKEN);
@@ -104,11 +110,6 @@ public class AuthService {
 
     Instant refreshExp = jwtTokenProvider.getExpiry(rawRefreshToken).toInstant();
     blacklistService.blacklist(rawRefreshToken, TokenType.REFRESH, refreshExp);
-
-    if (rawOldAccessToken != null && jwtTokenProvider.validate(rawOldAccessToken)) {
-      Instant accessExp = jwtTokenProvider.getExpiry(rawOldAccessToken).toInstant();
-      blacklistService.blacklist(rawOldAccessToken, TokenType.ACCESS, accessExp);
-    }
 
     /* 새 토큰 발급 */
     Token newAccess = jwtTokenProvider.createAccessToken(subject);

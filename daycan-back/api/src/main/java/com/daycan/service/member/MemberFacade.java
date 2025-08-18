@@ -33,13 +33,13 @@ public class MemberFacade {
   @Transactional
   public MemberReportResponse getReport(Member member, LocalDate date) {
     ReportWithDto reportWithDto = careReportService.getReport(member.getId(), date);
-
-    CareReport report = reportWithDto.careReport();
     // todo: 주석 해제
 //    if(report.getDocument().getStatus()!= DocumentStatus.REPORT_REVIEWED) {
 //      throw new ApplicationException(DocumentErrorStatus.INVALID_REPORT_ACCESS);
 //    }
-    report.openThis();
+   careReportService.saveReport(
+       reportWithDto.careReport().openThis()
+   );
     return new MemberReportResponse(
         member.getName(),
         member.getGender(),
