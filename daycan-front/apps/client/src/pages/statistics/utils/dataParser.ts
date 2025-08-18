@@ -154,8 +154,9 @@ const convertMetricKeyToReadableName = (metricKey: string): string => {
 };
 
 /**
- * 평균값들을 문자열로 포맷팅 (두자리 소수점)
+ * 평균값들을 문자열로 포맷팅 (소수점 1자리)
  * 여러 데이터마다 단위가 다르므로 따로 포맷팅(혈압은 두가지 다 중요하므로 따로 포맷팅)
+ * undefined/null 값은 0으로 처리
  * @author 홍규진
  */
 export const formatAveragesToString = (
@@ -163,20 +164,24 @@ export const formatAveragesToString = (
   unit?: string
 ): string => {
   const formattedValues = Object.entries(averages).map(([_, value]) => {
-    return `${value.toFixed(1)}${unit ? ` ${unit}` : ""}`;
+    const safeValue = typeof value === "number" && !isNaN(value) ? value : 0;
+    return `${safeValue.toFixed(1)}${unit ? ` ${unit}` : ""}`;
   });
 
   return `• ${formattedValues.join(" / ")}`;
 };
 
 /**
- * 단일 메트릭의 평균값을 문자열로 포맷팅
+ * 단일 메트릭의 평균값을 문자열로 포맷팅 (소수점 1자리)
  * 여러 데이터마다 단위가 다르므로 따로 포맷팅(체온, 혈압, 회)
+ * undefined/null 값은 0으로 처리
  * @author 홍규진
  */
 export const formatSingleAverageToString = (
-  average: number,
+  average: number | undefined | null,
   unit?: string
 ): string => {
-  return `${average.toFixed(1)}${unit ? ` ${unit}` : ""}`;
+  const safeValue =
+    typeof average === "number" && !isNaN(average) ? average : 0;
+  return `${safeValue.toFixed(1)}${unit ? ` ${unit}` : ""}`;
 };
