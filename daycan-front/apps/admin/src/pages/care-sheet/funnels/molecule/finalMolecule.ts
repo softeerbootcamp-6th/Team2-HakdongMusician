@@ -10,6 +10,8 @@ export const combinedCareSheetAtom = atom((get) => {
   const infoData = get(infoFunnelDataAtom);
   const diagnosisData = get(diagnosisFunnelDataAtom);
 
+  console.log("combinedCareSheetAtom", homeData, infoData, diagnosisData);
+
   return combineFunnelData(homeData, infoData, diagnosisData);
 });
 
