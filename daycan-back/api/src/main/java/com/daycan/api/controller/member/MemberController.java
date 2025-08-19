@@ -17,6 +17,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/member")
 @Tag(name = "\uD83D\uDCE8 고령자 리포트 API",
     description = "고령자의 일일 상태 리포트를 조회하는 API입니다. 식사, 건강, 신체/인지 활동별 리포트를 각각 조회할 수 있습니다.")
+@Validated
 public class MemberController {
   private final MemberFacade memberFacade;
 

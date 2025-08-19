@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/staff")
 @Tag(name = "\uD83D\uDC77\u200D♂\uFE0F 종사자 관리", description = "관리자용 종사자 관련 API")
 @RequiredArgsConstructor
+@Validated
 public class CenterStaffController {
 
   private final StaffService staffService;

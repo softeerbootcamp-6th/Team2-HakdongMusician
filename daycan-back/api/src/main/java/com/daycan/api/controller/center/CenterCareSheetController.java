@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/care-sheet")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 @Tag(name = "\uD83D\uDCDC 기록지 관리", description = "관리자용 기록지 관련 API")
 public class CenterCareSheetController {
 

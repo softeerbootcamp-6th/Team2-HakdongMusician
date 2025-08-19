@@ -19,6 +19,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/care-report")
 @Tag(name = "\uD83D\uDCCB 리포트 관리", description = "관리자용 리포트 관련 API")
 @RequiredArgsConstructor
+@Validated
 public class CenterCareReportController {
 
   private final CenterDocumentFacade centerDocumentFacade;
