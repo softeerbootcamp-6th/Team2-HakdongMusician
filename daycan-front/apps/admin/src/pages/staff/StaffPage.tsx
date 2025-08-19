@@ -2,12 +2,12 @@ import { PageToolbar } from "@/components/PageToolbar";
 import { Body, Button, Heading, Icon, Input } from "@daycan/ui";
 import { staffButton, staffPageContainer } from "./StaffPage.css";
 import { StaffList } from "./components";
-import { STAFF_DUMMY } from "./constants/staffDummy";
 import { useNavigate } from "react-router-dom";
 import { Filter } from "@/components/Filter";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useStaffFilter } from "./hooks/useStaffFilter";
 import { FilterSearchbar } from "@/components";
+import { useGetStaffListQuery } from "@/services/staff/useStaffQuery";
 
 export const StaffPage = () => {
   const navigate = useNavigate();
@@ -15,7 +15,8 @@ export const StaffPage = () => {
   /*
    * 종사자 get API 호출 후 staffs로 뿌려주기
    */
-  const [staffs] = useState(STAFF_DUMMY);
+  // const [staffs] = useState(STAFF_DUMMY);
+  const { data: staffs } = useGetStaffListQuery();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // 필터링 훅 사용
@@ -26,7 +27,7 @@ export const StaffPage = () => {
     handleStaffRoleFilterChange,
     handleGenderFilterChange,
     handleSearchChange,
-  } = useStaffFilter(staffs);
+  } = useStaffFilter(staffs ?? []);
   // 필터 아이템 설정
   const filterItems = [
     {

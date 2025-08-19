@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
+import type { TStaff } from "@/services/staff/types";
 
 /*
  * useStaffFilter 커스텀 훅은
@@ -10,7 +10,7 @@ import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
  * 검색창은 이름으로 검색합니다.
  * @author 소보길
  */
-export const useStaffFilter = (initialStaffs: StaffListResponse[]) => {
+export const useStaffFilter = (initialStaffs: TStaff[]) => {
   // 직무와 성별을 독립적으로 관리
   const [selectedStaffRole, setSelectedStaffRole] = useState<string | null>(
     null
