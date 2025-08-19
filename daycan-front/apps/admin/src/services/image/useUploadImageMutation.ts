@@ -7,7 +7,9 @@ import { uploadImages } from ".";
  */
 export const useUploadImageMutation = () => {
   return useMutation({
-    mutationFn: async (files: File[]) => await uploadImages(files),
+    mutationFn: async (files: File[]) => {
+      return await uploadImages(files);
+    },
     meta: { successMessage: "이미지 업로드 완료" },
   });
 };
