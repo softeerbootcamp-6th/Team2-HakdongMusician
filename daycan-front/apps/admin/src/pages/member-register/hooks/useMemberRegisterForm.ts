@@ -13,7 +13,7 @@ import {
   useCreateMemberMutation,
   useUpdateMemberMutation,
 } from "@/services/member/useMemberMutation";
-import { useUploadImageMutation } from "@/services/image/useUploadImageMutation";
+import { useUploadImageSingleMutation } from "@/services/image/useUploadImageMutation";
 
 export const useMemberRegisterForm = (
   mode: "register" | "edit",
@@ -21,7 +21,7 @@ export const useMemberRegisterForm = (
 ) => {
   const { mutate: createMember } = useCreateMemberMutation();
   const { mutate: updateMember } = useUpdateMemberMutation();
-  const { mutateAsync: uploadImage } = useUploadImageMutation();
+  const { mutateAsync: uploadSingleImage } = useUploadImageSingleMutation();
 
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -319,11 +319,8 @@ export const useMemberRegisterForm = (
       if (imageFiles.memberAvatar) {
         // 새로운 이미지가 선택된 경우 업로드
         try {
-          await uploadImage([imageFiles.memberAvatar], {
-            onSuccess: (data) => {
-              finalForm.avatarUrl = data[0].key;
-            },
-          });
+          const result = await uploadSingleImage(imageFiles.memberAvatar);
+          finalForm.avatarUrl = result.objectKey;
         } catch (error) {
           console.error("수급자 이미지 업로드 실패:", error);
           showToast({
@@ -347,8 +344,8 @@ export const useMemberRegisterForm = (
       if (imageFiles.guardianAvatar) {
         // 새로운 이미지가 선택된 경우 업로드
         try {
-          const uploadResult = await uploadImage([imageFiles.guardianAvatar]);
-          finalForm.guardianAvatarUrl = uploadResult[0].key;
+          const result = await uploadSingleImage(imageFiles.guardianAvatar);
+          finalForm.guardianAvatarUrl = result.objectKey;
         } catch (error) {
           console.error("보호자 이미지 업로드 실패:", error);
           showToast({
