@@ -51,7 +51,7 @@ public class MemberService {
 
   @Transactional(readOnly = true)
   public AdminMemberResponse getMemberById(Long memberId, Long centerId) {
-    Member member = getByMemberIdAndCenter(memberId, centerId);
+    Member member = requireActiveMember(memberId, centerId);
     return convertToAdminMemberResponse(member);
   }
 
@@ -87,7 +87,7 @@ public class MemberService {
 
   @Transactional
   public AdminMemberResponse updateMember(Long memberId, MemberRequest req, Long centerId) {
-    Member member = getByMemberIdAndCenter(memberId, centerId);
+    Member member = requireActiveMember(memberId, centerId);
     String hashed = hashPasswordIfPresent(req.passwordEntry());
     member.apply(buildMemberCommand(req, hashed));
     return convertToAdminMemberResponse(member);
@@ -95,10 +95,9 @@ public class MemberService {
 
   @Transactional
   public void deleteMember(Long memberId, Long centerId) {
-    Member member = getByMemberIdAndCenter(memberId, centerId);
+    Member member = requireActiveMember(memberId, centerId);
     member.deactivate();
   }
-
 
 
   public Member requireActiveMember(Long memberId) {
@@ -108,9 +107,12 @@ public class MemberService {
   }
 
   public Member requireActiveMember(Member m) {
-    if (m == null) throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
+    if (m == null) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
+    }
     if (!m.isActive()) {
-      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND, "비활성 회원");
+      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND,
+          "비활성 회원+" + m.getId());
     }
     return m;
   }
@@ -121,21 +123,26 @@ public class MemberService {
     }
   }
 
-  public Member getByMemberIdAndCenter(Long memberId, Long centerId) {
+  public Member requireActiveMember(Long memberId, Long centerId){
+    Member m = getByMemberIdAndCenter(memberId, centerId)
+        .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND));
+    validateCenterMember(m, centerId);
+    return requireActiveMember(m);
+  }
+
+  public Optional<Member> getByMemberIdAndCenter(Long memberId, Long centerId) {
     Member m = memberRepository.findById(memberId)
-        .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
+        .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND));
     validateCenterMember(m, centerId);
-    return requireActiveMember(m);
+    Member member;
+    try {
+      member = requireActiveMember(m);
+    } catch (ApplicationException e) {
+      return Optional.empty();
+    }
+    return Optional.of(member);
   }
 
-  // private helpers
-
-  private Member getByUsernameAndCenter(String username, Long centerId) {
-    Member m = memberRepository.findByUsername(username)
-        .orElseThrow(() -> new ApplicationException(CommonErrorStatus.NOT_FOUND));
-    validateCenterMember(m, centerId);
-    return requireActiveMember(m);
-  }
 
 
   private Center requireCenter(Long centerId) {
@@ -151,10 +158,13 @@ public class MemberService {
   }
 
   private String hashPasswordIfPresent(PasswordEntry passwordEntry) {
-    if (passwordEntry == null) return null;
+    if (passwordEntry == null) {
+      return null;
+    }
     String raw = passwordEntry.guardianPassword();
     if (isBlank(raw)) {
-      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "blank password not allowed");
+      throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM,
+          "blank password not allowed");
     }
     return PasswordHasher.hash(raw);
   }
@@ -191,7 +201,9 @@ public class MemberService {
   }
 
   private String presignAvatarUrl(String avatarUrl) {
-    if (isBlank(avatarUrl)) return null;
+    if (isBlank(avatarUrl)) {
+      return null;
+    }
     return storageService.presignGet(avatarUrl);
   }
 

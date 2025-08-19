@@ -27,6 +27,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.criteria.JoinType;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
@@ -129,31 +130,41 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
       List<DocumentStatus> statuses,
       String nameLike
   ) {
-    BooleanExpression writerFilter =
-        (writerId == null) ? null : staff.id.eq(writerId);
-
     BooleanExpression statusFilter = docStatusIn(statuses);
 
     BooleanExpression nameFilter = hasText(nameLike)
         ? member.name.containsIgnoreCase(nameLike.trim())
         : null;
 
-    return qf
-        .select(
-            new QDocumentMetaView(
-                doc, member, staff)
-        )
+    var query = qf
+        .select(new QDocumentMetaView(doc, member, staff))
         .from(doc)
-        .join(doc.member, member)
-        .leftJoin(doc.careSheet, sheet)
-        .leftJoin(sheet.writer, staff)
-        .where(
-            doc.center.id.eq(centerId),
-            doc.date.eq(date),
-            writerFilter,
-            statusFilter,
-            nameFilter
-        )
+        .join(doc.member, member);
+
+    if (writerId != null) {
+      query
+          .innerJoin(doc.careSheet, sheet)
+          .innerJoin(sheet.writer, staff)
+          .where(
+              doc.center.id.eq(centerId),
+              doc.date.eq(date),
+              staff.id.eq(writerId),
+              statusFilter,
+              nameFilter
+          );
+    } else {
+      query
+          .leftJoin(doc.careSheet, sheet)
+          .leftJoin(sheet.writer, staff)
+          .where(
+              doc.center.id.eq(centerId),
+              doc.date.eq(date),
+              statusFilter,
+              nameFilter
+          );
+    }
+
+    return query
         .orderBy(doc.updatedAt.desc())
         .fetch();
   }
