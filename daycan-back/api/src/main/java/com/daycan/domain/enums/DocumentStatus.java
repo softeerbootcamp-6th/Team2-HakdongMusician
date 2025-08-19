@@ -6,7 +6,9 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public enum DocumentStatus {
   NOT_APPLICABLE("해당없음"), // 1
@@ -27,10 +29,10 @@ public enum DocumentStatus {
 
   private static final Map<DocumentStatus, Set<DocumentStatus>> ALLOWED = Map.of(
       NOT_APPLICABLE, Set.of(SHEET_PENDING),
-      SHEET_PENDING, Set.of(SHEET_DONE),
-      SHEET_DONE, Set.of(REPORT_PENDING),
-      REPORT_PENDING, Set.of(REPORT_CREATED),
-      REPORT_CREATED, Set.of(REPORT_REVIEWED),
+      SHEET_PENDING, Set.of(SHEET_DONE, NOT_APPLICABLE),
+      SHEET_DONE, Set.of(SHEET_DONE, REPORT_PENDING, NOT_APPLICABLE),
+      REPORT_PENDING, Set.of(SHEET_DONE, REPORT_CREATED, NOT_APPLICABLE),
+      REPORT_CREATED, Set.of(SHEET_DONE, REPORT_REVIEWED, NOT_APPLICABLE),
       REPORT_REVIEWED, Set.of(REPORT_SENDING, REPORT_RESERVED),
       REPORT_RESERVED, Set.of(REPORT_SENDING),
       REPORT_SENDING, Set.of(REPORT_DONE),
@@ -46,8 +48,9 @@ public enum DocumentStatus {
       case NOT_APPLICABLE -> SheetStatus.NOT_APPLICABLE;
       case SHEET_PENDING -> SheetStatus.PENDING;
       case SHEET_DONE,
-           REPORT_PENDING, REPORT_CREATED, REPORT_REVIEWED, REPORT_SENDING, REPORT_RESERVED,
-           REPORT_DONE -> SheetStatus.DONE;
+           REPORT_PENDING, REPORT_CREATED -> SheetStatus.DONE;
+      case REPORT_REVIEWED, REPORT_SENDING, REPORT_RESERVED,
+           REPORT_DONE -> SheetStatus.REVIEWED;
     };
   }
 
@@ -93,6 +96,7 @@ public enum DocumentStatus {
       case NOT_APPLICABLE -> NOT_APPLICABLE;
       case PENDING -> SHEET_PENDING;
       case DONE -> SHEET_DONE;
+      case REVIEWED -> REPORT_REVIEWED;
     };
   }
 

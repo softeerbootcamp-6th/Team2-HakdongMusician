@@ -6,6 +6,7 @@ public enum SheetStatus {
   NOT_APPLICABLE, // 해당 없음
   PENDING,      // 작성 중
   DONE,
+  REVIEWED,    // 검토 완료
   ;// 작성 완료
 
   public static SheetStatus from(DocumentStatus status) {
