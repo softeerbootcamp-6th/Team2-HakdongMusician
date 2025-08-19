@@ -6,11 +6,11 @@ import {
   HealthImproveCard,
   CognitiveCard,
 } from "../../../../client/src/pages/daily-report/components";
-import type { ReportHistoryData } from "../../pages/member/components/HistoryModal/useHistoryModal";
 import { reportDataViewContainer } from "./ReportDataView.css";
+import type { TReportReadResponse } from "@/services/report/types";
 
 interface ReportDataViewProps {
-  reportData: ReportHistoryData | null;
+  reportData: TReportReadResponse | null;
 }
 
 export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
