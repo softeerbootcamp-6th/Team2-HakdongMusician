@@ -131,7 +131,7 @@ export const routes: TRoutes[] = [
         element: <OCRPhotoPage />,
       },
       {
-        path: "today",
+        path: "today/:writerId",
         element: <TodayCareSheetPage />,
       },
     ],

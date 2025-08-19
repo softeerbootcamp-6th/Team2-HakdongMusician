@@ -3,23 +3,24 @@ import {
   todayCareSheetPageContainer,
   todayCareSheetPageContentContainer,
 } from "./TodayCareSheetPage.css";
-import { useAtomValue } from "jotai";
-import { homeFunnelDataAtom } from "../care-sheet/funnels/home-funnel/atoms/homeAtom";
 import { CareSheetListItem } from "./components/CareSheetListItem";
 import { MobileEmptyState } from "@/components/MobileEmptyState";
 import { emptyCareSheetList } from "./constants/dummy";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StepButtons } from "../care-sheet/components/StepButtons";
 import { TODAY_DATE } from "@/utils/dateFormatter";
 import { useGetCareSheetListQuery } from "@/services/careSheet/useCareSheetQuery";
 
 export const TodayCareSheetPage = () => {
   const navigate = useNavigate();
-  const homeFunnelData = useAtomValue(homeFunnelDataAtom);
+  const { writerId } = useParams();
+
+  // URL 파라미터에서 writerId 가져오기
+  console.log("URL에서 가져온 writerId:", writerId);
 
   const { data: careSheetList } = useGetCareSheetListQuery(
     TODAY_DATE,
-    homeFunnelData?.writerId
+    writerId ? parseInt(writerId) : undefined
   );
 
   // 개발용 더미 데이터 사용 (실제 데이터가 없을 때)

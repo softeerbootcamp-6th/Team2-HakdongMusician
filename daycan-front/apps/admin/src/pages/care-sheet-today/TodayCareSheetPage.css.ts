@@ -14,6 +14,10 @@ export const todayCareSheetPageContentContainer = style({
   flex: 1,
   display: "flex",
   flexDirection: "column",
+  maxHeight: "100dvh",
+  overflowY: "auto",
+  paddingBottom: 100,
+  boxSizing: "border-box",
   gap: 10,
   marginTop: 25,
 });
