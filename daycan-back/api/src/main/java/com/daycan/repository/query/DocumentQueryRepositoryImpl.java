@@ -37,10 +37,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
 
   private final JPAQueryFactory qf;
@@ -136,38 +138,38 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
         ? member.name.containsIgnoreCase(nameLike.trim())
         : null;
 
-    var query = qf
+    var base = qf
         .select(new QDocumentMetaView(doc, member, staff))
         .from(doc)
-        .join(doc.member, member);
+        .join(doc.member, member)
+        .where(
+            doc.center.id.eq(centerId),
+            doc.date.eq(date),
+            statusFilter,
+            nameFilter
+        );
 
+    // 분기: writerId 유무에 따라 join/where 설정
     if (writerId != null) {
-      query
-          .innerJoin(doc.careSheet, sheet)
+      base.innerJoin(doc.careSheet, sheet)
           .innerJoin(sheet.writer, staff)
-          .where(
-              doc.center.id.eq(centerId),
-              doc.date.eq(date),
-              staff.id.eq(writerId),
-              statusFilter,
-              nameFilter
-          );
+          .where(staff.id.eq(writerId));
     } else {
-      query
-          .leftJoin(doc.careSheet, sheet)
-          .leftJoin(sheet.writer, staff)
-          .where(
-              doc.center.id.eq(centerId),
-              doc.date.eq(date),
-              statusFilter,
-              nameFilter
-          );
+      base.leftJoin(doc.careSheet, sheet)
+          .leftJoin(sheet.writer, staff);
     }
 
-    return query
+    if (log.isDebugEnabled()) {
+      log.debug("[findDocumentMetaViewList] centerId={}, date={}, writerId={}, nameLike={}",
+          centerId, date, writerId, nameLike);
+      log.debug("[findDocumentMetaViewList] JPQL = {}", base);
+    }
+
+    return base
         .orderBy(doc.updatedAt.desc())
         .fetch();
   }
+
 
   private CareSheetInitRow fetchCareSheetInitRow(Long memberId, LocalDate date, Long writerId) {
     var subs = buildPrevAggSubqueries(memberId, date);
