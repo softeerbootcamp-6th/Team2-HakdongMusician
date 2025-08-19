@@ -9,7 +9,7 @@ import { StepButtons } from "../../../../components/StepButtons";
 import pictureMethod from "@/assets/png/picture-method.png";
 import selectMethod from "@/assets/png/select-method.png";
 import { useFunnel } from "@daycan/hooks";
-import { getWriterName } from "../../utils/parseData";
+import { getStaffName } from "../../utils/parseData";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,7 +17,7 @@ import {
   todayWritedCareSheetTitle,
 } from "./Step1.css";
 
-import { useGetCareSheetList } from "@/services/careSheet/useCareSheetQuery";
+import { useGetCareSheetListQuery } from "@/services/careSheet/useCareSheetQuery";
 import { CareSheetListItem } from "@/pages/care-sheet-today/components/CareSheetListItem";
 import { TODAY_DATE } from "@/utils/dateFormatter";
 
@@ -30,10 +30,11 @@ export const Step1 = () => {
   const [recentMethod, setRecentMethod] = useState<string | null>(null);
 
   // 작성자 이름 가져오기
-  const writerName = getWriterName(funnelState);
-  const { data: careSheetList } = useGetCareSheetList(
+  const staffName = getStaffName(funnelState);
+
+  const { data: careSheetList } = useGetCareSheetListQuery(
     TODAY_DATE,
-    funnelState?.writerId
+    funnelState?.STEP_0?.selectedStaff?.staffId || funnelState?.STEP_0?.writerId
   );
   // 컴포넌트 마운트 시 localStorage에서 최근 사용한 방법 불러오기
   useEffect(() => {
@@ -57,57 +58,59 @@ export const Step1 = () => {
   };
 
   return (
-    <div className={careSheetPageContainer}>
-      <Header />
-      <div className={careSheetPageContent}>
-        <div className={careSheetPageContentTitleContainer}>
-          <HighlightingHeading text={`${writerName}님!`} />
-        </div>
-        <Body type="large" weight={600} color={COLORS.gray[800]}>
-          어떻게 기록지를 작성할까요?
-        </Body>
-        <WritingMethodCard
-          title="직접 입력"
-          description="온라인으로 바로 활동 일지를 작성해요"
-          image={selectMethod}
-          isSelected={recentMethod === "direct"}
-          onClick={() => {
-            handleMethodSelect("direct");
-          }}
-        />
-        <WritingMethodCard
-          title="사진 등록"
-          description="손으로 직접 쓴 활동일지를 찍고 업로드해요."
-          image={pictureMethod}
-          isSelected={recentMethod === "photo"}
-          onClick={() => {
-            handleMethodSelect("photo");
-          }}
-        />
-        <div className={todayWritedCareSheetContainer}>
-          <div
-            className={todayWritedCareSheetTitle}
-            onClick={() => {
-              navigate("/care-sheet/new/today");
-            }}
-          >
-            <Body type="medium" weight={600} color={COLORS.gray[600]}>
-              오늘 작성한 기록지
-            </Body>
-            <Icon
-              name="chevronRight"
-              width={24}
-              height={24}
-              color={COLORS.gray[50]}
-              stroke={COLORS.gray[600]}
-            />
+    <>
+      <div className={careSheetPageContainer}>
+        <Header />
+        <div className={careSheetPageContent}>
+          <div className={careSheetPageContentTitleContainer}>
+            <HighlightingHeading text={`${staffName}님!`} />
           </div>
-          {careSheetList?.map((careSheet) => (
-            <CareSheetListItem careSheet={careSheet} />
-          ))}
+          <Body type="large" weight={600} color={COLORS.gray[800]}>
+            어떻게 기록지를 작성할까요?
+          </Body>
+          <WritingMethodCard
+            title="직접 입력"
+            description="온라인으로 바로 활동 일지를 작성해요"
+            image={selectMethod}
+            isSelected={recentMethod === "direct"}
+            onClick={() => {
+              handleMethodSelect("direct");
+            }}
+          />
+          <WritingMethodCard
+            title="사진 등록"
+            description="손으로 직접 쓴 활동일지를 찍고 업로드해요."
+            image={pictureMethod}
+            isSelected={recentMethod === "photo"}
+            onClick={() => {
+              handleMethodSelect("photo");
+            }}
+          />
+          <div className={todayWritedCareSheetContainer}>
+            <div
+              className={todayWritedCareSheetTitle}
+              onClick={() => {
+                navigate("/care-sheet/new/today");
+              }}
+            >
+              <Body type="medium" weight={600} color={COLORS.gray[600]}>
+                오늘 작성한 기록지
+              </Body>
+              <Icon
+                name="chevronRight"
+                width={24}
+                height={24}
+                color={COLORS.gray[50]}
+                stroke={COLORS.gray[600]}
+              />
+            </div>
+            {careSheetList?.map((careSheet) => (
+              <CareSheetListItem careSheet={careSheet} />
+            ))}
+          </div>
         </div>
-        <StepButtons onPrev={toPrev} />
       </div>
-    </div>
+      <StepButtons onPrev={toPrev} />
+    </>
   );
 };

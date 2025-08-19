@@ -71,73 +71,75 @@ export const Step1 = () => {
   };
 
   return (
-    <InfoFunnelLayout>
-      <div className={step1Container}>
-        <div>
-          <>
-            <div className={step1HighlightingHeadingContainer}>
-              <HighlightingHeading text={memberName} />
+    <>
+      <InfoFunnelLayout>
+        <div className={step1Container}>
+          <div>
+            <>
+              <div className={step1HighlightingHeadingContainer}>
+                <HighlightingHeading text={memberName} />
+                <Heading type="medium" weight={600} color={COLORS.gray[800]}>
+                  님이
+                </Heading>
+              </div>
               <Heading type="medium" weight={600} color={COLORS.gray[800]}>
-                님이
+                어떤 날에 오셨나요?
               </Heading>
-            </div>
-            <Heading type="medium" weight={600} color={COLORS.gray[800]}>
-              어떤 날에 오셨나요?
-            </Heading>
-          </>
-        </div>
+            </>
+          </div>
 
-        <div
-          className={step1TodayContainer}
-          onClick={() => {
-            handleTodayToggle();
-          }}
-        >
-          <Body type="medium" weight={600} color={COLORS.gray[800]}>
-            오늘 이용했어요
-          </Body>
-          <Icon
-            name="circleCheck"
-            width={24}
-            height={24}
-            color={isToday ? COLORS.primary[300] : COLORS.gray[50]}
-            stroke={COLORS.white}
-          />
-        </div>
-        <div
-          className={step1DateContainer}
-          onClick={() => {
-            setIsDatePickerOpen(!isDatePickerOpen);
-          }}
-        >
-          <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
-            다른 날짜 선택
-          </Body>
-          {date && !isToday && (
-            <Body type="xsmall" weight={500} color={COLORS.primary[300]}>
-              {formatYYYYMMDD(date)}
+          <div
+            className={step1TodayContainer}
+            onClick={() => {
+              handleTodayToggle();
+            }}
+          >
+            <Body type="medium" weight={600} color={COLORS.gray[800]}>
+              오늘 이용했어요
             </Body>
+            <Icon
+              name="circleCheck"
+              width={24}
+              height={24}
+              color={isToday ? COLORS.primary[300] : COLORS.gray[50]}
+              stroke={COLORS.white}
+            />
+          </div>
+          <div
+            className={step1DateContainer}
+            onClick={() => {
+              setIsDatePickerOpen(!isDatePickerOpen);
+            }}
+          >
+            <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
+              다른 날짜 선택
+            </Body>
+            {date && !isToday && (
+              <Body type="xsmall" weight={500} color={COLORS.primary[300]}>
+                {formatYYYYMMDD(date)}
+              </Body>
+            )}
+            <Icon
+              name="calendar"
+              width={20}
+              height={20}
+              color={COLORS.gray[600]}
+            />
+          </div>
+          {isDatePickerOpen && (
+            <Calendar
+              onDateSelect={(date) => {
+                handleDateSelect(date);
+              }}
+              onConfirm={(date) => {
+                handleDateSelect(date);
+                setIsDatePickerOpen(false);
+              }}
+              initialDate={date || new Date()}
+            />
           )}
-          <Icon
-            name="calendar"
-            width={20}
-            height={20}
-            color={COLORS.gray[600]}
-          />
         </div>
-        {isDatePickerOpen && (
-          <Calendar
-            onDateSelect={(date) => {
-              handleDateSelect(date);
-            }}
-            onConfirm={(date) => {
-              handleDateSelect(date);
-              setIsDatePickerOpen(false);
-            }}
-            initialDate={date || new Date()}
-          />
-        )}
-      </div>
+      </InfoFunnelLayout>
       <StepButtons
         onNext={() => {
           toNext();
@@ -147,6 +149,6 @@ export const Step1 = () => {
         }}
         isNextEnabled={!!date || isToday}
       />
-    </InfoFunnelLayout>
+    </>
   );
 };

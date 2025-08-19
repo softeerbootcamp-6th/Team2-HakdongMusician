@@ -45,14 +45,14 @@ export const useStep3 = () => {
     }
     const d: DiagnosisFunnelData | null = diagnosisAtom;
     if (d && d.recoveryProgram) {
-      setIsTrainingChecked(!!d.recoveryProgram.motionTraining);
+      setIsTrainingChecked(!d.recoveryProgram.motionTraining || false);
       setIsCognitiveActivityTrainingChecked(
-        !!d.recoveryProgram.cognitiveProgram
+        !d.recoveryProgram.cognitiveProgram || false
       );
       setIsCognitiveFunctionEnhancementTrainingChecked(
-        !!d.recoveryProgram.cognitiveEnhancement
+        !d.recoveryProgram.cognitiveEnhancement || false
       );
-      setIsPhysicalTherapyChecked(!!d.recoveryProgram.physicalTherapy);
+      setIsPhysicalTherapyChecked(!d.recoveryProgram.physicalTherapy || false);
       setTrainingSpecialNote(d.recoveryProgram.comment || "");
       setProgramEntries(d.recoveryProgram.programEntries);
     }

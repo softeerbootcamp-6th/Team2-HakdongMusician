@@ -21,4 +21,3 @@ export const useStep4 = () => {
     toNext,
   };
 };
-
