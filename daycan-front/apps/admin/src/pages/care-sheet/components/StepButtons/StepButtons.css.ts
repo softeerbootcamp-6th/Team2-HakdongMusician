@@ -3,7 +3,6 @@ import { style } from "@vanilla-extract/css";
 
 export const careSheetPageContentButtonContainer = style({
   position: "fixed",
-  left: 0,
   bottom: 0,
   display: "flex",
   flexDirection: "row",
@@ -11,7 +10,7 @@ export const careSheetPageContentButtonContainer = style({
   alignItems: "center",
   padding: "20px 10px 30px 10px",
   width: "100%",
-
+  maxWidth: "450px",
   backgroundColor: "rgba(255, 255, 255, 0.48)",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
