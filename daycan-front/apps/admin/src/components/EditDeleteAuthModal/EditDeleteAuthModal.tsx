@@ -9,7 +9,7 @@ import {
   editAuthModalErrorMessage,
 } from "./EditDeleteAuthModal.css";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { useAdminLoginMutation } from "@/services/auth/useAdminAuthMutation";
+import { useReAuthMutation } from "@/services/auth/useAdminAuthMutation";
 import { showToast } from "@/utils/toastUtils";
 
 /* 
@@ -39,8 +39,8 @@ export const EditDeleteAuthModal = ({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isError, setIsError] = useState(false);
-  const loginMutation = useAdminLoginMutation();
 
+  const reAuthMutation = useReAuthMutation();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -52,7 +52,7 @@ export const EditDeleteAuthModal = ({
     try {
       // TODO: 실제 인증 API 호출
       // const response = await authenticateUser(centerId, password);
-      await loginMutation.mutateAsync(
+      await reAuthMutation.mutateAsync(
         {
           username,
           password,
