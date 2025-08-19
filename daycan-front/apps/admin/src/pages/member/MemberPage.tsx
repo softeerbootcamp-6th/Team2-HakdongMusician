@@ -3,16 +3,19 @@ import { Body, Heading, Icon, Button, Input } from "@daycan/ui";
 import { memberContainer, memberButton } from "./MemberPage.css.ts";
 import { MemberDataList } from "./components/MemberDataList";
 import { Filter } from "@/components/Filter";
-import { useRef, useState } from "react";
-import { API_ELDER_DUMMY_DATA } from "./constants/memberDummyData";
+import { useRef } from "react";
 import { useMemberFilter } from "./hooks/useMemberFilter.ts";
 import { useNavigate } from "react-router-dom";
 import { FilterSearchbar } from "@/components";
+import { useGetMemberListQuery } from "@/services/member/useMemberQuery";
 
 export const MemberPage = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [members] = useState(API_ELDER_DUMMY_DATA);
+
+  const { data: members } = useGetMemberListQuery();
+
+  const displayMembers = members || [];
 
   const handleNewMember = () => {
     navigate("/member/new");
@@ -24,7 +27,7 @@ export const MemberPage = () => {
     handleCareGradeFilterChange,
     handleGenderFilterChange,
     handleSearchChange,
-  } = useMemberFilter(members);
+  } = useMemberFilter(displayMembers);
 
   const filterItems = [
     {
