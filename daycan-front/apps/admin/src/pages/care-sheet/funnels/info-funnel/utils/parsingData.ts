@@ -29,7 +29,7 @@ export const convertFunnelStateToInfoFunnelData = (
   const step4Data = funnelState.STEP_4;
 
   return {
-    memberId: step0Data?.recipientId || step0Data?.selectedMember?.id,
+    memberId: step0Data?.memberId,
     date: step1Data?.date,
     startTime: step2Data?.startTime,
     endTime: step3Data?.endTime,
