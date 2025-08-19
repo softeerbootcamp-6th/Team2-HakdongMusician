@@ -2,7 +2,7 @@ import { COLORS } from "@daycan/ui";
 
 export const getStatusInfo = (status: string) => {
   switch (status) {
-    case "SHEET_PENDING":
+    case "PENDING":
       return {
         text: "작성 필요",
         icon: "warningFilled",

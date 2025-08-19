@@ -58,6 +58,7 @@ export const Step0 = () => {
 
     // FunnelState에 데이터 저장
     updateState({
+      writerId: staff.staffId,
       selectedStaff: staff,
       searchQuery: staff.name,
     });

@@ -20,6 +20,8 @@ import {
 import { useGetCareSheetListQuery } from "@/services/careSheet/useCareSheetQuery";
 import { CareSheetListItem } from "@/pages/care-sheet-today/components/CareSheetListItem";
 import { TODAY_DATE } from "@/utils/dateFormatter";
+import { useAtomValue } from "jotai";
+import { homeFunnelDataAtom } from "../../atoms/homeAtom";
 
 // localStorage 키 상수
 const RECENT_METHOD_KEY = "careSheet:recentMethod";
@@ -28,7 +30,7 @@ export const Step1 = () => {
   const navigate = useNavigate();
   const { toPrev, toNext, funnelState } = useFunnel();
   const [recentMethod, setRecentMethod] = useState<string | null>(null);
-
+  const homeFunnelData = useAtomValue(homeFunnelDataAtom);
   // 작성자 이름 가져오기
   const staffName = getStaffName(funnelState);
 
@@ -90,7 +92,13 @@ export const Step1 = () => {
             <div
               className={todayWritedCareSheetTitle}
               onClick={() => {
-                navigate("/care-sheet/new/today");
+                if (funnelState?.STEP_0?.writerId) {
+                  navigate(
+                    `/care-sheet/new/today/${funnelState?.STEP_0?.writerId}`
+                  );
+                } else {
+                  `/care-sheet/new/today/${homeFunnelData?.writerId}`;
+                }
               }}
             >
               <Body type="medium" weight={600} color={COLORS.gray[600]}>

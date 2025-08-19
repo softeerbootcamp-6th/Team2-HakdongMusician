@@ -4,8 +4,8 @@ import { homeFunnelSteps } from "../../constants/steps";
 import { useSetAtom, useAtomValue } from "jotai";
 import { homeFunnelDataAtom } from "./atoms/homeAtom";
 import { convertFunnelStateToHomeFunnelData } from "./utils/parseData";
-import { useMemo } from "react";
 import { getStoredValue } from "../utils/storage";
+import { useMemo } from "react";
 import type { HomeFunnelData } from "./types/homeType";
 
 export const HomeFunnelStepContainer = () => {
@@ -57,7 +57,7 @@ export const HomeFunnelStepContainer = () => {
       funnelId="home-funnel"
       onComplete={handleComplete}
       initialState={initialState}
-      initialStep={initialState ? "STEP_1" : "STEP_0"}
+      initialStep={initialState ? "STEP_1" : undefined}
     >
       <FunnelStep name="STEP_0">
         <Step0 />
