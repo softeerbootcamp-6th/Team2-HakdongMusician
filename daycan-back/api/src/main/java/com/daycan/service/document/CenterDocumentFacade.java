@@ -99,17 +99,17 @@ public class CenterDocumentFacade {
       Long writerId,
       List<SheetStatus> sheetStatuses
   ) {
-    return getMetaListByDate(
+    return getMetaListByDateMulti(
         center, date, writerId, null,
         sheetStatuses,
-        DocumentStatus::allSheetStatuses,
-        DocumentStatus::from,
+        DocumentStatus::allSheetStatuses,   // null/empty 때 전체(시트 탭 전 구간)
+        DocumentStatus::fromSheet,          // SheetStatus → EnumSet<DocumentStatus>
         mv -> memberService.getByMemberIdAndCenter(mv.member().getId(), center.getId())
             .map(m -> mv.toSheetResponse(getPresignedUrl(m.getAvatarUrl())))
     );
-
   }
 
+  // ====== 변경 2: 리포트 메타 조회 ======
   @Transactional(readOnly = true)
   public List<CareReportMetaResponse> getCareReportMetaListByDate(
       Center center,
@@ -117,14 +117,16 @@ public class CenterDocumentFacade {
       List<ReportStatus> reportStatuses,
       String nameLike
   ) {
-    return getMetaListByDate(
+    return getMetaListByDateMulti(
         center, date, null, nameLike,
         reportStatuses,
-        DocumentStatus::allReportStatuses,
-        DocumentStatus::from,
+        DocumentStatus::allReportStatuses,  // null/empty 때 리포트 전 구간
+        DocumentStatus::fromReport,         // ReportStatus → EnumSet<DocumentStatus>
         mv -> memberService.getByMemberIdAndCenter(mv.member().getId(), center.getId())
-            .map(m -> mv.toReportResponse(getPresignedUrl(m.getAvatarUrl()))));
+            .map(m -> mv.toReportResponse(getPresignedUrl(m.getAvatarUrl())))
+    );
   }
+
 
   @Transactional(readOnly = true)
   public FullReportDto getCareReportByMemberIdAndDate(Center center, Long memberId, LocalDate date) {
@@ -170,6 +172,42 @@ public class CenterDocumentFacade {
     return mapPresent(rows, responseMapper);
   }
 
+  private <S, R> List<R> getMetaListByDateMulti(
+      Center center,
+      LocalDate date,
+      Long writerId,
+      String nameLike,
+      List<S> statuses,
+      Supplier<EnumSet<DocumentStatus>> allSupplier,
+      Function<S, EnumSet<DocumentStatus>> statusMapper,
+      Function<DocumentMetaView, Optional<R>> responseMapper
+  ) {
+    Set<DocumentStatus> docStatuses = toDocumentStatusesMulti(statuses, allSupplier, statusMapper);
+
+    List<DocumentMetaView> rows = careSheetQueryService.findDocumentMetaViewByDate(
+        center, date, writerId, List.copyOf(docStatuses), nameLike
+    );
+    return mapPresent(rows, responseMapper);
+  }
+
+  private <T> Set<DocumentStatus> toDocumentStatusesMulti(
+      List<T> statuses,
+      Supplier<EnumSet<DocumentStatus>> allSupplier,
+      Function<T, EnumSet<DocumentStatus>> mapper
+  ) {
+    if (statuses == null || statuses.isEmpty()) {
+      return allSupplier.get();
+    }
+    EnumSet<DocumentStatus> result = EnumSet.noneOf(DocumentStatus.class);
+    for (T s : statuses) {
+      if (s == null) {
+        result.addAll(allSupplier.get());
+      } else {
+        result.addAll(mapper.apply(s));
+      }
+    }
+    return result;
+  }
 
 
   private <T> Set<DocumentStatus> toDocumentStatuses(
