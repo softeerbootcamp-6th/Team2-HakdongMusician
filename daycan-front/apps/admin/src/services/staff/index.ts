@@ -48,9 +48,14 @@ export const updateStaff = async (
   staffId: number,
   staff: TStaffPatchRequest
 ): Promise<void> => {
-  return await safeRequest.patch(
+  // 여기 swagger에서 put이라 되어 있어 patch에서 수정함
+  return await safeRequest.put(
     privateInstance,
-    `admin/staff/${staffId}`,
+    `/admin/staff/${staffId}`,
     staff
   );
+};
+
+export const deleteStaff = async (staffId: number): Promise<void> => {
+  return await safeRequest.delete(privateInstance, `/admin/staff/${staffId}`);
 };
