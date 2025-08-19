@@ -9,56 +9,57 @@ import {
   userInfo,
   roleTag,
 } from "./SearchStaffResultList.css";
-import type { SearchResultItem } from "./types";
+import type { TStaff } from "@/services/staff/types";
+import { getStaffRole } from "../../utils/parseData";
 
 interface SearchStaffResultListProps {
-  results: SearchResultItem[];
-  onSelect?: (item: SearchResultItem) => void;
-  selectedStaffId?: string;
+  staffs: TStaff[];
+  onSelect?: (staff: TStaff) => void;
+  selectedStaffId?: number;
 }
 
 export const SearchStaffResultList: React.FC<SearchStaffResultListProps> = ({
-  results,
+  staffs,
   onSelect,
   selectedStaffId,
 }) => {
-  const handleItemClick = (item: SearchResultItem) => {
-    onSelect?.(item);
+  const handleItemClick = (staff: TStaff) => {
+    onSelect?.(staff);
   };
 
   return (
     <div className={searchResultList}>
-      {results.map((item) => (
+      {staffs.map((staff) => (
         <div
-          key={item.id}
+          key={staff.staffId}
           className={searchResultItem}
-          data-selected={item.id === selectedStaffId}
-          onClick={() => handleItemClick(item)}
+          data-selected={staff.staffId === selectedStaffId}
+          onClick={() => handleItemClick(staff)}
         >
           <div className={profileImage}>
-            {item.profileImage ? (
+            {staff.avatarUrl ? (
               <img
-                src={item.profileImage}
-                alt={item.name}
+                src={staff.avatarUrl}
+                alt={staff.name}
                 className={profileImageImg}
               />
             ) : (
               <div className={defaultAvatar}>
                 <Body type="small" weight={600} color={COLORS.gray[400]}>
-                  {item.name.charAt(0)}
+                  {staff.name.charAt(0)}
                 </Body>
               </div>
             )}
           </div>
           <div className={userInfo}>
             <Body type="medium" weight={500} color={COLORS.gray[800]}>
-              {item.name}
+              {staff.name}
             </Body>
           </div>
           <div className={roleTag}>
             <Chip style={{ backgroundColor: COLORS.green[200] }} round="s">
               <Body type="xsmall" weight={500} color={COLORS.green[500]}>
-                {item.role}
+                {getStaffRole(staff.staffRole)}
               </Body>
             </Chip>
           </div>

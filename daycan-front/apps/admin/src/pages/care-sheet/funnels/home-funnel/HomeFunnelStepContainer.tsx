@@ -27,8 +27,8 @@ export const HomeFunnelStepContainer = () => {
 
   // 기본값이 있으면 Step1로 프리필
   const initialState: FunnelState | undefined = useMemo(() => {
-    // atom에서 데이터 확인
-    if (homeData) {
+    // atom에서 데이터 확인 - 데이터가 있고 writerId가 존재하는 경우만
+    if (homeData && homeData.writerId) {
       return {
         STEP_0: {
           writerId: homeData.writerId,
@@ -37,9 +37,9 @@ export const HomeFunnelStepContainer = () => {
       };
     }
 
-    // localStorage에서도 확인 (atom 초기화 전 대비)
+    // localStorage에서도 확인 (atom 초기화 전 대비) - 데이터가 있고 writerId가 존재하는 경우만
     const stored = getStoredValue<HomeFunnelData>("careSheet:homeFunnel");
-    if (stored) {
+    if (stored && stored.writerId) {
       return {
         STEP_0: {
           writerId: stored.writerId,
