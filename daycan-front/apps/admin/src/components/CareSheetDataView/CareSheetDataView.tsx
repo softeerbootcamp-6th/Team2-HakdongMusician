@@ -1,5 +1,5 @@
 import { Body, COLORS } from "@daycan/ui";
-import type { CareSheetHistoryData } from "../../pages/member/components/HistoryModal/useHistoryModal";
+import type { TCareSheetReadResponse } from "@/services/careSheet/types";
 import { CareSheetDataSummaryCard } from "@/components/CareSheetDataSummaryCard";
 import {
   MEAL_TYPE_CODE_TO_LABEL,
@@ -7,7 +7,7 @@ import {
 } from "@/pages/care-sheet/funnels/diagnosis-funnel/constants/diagnosis";
 
 interface CareSheetDataViewProps {
-  careSheetData: CareSheetHistoryData | null;
+  careSheetData: TCareSheetReadResponse | null;
 }
 
 export const CareSheetDataView = ({
@@ -31,7 +31,7 @@ export const CareSheetDataView = ({
         items={[
           {
             label: "수급자 ID",
-            value: careSheetData?.recipientId || "",
+            value: careSheetData?.memberId || "",
           },
           { label: "이용 날짜", value: careSheetData?.date || "" },
           {
@@ -71,7 +71,7 @@ export const CareSheetDataView = ({
           },
           {
             label: "체온",
-            value: careSheetData?.healthCare?.temperature || 0,
+            value: careSheetData?.healthCare?.temperature?.temperature || 0,
             unit: "℃",
           },
           {

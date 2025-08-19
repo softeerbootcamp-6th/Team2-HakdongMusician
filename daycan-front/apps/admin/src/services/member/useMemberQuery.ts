@@ -29,7 +29,7 @@ export const useGetMemberListQuery = () => {
  * 수급자 상세 조회 쿼리
  * @author 홍규진
  */
-export const useGetMemberQuery = (memberId: number) => {
+export const useGetMemberDetailQuery = (memberId: number) => {
   return useQuery({
     queryKey: memberKeys.detail(memberId),
     queryFn: () => getMember(memberId),

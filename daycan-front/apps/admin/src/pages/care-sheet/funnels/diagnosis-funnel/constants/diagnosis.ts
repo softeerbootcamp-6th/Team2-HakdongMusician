@@ -1,3 +1,5 @@
+import type { Amount, MealType } from "@/services/careSheet/types";
+
 export const DIAGNOSIS_CONSTANTS = {
   //STEP_0
   MAX_URINE_COUNT: 10,
@@ -38,7 +40,7 @@ export const MEAL_TYPE_CODE_TO_LABEL: Record<string, string> = {
   RICE_WATER: "유동식",
 };
 
-export const MEAL_TYPE_LABEL_TO_CODE: Record<string, string> = {
+export const MEAL_TYPE_LABEL_TO_CODE: Record<string, MealType> = {
   일반식: "REGULAR",
   죽: "PORRIDGE",
   유동식: "RICE_WATER",
@@ -50,7 +52,7 @@ export const MEAL_AMOUNT_CODE_TO_LABEL: Record<string, string> = {
   LESS_HALF: "1/3이하",
 };
 
-export const MEAL_AMOUNT_LABEL_TO_CODE: Record<string, string> = {
+export const MEAL_AMOUNT_LABEL_TO_CODE: Record<string, Amount> = {
   "1인분": "FULL",
   "1/2이상": "MORE_HALF",
   "1/3이하": "LESS_HALF",

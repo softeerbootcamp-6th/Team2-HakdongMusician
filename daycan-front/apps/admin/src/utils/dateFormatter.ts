@@ -1,4 +1,4 @@
-import type { YearMonthDay } from "@/types/date";
+import type { YearMonth, YearMonthDay } from "@/types/date";
 
 /**
  * 오늘 날짜를 (YYYY-MM-DD) 형식으로 반환
@@ -8,6 +8,13 @@ import type { YearMonthDay } from "@/types/date";
 export const TODAY_DATE = new Date()
   .toISOString()
   .split("T")[0] as YearMonthDay;
+
+export const TODAY_YYYYMM = new Date()
+  .toISOString()
+  .split("T")[0]
+  .split("-")
+  .slice(0, 2)
+  .join("-") as YearMonth;
 
 export const formatYYYYMMDD = (date: Date | string): YearMonthDay => {
   if (typeof date === "string") {

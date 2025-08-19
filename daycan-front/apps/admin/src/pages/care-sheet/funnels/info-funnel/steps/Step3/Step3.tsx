@@ -44,29 +44,27 @@ export const Step3 = () => {
   };
 
   return (
-    <InfoFunnelLayout>
-      <div className={step3HighlightingHeadingContainer}>
-        <HighlightingHeading text={memberName} />
-        <Heading type="medium" weight={600} color={COLORS.gray[800]}>
-          님이 언제 가셨나요?
-        </Heading>
-      </div>
-      <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
-        시간
-      </Body>
-      <TimePicker
-        defaultTime24={getStepState("STEP_3")?.endTime || "17:00"}
-        onConfirm={handleTimeConfirm}
-      />
+    <>
+      <InfoFunnelLayout>
+        <div className={step3HighlightingHeadingContainer}>
+          <HighlightingHeading text={memberName} />
+          <Heading type="medium" weight={600} color={COLORS.gray[800]}>
+            님이 언제 가셨나요?
+          </Heading>
+        </div>
+        <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
+          시간
+        </Body>
+        <TimePicker
+          defaultTime24={getStepState("STEP_3")?.endTime || "17:00"}
+          onConfirm={handleTimeConfirm}
+        />
+      </InfoFunnelLayout>
       <StepButtons
         isNextEnabled={isConfirmed}
-        onNext={() => {
-          toNext();
-        }}
-        onPrev={() => {
-          toPrev();
-        }}
+        onNext={toNext}
+        onPrev={toPrev}
       />
-    </InfoFunnelLayout>
+    </>
   );
 };

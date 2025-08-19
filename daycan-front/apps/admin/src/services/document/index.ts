@@ -8,7 +8,7 @@ import { privateInstance } from "../instance";
  * @author 홍규진
  */
 export const getDocumentByMonth = async (
-  memberId: string,
+  memberId: number,
   yyyymm: YearMonth
 ): Promise<TDocumentByMonth[]> => {
   return await safeRequest.get<TDocumentByMonth[]>(

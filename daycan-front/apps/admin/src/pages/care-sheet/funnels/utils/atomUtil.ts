@@ -22,5 +22,6 @@ export const combineFunnelData = (
     cognitive: diagnosisData.cognitive,
     healthCare: diagnosisData.healthCare,
     recoveryProgram: diagnosisData.recoveryProgram,
+    signatureUrl: diagnosisData.signatureUrl,
   };
 };

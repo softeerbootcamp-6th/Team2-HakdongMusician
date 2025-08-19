@@ -11,7 +11,6 @@ import { useSetAtom } from "jotai";
 import { convertFunnelStateToInfoFunnelData } from "./utils/parsingData";
 import { getStoredValue } from "../utils/storage";
 import type { InfoFunnelData } from "./types/infoType";
-import { mockMembers } from "./constants/dummy";
 
 export const InfoFunnelStepContainer = () => {
   const navigate = useNavigate();
@@ -52,7 +51,6 @@ export const InfoFunnelStepContainer = () => {
       STEP_0: {
         memberId: d.memberId,
         searchQuery: "",
-        selectedMember: mockMembers.find((m) => m.id === d.memberId),
       },
       STEP_1: {
         date: new Date(d.date),

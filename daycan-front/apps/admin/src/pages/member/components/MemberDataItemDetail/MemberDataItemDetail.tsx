@@ -111,6 +111,8 @@ export const MemberDataItemDetail = ({
 
       <HistoryModal
         memberId={memberId}
+        memberName={member.name}
+        memberProfileImage={member.avatarUrl}
         isOpen={isHistoryModalOpen}
         onClose={() => setIsHistoryModalOpen(false)}
       />

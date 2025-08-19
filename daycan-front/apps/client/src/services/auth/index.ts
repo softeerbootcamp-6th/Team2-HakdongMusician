@@ -1,6 +1,6 @@
 import { safeRequest } from "@daycan/api";
 import type { TLoginResponse } from "./types";
-import { privateInstance, publicInstance } from "../instance";
+import { publicInstance } from "../instance";
 
 /**
  * 유저 로그인 API
@@ -25,7 +25,7 @@ export const reIssueToken = async (
   refreshToken: string
 ): Promise<TLoginResponse | null> => {
   return await safeRequest.post<TLoginResponse>(
-    privateInstance,
+    publicInstance,
     "/auth/reissue",
     {
       refreshToken,

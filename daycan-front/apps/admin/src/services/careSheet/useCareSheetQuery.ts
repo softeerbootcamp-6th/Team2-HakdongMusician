@@ -11,7 +11,8 @@ import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
 export const careSheetKeys = {
   all: ["careSheets"] as const,
   lists: () => [...careSheetKeys.all, "list"] as const,
-  listByDate: (date: YearMonthDay) => [...careSheetKeys.lists(), date] as const,
+  listByDate: (date: YearMonthDay, writerId?: number) =>
+    [...careSheetKeys.lists(), date, writerId] as const,
   details: () => [...careSheetKeys.all, "detail"] as const,
   detail: (careSheetId: number) =>
     [...careSheetKeys.details(), careSheetId] as const,
@@ -26,9 +27,12 @@ export const careSheetKeys = {
  * List 의 경우엔 추후에 Suspense 쿼리로 변환 후 사용할 예정
  * @author 홍규진
  */
-export const useGetCareSheetList = (date: YearMonthDay, writerId?: number) => {
+export const useGetCareSheetListQuery = (
+  date: YearMonthDay,
+  writerId?: number
+) => {
   return useQuery({
-    queryKey: careSheetKeys.listByDate(date),
+    queryKey: careSheetKeys.listByDate(date, writerId),
     queryFn: () => getCareSheetList(date, writerId),
     enabled: !!date,
     ...DEFAULT_QUERY_OPTIONS,
@@ -39,7 +43,7 @@ export const useGetCareSheetList = (date: YearMonthDay, writerId?: number) => {
  * 특정 날짜와 수급자의 케어시트 상세 정보를 조회하는 훅
  * @author 홍규진
  */
-export const useGetCareSheet = (date: YearMonthDay, memberId: number) => {
+export const useGetCareSheetQuery = (date: YearMonthDay, memberId: number) => {
   return useQuery({
     queryKey: careSheetKeys.detailByDate(date),
     queryFn: () => getCareSheet(date, String(memberId)),
@@ -52,7 +56,10 @@ export const useGetCareSheet = (date: YearMonthDay, memberId: number) => {
  * 특정 기록지의 단건 조회
  * @author 홍규진
  */
-export const useGetCareSheetDetail = (careSheetId: number, enabled = true) => {
+export const useGetCareSheetDetailQuery = (
+  careSheetId: number,
+  enabled = true
+) => {
   return useQuery({
     queryKey: careSheetKeys.detail(careSheetId),
     queryFn: () => getCareSheetDetail(careSheetId),

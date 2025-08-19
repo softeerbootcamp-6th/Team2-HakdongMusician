@@ -18,6 +18,8 @@ export const itemsContainer = style({
   display: "flex",
   flexDirection: "column",
   width: "100%",
+  maxHeight: "450px",
+  overflowY: "auto",
   padding: "0px 16px",
   marginTop: "8px",
   boxSizing: "border-box",

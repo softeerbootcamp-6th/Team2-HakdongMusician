@@ -51,6 +51,8 @@ export const itemsContainer = style({
   display: "flex",
   flexDirection: "column",
   width: "100%",
+  height: "200px",
+  overflowY: "auto",
   gap: "0px",
   padding: "0px 16px",
   marginTop: "8px",

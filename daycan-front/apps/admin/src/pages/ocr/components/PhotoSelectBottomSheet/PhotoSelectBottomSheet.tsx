@@ -68,6 +68,7 @@ export const PhotoSelectBottomSheet = ({
           <Button
             variant="unEmphasized"
             onClick={() => setIsBottomSheetOpen(false)}
+            size="fullWidth"
           >
             취소
           </Button>

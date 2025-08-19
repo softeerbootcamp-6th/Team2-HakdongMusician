@@ -1,7 +1,9 @@
 import { useFunnel } from "@daycan/hooks";
 import { useCanvas } from "../../hooks/useCanvas";
+import { useState } from "react";
 
 export const useStep5 = () => {
+  const [isSignatureUploaded, setIsSignatureUploaded] = useState(false);
   const { toPrev } = useFunnel();
   const {
     canvasRef,
@@ -50,8 +52,8 @@ export const useStep5 = () => {
     document.body.removeChild(link);
   };
 
-  // Blob 형태로 PNG 데이터를 반환하는 함수 (API 전송용)
-  const getPNGBlob = (): Promise<Blob | null> => {
+  // File 형태로 PNG 데이터를 반환하는 함수 (API 전송용)
+  const getPNGFile = (): Promise<File | null> => {
     return new Promise((resolve) => {
       if (!canvasRef.current) {
         resolve(null);
@@ -60,7 +62,20 @@ export const useStep5 = () => {
 
       canvasRef.current.toBlob(
         (blob) => {
-          resolve(blob);
+          if (blob) {
+            // Blob을 File 객체로 변환
+            const file = new File(
+              [blob],
+              `signature_${new Date().toISOString().split("T")[0]}.png`,
+              {
+                type: "image/png",
+                lastModified: Date.now(),
+              }
+            );
+            resolve(file);
+          } else {
+            resolve(null);
+          }
         },
         "image/png",
         1.0 // 최고 품질
@@ -79,6 +94,8 @@ export const useStep5 = () => {
     toPrev,
     exportToPNG,
     downloadPNG,
-    getPNGBlob,
+    getPNGFile,
+    isSignatureUploaded,
+    setIsSignatureUploaded,
   };
 };

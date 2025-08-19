@@ -39,7 +39,7 @@ export const getReportList = async (
  */
 export const getReport = async (
   yyyymmdd: YearMonthDay,
-  memberId: string
+  memberId: number
 ): Promise<TReportReadResponse | null> => {
   return await safeRequest.get<TReportReadResponse>(
     privateInstance,

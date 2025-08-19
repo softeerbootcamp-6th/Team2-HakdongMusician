@@ -8,22 +8,24 @@ export const Step4 = () => {
   const { sections, toPrev, toNext } = useStep4();
 
   return (
-    <DiagnosisLayout title="기록지 검토" nextTitle="서명하기">
-      {sections.map((section) => (
-        <DiagnosisCardLayout key={section.title} title={section.title}>
-          {section.items.map((item) => (
-            <div key={item.label} className={itemRow}>
-              <Body type="small" weight={500} color={COLORS.gray[700]}>
-                {item.label}
-              </Body>
-              <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
-                {item.value}
-              </Body>
-            </div>
-          ))}
-        </DiagnosisCardLayout>
-      ))}
+    <>
+      <DiagnosisLayout title="기록지 검토" nextTitle="서명하기">
+        {sections.map((section) => (
+          <DiagnosisCardLayout key={section.title} title={section.title}>
+            {section.items.map((item) => (
+              <div key={item.label} className={itemRow}>
+                <Body type="small" weight={500} color={COLORS.gray[700]}>
+                  {item.label}
+                </Body>
+                <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
+                  {item.value}
+                </Body>
+              </div>
+            ))}
+          </DiagnosisCardLayout>
+        ))}
+      </DiagnosisLayout>
       <StepButtons onPrev={toPrev} onNext={toNext} />
-    </DiagnosisLayout>
+    </>
   );
 };

@@ -16,24 +16,24 @@ export interface DiagnosisFunnelData {
     breakfast: {
       provided: boolean;
       entry: {
-        mealType: MealType;
-        amount: Amount;
+        mealType: MealType | null;
+        amount: Amount | null;
       };
       validProvidedEntry: boolean;
     };
     lunch: {
       provided: boolean;
       entry: {
-        mealType: MealType;
-        amount: Amount;
+        mealType: MealType | null;
+        amount: Amount | null;
       };
       validProvidedEntry: boolean;
     };
     dinner: {
       provided: boolean;
       entry: {
-        mealType: MealType;
-        amount: Amount;
+        mealType: MealType | null;
+        amount: Amount | null;
       };
       validProvidedEntry: boolean;
     };
@@ -71,4 +71,5 @@ export interface DiagnosisFunnelData {
     }[];
     comment: string; // 특이사항(훈련)
   };
+  signatureUrl?: string;
 }

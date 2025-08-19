@@ -10,12 +10,14 @@ import { careSheetKeys } from "./useCareSheetQuery";
  * 케어시트를 작성하는 훅
  * @author 홍규진
  */
-export const useWriteCareSheet = () => {
+export const useWriteCareSheetMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (request: TCareSheetWriteRequest) =>
-      await writeCareSheet(request),
+    mutationFn: async (request: TCareSheetWriteRequest) => {
+      console.log(request);
+      await writeCareSheet(request);
+    },
     onSuccess: (_, request) => {
       // 해당 날짜와 수급자의 케어시트 캐시 무효화
       queryClient.invalidateQueries({
@@ -32,7 +34,7 @@ export const useWriteCareSheet = () => {
  * 케어시트 출결을 업데이트하는 훅
  * @author 홍규진
  */
-export const useUpdateCareSheetAttendance = () => {
+export const useUpdateCareSheetAttendanceMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -44,6 +46,9 @@ export const useUpdateCareSheetAttendance = () => {
         queryClient.invalidateQueries({
           queryKey: careSheetKeys.detailByMemberId(memberId),
         });
+      });
+      queryClient.invalidateQueries({
+        queryKey: careSheetKeys.listByDate(request.date),
       });
     },
   });

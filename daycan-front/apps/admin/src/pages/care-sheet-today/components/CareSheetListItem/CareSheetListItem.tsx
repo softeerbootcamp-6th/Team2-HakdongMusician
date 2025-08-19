@@ -6,7 +6,7 @@ import {
   careSheetListItemStatusContainer,
 } from "./CareSheetListItem.css";
 import { Body, COLORS, Icon } from "@daycan/ui";
-import { useGetCareSheetDetail } from "@/services/careSheet/useCareSheetQuery";
+import { useGetCareSheetDetailQuery } from "@/services/careSheet/useCareSheetQuery";
 import { useNavigate } from "react-router-dom";
 import { prefillCareSheetData } from "@/utils/careSheetPrefill";
 import { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ export const CareSheetListItem = ({ careSheet }: CareSheetListItemProps) => {
   const [shouldFetchDetail, setShouldFetchDetail] = useState(false);
 
   // Hook은 컴포넌트 최상위에서 호출, 조건적으로 데이터 fetch
-  const { data: careSheetDetail, isLoading } = useGetCareSheetDetail(
+  const { data: careSheetDetail, isLoading } = useGetCareSheetDetailQuery(
     careSheet.careSheetId,
     shouldFetchDetail // 클릭했을 때만 fetch
   );
