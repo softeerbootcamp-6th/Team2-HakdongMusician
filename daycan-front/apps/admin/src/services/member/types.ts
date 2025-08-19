@@ -37,22 +37,4 @@ export type TMemberCreateRequest = {
   };
 };
 
-export type TmemberPatchRequest = {
-  name?: string | null;
-  gender?: "MALE" | "FEMALE";
-  birthDate?: string | null;
-  careLevel?: number;
-  careNumber?: string | null;
-  avatarUrl?: string | null;
-  guardianName?: string | null;
-  guardianRelation?: string | null;
-  guardianBirthDate?: string | null;
-  guardianPhoneNumber?: string | null;
-  guardianAvatarUrl?: string | null;
-  reportConsent?: boolean;
-  passwordEntry?: {
-    guardianPassword: string | null;
-    guardianPasswordConfirm: string | null;
-    passwordConfirmed: boolean;
-  } | null;
-};
+export type TmemberPatchRequest = Partial<TMemberCreateRequest>;

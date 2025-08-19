@@ -76,7 +76,9 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
       key: "careLevel",
       content: (
         <Body type="small" weight={500} color={COLORS.gray[800]}>
-          {formatCareGrade(member.careLevel) || "-"}
+          {member.careLevel === 6
+            ? "인지지원"
+            : formatCareGrade(member.careLevel)}
         </Body>
       ),
     },
