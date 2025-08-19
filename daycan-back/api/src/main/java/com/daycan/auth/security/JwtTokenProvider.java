@@ -18,7 +18,7 @@ public class JwtTokenProvider {
   /* ---------------- 상수 ---------------- */
   @Value("${jwt.access-token.expire-length}")
   private Long ACCESS_TOKEN_EXPIRATION_MS;
-  @Value("${jwt.access-token.expire-length}")
+  @Value("${jwt.refresh-token.expire-length}")
   private Long REFRESH_TOKEN_EXPIRATION_MS; // 14일
   @Value("${jwt.custom.secretKey}")
   private String SECRET_KEY;
