@@ -9,7 +9,7 @@ export type SegmentProps = PropsWithChildren<
       options: string[];
       value: string;
       onSegmentChange: (val: string) => void;
-      fontSize: "large" | "medium" | "small" | "xsmall";
+      fontSize?: "large" | "medium" | "small" | "xsmall";
     }
 >;
 
