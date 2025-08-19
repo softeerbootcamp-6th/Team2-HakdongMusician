@@ -14,24 +14,30 @@ import elder from "@/assets/images/elder.png";
 import { formatBirthDate, formatGender, formatStaffRole } from "@/utils";
 import { DeleteConfirmModal } from "@/components/DeleteConfirmModal/index.ts";
 import { EditDeleteAuthModal } from "@/components/EditDeleteAuthModal/EditDeleteAuthModal";
-import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
 import { useStaffModal } from "@/pages/staff/hooks/useStaffModal";
+import type { TStaff } from "@/services/staff/types";
+import { useNavigate } from "react-router-dom";
 
 interface StaffDetailContentProps {
-  staff: StaffListResponse;
+  staff: TStaff;
 }
 
 export const StaffDetailContent = ({ staff }: StaffDetailContentProps) => {
+  const navigate = useNavigate();
   const {
     isDeleteModalOpen,
-    isEditModalOpen,
+    isDeleteAuthModalOpen,
     handleCloseDeleteModal,
-    handleOpenDeleteModal,
-    handleCloseEditModal,
-    handleOpenEditModal,
+    handleOpenDeleteAuthModal,
+    handleCloseDeleteAuthModal,
     handleDeleteConfirm,
-    handleEditAccessConfirm,
+    handleDeleteAccessConfirm,
   } = useStaffModal(staff);
+
+  // 수정 버튼 클릭 시 바로 수정 페이지로 이동
+  const handleEditButtonClick = () => {
+    navigate(`/staff/edit/${staff.staffId}`);
+  };
 
   return (
     <div className={staffListItemExpandedContainer}>
@@ -42,7 +48,7 @@ export const StaffDetailContent = ({ staff }: StaffDetailContentProps) => {
           </Body>
           <div className={staffListItemExpandedInfoContent}>
             <img
-              src={elder}
+              src={staff.avatarUrl || elder}
               alt="avatar"
               className={staffListItemExpandedInfoAvatar}
             />
@@ -84,7 +90,7 @@ export const StaffDetailContent = ({ staff }: StaffDetailContentProps) => {
           <Button
             size="small"
             className={editButton}
-            onClick={handleOpenEditModal}
+            onClick={handleEditButtonClick}
           >
             수정
           </Button>
@@ -92,19 +98,20 @@ export const StaffDetailContent = ({ staff }: StaffDetailContentProps) => {
             variant="error"
             size="small"
             style={{ width: "58px", height: "32px" }}
-            onClick={handleOpenDeleteModal}
+            onClick={handleOpenDeleteAuthModal}
           >
             삭제
           </Button>
         </div>
       </div>
 
+      {/* 삭제 인증 모달 */}
       <EditDeleteAuthModal
-        isOpen={isEditModalOpen}
-        onClose={handleCloseEditModal}
-        onEditAccessConfirm={handleEditAccessConfirm}
+        isOpen={isDeleteAuthModalOpen}
+        onClose={handleCloseDeleteAuthModal}
+        onDeleteAccessConfirm={handleDeleteAccessConfirm}
         unitId={staff.staffId}
-        actionType="edit"
+        actionType="delete"
       />
 
       <DeleteConfirmModal
