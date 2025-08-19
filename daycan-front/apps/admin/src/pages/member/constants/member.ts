@@ -15,7 +15,7 @@ export type Member = {
   name: string;
   birthDate: string;
   gender: "MALE" | "FEMALE";
-  careNumber: string;
+  username: string;
 };
 
 export type Guardian = {
@@ -68,7 +68,7 @@ export type AdminMemberAndGuardianResponse = {
   birthDate: string;
   careLevel: number;
   avatarUrl: string;
-  careNumber: string;
+  username: string;
   guardianName: string;
   guardianRelation: string;
   guardianRelationBirthDate: string;
@@ -85,7 +85,7 @@ export type MemberInfo = {
   name: string;
   birthDate: string;
   gender: string;
-  careNumber: string;
+  username: string;
   guardianContact: string;
   careLevel?: number;
   careGrade?: string; // 장기요양등급 문자열

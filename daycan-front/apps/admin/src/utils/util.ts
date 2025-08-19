@@ -5,6 +5,7 @@ const formatBirthDate = (birthDate: string) => {
 
 // 장기요양등급 포맷팅 함수
 const formatCareGrade = (careLevel: number) => {
+  if (careLevel === 6) return "인지지원";
   return careLevel ? `${careLevel}급` : "-";
 };
 

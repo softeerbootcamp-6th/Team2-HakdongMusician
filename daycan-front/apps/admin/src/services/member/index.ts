@@ -18,7 +18,7 @@ export const getMemberList = (): Promise<TMember[] | null> => {
  * 단일 수급자 정보를 조회합니다.
  * @author 홍규진
  */
-export const getMember = (memberId: string): Promise<TMember | null> => {
+export const getMember = (memberId: number): Promise<TMember | null> => {
   return safeRequest.get<TMember>(privateInstance, `/admin/member/${memberId}`);
 };
 
@@ -35,7 +35,7 @@ export const createMember = (data: TMemberCreateRequest): Promise<void> => {
  * @author 홍규진
  */
 export const updateMember = (
-  id: string,
+  id: number,
   data: TmemberPatchRequest
 ): Promise<void> => {
   return safeRequest.patch(privateInstance, `/admin/member/${id}`, data);
@@ -45,6 +45,6 @@ export const updateMember = (
  * 수급자 정보를 삭제합니다.
  * @author 홍규진
  */
-export const deleteMember = (id: string): Promise<void> => {
+export const deleteMember = (id: number): Promise<void> => {
   return safeRequest.delete(privateInstance, `/admin/member/${id}`);
 };

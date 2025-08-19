@@ -1,6 +1,6 @@
 export type TMember = {
   id: number;
-  username: string;
+  careNumber: string;
   name: string;
   gender: "MALE" | "FEMALE";
   birthDate: string;
@@ -31,10 +31,28 @@ export type TMemberCreateRequest = {
   guardianAvatarUrl: string;
   reportConsent: boolean;
   passwordEntry: {
-    guardianPassword: string;
-    guardianPasswordConfirm: string;
+    guardianPassword: string | null;
+    guardianPasswordConfirm: string | null;
     passwordConfirmed: boolean;
   };
 };
 
-export type TmemberPatchRequest = Partial<TMemberCreateRequest>;
+export type TmemberPatchRequest = {
+  name?: string | null;
+  gender?: "MALE" | "FEMALE";
+  birthDate?: string | null;
+  careLevel?: number;
+  careNumber?: string | null;
+  avatarUrl?: string | null;
+  guardianName?: string | null;
+  guardianRelation?: string | null;
+  guardianBirthDate?: string | null;
+  guardianPhoneNumber?: string | null;
+  guardianAvatarUrl?: string | null;
+  reportConsent?: boolean;
+  passwordEntry?: {
+    guardianPassword: string | null;
+    guardianPasswordConfirm: string | null;
+    passwordConfirmed: boolean;
+  } | null;
+};

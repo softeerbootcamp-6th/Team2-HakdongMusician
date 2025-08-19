@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   validateBirthDate,
   validatePhoneNumber,
@@ -6,130 +6,157 @@ import {
   validatePassword,
 } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { API_ELDER_DUMMY_DATA } from "@/pages/member/constants/memberDummyData";
 import { useToast } from "@daycan/ui";
-
-interface MemberRegisterForm {
-  name: string;
-  gender: string;
-  birthDate: string;
-  careLevel: number;
-  careNumber: string;
-  avatarUrl: string;
-  guardianName: string;
-  guardianRelation: string;
-  guardianRelationBirthDate: string;
-  guardianPhoneNumber: string;
-  guardianAvatarUrl: string;
-  acceptReport: boolean;
-  guardianPassword: string;
-  guardianPasswordConfirm: string;
-  passwordConfirmed: boolean;
-}
+import { useGetMemberQuery } from "@/services/member/useMemberQuery";
+import type { TMemberCreateRequest } from "@/services/member/types";
+import {
+  useCreateMemberMutation,
+  useUpdateMemberMutation,
+} from "@/services/member/useMemberMutation";
+import { useUploadImageSingleMutation } from "@/services/image/useUploadImageMutation";
 
 export const useMemberRegisterForm = (
   mode: "register" | "edit",
-  memberId: string
+  memberId: number
 ) => {
+  const { mutate: createMember } = useCreateMemberMutation();
+  const { mutate: updateMember } = useUpdateMemberMutation();
+  const { mutateAsync: uploadSingleImage } = useUploadImageSingleMutation();
+
   const navigate = useNavigate();
   const { showToast } = useToast();
+
+  // 상태 관리 개선
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showErrors, setShowErrors] = useState(false);
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
-  const [form, setForm] = useState<MemberRegisterForm>({
+  const [form, setForm] = useState<TMemberCreateRequest>({
     name: "",
-    gender: "",
+    gender: "MALE",
     birthDate: "",
     careLevel: 0,
     careNumber: "",
     avatarUrl: "",
     guardianName: "",
     guardianRelation: "",
-    guardianRelationBirthDate: "",
+    guardianBirthDate: "",
     guardianPhoneNumber: "",
     guardianAvatarUrl: "",
-    acceptReport: false,
-    guardianPassword: "",
-    guardianPasswordConfirm: "",
-    passwordConfirmed: false,
+    reportConsent: false,
+    passwordEntry: {
+      guardianPassword: "",
+      guardianPasswordConfirm: "",
+      passwordConfirmed: false,
+    },
   });
-  const [copyForm, setCopyForm] = useState<MemberRegisterForm>(form);
+  const [copyForm, setCopyForm] = useState<TMemberCreateRequest>(form);
 
-  const getInitialData = async () => {
-    if (mode === "edit") {
-      // 더미파일 가져와서 response에 저장
-      const response = API_ELDER_DUMMY_DATA.find(
-        (item) => item.memberId === memberId
-      );
-      if (!response) {
-        showToast({
-          data: {
-            message: "회원 정보를 찾을 수 없어요.",
-            type: "error",
-            variant: "pc",
-          },
-        });
-        navigate("/member");
-        return;
-      }
+  // 이미지 파일 상태 추가
+  const [imageFiles, setImageFiles] = useState<{
+    memberAvatar: File | null;
+    guardianAvatar: File | null;
+  }>({
+    memberAvatar: null,
+    guardianAvatar: null,
+  });
 
+  // 기존 이미지 URL 상태 추가
+  const [originalImages, setOriginalImages] = useState<{
+    memberAvatarUrl: string;
+    guardianAvatarUrl: string;
+  }>({
+    memberAvatarUrl: "",
+    guardianAvatarUrl: "",
+  });
+
+  // 데이터 로딩 상태 관리 개선
+  const { data: memberExistData } = useGetMemberQuery(memberId);
+
+  // getInitialData를 useCallback으로 최적화
+  const getInitialData = useCallback(() => {
+    if (mode === "edit" && memberId && memberExistData) {
       // response를 form에 덮어씌우기
       const updatedForm = {
         ...form,
-        name: response?.name || "",
-        gender: response?.gender || "",
-        birthDate: response?.birthDate || "",
-        careLevel: response?.careLevel || 0,
-        careNumber: response?.careNumber || "",
-        avatarUrl: response?.avatarUrl || "",
-        guardianName: response?.guardianName || "",
-        guardianRelation: response?.guardianRelation || "",
-        guardianRelationBirthDate: response?.guardianRelationBirthDate || "",
-        guardianPhoneNumber: response?.guardianPhoneNumber || "",
-        guardianAvatarUrl: response?.guardianAvatarUrl || "",
-        acceptReport: response?.acceptReport || false,
-        // guardianPassword: response?.guardianPassword || "",
-        // guardianPasswordConfirm: response?.guardianPasswordConfirm || "",
+        name: memberExistData?.name || "",
+        gender: memberExistData?.gender || "",
+        birthDate: memberExistData?.birthDate || "",
+        careLevel: memberExistData?.careLevel || 0,
+        careNumber: memberExistData?.careNumber || "",
+        avatarUrl: memberExistData?.avatarUrl || "",
+        guardianName: memberExistData?.guardianName || "",
+        guardianRelation: memberExistData?.guardianRelation || "",
+        guardianBirthDate: memberExistData?.guardianBirthDate || "",
+        guardianPhoneNumber: memberExistData?.guardianPhoneNumber || "",
+        guardianAvatarUrl: memberExistData?.guardianAvatarUrl || "",
+        reportConsent: memberExistData?.acceptReport || false,
       };
-      console.log("updatedForm", updatedForm);
+
+      // 기존 이미지 URL 저장
+      setOriginalImages({
+        memberAvatarUrl: memberExistData?.avatarUrl || "",
+        guardianAvatarUrl: memberExistData?.guardianAvatarUrl || "",
+      });
 
       setForm(updatedForm);
-      // 원본 데이터를 copyForm에 저장하여 변경사항 비교에 사용
       setCopyForm(updatedForm);
     }
-  };
+  }, [mode, memberId, memberExistData]);
 
+  // useEffect 의존성 배열 수정
   useEffect(() => {
-    getInitialData();
-  }, [mode, memberId]);
+    if (mode === "edit" && memberExistData) {
+      getInitialData();
+    }
+  }, [mode, memberExistData, getInitialData]);
 
-  // 개별 필드 업데이트 함수들 (즉, 여기서 각각 하나씩 값이 바뀌게 하는 거)
+  // 개별 필드 업데이트 함수들
   const updateField = (
-    field: keyof MemberRegisterForm,
-    value: string | boolean | number
+    field: keyof TMemberCreateRequest,
+    value: string | boolean | number | null
   ) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  // 수급자 정보 업데이트(수급자 정보 form에서 값이 변하면 이 함수를 감싼 handle이 실행되면서 위의 updateField가 실행)
   const updateMemberInfo = (
-    field: keyof MemberRegisterForm,
+    field: keyof TMemberCreateRequest,
     value: string | number
   ) => {
     updateField(field, value);
   };
 
-  // 보호자 정보 업데이트(위 설명과 마찬가지)
   const updateGuardianInfo = (
-    field: keyof MemberRegisterForm,
+    field: keyof TMemberCreateRequest,
     value: string
   ) => {
     updateField(field, value);
   };
 
+  // 이미지 파일 업데이트 함수들
+  const updateMemberAvatarFile = (file: File | null) => {
+    setImageFiles((prev) => ({ ...prev, memberAvatar: file }));
+  };
+
+  const updateGuardianAvatarFile = (file: File | null) => {
+    setImageFiles((prev) => ({ ...prev, guardianAvatar: file }));
+  };
+
   // 리포트 수신 동의 업데이트
   const updateAcceptReport = (consent: boolean) => {
-    updateField("acceptReport", consent);
+    updateField("reportConsent", consent);
+  };
+
+  const updatePasswordField = (
+    field: keyof typeof form.passwordEntry,
+    value: string | boolean
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      passwordEntry: {
+        ...prev.passwordEntry,
+        [field]: value,
+      },
+    }));
   };
 
   //에러 메시지 Record로 반환
@@ -140,7 +167,7 @@ export const useMemberRegisterForm = (
     if (form.name.trim() === "") {
       errors.name = "이름을 입력해주세요";
     }
-    if (form.gender === "") {
+    if (form.gender !== "MALE" && form.gender !== "FEMALE") {
       errors.gender = "성별을 선택해주세요";
     }
     if (form.birthDate.trim() === "") {
@@ -166,11 +193,11 @@ export const useMemberRegisterForm = (
     if (form.guardianRelation.trim() === "") {
       errors.guardianRelation = "수급자와의 관계를 입력해주세요";
     }
-    if (form.guardianRelationBirthDate.trim() === "") {
+    if (form.guardianBirthDate.trim() === "") {
       errors.guardianBirthDate = "보호자 생년월일을 입력해주세요";
-    } else if (!validateBirthDate(form.guardianRelationBirthDate).isValid) {
-      errors.guardianRelationBirthDate = validateBirthDate(
-        form.guardianRelationBirthDate
+    } else if (!validateBirthDate(form.guardianBirthDate).isValid) {
+      errors.guardianBirthDate = validateBirthDate(
+        form.guardianBirthDate
       ).errorMessage;
     }
     if (form.guardianPhoneNumber.trim() === "") {
@@ -188,16 +215,25 @@ export const useMemberRegisterForm = (
       }
     }
 
-    if (form.guardianPassword.trim() === "") {
+    if (form.passwordEntry.guardianPassword?.trim() === "") {
       errors.guardianPassword = "비밀번호를 입력해주세요";
-    } else if (!validatePassword(form.guardianPassword).isValid) {
+    } else if (
+      form.passwordEntry.guardianPassword &&
+      !validatePassword(form.passwordEntry.guardianPassword).isValid
+    ) {
       errors.guardianPassword = validatePassword(
-        form.guardianPassword
+        form.passwordEntry.guardianPassword
       ).errorMessage;
     }
-    if (form.guardianPasswordConfirm.trim() === "") {
+    if (
+      form.passwordEntry.guardianPasswordConfirm &&
+      form.passwordEntry.guardianPasswordConfirm.trim() === ""
+    ) {
       errors.guardianPasswordConfirm = "비밀번호 확인을 입력해주세요";
-    } else if (form.guardianPassword !== form.guardianPasswordConfirm) {
+    } else if (
+      form.passwordEntry.guardianPassword !==
+      form.passwordEntry.guardianPasswordConfirm
+    ) {
       errors.guardianPasswordConfirm = "비밀번호가 일치하지 않아요";
     }
 
@@ -209,16 +245,18 @@ export const useMemberRegisterForm = (
     // 필수 필드들만 확인 (선택적 필드 제외)
     const requiredFields = {
       name: form.name.trim() !== "",
-      gender: form.gender !== "",
+      gender: form.gender === "MALE" || form.gender === "FEMALE",
       birthDate: form.birthDate.trim() !== "",
       careLevel: form.careLevel !== 0,
       careNumber: form.careNumber.trim() !== "",
       guardianName: form.guardianName.trim() !== "",
       guardianRelation: form.guardianRelation.trim() !== "",
-      guardianRelationBirthDate: form.guardianRelationBirthDate.trim() !== "",
+      guardianBirthDate: form.guardianBirthDate.trim() !== "",
       guardianPhoneNumber: form.guardianPhoneNumber.trim() !== "",
-      guardianPassword: form.guardianPassword.trim() !== "",
-      guardianPasswordConfirm: form.guardianPasswordConfirm.trim() !== "",
+      passwordEntry: {
+        guardianPassword: form.passwordEntry.guardianPassword,
+        guardianPasswordConfirm: form.passwordEntry.guardianPasswordConfirm,
+      },
     };
 
     return Object.values(requiredFields).every(Boolean);
@@ -229,7 +267,7 @@ export const useMemberRegisterForm = (
     // 수정 모드이고 변경사항이 없는 경우 false 반환
     if (mode === "edit") {
       const hasChanges = Object.keys(form).some((key) => {
-        const fieldKey = key as keyof MemberRegisterForm;
+        const fieldKey = key as keyof TMemberCreateRequest;
         return form[fieldKey] !== copyForm[fieldKey];
       });
 
@@ -237,20 +275,19 @@ export const useMemberRegisterForm = (
     }
     const requiredFields = {
       name: form.name.trim() !== "",
-      gender: form.gender !== "",
+      gender: form.gender === "MALE" || form.gender === "FEMALE",
       birthDate: form.birthDate.trim() !== "",
       careLevel: form.careLevel !== 0,
       careNumber: form.careNumber.trim() !== "",
       guardianName: form.guardianName.trim() !== "",
       guardianRelation: form.guardianRelation.trim() !== "",
-      guardianRelationBirthDate: form.guardianRelationBirthDate.trim() !== "",
+      guardianBirthDate: form.guardianBirthDate.trim() !== "",
       guardianPhoneNumber: form.guardianPhoneNumber.trim() !== "",
     };
     return Object.values(requiredFields).every(Boolean);
   };
 
-  // 폼 제출 버튼 활성화 여부(수정 , 등록페이지 구분),,
-  // 다만 활성화 여부만 판단하고 제출해도 폼 형식에 맞지 않으면 handleFormErrorCheck에서 검출
+  // 폼 제출 버튼 활성화 여부
   const handleIsFormFilled = () => {
     if (mode === "register") {
       return isRegisterPageFormChangedOrFilled();
@@ -270,71 +307,151 @@ export const useMemberRegisterForm = (
     }
   };
 
-  //마지막 제출 함수
-  const handleSubmit = () => {
-    form.passwordConfirmed = true;
+  // 마지막 제출 함수 개선
+  const handleSubmit = async () => {
+    form.passwordEntry.passwordConfirmed = true;
 
-    //여기서 API 호출
-    console.log("폼 제출:", form);
-    if (mode === "register") {
-      // 등록 로직
-      console.log("등록 로직");
+    try {
+      // 이미지 업로드 처리
+      let finalForm = { ...form };
 
+      // 수급자 이미지 처리
+      if (imageFiles.memberAvatar) {
+        // 새로운 이미지가 선택된 경우 업로드
+        try {
+          const result = await uploadSingleImage(imageFiles.memberAvatar);
+          finalForm.avatarUrl = result.objectKey;
+        } catch (error) {
+          console.error("수급자 이미지 업로드 실패:", error);
+          showToast({
+            data: {
+              message: "수급자 이미지 업로드에 실패했습니다.",
+              type: "error",
+              variant: "pc",
+            },
+          });
+          return;
+        }
+      } else if (
+        mode === "edit" &&
+        form.avatarUrl === originalImages.memberAvatarUrl
+      ) {
+        // 수정 모드이고 기존 이미지와 동일한 경우 avatarUrl 삭제
+        delete (finalForm as any).avatarUrl;
+      }
+
+      // 보호자 이미지 처리
+      if (imageFiles.guardianAvatar) {
+        // 새로운 이미지가 선택된 경우 업로드
+        try {
+          const result = await uploadSingleImage(imageFiles.guardianAvatar);
+          finalForm.guardianAvatarUrl = result.objectKey;
+        } catch (error) {
+          console.error("보호자 이미지 업로드 실패:", error);
+          showToast({
+            data: {
+              message: "보호자 이미지 업로드에 실패했습니다.",
+              type: "error",
+              variant: "pc",
+            },
+          });
+          return;
+        }
+      } else if (
+        mode === "edit" &&
+        form.guardianAvatarUrl === originalImages.guardianAvatarUrl
+      ) {
+        // 수정 모드이고 기존 이미지와 동일한 경우 guardianAvatarUrl 삭제
+        delete (finalForm as any).guardianAvatarUrl;
+      }
+
+      // passwordEntry의 모든 값이 null이면 passwordEntry 자체를 제거
+      if (
+        finalForm.passwordEntry.guardianPassword === "" &&
+        finalForm.passwordEntry.guardianPasswordConfirm === ""
+      ) {
+        (finalForm as any).passwordEntry = undefined;
+      }
+
+      console.log("finalForm", finalForm);
+
+      if (mode === "register") {
+        // 등록 로직
+        createMember(finalForm, {
+          onSuccess: () => {
+            showToast({
+              data: {
+                message: `${form.name} 님의 정보가 등록되었어요`,
+                type: "success",
+                variant: "pc",
+              },
+              autoClose: 1500,
+              hideProgressBar: true,
+            });
+            navigate("/member");
+          },
+        });
+      } else if (mode === "edit") {
+        console.log("edit form", finalForm);
+
+        updateMember(
+          { id: memberId, data: finalForm },
+          {
+            onSuccess: () => {
+              showToast({
+                data: {
+                  message: `${form.name} 님의 정보가 수정되었어요`,
+                  type: "success",
+                  variant: "pc",
+                },
+                autoClose: 1500,
+                hideProgressBar: true,
+              });
+              navigate("/member");
+            },
+          }
+        );
+      }
+    } catch (error) {
       showToast({
         data: {
-          message: `${form.name} 님의 정보가 등록되었어요`,
-          type: "success",
+          message: "처리 중 오류가 발생했습니다.",
+          type: "error",
           variant: "pc",
         },
-        autoClose: 1500,
-        hideProgressBar: true,
-      });
-    } else if (mode === "edit") {
-      // 수정 로직
-      console.log("수정 로직");
-
-      showToast({
-        data: {
-          message: `${form.name} 님의 정보가 수정되었어요`,
-          type: "success",
-          variant: "pc",
-        },
-        autoClose: 1500,
-        hideProgressBar: true,
       });
     }
-
-    // 폼 초기화
-    setForm({
-      ...form,
-      passwordConfirmed: false,
-    });
-
-    navigate("/member");
   };
 
   return {
-    //폼
+    // 폼
     form,
+    imageFiles,
 
-    //버튼 활성화 여부
+    // 버튼 활성화 여부
     handleIsFormFilled,
-    //폼 제출 시 에러 검증
+
+    // 폼 제출 시 에러 검증
     handleFormErrorCheck,
 
-    //마지막 제출 함수
+    // 마지막 제출 함수
     handleSubmit,
 
-    //개별 필드 업데이트 함수들
+    // 개별 필드 업데이트 함수들
     updateMemberInfo,
     updateGuardianInfo,
     updateAcceptReport,
+    updatePasswordField,
 
-    //에러 메시지
+    // 이미지 파일 업데이트 함수들
+    updateMemberAvatarFile,
+    updateGuardianAvatarFile,
+
+    // 에러 메시지
     errors,
     showErrors,
 
-    //비밀번호 수정 모드 여부(수정 페이지에서 비밀번호 수정시 비밀번호 수정 모드 활성화)
+    // 비밀번호 수정 모드 여부
     isPasswordEditMode,
     setIsPasswordEditMode,
   };

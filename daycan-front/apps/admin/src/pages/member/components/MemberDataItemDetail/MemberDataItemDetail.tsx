@@ -10,14 +10,15 @@ import {
 } from "./MemberDataItemDetail.css";
 import { useState } from "react";
 import { HistoryModal } from "../HistoryModal/HistoryModal";
-import { EditAuthModal, DeleteConfirmModal } from "@/components/index";
-import type { TMember } from "@/pages/member/constants/memberDummyData";
+import { EditDeleteAuthModal, DeleteConfirmModal } from "@/components/index";
+import type { TMember } from "@/services/member/types";
 import { useNavigate } from "react-router-dom";
+import { useDeleteMemberMutation } from "@/services/member/useMemberMutation";
 
 interface MemberDataItemDetailProps {
   children?: React.ReactNode;
   renderContent?: (member: TMember) => React.ReactNode;
-  memberId: string;
+  memberId: number;
   member: TMember;
 }
 
@@ -30,40 +31,40 @@ export const MemberDataItemDetail = ({
   const navigate = useNavigate();
   //모달 상태
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-  const [isMemberEditAuthModalOpen, setIsMemberEditAuthModalOpen] =
-    useState(false);
+  const [isDeleteAuthModalOpen, setIsDeleteAuthModalOpen] = useState(false);
   const [isMemberDeleteConfirmModalOpen, setIsMemberDeleteConfirmModalOpen] =
     useState(false);
 
-  // 수정 버튼 클릭 시 모달 열기
+  const { mutate: deleteMember } = useDeleteMemberMutation();
+
+  // 수정 버튼 클릭 시 바로 수정 페이지로 이동
   const handleEditButtonClick = () => {
-    setIsMemberEditAuthModalOpen(true);
+    navigate(`/member/edit/${memberId}`);
   };
 
-  // 삭제 버튼 클릭 시 모달 열기
+  // 삭제 버튼 클릭 시 인증 모달 열기
   const handleDeleteButtonClick = () => {
-    setIsMemberDeleteConfirmModalOpen(true);
+    setIsDeleteAuthModalOpen(true);
   };
 
   const handleCloseDeleteModal = () => {
     setIsMemberDeleteConfirmModalOpen(false);
   };
 
-  const handleCloseEditModal = () => {
-    setIsMemberEditAuthModalOpen(false);
+  const handleCloseDeleteAuthModal = () => {
+    setIsDeleteAuthModalOpen(false);
   };
 
   // 삭제 확인 시 처리
   const handleDeleteConfirm = () => {
     setIsMemberDeleteConfirmModalOpen(false);
-    // TODO: 삭제 API 호출
-    console.log("delete member", memberId);
+    deleteMember(memberId);
   };
 
-  const handleEditAccessConfirm = () => {
-    setIsMemberEditAuthModalOpen(false);
-
-    navigate(`/member/edit/${memberId}`);
+  // 삭제 인증 성공 시 처리
+  const handleDeleteAccessConfirm = () => {
+    setIsDeleteAuthModalOpen(false);
+    setIsMemberDeleteConfirmModalOpen(true);
   };
 
   return (
@@ -114,11 +115,13 @@ export const MemberDataItemDetail = ({
         onClose={() => setIsHistoryModalOpen(false)}
       />
 
-      <EditAuthModal
-        isOpen={isMemberEditAuthModalOpen}
-        onClose={handleCloseEditModal}
-        onEditAccessConfirm={handleEditAccessConfirm}
+      {/* 삭제 인증 모달 */}
+      <EditDeleteAuthModal
+        isOpen={isDeleteAuthModalOpen}
+        onClose={handleCloseDeleteAuthModal}
+        onDeleteAccessConfirm={handleDeleteAccessConfirm}
         unitId={memberId}
+        actionType="delete"
       />
 
       <DeleteConfirmModal

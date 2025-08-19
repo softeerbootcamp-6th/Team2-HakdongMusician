@@ -9,7 +9,7 @@ import {
 } from "@/utils/index.ts";
 import { profileImage } from "./MemberDataItem.css.ts";
 import profileImg from "@/assets/images/profile.png";
-import type { TMember } from "@/pages/member/constants/memberDummyData";
+import type { TMember } from "@/services/member/types";
 import { useState } from "react";
 import { ListItemLayout } from "@/components/ListItemLayout/ListItemLayout.tsx";
 import { MEMBER_GRID_TEMPLATE } from "../../constants/memberGrid";
@@ -39,14 +39,20 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
     },
     {
       key: "profile",
-      content: <img src={profileImg} alt="프로필" className={profileImage} />,
+      content: (
+        <img
+          src={member.avatarUrl || profileImg}
+          alt="프로필"
+          className={profileImage}
+        />
+      ),
     },
 
     {
       key: "name",
       content: (
         <Body type="small" weight={500} color={COLORS.gray[800]}>
-          {member.name}
+          {member.name || "-"}
         </Body>
       ),
     },
@@ -54,7 +60,7 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
       key: "birthDate",
       content: (
         <Body type="small" weight={500} color={COLORS.gray[800]}>
-          {formatBirthDate(member.birthDate)}
+          {formatBirthDate(member.birthDate) || "-"}
         </Body>
       ),
     },
@@ -62,7 +68,7 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
       key: "gender",
       content: (
         <Body type="small" weight={500} color={COLORS.gray[800]}>
-          {formatGender(member.gender)}
+          {formatGender(member.gender) || "-"}
         </Body>
       ),
     },
@@ -70,15 +76,15 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
       key: "careLevel",
       content: (
         <Body type="small" weight={500} color={COLORS.gray[800]}>
-          {formatCareGrade(member.careLevel)}
+          {formatCareGrade(member.careLevel) || "-"}
         </Body>
       ),
     },
     {
-      key: "careNumber",
+      key: "username",
       content: (
         <Body type="small" weight={500} color={COLORS.gray[800]}>
-          {member.careLevel}
+          {member.careNumber || "-"}
         </Body>
       ),
     },
@@ -86,7 +92,7 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
       key: "guardianPhone",
       content: (
         <Body type="small" weight={500} color={COLORS.gray[800]}>
-          {member.guardianPhoneNumber}
+          {member.guardianPhoneNumber || "-"}
         </Body>
       ),
     },
@@ -112,7 +118,7 @@ export const MemberDataItem = ({ member, index }: MemberDataItemProps) => {
       <ListItemLayout columns={columns} gridTemplate={MEMBER_GRID_TEMPLATE} />
       {/* 상세보기시 등장하는 컴포넌트 */}
       {isExpanded && (
-        <MemberDataItemDetail memberId={member.memberId} member={member}>
+        <MemberDataItemDetail memberId={member.id} member={member}>
           <MemberDetailContent member={member} />
           <GuardianDetailContent member={member} />
         </MemberDataItemDetail>

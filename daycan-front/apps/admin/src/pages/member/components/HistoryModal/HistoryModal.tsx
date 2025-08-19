@@ -28,13 +28,13 @@ import { ReportDataView } from "@/components/ReportDataView";
 import { CareSheetDataView } from "@/components/CareSheetDataView";
 
 interface HistoryModalProps {
-  memberId?: string;
+  memberId?: number;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export const HistoryModal = ({
-  memberId = "1",
+  memberId = 1,
   isOpen,
   onClose,
 }: HistoryModalProps) => {
@@ -55,13 +55,13 @@ export const HistoryModal = ({
   const handleViewReport = async (date: Date) => {
     setSelectedDataType("report");
     console.log("handleViewReport", date, memberId);
-    await fetchHistoryData(date, memberId);
+    await fetchHistoryData(date, memberId.toString());
   };
 
   const handleViewCareSheet = async (date: Date) => {
     setSelectedDataType("careSheet");
     console.log("handleViewCareSheet", date, memberId);
-    await fetchCareSheetData(date, memberId);
+    await fetchCareSheetData(date, memberId.toString());
   };
 
   const getDaysInMonth = (date: Date) => {

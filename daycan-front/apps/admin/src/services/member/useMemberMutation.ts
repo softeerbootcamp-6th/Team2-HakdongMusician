@@ -7,7 +7,7 @@ import { memberKeys } from "./useMemberQuery";
  * 수급자 생성 뮤테이션
  * @author 홍규진
  */
-export const useCreateMember = () => {
+export const useCreateMemberMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -23,7 +23,7 @@ export const useCreateMember = () => {
  * 수급자 수정 뮤테이션
  * @author 홍규진
  */
-export const useUpdateMember = () => {
+export const useUpdateMemberMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -31,7 +31,7 @@ export const useUpdateMember = () => {
       id,
       data,
     }: {
-      id: string;
+      id: number;
       data: TmemberPatchRequest;
     }) => {
       return await updateMember(id, data);
@@ -48,11 +48,11 @@ export const useUpdateMember = () => {
  * 수급자 정보를 삭제하는 훅
  * @author 홍규진
  */
-export const useDeleteMember = () => {
+export const useDeleteMemberMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => await deleteMember(id),
+    mutationFn: async (id: number) => await deleteMember(id),
     onSuccess: () => {
       // 수급자 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });

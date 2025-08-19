@@ -4,7 +4,7 @@ import {
 } from "./MemberDataList.css.ts";
 import { MemberDataListHeader } from "../MemberDataListHeader";
 import { MemberDataItem } from "../MemberDataItem/MemberDataItem.tsx";
-import type { TMember } from "@/pages/member/constants/memberDummyData";
+import type { TMember } from "@/services/member/types";
 
 interface MemberDataListProps {
   members: TMember[];
@@ -17,7 +17,7 @@ export const MemberDataList = ({ members }: MemberDataListProps) => {
       {/* 데이터 리스트 */}
       <div className={itemsContainer}>
         {members.map((member, idx) => (
-          <MemberDataItem key={member.userCode} member={member} index={idx} />
+          <MemberDataItem key={member.id} member={member} index={idx} />
         ))}
       </div>
     </div>

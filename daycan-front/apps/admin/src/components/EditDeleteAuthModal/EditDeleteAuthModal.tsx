@@ -7,64 +7,93 @@ import {
   editAuthModalFormHeader,
   editAuthModalFormBody,
   editAuthModalErrorMessage,
-} from "./EditAuthModal.css";
+} from "./EditDeleteAuthModal.css";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { useReAuthMutation } from "@/services/auth/useAdminAuthMutation";
+import { showToast } from "@/utils/toastUtils";
 
 /* 
   unitId: memberId, staffId를 포괄적으로 사용하기 위한 Id
+  actionType: 'edit' | 'delete' - 수정인지 삭제인지 구분
 */
 
-interface EditAuthModalProps {
+interface EditDeleteAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEditAccessConfirm: (unitId: string) => void;
-  unitId: string;
+  onEditAccessConfirm?: (unitId: number) => void;
+  onDeleteAccessConfirm?: (unitId: number) => void;
+  onCancel?: () => void; // 취소 시 리다이렉팅을 위한 콜백
+  unitId: number;
+  actionType: "edit" | "delete";
 }
 
-export const EditAuthModal = ({
+export const EditDeleteAuthModal = ({
   isOpen,
   onClose,
   onEditAccessConfirm,
+  onDeleteAccessConfirm,
+  onCancel,
   unitId,
-}: EditAuthModalProps) => {
-  const [centerId, setCenterId] = useState("");
+  actionType,
+}: EditDeleteAuthModalProps) => {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const reAuthMutation = useReAuthMutation();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!centerId.trim() || !password.trim()) {
-      console.log("센터 아이디와 비밀번호를 모두 입력해주세요.");
+    if (!username.trim() || !password.trim()) {
       setIsError(true);
       return;
     }
 
-    setIsLoading(true);
-
     try {
       // TODO: 실제 인증 API 호출
       // const response = await authenticateUser(centerId, password);
-      if (centerId === "test" && password === "test") {
-        setIsLoading(false);
+      await reAuthMutation.mutateAsync(
+        {
+          username,
+          password,
+        },
+        {
+          onSuccess: () => {
+            showToast({
+              message: "인증이 완료되었습니다.",
+              type: "success",
+            });
+          },
+        }
+      );
+
+      // 인증 성공 후 actionType에 따라 다른 콜백 호출
+      if (actionType === "edit" && onEditAccessConfirm) {
         onEditAccessConfirm(unitId);
-      } else {
-        throw new Error(
-          "인증에 실패했습니다. 아이디와 비밀번호를 확인해주세요."
-        );
+      } else if (actionType === "delete" && onDeleteAccessConfirm) {
+        onDeleteAccessConfirm(unitId);
       }
     } catch (error) {
-      setIsLoading(false);
       setIsError(true);
     }
   };
 
   const handleClose = () => {
-    setCenterId("");
+    setUsername("");
     setPassword("");
     setIsError(false);
     onClose();
+  };
+
+  const handleCancel = () => {
+    setUsername("");
+    setPassword("");
+    setIsError(false);
+    if (onCancel) {
+      onCancel();
+    } else {
+      onClose();
+    }
   };
 
   return (
@@ -85,13 +114,14 @@ export const EditAuthModal = ({
           </div>
           <div className={editAuthModalFormBody}>
             <Input
+              type="text"
               inputSize="pcTextFieldLarge"
               placeholder="아이디"
               variant="grayLight"
-              value={centerId}
+              value={username}
               fontSize="large"
               color={COLORS.gray[500]}
-              onChange={(e) => setCenterId(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
             />
 
             <Input
@@ -115,16 +145,17 @@ export const EditAuthModal = ({
           <div className={editAuthModalButton}>
             <Button
               variant="unEmphasized"
-              onClick={handleClose}
+              onClick={handleCancel}
               size="fullWidth"
             >
               취소
             </Button>
             <Button
-              disabled={isLoading || !centerId.trim() || !password.trim()}
+              disabled={!username.trim() || !password.trim()}
               size="fullWidth"
+              type="submit"
             >
-              {isLoading ? "인증 중..." : "확인"}
+              {"확인"}
             </Button>
           </div>
         </form>

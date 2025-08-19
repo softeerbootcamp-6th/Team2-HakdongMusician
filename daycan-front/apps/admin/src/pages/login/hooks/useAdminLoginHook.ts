@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { useAdminLoginMutation } from "@/services/auth/useAdminAuthMutation";
 
 // 상태 타입 정의
 interface AdminLoginState {
@@ -95,7 +96,7 @@ const adminLoginReducer = (
 
 export const useAdminLoginHook = () => {
   const [state, dispatch] = useReducer(adminLoginReducer, initialState);
-
+  const login = useAdminLoginMutation();
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: "SET_EMAIL", payload: e.target.value });
   };
@@ -104,7 +105,7 @@ export const useAdminLoginHook = () => {
     dispatch({ type: "SET_PASSWORD", payload: e.target.value });
   };
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!state.isFilled) {
       dispatch({
@@ -114,21 +115,10 @@ export const useAdminLoginHook = () => {
       return;
     }
 
-    // 이메일 형식 검증
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(state.email)) {
-      dispatch({
-        type: "SET_ERROR_MESSAGE",
-        payload: "올바른 이메일 형식을 입력해주세요.",
-      });
-      return;
-    }
-
     dispatch({ type: "CLEAR_ERROR_MESSAGE" });
 
-    // 여기에 실제 로그인 API 호출 로직을 추가할 수 있습니다
-    console.log("센터종사자 로그인 시도:", {
-      email: state.email,
+    await login.mutateAsync({
+      username: state.email,
       password: state.password,
     });
 

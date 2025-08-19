@@ -31,6 +31,20 @@ export async function getPresignList({
   );
 }
 
+export async function getPresign(
+  extension: TPresignExtension,
+  contentType: TPresignContentType
+) {
+  return await safeRequest.post<TPresignItem>(
+    privateInstance,
+    "/admin/images/presign/single",
+    undefined,
+    {
+      params: { extension, contentType },
+    }
+  );
+}
+
 /**
  * Headers 를 배열로 받아와 이를 다시 평탄화 하는 함수
  * @param headers 평탄화 할 헤더 객체
@@ -48,7 +62,9 @@ function flattenHeaders(
     if (arr && arr.length > 0) h.set(k, arr[0]);
   });
   // Content-Type은 presign 서명 시 사용한 값과 동일해야 함
-  h.set("Content-Type", contentType);
+  if (!h.has("content-type") && !h.has("Content-Type")) {
+    h.set("Content-Type", contentType);
+  }
   return h;
 }
 
@@ -62,7 +78,7 @@ function flattenHeaders(
 export async function putToS3(
   item: TPresignItem,
   file: File
-): Promise<{ key: string; etag: string | null }> {
+): Promise<{ objectKey: string; etag: string | null }> {
   const response = await fetch(item.uploadUrl, {
     method: "PUT",
     headers: flattenHeaders(item.headers, file.type),
@@ -74,7 +90,7 @@ export async function putToS3(
     );
   }
   const etag = response.headers.get("ETag");
-  return { key: item.objectKey, etag };
+  return { objectKey: item.objectKey, etag };
 }
 
 /**
@@ -100,7 +116,6 @@ export async function uploadImages(files: File[]) {
   if (items.length !== files.length) {
     throw new Error("Presign count mismatch");
   }
-
   const results = await Promise.allSettled(
     files.map((file, i) => putToS3(items[i], file))
   );
@@ -108,7 +123,18 @@ export async function uploadImages(files: File[]) {
   // 성공만 추려서 key 리스트 반환
   const success = results
     .map((r) => (r.status === "fulfilled" ? r.value : null))
-    .filter(Boolean) as { key: string; etag: string | null }[];
+    .filter(Boolean) as { objectKey: string; etag: string | null }[];
 
   return success;
+}
+
+export async function uploadSingleImage(file: File) {
+  // ⚠️ 한 번의 presign 호출이 단일 extension/contentType 기준이므로,
+  // 서로 다른 타입이면 그룹핑해서 presign을 여러 번 호출하세요.
+  const extension = file.name.split(".").pop() as TPresignExtension;
+  const contentType = file.type as TPresignContentType;
+
+  const item = await getPresign(extension, contentType);
+
+  return await putToS3(item, file);
 }

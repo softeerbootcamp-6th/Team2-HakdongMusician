@@ -9,7 +9,7 @@ import { getMemberList, getMember } from "./index";
 export const memberKeys = {
   all: ["members"] as const,
   lists: () => [...memberKeys.all, "list"] as const,
-  detail: (id: string) => [...memberKeys.all, "detail", id] as const,
+  detail: (id: number) => [...memberKeys.all, "detail", id] as const,
 };
 
 /**
@@ -17,7 +17,7 @@ export const memberKeys = {
  * List 의 경우엔 추후에 Suspense 쿼리로 변환 후 사용할 예정
  * @author 홍규진
  */
-export const useGetMemberList = () => {
+export const useGetMemberListQuery = () => {
   return useQuery({
     queryKey: memberKeys.lists(),
     queryFn: getMemberList,
@@ -29,7 +29,7 @@ export const useGetMemberList = () => {
  * 수급자 상세 조회 쿼리
  * @author 홍규진
  */
-export const useGetMember = (memberId: string) => {
+export const useGetMemberQuery = (memberId: number) => {
   return useQuery({
     queryKey: memberKeys.detail(memberId),
     queryFn: () => getMember(memberId),

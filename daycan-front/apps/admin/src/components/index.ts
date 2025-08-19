@@ -10,7 +10,7 @@ export * from "./CareSheetDataView";
 export * from "./Filter";
 export * from "./ListHeaderLayout";
 export * from "./ListItemLayout";
-export * from "./EditAuthModal";
+export * from "./EditDeleteAuthModal";
 export * from "./DeleteConfirmModal";
 export * from "./GenderSelector";
 export * from "./CareLevelRoleDropDownSelector";
