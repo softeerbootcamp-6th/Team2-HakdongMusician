@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { TMember } from "@/pages/member/constants/memberDummyData";
+import type { TMember } from "@/services/member/types";
 
 /*
  * useMemberFilter 커스텀 훅은

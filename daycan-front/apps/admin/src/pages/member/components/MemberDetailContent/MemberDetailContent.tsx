@@ -1,7 +1,6 @@
 import { Heading } from "@daycan/ui";
 import { DetailCardLayout } from "../DetailCardLayout/DetailCardLayout";
-import memberImage from "@/assets/images/elder.png";
-import type { TMember } from "@/pages/member/constants/memberDummyData";
+import type { TMember } from "@/services/member/types";
 import {
   memberDetailContainer,
   memberDetailContentContainer,
@@ -16,7 +15,10 @@ interface MemberDetailContentProps {
 
 export const MemberDetailContent = ({ member }: MemberDetailContentProps) => {
   return (
-    <DetailCardLayout dataCategory="수급자 정보" dataAvatarUrl={memberImage}>
+    <DetailCardLayout
+      dataCategory="수급자 정보"
+      dataAvatarUrl={member.avatarUrl || ""}
+    >
       <div className={memberDetailContainer}>
         <Heading type="xsmall" weight={500}>
           {member.name}
@@ -33,7 +35,7 @@ export const MemberDetailContent = ({ member }: MemberDetailContentProps) => {
             />
             <MemberDetailItemRow
               label="장기요양등급"
-              value={member.careLevel.toString()}
+              value={member.careLevel}
             />
             <MemberDetailItemRow
               label="장기요양인정번호"

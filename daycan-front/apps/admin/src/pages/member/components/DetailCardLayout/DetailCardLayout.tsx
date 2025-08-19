@@ -19,7 +19,7 @@ export const DetailCardLayout = ({
       {dataCategory}
       <div className={detailCardLayoutContent}>
         <img
-          src={dataAvatarUrl}
+          src={dataAvatarUrl || "/src/assets/images/guardian.png"}
           alt="dataAvatar"
           className={detailCardLayoutAvatar}
         />

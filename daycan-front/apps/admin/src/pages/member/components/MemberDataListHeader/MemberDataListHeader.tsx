@@ -9,7 +9,7 @@ export const MemberDataListHeader = () => {
     { key: "birthDate", label: "생년월일" },
     { key: "gender", label: "성별" },
     { key: "careLevel", label: "장기요양등급" },
-    { key: "careNumber", label: "장기요양인정번호" },
+    { key: "username", label: "장기요양인정번호" },
     { key: "guardianPhone", label: "보호자 연락처" },
   ];
 

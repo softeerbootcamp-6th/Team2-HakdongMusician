@@ -3,7 +3,7 @@ import { memberDetailItemRowContainer } from "./MemberDetailItemRow.css";
 
 interface MemberDetailItemRowProps {
   label: string;
-  value: string;
+  value?: string | number;
 }
 
 export const MemberDetailItemRow = ({
@@ -27,7 +27,7 @@ export const MemberDetailItemRow = ({
         weight={500}
         color={COLORS.gray[800]}
         style={{
-          width: "90px",
+          width: "100px",
         }}
       >
         {value}
