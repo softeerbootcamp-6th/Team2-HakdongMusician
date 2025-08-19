@@ -54,6 +54,9 @@ public class S3Service implements StorageService{
   }
 
   public String presignGet(String objectRef) {
+    if (objectRef == null || objectRef.isBlank()) {
+        return null;
+    }
     String key = toKey(objectRef);
 
     GetObjectRequest get = GetObjectRequest.builder()
@@ -94,9 +97,6 @@ public class S3Service implements StorageService{
   }
 
   private String toKey(String ref) {
-    if (ref == null || ref.isBlank()) {
-      throw new ApplicationException(CommonErrorStatus.INVALID_URL);
-    }
     if (ref.startsWith("s3://")) {
       String after = ref.substring("s3://".length());
       int slash = after.indexOf('/');
