@@ -105,6 +105,7 @@ public class CareReport extends BaseTimeEntity {
   /* 생성 통제 */
   private CareReport(Document doc) {
     linkDocument(doc); // 아래 불변식 통과해야 연결됨
+    this.isOpen = false;
   }
 
   public CareReport openThis(){

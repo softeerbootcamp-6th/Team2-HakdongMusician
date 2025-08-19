@@ -21,6 +21,7 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/care-sheet")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "\uD83D\uDCDC 기록지 관리", description = "관리자용 기록지 관련 API")
 public class CenterCareSheetController {
 
@@ -122,6 +124,7 @@ public class CenterCareSheetController {
       @AuthenticatedUser CenterDetails centerDetails,
       @Valid @RequestBody CareSheetRequest request
   ) {
+    log.info("CareSheetRequest: {}", request.toString());
     Long id = centerDocumentFacade.writeCareSheet(centerDetails.getCenter(), request);
     return ResponseWrapper.onSuccess(id);
   }

@@ -9,7 +9,6 @@ import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.common.exceptions.ApplicationException;
-import com.daycan.common.exceptions.DocumentNonCreatedException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entry.document.report.ReportStatus;
 import com.daycan.domain.entry.document.sheet.SheetStatus;
@@ -48,16 +47,9 @@ public class CenterDocumentFacade {
 
   @Transactional
   public Long writeCareSheet(Center center, CareSheetRequest req) {
-    Long docId;
-    try {
-      docId = careSheetWriteService.writeSheet(req);
-    } catch (DocumentNonCreatedException e) {
-      Member member = memberService.requireActiveMember(req.memberId());
-      documentService.findOrCreateDocument(member, req.date());
-      docId = careSheetWriteService.writeSheet(req);
-    }
-
-    return docId;
+    Member member = memberService.requireActiveMember(req.memberId());
+    documentService.findOrCreateDocument(member, req.date());
+    return careSheetWriteService.writeSheet(req);
   }
 
   @Transactional

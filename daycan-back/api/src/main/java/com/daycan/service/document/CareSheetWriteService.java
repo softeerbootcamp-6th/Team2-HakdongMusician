@@ -19,16 +19,19 @@ import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.exceptions.DocumentNonCreatedException;
 import com.daycan.repository.jpa.CareReportRepository;
 import com.daycan.repository.jpa.CareSheetRepository;
+import com.daycan.repository.jpa.DocumentRepository;
 import com.daycan.repository.jpa.VitalRepository;
 import com.daycan.repository.query.DocumentQueryRepository;
 import com.daycan.util.resolver.SheetMapper;
 import com.daycan.util.prefiller.CareReportPrefiller;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -40,8 +43,9 @@ public class CareSheetWriteService {
   private final DocumentQueryRepository documentQueryRepository;
   private final CareReportRepository careReportRepository;
   private final VitalRepository vitalRepository;
+  private final DocumentRepository documentRepository;
 
-  @Transactional
+  @Transactional(propagation = Propagation.MANDATORY)
   protected Long writeSheet(CareSheetRequest req) {
     CareSheetInitVO init = fetchInitOrThrow(req);
     validateStaff(init, req);
@@ -55,7 +59,6 @@ public class CareSheetWriteService {
     CareSheet sheet = isNew
         ? createSheet(doc, req, staff, programs)
         : updateSheet(doc, req, programs);
-
     Vital vital = upsertVital(doc, req.healthCare(), req.physical(), init.prevAgg());
 
     doc.markSheetDone();
@@ -67,6 +70,7 @@ public class CareSheetWriteService {
 
     logSheet(sheet, req, isNew);
 
+    doc = documentRepository.save(doc);
     return doc.getId();
   }
 
