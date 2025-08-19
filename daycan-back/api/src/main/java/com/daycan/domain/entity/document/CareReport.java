@@ -131,6 +131,16 @@ public class CareReport extends BaseTimeEntity {
     return report;
   }
 
+  public CareReport updatePrefill(CareReportInit init) {
+    this.updateMealSection(null, null, null, init.mealScore(), init.mealFooterComment());
+    this.updateVitalSection(init.vitalScore(), init.healthFooterComment());
+    this.initializePhysicalPrograms(
+        init.physicalProgramNames(), init.physicalScore(), init.physicalFooterComment());
+    this.initializeCognitivePrograms(
+        init.cognitiveProgramNames(), init.cognitiveScore(), init.cognitiveFooterComment());
+    return this;
+  }
+
   public Integer getTotalScore() {
     return mealScore + vitalScore + cognitiveScore + physicalScore;
   }

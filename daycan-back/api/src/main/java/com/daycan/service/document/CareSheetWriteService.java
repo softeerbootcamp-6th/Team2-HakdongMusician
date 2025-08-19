@@ -59,7 +59,6 @@ public class CareSheetWriteService {
     CareSheet sheet = isNew
         ? createSheet(doc, req, staff, programs)
         : updateSheet(doc, req, programs);
-    log.info("flag 1");
     Vital vital = upsertVital(doc, req.healthCare(), req.physical(), init.prevAgg());
 
     doc.markSheetDone();
@@ -141,17 +140,23 @@ public class CareSheetWriteService {
         });
   }
 
-  private CareReport createReport(CareSheet sheet,
+  private CareReport createReport(
+      CareSheet sheet,
       Vital vital,
       Member member,
       VitalAggregate baseline,
-      boolean hasFollowingVital) {
-    Document doc = (sheet != null) ? sheet.getDocument() : vital.getDocument();
+      boolean hasFollowingVital
+  ) {
+    final Document doc = (sheet != null) ? sheet.getDocument() : vital.getDocument();
+    final CareReportInit init = CareReportPrefiller.computeInit(sheet, vital, member);
 
-    CareReportInit init = CareReportPrefiller.computeInit(sheet, vital, member);
-    CareReport report = CareReport.prefill(doc, init);
+    CareReport report = careReportRepository.findById(doc.getId())
+        .map(existing -> existing.updatePrefill(init))
+        .orElseGet(() -> {
+          return CareReport.prefill(doc, init);
+        });
 
-    Integer newScore = report.getTotalScore();
+    final Integer newScore = report.getTotalScore();
     if (!Objects.equals(vital.getHealthScore(), newScore)) {
       vital.setHealthScore(newScore);
 
@@ -164,6 +169,7 @@ public class CareSheetWriteService {
 
     return careReportRepository.save(report);
   }
+
 
   private void recomputeChainFromInclusive(Long memberId, LocalDate fromDate) {
     Vital prev = vitalRepository
