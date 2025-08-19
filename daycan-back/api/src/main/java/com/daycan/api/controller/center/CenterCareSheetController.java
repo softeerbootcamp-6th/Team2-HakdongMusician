@@ -126,7 +126,6 @@ public class CenterCareSheetController {
       @AuthenticatedUser CenterDetails centerDetails,
       @Valid @RequestBody CareSheetRequest request
   ) {
-    log.info("CareSheetRequest: {}", request.toString());
     Long id = centerDocumentFacade.writeCareSheet(centerDetails.getCenter(), request);
     return ResponseWrapper.onSuccess(id);
   }

@@ -29,6 +29,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -252,20 +253,24 @@ public class CareSheet extends BaseTimeEntity {
       String healthComment,
       String physicalComment
   ) {
-    this.document = document;   // @MapsId라 flush 때 id가 doc.id로 들어감
+    this.document = document;
     this.writer = writer;
-    this.arrivalTime = arrivalTime;
-    this.endTime = endTime;
-    this.vehicleNumber = vehicleNumber;
-    this.signatureUrl = signatureUrl;
+    this.arrivalTime = Objects.requireNonNullElse(arrivalTime, LocalTime.MIN);
+    this.endTime = Objects.requireNonNullElse(endTime, LocalTime.MIN);
+    this.vehicleNumber = Objects.requireNonNullElse(vehicleNumber, "");
+    this.signatureUrl = Objects.requireNonNullElse(signatureUrl, "");
+
     this.washCare = washCare;
     this.mobilityCare = mobilityCare;
     this.bathingCare = bathingCare;
-    this.bathingDurationMinutes = bathingDurationMinutes;
-    this.bathingType = bathingType;
-    this.breakfast = breakfast;
-    this.lunch = lunch;
-    this.dinner = dinner;
+
+    this.bathingDurationMinutes = Objects.requireNonNullElse(bathingDurationMinutes, "");
+    this.bathingType = Objects.requireNonNullElse(bathingType, "");
+
+    this.breakfast = Objects.requireNonNullElse(breakfast, new Meal());
+    this.lunch = Objects.requireNonNullElse(lunch, new Meal());
+    this.dinner = Objects.requireNonNullElse(dinner, new Meal());
+
     this.cognitiveSupport = cognitiveSupport;
     this.communicationSupport = communicationSupport;
     this.healthCare = healthCare;
@@ -275,10 +280,10 @@ public class CareSheet extends BaseTimeEntity {
     this.cognitiveProgram = cognitiveProgram;
     this.cognitiveInitiativeProgram = cognitiveInitiativeProgram;
     this.physicalTherapy = physicalTherapy;
-    this.functionalComment = functionalComment;
-    this.cognitiveComment = cognitiveComment;
-    this.healthComment = healthComment;
-    this.physicalComment = physicalComment;
+    this.functionalComment = Objects.requireNonNullElse(functionalComment, "");
+    this.cognitiveComment = Objects.requireNonNullElse(cognitiveComment, "");
+    this.healthComment = Objects.requireNonNullElse(healthComment, "");
+    this.physicalComment = Objects.requireNonNullElse(physicalComment, "");
   }
 
 

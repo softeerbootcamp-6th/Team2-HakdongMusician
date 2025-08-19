@@ -59,6 +59,7 @@ public class CareSheetWriteService {
     CareSheet sheet = isNew
         ? createSheet(doc, req, staff, programs)
         : updateSheet(doc, req, programs);
+    log.info("flag 1");
     Vital vital = upsertVital(doc, req.healthCare(), req.physical(), init.prevAgg());
 
     doc.markSheetDone();
