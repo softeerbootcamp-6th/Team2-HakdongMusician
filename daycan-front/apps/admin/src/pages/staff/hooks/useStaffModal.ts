@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
+import type { TStaff } from "@/services/staff/types";
+import { useStaffDeleteMutation } from "@/services/staff/useStaffMutation";
 
 /*
  * useStaffModal 커스텀 훅은
@@ -8,52 +8,43 @@ import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
  * 수정과 삭제버튼을 눌렀을때 모달 상태와 핸들러를 관리하는 훅입니다.
  * @author 소보길
  */
-export const useStaffModal = (staff: StaffListResponse) => {
-  const navigate = useNavigate();
-
+export const useStaffModal = (staff: TStaff) => {
   //모달 상태
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+  const [isDeleteAuthModalOpen, setIsDeleteAuthModalOpen] = useState(false);
+  const { mutate: deleteStaff } = useStaffDeleteMutation();
   //모달 핸들러
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
-  //모달 핸들러
-  const handleOpenDeleteModal = () => {
+
+  const handleOpenDeleteAuthModal = () => {
+    setIsDeleteAuthModalOpen(true);
+  };
+
+  const handleCloseDeleteAuthModal = () => {
+    setIsDeleteAuthModalOpen(false);
+  };
+
+  const handleDeleteAccessConfirm = () => {
+    setIsDeleteAuthModalOpen(false);
     setIsDeleteModalOpen(true);
   };
-  //모달 핸들러
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-  };
-  //모달 핸들러
-  const handleOpenEditModal = () => {
-    setIsEditModalOpen(true);
-  };
-  //모달 핸들러
+
   const handleDeleteConfirm = () => {
     setIsDeleteModalOpen(false);
 
     //TODO: 삭제 로직 추가
-    console.log("delete staff", staff.staffId);
-  };
-  //모달 핸들러
-  const handleEditAccessConfirm = () => {
-    setIsEditModalOpen(false);
-
-    //TODO: 수정 로직 추가
-    navigate(`/staff/edit/${staff.staffId}`);
+    deleteStaff(staff.staffId);
   };
 
   return {
     isDeleteModalOpen,
-    isEditModalOpen,
+    isDeleteAuthModalOpen,
     handleCloseDeleteModal,
-    handleOpenDeleteModal,
-    handleCloseEditModal,
-    handleOpenEditModal,
+    handleOpenDeleteAuthModal,
+    handleCloseDeleteAuthModal,
     handleDeleteConfirm,
-    handleEditAccessConfirm,
+    handleDeleteAccessConfirm,
   };
 };

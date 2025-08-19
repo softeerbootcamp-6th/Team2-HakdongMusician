@@ -9,12 +9,12 @@ import {
 } from "@/utils";
 import { useState } from "react";
 import { StaffDetailContent } from "../StaffDetailContent";
-import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
 import { ListItemLayout } from "@/components";
 import { STAFF_GRID_TEMPLATE } from "../../constants/staffGrid";
+import type { TStaff } from "@/services/staff/types";
 
 interface StaffListItemProps {
-  staff: StaffListResponse;
+  staff: TStaff;
   index: number;
 }
 export const StaffListItem = ({ staff, index }: StaffListItemProps) => {
@@ -54,7 +54,13 @@ export const StaffListItem = ({ staff, index }: StaffListItemProps) => {
     },
     {
       key: "profile",
-      content: <img src={profile} alt="avatar" className={profileImage} />,
+      content: (
+        <img
+          src={staff.avatarUrl || profile}
+          alt="avatar"
+          className={profileImage}
+        />
+      ),
     },
 
     {

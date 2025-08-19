@@ -1,10 +1,10 @@
 import { StaffListHeader } from "../StaffListHeader";
 import { StaffListItem } from "../StaffListItem";
 import { staffListContainer, itemsContainer } from "./StaffList.css";
-import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
+import type { TStaff } from "@/services/staff/types";
 
 interface StaffListProps {
-  staffs: StaffListResponse[];
+  staffs: TStaff[];
 }
 
 export const StaffList = ({ staffs }: StaffListProps) => {

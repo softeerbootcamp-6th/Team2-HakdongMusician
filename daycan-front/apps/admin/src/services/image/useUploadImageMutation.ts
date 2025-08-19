@@ -21,7 +21,7 @@ export const useUploadImageMutation = () => {
 export const useUploadImageSingleMutation = () => {
   return useMutation({
     mutationFn: async (file: File) => {
-      return await uploadSingleImage(file);
+      await uploadSingleImage(file);
     },
   });
 };

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
+import type { TStaff } from "@/services/staff/types";
 
 /*
  * useImageController 커스텀 훅은
@@ -12,9 +12,8 @@ import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
  */
 
 export const useImageController = (
-  setStaffFormData: (
-    prev: StaffListResponse | ((prev: StaffListResponse) => StaffListResponse)
-  ) => void
+  setStaffFormData: (prev: TStaff | ((prev: TStaff) => TStaff)) => void,
+  setStaffAvatarFile: (file: File | null) => void
 ) => {
   /*
    * 이미지 상태관리 커스텀 훅을 안만들었음
@@ -52,6 +51,7 @@ export const useImageController = (
       setSelectedProfileImage(true);
 
       // formData도 함께 업데이트
+      setStaffAvatarFile(file);
       setStaffFormData((prev) => ({
         ...prev,
         avatarUrl: imageUrl,
@@ -62,10 +62,7 @@ export const useImageController = (
       setSelectedProfileImage(false);
 
       // formData에서도 이미지 URL 제거
-      setStaffFormData((prev) => ({
-        ...prev,
-        avatarUrl: "",
-      }));
+      setStaffAvatarFile(null);
     }
   }, []);
   return {

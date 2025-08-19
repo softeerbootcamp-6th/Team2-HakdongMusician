@@ -11,6 +11,7 @@ import {
   staffFormFieldInput,
 } from "./StaffFormFields.css";
 import { STAFF_ROLE_OPTIONS } from "@/pages/staff-register/constants/staffMap";
+import type { TStaffRole } from "@/services/staff/types";
 
 interface StaffFormField {
   label: string;
@@ -26,7 +27,7 @@ interface StaffFormField {
 interface StaffFormFieldsProps {
   fields: StaffFormField[];
   onGenderSelect?: (gender: "MALE" | "FEMALE") => void;
-  onStaffRoleSelect?: (role: string) => void;
+  onStaffRoleSelect?: (role: TStaffRole) => void;
   errorMessages: Record<string, string>;
   showErrorMessages: boolean;
 }
@@ -45,8 +46,8 @@ export const StaffFormFields = ({
   };
 
   const handleStaffRoleSelect = (role: string | number) => {
-    if (onStaffRoleSelect && typeof role === "string") {
-      onStaffRoleSelect(role);
+    if (onStaffRoleSelect) {
+      onStaffRoleSelect(role as TStaffRole);
     }
   };
 
@@ -69,7 +70,7 @@ export const StaffFormFields = ({
             ) : field.name === "staffRole" ? (
               <CareLevelRoleDropDownSelector
                 options={STAFF_ROLE_OPTIONS}
-                value={field.value}
+                value={field.value as string}
                 onChange={handleStaffRoleSelect}
                 placeholder="직무를 선택해 주세요"
                 hideLabel={true}
