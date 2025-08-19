@@ -10,6 +10,9 @@ import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useStep5 } from "./useStep5";
 import { useFunnel } from "@daycan/hooks";
 import { useUploadImageSingleMutation } from "@/services/image/useUploadImageMutation";
+import { convertFunnelStateToDiagnosisFunnelData } from "../../utils/parsingData";
+import { diagnosisFunnelDataAtom } from "../../atoms/diagnosisAtom";
+import { useSetAtom } from "jotai";
 
 export const Step5 = () => {
   const { toNext } = useFunnel();
@@ -28,6 +31,7 @@ export const Step5 = () => {
   } = useStep5();
   const { mutate } = useUploadImageSingleMutation();
   const { updateState, funnelState } = useFunnel();
+  const setDiagnosisData = useSetAtom(diagnosisFunnelDataAtom);
 
   const handleSignatureUpload = async () => {
     // PNG 데이터를 API로 전송하는 로직 예시
@@ -38,7 +42,11 @@ export const Step5 = () => {
           updateState({
             signatureUrl: result.objectKey,
           });
-          console.log(funnelState);
+
+          const diagnosisData =
+            convertFunnelStateToDiagnosisFunnelData(funnelState);
+
+          setDiagnosisData(diagnosisData);
         },
       });
     }
