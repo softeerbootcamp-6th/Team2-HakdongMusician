@@ -27,9 +27,8 @@ export const convertFunnelStateToHomeFunnelData = (
   funnelState: FunnelState
 ): HomeFunnelData => {
   const step0Data = funnelState.STEP_0;
-  const selectedStaff: TStaff = step0Data?.selectedStaff;
 
   return {
-    writerId: selectedStaff?.staffId,
+    writerId: step0Data?.writerId,
   };
 };
