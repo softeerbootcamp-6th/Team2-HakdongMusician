@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -56,18 +57,21 @@ public class CenterDocumentFacade {
   public AttendanceResultResponse markAttendance(
       Center center, List<Long> memberIds, LocalDate date, AttendanceAction action) {
     int totalCount = memberIds.size();
-    List<Member> members = new ArrayList<>();
-    memberIds.forEach(memberId -> {
-      Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
-      members.add(member);
-    });
-
-    int success = documentService.markAttendanceList(
-        members, date, action);
-
-    return new AttendanceResultResponse(
-        success, totalCount - success
+    List<Member> members = mapPresent(
+        memberIds,
+        id -> {
+          try {
+            return memberService.getByMemberIdAndCenter(id, center.getId());
+          } catch (ApplicationException e) {
+            log.debug("skip memberId={} ({})", id, e.getStatus());
+            return Optional.empty();
+          }
+        }
     );
+
+    int success = documentService.markAttendanceList(members, date, action);
+    return new AttendanceResultResponse(success, memberIds.size() - success);
+
   }
 
   @Transactional(readOnly = true)
@@ -82,7 +86,7 @@ public class CenterDocumentFacade {
   @Transactional(readOnly = true)
   public CareSheetResponse getCareSheetByMemberAndDate(
       Center center, Long memberId, LocalDate localDate) {
-    Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
+    Member member = memberService.requireActiveMember(memberId, center.getId());
     CareSheetView sheet = careSheetQueryService.findCareSheetViewByMemberAndDate(member.getId(),
         localDate);
     return sheet.toResponse();
@@ -100,8 +104,8 @@ public class CenterDocumentFacade {
         sheetStatuses,
         DocumentStatus::allSheetStatuses,
         DocumentStatus::from,
-        mv -> mv.toSheetResponse(getPresignedUrl(
-            mv.member().getAvatarUrl()))
+        mv -> memberService.getByMemberIdAndCenter(mv.member().getId(), center.getId())
+            .map(m -> mv.toSheetResponse(getPresignedUrl(m.getAvatarUrl())))
     );
 
   }
@@ -118,14 +122,13 @@ public class CenterDocumentFacade {
         reportStatuses,
         DocumentStatus::allReportStatuses,
         DocumentStatus::from,
-        mv -> mv.toReportResponse(getPresignedUrl(
-            mv.member().getAvatarUrl()))
-    );
+        mv -> memberService.getByMemberIdAndCenter(mv.member().getId(), center.getId())
+            .map(m -> mv.toReportResponse(getPresignedUrl(m.getAvatarUrl()))));
   }
 
   @Transactional(readOnly = true)
   public FullReportDto getCareReportByMemberIdAndDate(Center center, Long memberId, LocalDate date) {
-    Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
+    Member member = memberService.requireActiveMember(memberId, center.getId());
     return careReportService.getReport(member.getId(), date).fullReportDto();
   }
 
@@ -157,17 +160,16 @@ public class CenterDocumentFacade {
       List<S> statuses,
       Supplier<EnumSet<DocumentStatus>> allSupplier,
       Function<S, DocumentStatus> statusMapper,
-      Function<DocumentMetaView, R> responseMapper
+      Function<DocumentMetaView, Optional<R>> responseMapper
   ) {
     Set<DocumentStatus> docStatuses = toDocumentStatuses(statuses, allSupplier, statusMapper);
 
-    return careSheetQueryService.findDocumentMetaViewByDate(
-            center, date, writerId, List.copyOf(docStatuses), nameLike
-        )
-        .stream()
-        .map(responseMapper)
-        .toList();
+    List<DocumentMetaView> rows = careSheetQueryService.findDocumentMetaViewByDate(
+        center, date, writerId, List.copyOf(docStatuses), nameLike
+    );
+    return mapPresent(rows, responseMapper);
   }
+
 
 
   private <T> Set<DocumentStatus> toDocumentStatuses(
@@ -191,5 +193,9 @@ public class CenterDocumentFacade {
   }
   private String getPresignedUrl(String key) {
     return storageService.presignGet(key);
+  }
+
+  private <T, R> List<R> mapPresent(List<T> src, Function<T, Optional<R>> f) {
+    return src.stream().map(f).flatMap(Optional::stream).toList();
   }
 }

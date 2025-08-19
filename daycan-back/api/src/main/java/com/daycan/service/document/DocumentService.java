@@ -93,7 +93,7 @@ public class DocumentService {
   public List<DocumentStatusResponse> getDocumentStatusListByMemberAndMonth(
       Center center, Long memberId, YearMonth month) {
 
-    Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
+    Member member = memberService.requireActiveMember(memberId, center.getId());
 
     LocalDate start = month.atDay(1);
     LocalDate end = month.atEndOfMonth();
