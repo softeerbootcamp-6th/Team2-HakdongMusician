@@ -81,7 +81,7 @@ public class DocumentService {
           incompleteReportStatuses, date, centerId);
 
       return new DocumentCountResponse(
-          (int)todaySheet, (int)todayReport
+          (int) todaySheet, (int) todayReport
       );
     } catch (Exception e) {
       log.error("문서 카운트 조회 중 오류 발생", e);
@@ -127,8 +127,8 @@ public class DocumentService {
     return !document.getCenter().equals(center);
   }
 
-  protected void findOrCreateDocument(Member member, LocalDate date) {
-    documentRepository.findByMemberIdAndDate(member.getId(), date)
+  protected Document findOrCreateDocument(Member member, LocalDate date) {
+    return documentRepository.findByMemberIdAndDate(member.getId(), date)
         .orElseGet(() -> createDocument(member, date));
   }
 
