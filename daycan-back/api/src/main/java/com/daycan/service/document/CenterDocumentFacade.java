@@ -108,8 +108,10 @@ public class CenterDocumentFacade {
         sheetStatuses,
         DocumentStatus::allSheetStatuses,
         DocumentStatus::from,
-        DocumentMetaView::toSheetResponse
+        mv -> mv.toSheetResponse(getPresignedUrl(
+            mv.member().getAvatarUrl()))
     );
+
   }
 
   @Transactional(readOnly = true)
@@ -124,7 +126,8 @@ public class CenterDocumentFacade {
         reportStatuses,
         DocumentStatus::allReportStatuses,
         DocumentStatus::from,
-        DocumentMetaView::toReportResponse
+        mv -> mv.toReportResponse(getPresignedUrl(
+            mv.member().getAvatarUrl()))
     );
   }
 
@@ -170,7 +173,6 @@ public class CenterDocumentFacade {
             center, date, writerId, List.copyOf(docStatuses), nameLike
         )
         .stream()
-        .map(v -> v.withAvatarUrl(getPresignedUrl(v.avatarUrl())))
         .map(responseMapper)
         .toList();
   }

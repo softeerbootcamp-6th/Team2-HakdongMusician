@@ -63,6 +63,19 @@ public class GlobalExceptionHandler {
     return buildErrorResponse(CommonErrorStatus.METHOD_ARGUMENT_NOT_VALID, errors);
   }
 
+  // 404: 존재하지 않는 URL
+  @ExceptionHandler(org.springframework.web.servlet.NoHandlerFoundException.class)
+  public ResponseEntity<ResponseWrapper<Object>> handleNoHandler(org.springframework.web.servlet.NoHandlerFoundException ex) {
+    // ex.getRequestURL() 같은 추가정보 내려도 됨
+    return buildErrorResponse(CommonErrorStatus.NOT_FOUND, ex.getRequestURL());
+  }
+
+  // 405: 메서드 불일치
+  @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+  public ResponseEntity<ResponseWrapper<Object>> handleMethodNotSupported(org.springframework.web.HttpRequestMethodNotSupportedException ex) {
+    return buildErrorResponse(CommonErrorStatus.METHOD_NOT_ALLOWED, ex.getMethod());
+  }
+
   /**
    * 그 외 처리하지 못한 예외 (서버 내부 오류)
    */

@@ -10,20 +10,21 @@ import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.entry.member.GuardianMetaEntry;
 import com.daycan.domain.entry.member.MemberMetaEntry;
 import com.daycan.domain.enums.DocumentStatus;
+import com.querydsl.core.annotations.QueryProjection;
 import io.micrometer.common.lang.Nullable;
 
 
 public record DocumentMetaView(
     Document document,
     Member member,
-    @Nullable Staff writer,
-    String avatarUrl
+    @Nullable Staff writer
 ) {
-  public DocumentMetaView withAvatarUrl(String newUrl) {
-    return new DocumentMetaView(document, member, writer, newUrl);
+  @QueryProjection
+  public DocumentMetaView{
   }
-
-  public CareSheetMetaResponse toSheetResponse() {
+  public CareSheetMetaResponse toSheetResponse(
+      @Nullable String avatarUrl
+  ) {
     Long careSheetId = document.getCareSheet() != null
         ? document.getCareSheet().getId()
         : null;
@@ -54,7 +55,9 @@ public record DocumentMetaView(
     );
   }
 
-  public CareReportMetaResponse toReportResponse() {
+  public CareReportMetaResponse toReportResponse(
+      @Nullable String avatarUrl
+  ) {
     MemberMetaEntry memberMeta = new MemberMetaEntry(
         member().getId(),
         member.getUsername(),
