@@ -3,8 +3,11 @@ import {
   DIAGNOSIS_CONSTANTS,
   MEAL_TYPE_CODE_TO_LABEL,
   MEAL_AMOUNT_CODE_TO_LABEL,
+  MEAL_TYPE_LABEL_TO_CODE,
+  MEAL_AMOUNT_LABEL_TO_CODE,
 } from "../constants/diagnosis";
 import type { DiagnosisFunnelData } from "../types/diagnosisType";
+import type { Amount, MealType } from "@/services/careSheet/types";
 
 export interface DiagnosisSummaryItem {
   label: string;
@@ -157,7 +160,7 @@ export const convertFunnelStateToDiagnosisFunnelData = (
   const s1 = funnelState.STEP_1 || {};
   const s2 = funnelState.STEP_2 || {};
   const s3 = funnelState.STEP_3 || {};
-
+  const s5 = funnelState.STEP_5 || {};
   return {
     physical: {
       assistWashing: !!s0.isWashHelperChecked,
@@ -168,8 +171,12 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       breakfast: {
         provided: !!s0.isBreakfastChecked,
         entry: {
-          mealType: (s0.breakfastType as any) || "REGULAR",
-          amount: (s0.breakfastAmount as any) || "FULL",
+          mealType: s0.isBreakfastChecked
+            ? (MEAL_TYPE_LABEL_TO_CODE[s0.breakfastType] as MealType)
+            : null,
+          amount: s0.isBreakfastChecked
+            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.breakfastAmount] as Amount)
+            : null,
         },
         validProvidedEntry: !!(
           s0.isBreakfastChecked &&
@@ -180,8 +187,12 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       lunch: {
         provided: !!s0.isLunchChecked,
         entry: {
-          mealType: (s0.lunchType as any) || "REGULAR",
-          amount: (s0.lunchAmount as any) || "FULL",
+          mealType: s0.isLunchChecked
+            ? (MEAL_TYPE_LABEL_TO_CODE[s0.lunchType] as MealType)
+            : null,
+          amount: s0.isLunchChecked
+            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.lunchAmount] as Amount)
+            : null,
         },
         validProvidedEntry: !!(
           s0.isLunchChecked &&
@@ -192,8 +203,12 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       dinner: {
         provided: !!s0.isDinnerChecked,
         entry: {
-          mealType: (s0.dinnerType as any) || "REGULAR",
-          amount: (s0.dinnerAmount as any) || "FULL",
+          mealType: s0.isDinnerChecked
+            ? (MEAL_TYPE_LABEL_TO_CODE[s0.dinnerType] as MealType)
+            : null,
+          amount: s0.isDinnerChecked
+            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.dinnerAmount] as Amount)
+            : null,
         },
         validProvidedEntry: !!(
           s0.isDinnerChecked &&
@@ -218,7 +233,9 @@ export const convertFunnelStateToDiagnosisFunnelData = (
         systolic: typeof s2.systolic === "number" ? s2.systolic : 0,
         diastolic: typeof s2.diastolic === "number" ? s2.diastolic : 0,
       },
-      temperature: typeof s2.temperature === "number" ? s2.temperature : 0,
+      temperature: {
+        temperature: typeof s2.temperature === "number" ? s2.temperature : 0,
+      },
       comment: s2.healthManageSpecialNote || "",
     },
     recoveryProgram: {
@@ -229,5 +246,6 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       programEntries: (s3.programEntries as any[]) || [],
       comment: s3.trainingSpecialNote || "",
     },
+    signatureUrl: s5.signatureUrl || "",
   };
 };
