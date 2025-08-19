@@ -5,6 +5,9 @@ export const reportListContainer = style({
   padding: "0 15px",
   marginTop: "10px",
   borderRadius: "10px",
+  height: "200px",
+  overflowY: "auto",
+
   backgroundColor: COLORS.white,
 });
 
