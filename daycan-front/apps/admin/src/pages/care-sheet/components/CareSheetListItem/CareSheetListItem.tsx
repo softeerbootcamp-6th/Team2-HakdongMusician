@@ -2,10 +2,10 @@ import { Body, COLORS, Icon, type IconProps } from "@daycan/ui";
 import { ListItemLayout } from "@/components";
 import profileImg from "@/assets/images/profile.png";
 import { getGenderText, getStatusInfo } from "../../utils/parser";
-import type { CareSheetListItemType } from "../../constants/dummy";
+import type { TCareSheetListItem } from "@/services/careSheet/types";
 
 interface CareSheetListItemProps {
-  careSheet: CareSheetListItemType;
+  careSheet: TCareSheetListItem;
   index: number;
   isChecked: boolean;
   onCheckChange: (checked: boolean) => void;
