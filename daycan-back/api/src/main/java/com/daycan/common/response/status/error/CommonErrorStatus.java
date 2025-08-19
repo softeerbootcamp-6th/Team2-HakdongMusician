@@ -21,6 +21,9 @@ public enum CommonErrorStatus implements Status {
   // 404
   NOT_FOUND(HttpStatus.NOT_FOUND, 40403, "찾지 못했습니다"),
 
+  // 405
+  METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, 40500, "지원하지 않는 HTTP 메서드입니다."),
+
   // 409
   CONFLICT(HttpStatus.CONFLICT, 40900, "요청이 충돌했습니다. 중복된 데이터가 존재합니다."),
 

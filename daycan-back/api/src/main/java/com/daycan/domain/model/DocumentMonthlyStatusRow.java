@@ -5,6 +5,7 @@ import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
 import com.daycan.domain.entry.document.report.ReportStatus;
 import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.enums.DocumentStatus;
+import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDate;
 
 public record DocumentMonthlyStatusRow(
@@ -13,9 +14,11 @@ public record DocumentMonthlyStatusRow(
     Long careReportId,
     DocumentStatus docStatus
 ) {
+  @QueryProjection
+  public DocumentMonthlyStatusRow{ }
   public DocumentStatusResponse toResponse() {
     SheetStatus sheet   = docStatus.toSheetStatus();
-    ReportStatus report = docStatus.toReportStatus(careSheetId);
+    ReportStatus report = docStatus.toReportStatus(careReportId);
 
     return new DocumentStatusResponse(
         date,

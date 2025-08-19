@@ -17,8 +17,10 @@ import com.daycan.domain.model.CareSheetInitVO;
 import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
+import com.daycan.domain.model.QCareSheetInitRow;
+import com.daycan.domain.model.QDocumentMetaView;
+import com.daycan.domain.model.QDocumentMonthlyStatusRow;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -105,12 +107,8 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
   public List<DocumentMonthlyStatusRow> findMemberStatusInRange(Long memberId, LocalDate start,
       LocalDate end) {
     return qf
-        .select(Projections.constructor(
-            DocumentMonthlyStatusRow.class,
-            doc.date,
-            sheet.id,
-            report.id,
-            doc.status
+        .select(new QDocumentMonthlyStatusRow(
+            doc.date,sheet.id,report.id,doc.status
         ))
         .from(doc)
         .leftJoin(sheet).on(sheet.id.eq(doc.id))
@@ -141,7 +139,10 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
         : null;
 
     return qf
-        .select(Projections.constructor(DocumentMetaView.class, doc, member, staff))
+        .select(
+            new QDocumentMetaView(
+                doc, member, staff)
+        )
         .from(doc)
         .join(doc.member, member)
         .leftJoin(doc.careSheet, sheet)
@@ -162,8 +163,7 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
     BooleanExpression hasFollowingVital = buildHasFollowingVital(memberId, date);
     BooleanExpression writerOn = buildWriterOn(writerId);
 
-    return qf.select(Projections.constructor(
-            CareSheetInitRow.class,
+    return qf.select(new QCareSheetInitRow(
             doc,
             sheet.id.isNull(),
             staff,
