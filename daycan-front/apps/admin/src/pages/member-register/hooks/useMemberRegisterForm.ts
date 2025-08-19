@@ -7,7 +7,7 @@ import {
 } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@daycan/ui";
-import { useGetMemberQuery } from "@/services/member/useMemberQuery";
+import { useGetMemberDetailQuery } from "@/services/member/useMemberQuery";
 import type { TMemberCreateRequest } from "@/services/member/types";
 import {
   useCreateMemberMutation,
@@ -70,7 +70,7 @@ export const useMemberRegisterForm = (
   });
 
   // 데이터 로딩 상태 관리 개선
-  const { data: memberExistData } = useGetMemberQuery(memberId);
+  const { data: memberExistData } = useGetMemberDetailQuery(memberId);
 
   // getInitialData를 useCallback으로 최적화
   const getInitialData = useCallback(() => {
