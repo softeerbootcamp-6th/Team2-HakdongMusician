@@ -1,14 +1,15 @@
-import { useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   StaffRegisterLayout,
   StaffInfoSection,
   ProfileImageSection,
   StaffFormFields,
 } from "./components";
-import { STAFF_DUMMY } from "../staff/constants/staffDummy";
 import { useStaffForm } from "./hooks/useStaffForm";
 import { useImageController } from "./hooks/useImageController";
+import { useGetStaffDetailQuery } from "@/services/staff/useStaffQuery";
+import { EditDeleteAuthModal } from "@/components";
 
 interface StaffRegisterPageProps {
   mode: "register" | "edit";
@@ -16,19 +17,25 @@ interface StaffRegisterPageProps {
 
 export const StaffRegisterPage = ({ mode }: StaffRegisterPageProps) => {
   const { staffId } = useParams<{ staffId: string }>();
+  const navigate = useNavigate();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // 수정 페이지에서 데이터가 있으면 데이터 반환, useMemo로 [mode, staffId]가 변하지 않으면 작동하지 않게함
-  const staffData = useMemo(() => {
-    if (mode !== "edit" || !staffId) return null;
-    const id = Number(staffId);
-    if (isNaN(id)) return null;
-    return STAFF_DUMMY.find((staff) => staff.staffId === id) || null;
-  }, [mode, staffId]);
+  const { data: staffData } = useGetStaffDetailQuery(Number(staffId));
+
+  // edit 모드일 때 인증 모달 표시
+  useEffect(() => {
+    if (mode === "edit") {
+      setIsAuthModalOpen(true);
+    }
+  }, [mode]);
 
   // 폼 데이터 관리 커스텀 훅 - mode와 initialData 전달
   const {
     staffFormData,
     setStaffFormData,
+    setStaffAvatarFile,
     handleInputChange,
     handleGenderSelect,
     handleStaffRoleSelect,
@@ -45,7 +52,18 @@ export const StaffRegisterPage = ({ mode }: StaffRegisterPageProps) => {
     profileImageUrl,
     setProfileImageUrl,
     handleImageChange,
-  } = useImageController(setStaffFormData);
+  } = useImageController(setStaffFormData, setStaffAvatarFile);
+
+  // 인증 성공 시 처리
+  const handleEditAccessConfirm = () => {
+    setIsAuthenticated(true);
+    setIsAuthModalOpen(false);
+  };
+
+  // 인증 취소 시 /staff로 리다이렉팅
+  const handleAuthCancel = () => {
+    navigate("/staff");
+  };
 
   // useEffect 수정 데이터 있으면 데이터 상태 변화
   useEffect(() => {
@@ -60,8 +78,7 @@ export const StaffRegisterPage = ({ mode }: StaffRegisterPageProps) => {
     setSelectedProfileImage,
   ]);
 
-  // 폼 필드 데이터
-  // 이걸 넘겨서 폼을 생성합니다. Input or GenderSelector or StaffRoleCareSelect
+  // 폼 필드 데이터 - useMemo를 조건부 return 이전에 호출
   const staffFormFields = useMemo(
     () => [
       {
@@ -106,12 +123,27 @@ export const StaffRegisterPage = ({ mode }: StaffRegisterPageProps) => {
         name: "staffRole",
         placeholder: "직무를 선택해 주세요",
         required: true,
-        value: staffFormData.staffRole,
+        value:
+          staffFormData.staffRole === "UNKNOWN" ? "" : staffFormData.staffRole,
         onChange: handleInputChange,
       },
     ],
-    [staffFormData]
+    [staffFormData, handleInputChange]
   );
+
+  // edit 모드이고 인증되지 않은 경우 인증 모달 표시
+  if (mode === "edit" && !isAuthenticated) {
+    return (
+      <EditDeleteAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onEditAccessConfirm={handleEditAccessConfirm}
+        onCancel={handleAuthCancel}
+        unitId={Number(staffId)}
+        actionType="edit"
+      />
+    );
+  }
 
   return (
     // 레이아웃 컴포넌트, 헤더랑, 등록or수정 버튼 있음
