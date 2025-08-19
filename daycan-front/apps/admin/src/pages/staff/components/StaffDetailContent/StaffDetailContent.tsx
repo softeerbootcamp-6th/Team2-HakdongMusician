@@ -13,7 +13,7 @@ import {
 import elder from "@/assets/images/elder.png";
 import { formatBirthDate, formatGender, formatStaffRole } from "@/utils";
 import { DeleteConfirmModal } from "@/components/DeleteConfirmModal/index.ts";
-import { EditAuthModal } from "@/components/EditAuthModal/EditAuthModal";
+import { EditDeleteAuthModal } from "@/components/EditDeleteAuthModal/EditDeleteAuthModal";
 import type { StaffListResponse } from "@/pages/staff-register/constants/staff";
 import { useStaffModal } from "@/pages/staff/hooks/useStaffModal";
 
@@ -99,11 +99,12 @@ export const StaffDetailContent = ({ staff }: StaffDetailContentProps) => {
         </div>
       </div>
 
-      <EditAuthModal
+      <EditDeleteAuthModal
         isOpen={isEditModalOpen}
         onClose={handleCloseEditModal}
         onEditAccessConfirm={handleEditAccessConfirm}
-        unitId={staff.staffId.toString()}
+        unitId={staff.staffId}
+        actionType="edit"
       />
 
       <DeleteConfirmModal
