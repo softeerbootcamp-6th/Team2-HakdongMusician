@@ -1,11 +1,11 @@
+import type { TMember } from "@/services/member/types";
 import { MemberListItem } from "../MemberListItem/MemberListItem";
 import { memberListContainer } from "./MemberList.css";
-import type { Member } from "./types";
 
 interface MemberListProps {
-  members: Member[];
+  members: TMember[];
   selectedMemberId?: number;
-  onMemberSelect?: (member: Member) => void;
+  onMemberSelect?: (member: TMember) => void;
 }
 
 export const MemberList = ({
@@ -20,8 +20,8 @@ export const MemberList = ({
           key={member.id}
           name={member.name}
           birthDate={member.birthDate}
-          code={member.code}
-          profileImage={member.profileImage}
+          code={member.id}
+          profileImage={member.avatarUrl}
           isSelected={selectedMemberId === member.id}
           onClick={() => onMemberSelect?.(member)}
         />

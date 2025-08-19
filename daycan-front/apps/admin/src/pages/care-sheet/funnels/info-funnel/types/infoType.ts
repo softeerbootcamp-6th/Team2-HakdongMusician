@@ -1,11 +1,11 @@
 import type { TTime, YearMonthDay } from "@/types/date";
-import type { Member } from "../components/MemberList/types";
+import type { TMember } from "@/services/member/types";
 
 // 각 Step의 데이터 타입 정의
 export interface Step0Data {
   memberId?: number;
   searchQuery: string;
-  selectedMember?: Member;
+  selectedMember?: TMember;
 }
 
 export interface Step1Data {
