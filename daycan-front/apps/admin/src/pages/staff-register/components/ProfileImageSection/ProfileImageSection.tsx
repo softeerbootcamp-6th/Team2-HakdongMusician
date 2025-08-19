@@ -66,7 +66,7 @@ export const ProfileImageSection = React.memo(
       <div className={profileImageSectionContainer}>
         <div className={profileImageSectionHeader}>
           <Body>프로필 이미지</Body>
-          {selectedProfileImage && (
+          {selectedProfileImage && profileImageUrl && (
             <Button size="small" variant="primary" onClick={handleButtonClick}>
               변경
             </Button>

@@ -59,7 +59,8 @@ export const CareLevelRoleDropDownSelector = ({
   };
 
   const selectedOption = options.find((option) => option.value === value);
-  const displayText = selectedOption ? selectedOption.label : placeholder;
+  const displayText =
+    selectedOption && value !== "UNKNOWN" ? selectedOption.label : placeholder;
 
   return (
     <div className={dropDownContainer} ref={dropdownRef}>
