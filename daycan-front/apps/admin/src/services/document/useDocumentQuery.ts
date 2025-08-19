@@ -10,7 +10,7 @@ import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
 export const documentKeys = {
   all: ["document"] as const,
   count: (yyyymm: YearMonth) => [...documentKeys.all, "count", yyyymm] as const,
-  list: (memberId: string, yyyymm: YearMonth) =>
+  list: (memberId: number, yyyymm: YearMonth) =>
     [...documentKeys.all, "list", memberId, yyyymm] as const,
 };
 
@@ -18,7 +18,7 @@ export const documentKeys = {
  * 날짜별 문서 조회 쿼리
  * @author 홍규진
  */
-export const useGetDocumentCount = (yyyymm: YearMonth) => {
+export const useGetDocumentCountQuery = (yyyymm: YearMonth) => {
   return useQuery({
     queryKey: documentKeys.count(yyyymm),
     queryFn: () => getDocumentCount(yyyymm),
@@ -30,7 +30,10 @@ export const useGetDocumentCount = (yyyymm: YearMonth) => {
  * 수급자 별 월별 문서 리스트 조회 쿼리(기록지, 리포트 둘의 리스트를 조회합니다.)
  * @author 홍규진
  */
-export const useGetDocumentList = (memberId: string, yyyymm: YearMonth) => {
+export const useGetDocumentListQuery = (
+  memberId: number,
+  yyyymm: YearMonth
+) => {
   return useQuery({
     queryKey: documentKeys.list(memberId, yyyymm),
     queryFn: () => getDocumentByMonth(memberId, yyyymm),

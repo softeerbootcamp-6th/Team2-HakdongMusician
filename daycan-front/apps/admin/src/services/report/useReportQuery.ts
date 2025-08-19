@@ -12,7 +12,7 @@ export const reportKeys = {
   all: ["reports"] as const,
   list: (yyyymmdd: YearMonthDay, statuses?: TReportStatus[]) =>
     [...reportKeys.all, "list", yyyymmdd, statuses] as const,
-  detail: (yyyymmdd: YearMonthDay, memberId: string) =>
+  detail: (yyyymmdd: YearMonthDay, memberId: number) =>
     [...reportKeys.all, "detail", yyyymmdd, memberId] as const,
 };
 
@@ -22,7 +22,7 @@ export const reportKeys = {
  * @param yyyymm 월
  * @author 홍규진
  */
-export const useGetReportList = (
+export const useGetReportListQuery = (
   yyyymmdd: YearMonthDay,
   statuses?: TReportStatus[]
 ) => {
@@ -39,7 +39,10 @@ export const useGetReportList = (
  * @param memberId 수급자 ID
  * @author 홍규진
  */
-export const useGetReport = (yyyymmdd: YearMonthDay, memberId: string) => {
+export const useGetReportDetailQuery = (
+  yyyymmdd: YearMonthDay,
+  memberId: number
+) => {
   return useQuery({
     queryKey: reportKeys.detail(yyyymmdd, memberId),
     queryFn: () => getReport(yyyymmdd, memberId),

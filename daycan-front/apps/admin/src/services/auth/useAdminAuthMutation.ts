@@ -14,7 +14,16 @@ export const useAdminLoginMutation = () => {
       password: string;
     }) => login(username, password),
     onSuccess: (data: TLoginResponse | null) => {
-      if (!data) return;
+      if (!data) {
+        showToast({
+          data: {
+            message: "로그인 실패",
+            type: "error",
+            variant: "pc",
+          },
+        });
+        return;
+      }
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
       showToast({

@@ -20,7 +20,7 @@ export type TCareSheetListItem = {
   careSheetId: number;
   status: CareSheetStatus;
   memberMeta: {
-    memberId: string;
+    memberId: number;
     name: string;
     birthDate: YearMonthDay;
     gender: Gender;
@@ -142,24 +142,24 @@ export type TCareSheetWriteRequest = {
     breakfast: {
       provided: boolean;
       entry: {
-        mealType: MealType;
-        amount: Amount;
+        mealType: MealType | null;
+        amount: Amount | null;
       };
       validProvidedEntry: boolean;
     };
     lunch: {
       provided: boolean;
       entry: {
-        mealType: MealType;
-        amount: Amount;
+        mealType: MealType | null;
+        amount: Amount | null;
       };
       validProvidedEntry: boolean;
     };
     dinner: {
       provided: boolean;
       entry: {
-        mealType: MealType;
-        amount: Amount;
+        mealType: MealType | null;
+        amount: Amount | null;
       };
       validProvidedEntry: boolean;
     };

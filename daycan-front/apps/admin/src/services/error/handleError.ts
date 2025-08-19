@@ -6,9 +6,13 @@ import {
   ServerError,
 } from "@daycan/api";
 import { useToast } from "@daycan/ui";
+import { reIssueToken } from "../auth";
 // import { useNavigate } from "react-router-dom";
 
-export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
+export const handleError = async (
+  error: unknown,
+  device: "pc" | "mobile" = "pc"
+) => {
   // const navigate = useNavigate();
   const { showToast } = useToast();
 
@@ -42,13 +46,35 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
     // 로그인 페이지로 리다이렉트 또는 권한 체크
     console.error("🔐 Auth Error:", error);
 
-    // 401/403 에러인 경우 로그인 페이지로 이동
     // 추후에 더 확정되면, reissue 토큰 요청으로 변경 필요
     if (
       (error.code >= 40100 && error.code < 40200) ||
       (error.code >= 40300 && error.code < 40400)
     ) {
-      // window.location.href = "/login";
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (!refreshToken) {
+        window.location.href = "/login";
+        return;
+      }
+      try {
+        const response = await reIssueToken(refreshToken);
+        if (response) {
+          localStorage.setItem("accessToken", response.accessToken);
+          localStorage.setItem("refreshToken", response.refreshToken);
+        } else {
+          throw new Error("로그인 정보가 만료되었습니다.");
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          showToast({
+            data: {
+              message: error.message,
+              type: "error",
+              variant: device,
+            },
+          });
+        }
+      }
     }
   } else if (error instanceof ClientError) {
     // 클라이언트 에러 (400, 404 등)
