@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/care-sheet/ocr")
 @RequiredArgsConstructor
 @Tag(name = "\uD83D\uDCF8 기록지 관리 OCR", description = "관리자용 기록지 OCR 관련 API")
+@Validated
 public class CenterOcrController {
 
   // 사진으로 등록 (목: 성공 응답만 반환)

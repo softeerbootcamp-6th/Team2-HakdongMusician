@@ -19,6 +19,7 @@ import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/admin/document")
 @Tag(name = "\uD83D\uDCDA 센터용 문서 관리", description = "센터 문서(기록지/리포트 통합) 관련 API")
+@Validated
 @RequiredArgsConstructor
 public class CenterDocumentController {
 

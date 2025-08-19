@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/member")
 @Tag(name = "\uD83D\uDC75 수급자 관리", description = "관리자용 수급자 관련 API")
 @RequiredArgsConstructor
+@Validated
 public class CenterMemberController {
 
   private final MemberService memberService;
