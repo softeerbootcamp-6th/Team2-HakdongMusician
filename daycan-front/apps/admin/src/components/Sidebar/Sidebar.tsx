@@ -13,8 +13,12 @@ import { PAGE_KEYS, SIDEBAR_TEXTS } from "@/constants/sidebar.ts";
 import { ICON_NAMES } from "@/constants/iconNames";
 
 export const Sidebar = () => {
-  const { handleMenuClick, isMenuSelected, count, handleNewRecordClick } =
-    useSidebar(PAGE_KEYS.RECIPIENT);
+  const {
+    handleMenuClick,
+    isMenuSelected,
+    documentCount,
+    handleNewRecordClick,
+  } = useSidebar(PAGE_KEYS.RECIPIENT);
 
   return (
     /* Sidebar */
@@ -49,7 +53,7 @@ export const Sidebar = () => {
                 </Body>
               </Chip>
               <Body type="xsmall" color={COLORS.white}>
-                {count}
+                {documentCount?.numberOfCareSheet}
                 {SIDEBAR_TEXTS.CASE_COUNT}
               </Body>
             </div>
@@ -76,18 +80,7 @@ export const Sidebar = () => {
                 </Body>
               </Chip>
               <Body type="xsmall" color={COLORS.white}>
-                {count}
-                {SIDEBAR_TEXTS.CASE_COUNT}
-              </Body>
-            </div>
-            <div className={menuItem}>
-              <Chip style={{ backgroundColor: COLORS.gray[600] }} round="s">
-                <Body type="xsmall" color={COLORS.gray[300]}>
-                  {SIDEBAR_TEXTS.DATE_DELAYED}
-                </Body>
-              </Chip>
-              <Body type="xsmall" color={COLORS.white}>
-                {count}
+                {documentCount?.numberOfCareReport}
                 {SIDEBAR_TEXTS.CASE_COUNT}
               </Body>
             </div>

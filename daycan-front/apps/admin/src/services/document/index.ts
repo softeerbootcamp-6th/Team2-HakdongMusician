@@ -1,6 +1,6 @@
 import { safeRequest } from "@daycan/api";
 import type { TDocumentByMonth, TDocumentCount } from "./types";
-import type { YearMonth } from "@/types/date";
+import type { YearMonth, YearMonthDay } from "@/types/date";
 import { privateInstance } from "../instance";
 
 /**
@@ -22,10 +22,10 @@ export const getDocumentByMonth = async (
  * @author 홍규진
  */
 export const getDocumentCount = async (
-  yyyymm: YearMonth
+  yyyymmdd: YearMonthDay
 ): Promise<TDocumentCount | null> => {
   return await safeRequest.get<TDocumentCount>(
     privateInstance,
-    `/admin/document/count/${yyyymm}`
+    `/admin/document/count/${yyyymmdd}`
   );
 };

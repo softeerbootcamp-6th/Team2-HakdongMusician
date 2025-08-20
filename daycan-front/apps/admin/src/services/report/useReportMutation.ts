@@ -6,7 +6,7 @@ import { reportKeys } from "./useReportQuery";
  * 리포트 전송 뮤테이션
  * @author 홍규진
  */
-export const useSendReport = () => {
+export const useSendReportMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -23,7 +23,7 @@ export const useSendReport = () => {
  * 리포트 검토 뮤테이션
  * @author 홍규진
  */
-export const useReviewReport = () => {
+export const useReviewReportMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

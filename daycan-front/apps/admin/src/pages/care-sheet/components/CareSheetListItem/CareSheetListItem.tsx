@@ -93,7 +93,7 @@ export const CareSheetListItem = ({
       key: "writer",
       content: (
         <Body type="small" weight={400}>
-          {careSheet.writerName}
+          {careSheet.writerName ?? "미작성"}
         </Body>
       ),
     },

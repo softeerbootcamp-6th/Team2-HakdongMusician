@@ -32,7 +32,7 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
         color={COLORS.gray[900]}
         style={{ marginBottom: "16px" }}
       >
-        📋 리포트 상세 내용
+        📋 리포트 상세 내용 (실제 모바일 앱 화면)
       </Body>
 
       <HealthIndexCard

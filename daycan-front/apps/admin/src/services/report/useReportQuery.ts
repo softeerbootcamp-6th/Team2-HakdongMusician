@@ -41,11 +41,13 @@ export const useGetReportListQuery = (
  */
 export const useGetReportDetailQuery = (
   yyyymmdd: YearMonthDay,
-  memberId: number
+  memberId: number,
+  enabled: boolean
 ) => {
   return useQuery({
     queryKey: reportKeys.detail(yyyymmdd, memberId),
     queryFn: () => getReport(yyyymmdd, memberId),
+    enabled,
     ...DEFAULT_QUERY_OPTIONS,
   });
 };

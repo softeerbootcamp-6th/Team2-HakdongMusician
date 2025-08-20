@@ -3,7 +3,7 @@ import { reportContainer, reportButtons } from "./ReportPage.css";
 import { Button, Heading, Icon, Body, COLORS } from "@daycan/ui";
 import { useRef, useMemo } from "react";
 import type { FilterItem } from "@/components/Filter";
-import { ReportList } from "./components/ReportList/ReportList";
+import { ReportList, ReserveSendModal, ImmediateSendModal } from "./components";
 import { mockSendedReports } from "./constants/dummy";
 import { useReports } from "./hooks/useReport";
 
@@ -34,6 +34,10 @@ export const ReportPage = () => {
     handleSelectAllSended,
     handleImmediateSend,
     handleReserveSend,
+    isReserveSendModalOpen,
+    isImmediateSendModalOpen,
+    setIsReserveSendModalOpen,
+    setIsImmediateSendModalOpen,
   } = useReports();
 
   // 실제로 전송 가능한 항목의 개수 계산
@@ -95,7 +99,7 @@ export const ReportPage = () => {
           <Button
             variant="unEmphasized"
             size="fullWidth"
-            onClick={handleReserveSend}
+            onClick={() => setIsReserveSendModalOpen(true)}
             disabled={!hasCheckedItems}
           >
             <Icon name="alarm" width={20} height={20} />
@@ -106,7 +110,7 @@ export const ReportPage = () => {
           <Button
             variant="primary"
             size="fullWidth"
-            onClick={handleImmediateSend}
+            onClick={() => setIsImmediateSendModalOpen(true)}
             disabled={!hasCheckedItems}
           >
             <Body type="medium" weight={600} color={COLORS.gray[700]}>
@@ -160,6 +164,17 @@ export const ReportPage = () => {
         isAllSelected={isAllSelectedSended}
         isIndeterminate={isIndeterminateSended}
         onSelectAll={handleSelectAllSended}
+      />
+
+      <ReserveSendModal
+        isOpen={isReserveSendModalOpen}
+        onClose={() => setIsReserveSendModalOpen(false)}
+        onSend={handleReserveSend}
+      />
+      <ImmediateSendModal
+        isOpen={isImmediateSendModalOpen}
+        onClose={() => setIsImmediateSendModalOpen(false)}
+        onSend={handleImmediateSend}
       />
     </div>
   );
