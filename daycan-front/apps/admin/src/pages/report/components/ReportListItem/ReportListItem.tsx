@@ -6,6 +6,7 @@ import {
   getButtonInfo,
 } from "../../utils/parser";
 import { REPORT_LIST_GRID_TEMPLATE } from "../../constants/grid";
+import { useReportListItem } from "./useReportListItem";
 
 export type ReportListItemType = {
   id: number;
@@ -35,6 +36,7 @@ interface ReportListItemProps {
   isChecked: boolean;
   onCheckChange: (id: number, checked: boolean) => void;
   isSelectable: boolean;
+  onReviewRequest?: (reportId: number) => void;
 }
 
 export const ReportListItem = ({
@@ -43,8 +45,12 @@ export const ReportListItem = ({
   isChecked,
   onCheckChange,
   isSelectable,
+  onReviewRequest,
 }: ReportListItemProps) => {
   const statusInfo = getStatusInfo(report.status);
+  const { handleReportStatusButtonClick } = useReportListItem({
+    onReviewRequest,
+  });
 
   const columns = [
     {
@@ -122,8 +128,11 @@ export const ReportListItem = ({
             size="small"
             variant={buttonInfo.variant}
             style={buttonInfo.style}
+            onClick={() =>
+              handleReportStatusButtonClick(report.status, report.id)
+            }
           >
-            <Body type="xsmall" weight={500}>
+            <Body type="small" weight={500}>
               {buttonInfo.text}
             </Body>
           </Button>
