@@ -3,20 +3,13 @@ import { Body, Heading, Icon, Button, Input } from "@daycan/ui";
 import { memberContainer, memberButton } from "./MemberPage.css.ts";
 import { MemberDataList } from "./components/MemberDataList";
 import { Filter } from "@/components/Filter";
-import { Suspense, useRef } from "react";
+import { useRef } from "react";
 import { useMemberFilter } from "./hooks/useMemberFilter.ts";
 import { useNavigate } from "react-router-dom";
 import { FilterSearchbar, SkeletonList } from "@/components";
-import { useGetMemberListSuspenseQuery } from "@/services/member/useMemberQuery";
 import { MEMBER_GRID_TEMPLATE } from "./constants/memberGrid.ts";
 import { MemberDataListHeader } from "./components/MemberDataListHeader";
-
-const MemberListSuspense = () => {
-  const { data: members } = useGetMemberListSuspenseQuery();
-  const { filteredMembers } = useMemberFilter(members ?? []);
-
-  return <MemberDataList members={filteredMembers} />;
-};
+import { useGetMemberListQuery } from "@/services/member/useMemberQuery";
 
 const MemberListSkeleton = () => {
   return (
@@ -35,17 +28,19 @@ const MemberListSkeleton = () => {
 export const MemberPage = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const { data: members, isLoading } = useGetMemberListQuery();
   const handleNewMember = () => {
     navigate("/member/new");
   };
   const {
     resetCounter,
+    filteredMembers,
+
     handleFilterReset,
     handleCareGradeFilterChange,
     handleGenderFilterChange,
     handleSearchChange,
-  } = useMemberFilter([]);
+  } = useMemberFilter(members ?? []);
 
   const filterItems = [
     {
@@ -88,9 +83,11 @@ export const MemberPage = () => {
         />
       </FilterSearchbar>
       {/* 데이터 리스트 */}
-      <Suspense fallback={<MemberListSkeleton />}>
-        <MemberListSuspense />
-      </Suspense>
+      {isLoading ? (
+        <MemberListSkeleton />
+      ) : (
+        <MemberDataList members={filteredMembers} />
+      )}
     </div>
   );
 };

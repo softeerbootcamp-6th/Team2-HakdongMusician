@@ -5,21 +5,12 @@ import { StaffList } from "./components";
 import { StaffListHeader } from "./components/StaffListHeader";
 import { useNavigate } from "react-router-dom";
 import { Filter } from "@/components/Filter";
-import { useRef, Suspense } from "react";
+import { useRef } from "react";
 import { useStaffFilter } from "./hooks/useStaffFilter";
 import { FilterSearchbar } from "@/components";
-import { useGetStaffListSuspenseQuery } from "@/services/staff/useStaffQuery";
+import { useGetStaffListQuery } from "@/services/staff/useStaffQuery";
 import { SkeletonList } from "@/components/SkeletonList";
 import { STAFF_GRID_TEMPLATE } from "./constants/staffGrid";
-/**
- * StaffList를 Suspense로 감싸는 컴포넌트
- */
-const StaffListSuspense = () => {
-  const { data: staffs } = useGetStaffListSuspenseQuery();
-  const { filteredStaffs } = useStaffFilter(staffs ?? []);
-
-  return <StaffList staffs={filteredStaffs} />;
-};
 
 const StaffListSkeleton = () => {
   return (
@@ -38,15 +29,16 @@ const StaffListSkeleton = () => {
 export const StaffPage = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const { data: staffs, isLoading } = useGetStaffListQuery();
   // 필터링 훅 사용 (초기값은 빈 배열)
   const {
     resetCounter,
+    filteredStaffs,
     handleFilterReset,
     handleStaffRoleFilterChange,
     handleGenderFilterChange,
     handleSearchChange,
-  } = useStaffFilter([]);
+  } = useStaffFilter(staffs ?? []);
 
   // 필터 아이템 설정
   const filterItems = [
@@ -94,10 +86,11 @@ export const StaffPage = () => {
         />
       </FilterSearchbar>
 
-      {/* Suspense로 StaffList 감싸기 */}
-      <Suspense fallback={<StaffListSkeleton />}>
-        <StaffListSuspense />
-      </Suspense>
+      {isLoading ? (
+        <StaffListSkeleton />
+      ) : (
+        <StaffList staffs={filteredStaffs} />
+      )}
     </div>
   );
 };

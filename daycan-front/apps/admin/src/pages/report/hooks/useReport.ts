@@ -19,7 +19,6 @@ export const useReports = () => {
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
-  // const { data: reports = [] } = useGetReportListSuspenseQuery("2025-08-20");
 
   const [isReserveSendModalOpen, setIsReserveSendModalOpen] =
     useState<boolean>(false);

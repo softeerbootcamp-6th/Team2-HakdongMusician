@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { PageToolbar } from "@/components/PageToolbar";
 import { Body, Heading, COLORS } from "@daycan/ui";
 import { careSheetContainer } from "./CareSheetPage.css";
@@ -6,10 +5,7 @@ import { CareSheetList } from "./components/CareSheetList";
 import { useCareSheets } from "./hooks/useCareSheet";
 import { SkeletonCareSheetList } from "./components/SkeletonCareSheetList";
 
-/**
- * 출석 인원 CareSheetList를 Suspense로 감싸는 컴포넌트
- */
-const ApplicableCareSheetListSuspense = () => {
+export const CareSheetPage = () => {
   const {
     applicableCareSheets,
     timeLeft,
@@ -20,55 +16,15 @@ const ApplicableCareSheetListSuspense = () => {
     handleApplicableSelectAll,
     checkedCareSheetIds,
     handleItemCheck,
-  } = useCareSheets();
-
-  return (
-    <CareSheetList
-      careSheets={applicableCareSheets.result}
-      status="APPLICABLE"
-      onProcessItems={handleProcessApplicable}
-      timeLeft={timeLeft}
-      hasCheckedItems={hasCheckedApplicableItems}
-      isAllSelected={isAllSelectedApplicable}
-      isIndeterminate={isIndeterminateApplicable}
-      onSelectAll={handleApplicableSelectAll}
-      checkedCareSheetIds={checkedCareSheetIds}
-      onItemCheck={handleItemCheck}
-    />
-  );
-};
-
-/**
- * 결석 인원 CareSheetList를 Suspense로 감싸는 컴포넌트
- */
-const NotApplicableCareSheetListSuspense = () => {
-  const {
     notApplicableCareSheets,
     hasCheckedNotApplicableItems,
     isAllSelectedNotApplicable,
     isIndeterminateNotApplicable,
     handleProcessNotApplicable,
     handleNotApplicableSelectAll,
-    checkedCareSheetIds,
-    handleItemCheck,
+    isLoading,
   } = useCareSheets();
 
-  return (
-    <CareSheetList
-      careSheets={notApplicableCareSheets.result}
-      status="NOT_APPLICABLE"
-      onProcessItems={handleProcessNotApplicable}
-      hasCheckedItems={hasCheckedNotApplicableItems}
-      isAllSelected={isAllSelectedNotApplicable}
-      isIndeterminate={isIndeterminateNotApplicable}
-      onSelectAll={handleNotApplicableSelectAll}
-      checkedCareSheetIds={checkedCareSheetIds}
-      onItemCheck={handleItemCheck}
-    />
-  );
-};
-
-export const CareSheetPage = () => {
   return (
     <div className={careSheetContainer}>
       <PageToolbar>
@@ -81,30 +37,47 @@ export const CareSheetPage = () => {
       </Body>
 
       {/* 출석 인원 - Suspense로 감싸기 */}
-      <Suspense
-        fallback={
-          <SkeletonCareSheetList
-            title="기록지 관리"
-            description="출석인원"
-            itemCount={3}
-          />
-        }
-      >
-        <ApplicableCareSheetListSuspense />
-      </Suspense>
+      {isLoading ? (
+        <SkeletonCareSheetList
+          title="기록지 관리"
+          description="출석인원"
+          itemCount={3}
+        />
+      ) : (
+        <CareSheetList
+          careSheets={applicableCareSheets.result}
+          status="APPLICABLE"
+          onProcessItems={handleProcessApplicable}
+          timeLeft={timeLeft}
+          hasCheckedItems={hasCheckedApplicableItems}
+          isAllSelected={isAllSelectedApplicable}
+          isIndeterminate={isIndeterminateApplicable}
+          onSelectAll={handleApplicableSelectAll}
+          checkedCareSheetIds={checkedCareSheetIds}
+          onItemCheck={handleItemCheck}
+        />
+      )}
 
       {/* 결석 인원 - Suspense로 감싸기 */}
-      <Suspense
-        fallback={
-          <SkeletonCareSheetList
-            title="기록지 관리"
-            description="결석인원"
-            itemCount={2}
-          />
-        }
-      >
-        <NotApplicableCareSheetListSuspense />
-      </Suspense>
+      {isLoading ? (
+        <SkeletonCareSheetList
+          title="기록지 관리"
+          description="결석인원"
+          itemCount={2}
+        />
+      ) : (
+        <CareSheetList
+          careSheets={notApplicableCareSheets.result}
+          status="NOT_APPLICABLE"
+          onProcessItems={handleProcessNotApplicable}
+          hasCheckedItems={hasCheckedNotApplicableItems}
+          isAllSelected={isAllSelectedNotApplicable}
+          isIndeterminate={isIndeterminateNotApplicable}
+          onSelectAll={handleNotApplicableSelectAll}
+          checkedCareSheetIds={checkedCareSheetIds}
+          onItemCheck={handleItemCheck}
+        />
+      )}
     </div>
   );
 };

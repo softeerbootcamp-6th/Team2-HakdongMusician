@@ -1,7 +1,7 @@
 import { PageToolbar, Filter } from "@/components";
 import { reportContainer, reportButtons } from "./ReportPage.css";
 import { Button, Heading, Icon, Body, COLORS } from "@daycan/ui";
-import { useRef, useMemo, Suspense } from "react";
+import { useRef, useMemo } from "react";
 import type { FilterItem } from "@/components/Filter";
 import { ReportList, ReserveSendModal, ImmediateSendModal } from "./components";
 import { mockSendedReports } from "./constants/dummy";
@@ -9,44 +9,6 @@ import { useReports } from "./hooks/useReport";
 import { SkeletonList } from "@/components/SkeletonList";
 import { REPORT_LIST_GRID_TEMPLATE } from "./constants/grid";
 import { ReportListHeader } from "./components/ReportListHeader";
-
-/**
- * 전송 필요 리포트 목록을 Suspense로 감싸는 컴포넌트
- */
-const ReportRequiredListSuspense = () => {
-  const {
-    filteredReports,
-    isAllSelectedFiltered,
-    isIndeterminateFiltered,
-    handleSelectAllFiltered,
-  } = useReports();
-  return (
-    <ReportList
-      reports={filteredReports}
-      isAllSelected={isAllSelectedFiltered}
-      isIndeterminate={isIndeterminateFiltered}
-      onSelectAll={handleSelectAllFiltered}
-    />
-  );
-};
-
-/**
- * 전송 완료 리포트 목록을 Suspense로 감싸는 컴포넌트
- */
-const ReportCompletedListSuspense = () => {
-  const { isAllSelectedSended, isIndeterminateSended, handleSelectAllSended } =
-    useReports();
-
-  return (
-    <ReportList
-      reports={mockSendedReports}
-      showCheckbox={true}
-      isAllSelected={isAllSelectedSended}
-      isIndeterminate={isIndeterminateSended}
-      onSelectAll={handleSelectAllSended}
-    />
-  );
-};
 
 /**
  * 전송 완료 리포트 목록용 스켈레톤 UI
@@ -77,7 +39,12 @@ export const ReportPage = () => {
     resetCounter,
     checkedReportIds,
     hasCheckedItems,
-
+    isAllSelectedSended,
+    isIndeterminateSended,
+    handleSelectAllSended,
+    isAllSelectedFiltered,
+    isIndeterminateFiltered,
+    handleSelectAllFiltered,
     // 액션 핸들러
     handleFilterReset,
     handleStatusFilterChange,
@@ -161,11 +128,16 @@ export const ReportPage = () => {
 
       <Filter resetKey={resetCounter} items={filterItems} ref={dropdownRef} />
 
-      {/* 전송 전 리포트 목록 */}
-      <Suspense fallback={<SkeletonReportList />}>
-        {/* //TODO : SuspenseQuery면 isLoading없애고 오른쪽 컴포넌트만 냅두고 지워버리면 됩니다.*/}
-        {isLoading ? <SkeletonReportList /> : <ReportRequiredListSuspense />}
-      </Suspense>
+      {isLoading ? (
+        <SkeletonReportList />
+      ) : (
+        <ReportList
+          reports={filteredReports}
+          isAllSelected={isAllSelectedFiltered}
+          isIndeterminate={isIndeterminateFiltered}
+          onSelectAll={handleSelectAllFiltered}
+        />
+      )}
 
       {/* 전송 완료 리포트 */}
       <Body
@@ -177,11 +149,17 @@ export const ReportPage = () => {
         전송 완료 리포트
       </Body>
 
-      {/* 전송 완료 리포트 목록 - Suspense로 감싸기 */}
-      <Suspense fallback={<SkeletonReportList />}>
-        {/* //TODO : SuspenseQuery면 isLoading없애고 오른쪽 컴포넌트만 냅두고 지워버리면 됩니다.*/}
-        {isLoading ? <SkeletonReportList /> : <ReportCompletedListSuspense />}
-      </Suspense>
+      {isLoading ? (
+        <SkeletonReportList />
+      ) : (
+        <ReportList
+          reports={mockSendedReports}
+          showCheckbox={true}
+          isAllSelected={isAllSelectedSended}
+          isIndeterminate={isIndeterminateSended}
+          onSelectAll={handleSelectAllSended}
+        />
+      )}
 
       <ReserveSendModal
         isOpen={isReserveSendModalOpen}
