@@ -14,3 +14,4 @@ export * from "./EditDeleteAuthModal";
 export * from "./DeleteConfirmModal";
 export * from "./GenderSelector";
 export * from "./CareLevelRoleDropDownSelector";
+export * from "./SkeletonList";
