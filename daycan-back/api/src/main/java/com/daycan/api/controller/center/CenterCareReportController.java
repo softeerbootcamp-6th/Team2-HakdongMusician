@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -189,7 +190,7 @@ public class CenterCareReportController {
   public ResponseWrapper<Void> sendReport(
       @PathVariable Long reportId,
       @Parameter(description = "전송 시간 (ISO 8601 형식, 예: 2025-07-31T10:00:00Z)")
-      @RequestParam(required = false) String time
+      @RequestParam(required = false) Instant time
   ) {
 
     return ResponseWrapper.onSuccess(null);
