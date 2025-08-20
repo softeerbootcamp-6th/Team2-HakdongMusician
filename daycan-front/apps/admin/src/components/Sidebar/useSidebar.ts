@@ -32,8 +32,7 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.CARE_SHEET) => {
   }, [location.pathname]);
 
   const handleNewRecordClick = () => {
-    // 새 기록지 작성 로직을 여기에 추가
-    console.log("새 기록지 작성 클릭");
+    navigate("/care-sheet/new");
   };
 
   const handleMenuClick = (menuName: PageKey) => {
