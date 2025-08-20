@@ -216,7 +216,7 @@ export const useCareSheets = () => {
           setCheckedCareSheetIds(new Set());
           showToast({
             data: {
-              message: "결석 처리가 완료되었습니다.",
+              message: "출석 처리가 완료되었습니다.",
               variant: "pc",
               type: "success",
             },
