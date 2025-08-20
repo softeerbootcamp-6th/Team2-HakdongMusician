@@ -21,7 +21,7 @@ export const skeleton = recipe({
   },
 
   variants: {
-    variant: {
+    borderRadius: {
       default: {},
       circle: {
         borderRadius: "50%",
@@ -48,31 +48,20 @@ export const skeleton = recipe({
         width: 30,
         height: 30,
       },
-      xSmall: {
-        width: 30,
-        height: 10,
-      },
-      small: {
-        width: 60,
-        height: 20,
-      },
-      medium: {
-        width: 120,
-        height: 24,
-      },
-      large: {
-        width: 200,
-        height: 32,
-      },
       fullWidth: {
         width: "100%",
-        height: 24,
+        //ListItemLayout내의 text default height이 22px
+        height: "22px",
+      },
+      fullWidthHeight: {
+        width: "100%",
+        height: "100%",
       },
     },
   },
 
   defaultVariants: {
-    variant: "default",
+    borderRadius: "default",
     backgroundColor: "default",
     size: "fullWidth",
   },

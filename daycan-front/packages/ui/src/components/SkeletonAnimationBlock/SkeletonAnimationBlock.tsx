@@ -14,7 +14,7 @@ type SkeletonAnimationBlockProps = SkeletonVariants & {
  * @author 소보길
  */
 export const SkeletonAnimationBlock = ({
-  variant,
+  borderRadius,
   backgroundColor,
   size,
   style,
@@ -30,7 +30,7 @@ export const SkeletonAnimationBlock = ({
 
   return (
     <div
-      className={skeleton({ variant, backgroundColor, size })}
+      className={skeleton({ borderRadius, backgroundColor, size })}
       style={style}
       {...props}
     >

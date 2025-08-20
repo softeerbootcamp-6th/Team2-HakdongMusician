@@ -17,7 +17,7 @@ export const SkeletonListItem = ({
     key: `column-${index}`,
     content:
       index === 1 && !isCheckboxList ? (
-        <SkeletonAnimationBlock variant="circle" size="profile" />
+        <SkeletonAnimationBlock borderRadius="circle" size="profile" />
       ) : (
         <SkeletonAnimationBlock />
       ),
