@@ -7,7 +7,7 @@ import { useUpdateCareSheetAttendanceMutation } from "@/services/careSheet/useCa
 import { useToast } from "@daycan/ui";
 
 export const useCareSheets = () => {
-  const { data, isLoading, error } = useGetCareSheetListQuery(TODAY_DATE);
+  const { data, isLoading } = useGetCareSheetListQuery(TODAY_DATE);
   const { showToast } = useToast();
   // 로컬 상태로 관리
   const [resetCounter, setResetCounter] = useState(0);
@@ -232,8 +232,6 @@ export const useCareSheets = () => {
     notApplicableCareSheets,
     selectableApplicableCareSheets,
     selectableNotApplicableCareSheets,
-    isLoading,
-    error,
     timeLeft,
     resetCounter,
     checkedCareSheetIds,
@@ -252,5 +250,6 @@ export const useCareSheets = () => {
     handleItemCheck,
     handleProcessApplicable,
     handleProcessNotApplicable,
+    isLoading,
   };
 };

@@ -13,11 +13,7 @@ const fetchReports = async (): Promise<ReportListItemType[]> => {
 };
 
 export const useReports = () => {
-  const {
-    data: reports = [],
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: reports = [], isLoading } = useQuery({
     queryKey: ["reports"],
     queryFn: fetchReports,
     staleTime: 5 * 60 * 1000,
@@ -228,10 +224,10 @@ export const useReports = () => {
   return {
     // 데이터 상태
     reports,
+    isLoading,
+
     filteredReports,
     selectableReports,
-    isLoading,
-    error,
     selectedStatus,
     resetCounter,
     checkedReportIds,

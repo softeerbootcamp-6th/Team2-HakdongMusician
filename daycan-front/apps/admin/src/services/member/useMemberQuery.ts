@@ -13,7 +13,7 @@ export const memberKeys = {
 };
 
 /**
- * 수급자 목록 조회 쿼리
+ * 수급자 목록 조회 쿼리 (기존 방식)
  * List 의 경우엔 추후에 Suspense 쿼리로 변환 후 사용할 예정
  * @author 홍규진
  */

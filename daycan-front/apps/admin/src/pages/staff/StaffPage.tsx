@@ -2,32 +2,44 @@ import { PageToolbar } from "@/components/PageToolbar";
 import { Body, Button, Heading, Icon, Input } from "@daycan/ui";
 import { staffButton, staffPageContainer } from "./StaffPage.css";
 import { StaffList } from "./components";
+import { StaffListHeader } from "./components/StaffListHeader";
 import { useNavigate } from "react-router-dom";
 import { Filter } from "@/components/Filter";
 import { useRef } from "react";
 import { useStaffFilter } from "./hooks/useStaffFilter";
 import { FilterSearchbar } from "@/components";
 import { useGetStaffListQuery } from "@/services/staff/useStaffQuery";
+import { SkeletonList } from "@/components/SkeletonList";
+import { STAFF_GRID_TEMPLATE } from "./constants/staffGrid";
+
+const StaffListSkeleton = () => {
+  return (
+    <SkeletonList
+      title="종사자 목록"
+      itemCount={5}
+      gridTemplate={STAFF_GRID_TEMPLATE}
+      columnsLength={8}
+      containerClassName={staffPageContainer}
+    >
+      <StaffListHeader />
+    </SkeletonList>
+  );
+};
 
 export const StaffPage = () => {
   const navigate = useNavigate();
-  // TODO:[보길]
-  /*
-   * 종사자 get API 호출 후 staffs로 뿌려주기
-   */
-  // const [staffs] = useState(STAFF_DUMMY);
-  const { data: staffs } = useGetStaffListQuery();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // 필터링 훅 사용
+  const { data: staffs, isLoading } = useGetStaffListQuery();
+  // 필터링 훅 사용 (초기값은 빈 배열)
   const {
-    filteredStaffs,
     resetCounter,
+    filteredStaffs,
     handleFilterReset,
     handleStaffRoleFilterChange,
     handleGenderFilterChange,
     handleSearchChange,
   } = useStaffFilter(staffs ?? []);
+
   // 필터 아이템 설정
   const filterItems = [
     {
@@ -45,6 +57,7 @@ export const StaffPage = () => {
       onSelect: handleGenderFilterChange,
     },
   ];
+
   // 종사자 등록 버튼 클릭 시 등록 페이지로 이동
   const goToNewStaffPage = () => {
     navigate("/staff/new");
@@ -72,8 +85,12 @@ export const StaffPage = () => {
           inputSize="textSearch"
         />
       </FilterSearchbar>
-      {/* 종사자 데이터 리스트 */}
-      <StaffList staffs={filteredStaffs} />
+
+      {isLoading ? (
+        <StaffListSkeleton />
+      ) : (
+        <StaffList staffs={filteredStaffs} />
+      )}
     </div>
   );
 };

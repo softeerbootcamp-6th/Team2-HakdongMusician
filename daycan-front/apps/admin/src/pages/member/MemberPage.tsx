@@ -6,28 +6,41 @@ import { Filter } from "@/components/Filter";
 import { useRef } from "react";
 import { useMemberFilter } from "./hooks/useMemberFilter.ts";
 import { useNavigate } from "react-router-dom";
-import { FilterSearchbar } from "@/components";
+import { FilterSearchbar, SkeletonList } from "@/components";
+import { MEMBER_GRID_TEMPLATE } from "./constants/memberGrid.ts";
+import { MemberDataListHeader } from "./components/MemberDataListHeader";
 import { useGetMemberListQuery } from "@/services/member/useMemberQuery";
+
+const MemberListSkeleton = () => {
+  return (
+    <SkeletonList
+      title="수급자 목록"
+      itemCount={5}
+      gridTemplate={MEMBER_GRID_TEMPLATE}
+      columnsLength={9}
+      containerClassName={memberContainer}
+    >
+      <MemberDataListHeader />
+    </SkeletonList>
+  );
+};
 
 export const MemberPage = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const { data: members } = useGetMemberListQuery();
-
-  const displayMembers = members || [];
-
+  const { data: members, isLoading } = useGetMemberListQuery();
   const handleNewMember = () => {
     navigate("/member/new");
   };
   const {
-    filteredMembers,
     resetCounter,
+    filteredMembers,
+
     handleFilterReset,
     handleCareGradeFilterChange,
     handleGenderFilterChange,
     handleSearchChange,
-  } = useMemberFilter(displayMembers);
+  } = useMemberFilter(members ?? []);
 
   const filterItems = [
     {
@@ -70,7 +83,11 @@ export const MemberPage = () => {
         />
       </FilterSearchbar>
       {/* 데이터 리스트 */}
-      <MemberDataList members={filteredMembers} />
+      {isLoading ? (
+        <MemberListSkeleton />
+      ) : (
+        <MemberDataList members={filteredMembers} />
+      )}
     </div>
   );
 };
