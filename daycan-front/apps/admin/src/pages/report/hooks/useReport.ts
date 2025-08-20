@@ -24,6 +24,11 @@ export const useReports = () => {
     gcTime: 10 * 60 * 1000,
   });
 
+  const [isReserveSendModalOpen, setIsReserveSendModalOpen] =
+    useState<boolean>(false);
+  const [isImmediateSendModalOpen, setIsImmediateSendModalOpen] =
+    useState<boolean>(false);
+
   // 로컬 상태로 관리
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [resetCounter, setResetCounter] = useState(0);
@@ -200,6 +205,7 @@ export const useReports = () => {
     console.log("즉시 전송:", checkedSelectableIds);
     // TODO: API 호출
     setCheckedReportIds(new Set());
+    setIsImmediateSendModalOpen(true);
   };
 
   const handleReserveSend = () => {
@@ -216,6 +222,7 @@ export const useReports = () => {
     console.log("예약 전송:", checkedSelectableIds);
     // TODO: API 호출
     setCheckedReportIds(new Set());
+    setIsReserveSendModalOpen(true);
   };
 
   return {
@@ -233,7 +240,8 @@ export const useReports = () => {
     isIndeterminateFiltered,
     isAllSelectedSended,
     isIndeterminateSended,
-
+    isReserveSendModalOpen,
+    isImmediateSendModalOpen,
     // 핸들러 함수들
     handleFilterReset,
     handleStatusFilterChange,
@@ -243,5 +251,7 @@ export const useReports = () => {
     handleSelectAllSended,
     handleImmediateSend,
     handleReserveSend,
+    setIsReserveSendModalOpen,
+    setIsImmediateSendModalOpen,
   };
 };
