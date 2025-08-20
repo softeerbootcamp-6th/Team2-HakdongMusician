@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getReport, getReportList } from ".";
 import type { TReportStatus } from "./types";
 import type { YearMonthDay } from "@/types/date";
@@ -14,23 +14,6 @@ export const reportKeys = {
     [...reportKeys.all, "list", yyyymmdd, statuses] as const,
   detail: (yyyymmdd: YearMonthDay, memberId: number) =>
     [...reportKeys.all, "detail", yyyymmdd, memberId] as const,
-};
-
-/**
- * 리포트 리스트 조회 쿼리 (Suspense)
- * @param yyyymmdd 날짜
- * @param statuses 상태
- * @author 소보길
- */
-export const useGetReportListSuspenseQuery = (
-  yyyymmdd: YearMonthDay,
-  statuses?: TReportStatus[]
-) => {
-  return useSuspenseQuery({
-    queryKey: reportKeys.list(yyyymmdd, statuses),
-    queryFn: () => getReportList(yyyymmdd, statuses),
-    ...DEFAULT_QUERY_OPTIONS,
-  });
 };
 
 /**
