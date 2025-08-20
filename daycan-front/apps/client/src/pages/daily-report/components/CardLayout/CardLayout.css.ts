@@ -4,7 +4,6 @@ import { recipe } from "@vanilla-extract/recipes";
 
 export const cardLayout = style({
   width: "100%",
-  height: "100%",
   padding: "12px 10px",
   boxSizing: "border-box",
   display: "flex",

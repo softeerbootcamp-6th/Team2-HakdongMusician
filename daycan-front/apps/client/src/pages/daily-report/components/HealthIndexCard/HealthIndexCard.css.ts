@@ -5,7 +5,6 @@ import { recipe } from "@vanilla-extract/recipes";
 export const container = style({
   display: "flex",
   width: "100%",
-  height: "100%",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "start",
