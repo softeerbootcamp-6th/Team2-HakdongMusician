@@ -38,7 +38,7 @@ public class CenterDocumentController {
   @Operation(summary = "기록지/리포트 카운트 조회", description = "미완료된 기록지/리포트 수와 지연된 기록지/리포트 수를 조회합니다. (어드민 페이지 사이드 바)")
   public ResponseWrapper<DocumentCountResponse> getDocumentCount(
       @AuthenticatedUser CenterDetails centerDetails,
-      @Parameter(description = "조회할 날짜 (yyyy-MM)", example = "2025-08")
+      @Parameter(description = "조회할 날짜 (yyyy-MM-dd)", example = "2025-08-07")
       @PathVariable @Valid @NotNull
       LocalDate date
   ) {
