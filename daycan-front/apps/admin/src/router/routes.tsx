@@ -50,10 +50,6 @@ export const routes: TRoutes[] = [
     path: "/member",
     layout: <MainLayout />,
     children: [
-      // {
-      //   path: "",
-      //   element: <div>HomePage</div>, // => 여기 Outlet으로 렌더됨
-      // },
       {
         path: "",
         element: <MemberPage />,
