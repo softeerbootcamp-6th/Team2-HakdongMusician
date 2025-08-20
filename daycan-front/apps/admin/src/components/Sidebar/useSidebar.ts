@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { PAGE_KEYS, type PageKey } from "@/constants/sidebar.ts";
+import { useGetDocumentCountQuery } from "@/services/document/useDocumentQuery";
+import { TODAY_DATE } from "@/utils/dateFormatter";
 
 export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.CARE_SHEET) => {
   const [selectedMenu, setSelectedMenu] = useState<PageKey>(initialMenu);
-  const [count] = useState<number>(5);
+  const { data: documentCount } = useGetDocumentCountQuery(TODAY_DATE);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -64,7 +66,7 @@ export const useSidebar = (initialMenu: PageKey = PAGE_KEYS.CARE_SHEET) => {
     selectedMenu,
     handleMenuClick,
     isMenuSelected,
-    count,
+    documentCount,
     handleNewRecordClick,
   };
 };
