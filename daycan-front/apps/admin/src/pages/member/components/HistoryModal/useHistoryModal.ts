@@ -26,7 +26,11 @@ export const useHistoryModal = (memberId: number) => {
 
   // ===== Report 데이터 조회 함수 =====
   const fetchReportData = (yyyymmdd: YearMonthDay, memberId: number) => {
-    const { data: reportData } = useGetReportDetailQuery(yyyymmdd, memberId);
+    const { data: reportData } = useGetReportDetailQuery(
+      yyyymmdd,
+      memberId,
+      true
+    );
     setReportData(reportData ?? null);
   };
 
