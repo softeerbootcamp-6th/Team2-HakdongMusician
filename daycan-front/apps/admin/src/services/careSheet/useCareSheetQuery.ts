@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { getCareSheetList, getCareSheet, getCareSheetDetail } from "./index";
 
 import type { YearMonthDay } from "@/types/date";
@@ -35,6 +35,21 @@ export const useGetCareSheetListQuery = (
     queryKey: careSheetKeys.listByDate(date, writerId),
     queryFn: () => getCareSheetList(date, writerId),
     enabled: !!date,
+    ...DEFAULT_QUERY_OPTIONS,
+  });
+};
+
+/**
+ * 특정 날짜와 수급자의 케어시트 목록을 조회하는 훅 (Suspense)
+ * @author 소보길
+ */
+export const useGetCareSheetListSuspenseQuery = (
+  date: YearMonthDay,
+  writerId?: number
+) => {
+  return useSuspenseQuery({
+    queryKey: careSheetKeys.listByDate(date, writerId),
+    queryFn: () => getCareSheetList(date, writerId),
     ...DEFAULT_QUERY_OPTIONS,
   });
 };

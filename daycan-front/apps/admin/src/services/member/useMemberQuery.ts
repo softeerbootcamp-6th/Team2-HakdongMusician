@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
 import { getMemberList, getMember } from "./index";
 
@@ -13,7 +13,21 @@ export const memberKeys = {
 };
 
 /**
- * 수급자 목록 조회 쿼리
+ * 수급자 목록 조회 쿼리 (Suspense)
+ * Suspense를 사용하여 로딩 상태를 자동으로 처리합니다.
+ * @returns 수급자 목록
+ * @author 소보길
+ */
+export const useGetMemberListSuspenseQuery = () => {
+  return useSuspenseQuery({
+    queryKey: memberKeys.lists(),
+    queryFn: getMemberList,
+    ...DEFAULT_QUERY_OPTIONS,
+  });
+};
+
+/**
+ * 수급자 목록 조회 쿼리 (기존 방식)
  * List 의 경우엔 추후에 Suspense 쿼리로 변환 후 사용할 예정
  * @author 홍규진
  */

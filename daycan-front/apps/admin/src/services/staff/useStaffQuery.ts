@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
 import { getStaff, getStaffList } from ".";
 
@@ -9,7 +9,21 @@ export const STAFF_QUERY_KEY = {
 };
 
 /**
- * 직원 목록 조회 쿼리
+ * 직원 목록 조회 쿼리 (Suspense)
+ * Suspense를 사용하여 로딩 상태를 자동으로 처리합니다.
+ * @returns 직원 목록
+ * @author 소보길
+ */
+export const useGetStaffListSuspenseQuery = () => {
+  return useSuspenseQuery({
+    queryKey: STAFF_QUERY_KEY.list(),
+    queryFn: () => getStaffList(),
+    ...DEFAULT_QUERY_OPTIONS,
+  });
+};
+
+/**
+ * 직원 목록 조회 쿼리 (기존 방식)
  * List 의 경우엔 추후에 Suspense 쿼리로 변환 후 사용할 예정
  * @returns 직원 목록
  * @author 홍규진
