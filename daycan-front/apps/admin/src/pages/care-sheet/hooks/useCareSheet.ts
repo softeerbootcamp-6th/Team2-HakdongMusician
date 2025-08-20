@@ -1,13 +1,13 @@
 import { useAtom } from "jotai";
 import { useState, useMemo, useEffect } from "react";
 import { checkedCareSheetIdsAtom } from "../atoms";
-import { useGetCareSheetListQuery } from "@/services/careSheet/useCareSheetQuery";
+import { useGetCareSheetListSuspenseQuery } from "@/services/careSheet/useCareSheetQuery";
 import { TODAY_DATE } from "@/utils/dateFormatter";
 import { useUpdateCareSheetAttendanceMutation } from "@/services/careSheet/useCareSheetMutation";
 import { useToast } from "@daycan/ui";
 
 export const useCareSheets = () => {
-  const { data, isLoading, error } = useGetCareSheetListQuery(TODAY_DATE);
+  const { data } = useGetCareSheetListSuspenseQuery(TODAY_DATE);
   const { showToast } = useToast();
   // 로컬 상태로 관리
   const [resetCounter, setResetCounter] = useState(0);
@@ -232,8 +232,6 @@ export const useCareSheets = () => {
     notApplicableCareSheets,
     selectableApplicableCareSheets,
     selectableNotApplicableCareSheets,
-    isLoading,
-    error,
     timeLeft,
     resetCounter,
     checkedCareSheetIds,

@@ -1,66 +1,74 @@
+import { Suspense } from "react";
 import { PageToolbar } from "@/components/PageToolbar";
 import { Body, Heading, COLORS } from "@daycan/ui";
 import { careSheetContainer } from "./CareSheetPage.css";
 import { CareSheetList } from "./components/CareSheetList";
 import { useCareSheets } from "./hooks/useCareSheet";
+import { SkeletonCareSheetList } from "./components/SkeletonCareSheetList";
 
-export const CareSheetPage = () => {
+/**
+ * 출석 인원 CareSheetList를 Suspense로 감싸는 컴포넌트
+ */
+const ApplicableCareSheetListSuspense = () => {
   const {
-    // 데이터 상태
     applicableCareSheets,
-    notApplicableCareSheets,
-
-    isLoading,
-    error,
     timeLeft,
     hasCheckedApplicableItems,
-    hasCheckedNotApplicableItems,
-
-    // 체크 관련 상태
-    checkedCareSheetIds,
-
-    // 선택 상태 (각 리스트별)
     isAllSelectedApplicable,
     isIndeterminateApplicable,
-    isAllSelectedNotApplicable,
-    isIndeterminateNotApplicable,
-
-    // 액션 핸들러
     handleProcessApplicable,
-    handleProcessNotApplicable,
     handleApplicableSelectAll,
-    handleNotApplicableSelectAll,
+    checkedCareSheetIds,
     handleItemCheck,
   } = useCareSheets();
 
-  // 로딩 상태 처리
-  if (isLoading) {
-    return (
-      <div className={careSheetContainer}>
-        <PageToolbar>
-          <Heading>기록지 관리</Heading>
-        </PageToolbar>
-        <Body type="large" weight={600} color={COLORS.gray[700]}>
-          로딩 중...
-        </Body>
-      </div>
-    );
-  }
+  return (
+    <CareSheetList
+      careSheets={applicableCareSheets.result}
+      status="APPLICABLE"
+      onProcessItems={handleProcessApplicable}
+      timeLeft={timeLeft}
+      hasCheckedItems={hasCheckedApplicableItems}
+      isAllSelected={isAllSelectedApplicable}
+      isIndeterminate={isIndeterminateApplicable}
+      onSelectAll={handleApplicableSelectAll}
+      checkedCareSheetIds={checkedCareSheetIds}
+      onItemCheck={handleItemCheck}
+    />
+  );
+};
 
-  // 에러 상태 처리
-  if (error) {
-    return (
-      <div className={careSheetContainer}>
-        <PageToolbar>
-          <Heading>기록지 관리</Heading>
-        </PageToolbar>
-        <Body type="large" weight={600} color={COLORS.red[500]}>
-          에러가 발생했습니다: {error.message}
-        </Body>
-      </div>
-    );
-  }
+/**
+ * 결석 인원 CareSheetList를 Suspense로 감싸는 컴포넌트
+ */
+const NotApplicableCareSheetListSuspense = () => {
+  const {
+    notApplicableCareSheets,
+    hasCheckedNotApplicableItems,
+    isAllSelectedNotApplicable,
+    isIndeterminateNotApplicable,
+    handleProcessNotApplicable,
+    handleNotApplicableSelectAll,
+    checkedCareSheetIds,
+    handleItemCheck,
+  } = useCareSheets();
 
+  return (
+    <CareSheetList
+      careSheets={notApplicableCareSheets.result}
+      status="NOT_APPLICABLE"
+      onProcessItems={handleProcessNotApplicable}
+      hasCheckedItems={hasCheckedNotApplicableItems}
+      isAllSelected={isAllSelectedNotApplicable}
+      isIndeterminate={isIndeterminateNotApplicable}
+      onSelectAll={handleNotApplicableSelectAll}
+      checkedCareSheetIds={checkedCareSheetIds}
+      onItemCheck={handleItemCheck}
+    />
+  );
+};
+
+export const CareSheetPage = () => {
   return (
     <div className={careSheetContainer}>
       <PageToolbar>
@@ -72,32 +80,31 @@ export const CareSheetPage = () => {
         모든 지연된 기록지는 여기서 사라져요.
       </Body>
 
-      {/* 출석 인원 */}
-      <CareSheetList
-        careSheets={applicableCareSheets.result}
-        status="APPLICABLE"
-        onProcessItems={handleProcessApplicable}
-        timeLeft={timeLeft}
-        hasCheckedItems={hasCheckedApplicableItems}
-        isAllSelected={isAllSelectedApplicable}
-        isIndeterminate={isIndeterminateApplicable}
-        onSelectAll={handleApplicableSelectAll}
-        checkedCareSheetIds={checkedCareSheetIds}
-        onItemCheck={handleItemCheck}
-      />
+      {/* 출석 인원 - Suspense로 감싸기 */}
+      <Suspense
+        fallback={
+          <SkeletonCareSheetList
+            title="기록지 관리"
+            description="출석인원"
+            itemCount={3}
+          />
+        }
+      >
+        <ApplicableCareSheetListSuspense />
+      </Suspense>
 
-      {/* 결석 인원 */}
-      <CareSheetList
-        careSheets={notApplicableCareSheets.result}
-        status="NOT_APPLICABLE"
-        onProcessItems={handleProcessNotApplicable}
-        hasCheckedItems={hasCheckedNotApplicableItems}
-        isAllSelected={isAllSelectedNotApplicable}
-        isIndeterminate={isIndeterminateNotApplicable}
-        onSelectAll={handleNotApplicableSelectAll}
-        checkedCareSheetIds={checkedCareSheetIds}
-        onItemCheck={handleItemCheck}
-      />
+      {/* 결석 인원 - Suspense로 감싸기 */}
+      <Suspense
+        fallback={
+          <SkeletonCareSheetList
+            title="기록지 관리"
+            description="결석인원"
+            itemCount={2}
+          />
+        }
+      >
+        <NotApplicableCareSheetListSuspense />
+      </Suspense>
     </div>
   );
 };
