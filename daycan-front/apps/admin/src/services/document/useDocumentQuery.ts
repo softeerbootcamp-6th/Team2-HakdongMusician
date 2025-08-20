@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getDocumentCount, getDocumentByMonth } from "./index";
-import type { YearMonth } from "@/types/date";
+import type { YearMonth, YearMonthDay } from "@/types/date";
 import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
 
 /**
@@ -9,7 +9,8 @@ import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
  */
 export const documentKeys = {
   all: ["document"] as const,
-  count: (yyyymm: YearMonth) => [...documentKeys.all, "count", yyyymm] as const,
+  count: (yyyymmdd: YearMonthDay) =>
+    [...documentKeys.all, "count", yyyymmdd] as const,
   list: (memberId: number, yyyymm: YearMonth) =>
     [...documentKeys.all, "list", memberId, yyyymm] as const,
 };
@@ -18,10 +19,10 @@ export const documentKeys = {
  * 날짜별 문서 조회 쿼리
  * @author 홍규진
  */
-export const useGetDocumentCountQuery = (yyyymm: YearMonth) => {
+export const useGetDocumentCountQuery = (yyyymmdd: YearMonthDay) => {
   return useQuery({
-    queryKey: documentKeys.count(yyyymm),
-    queryFn: () => getDocumentCount(yyyymm),
+    queryKey: documentKeys.count(yyyymmdd),
+    queryFn: () => getDocumentCount(yyyymmdd),
     ...DEFAULT_QUERY_OPTIONS,
   });
 };
