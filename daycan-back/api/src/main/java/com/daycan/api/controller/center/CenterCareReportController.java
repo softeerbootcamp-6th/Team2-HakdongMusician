@@ -189,7 +189,12 @@ public class CenterCareReportController {
   @PatchMapping("/{reportId}/send")
   public ResponseWrapper<Void> sendReport(
       @PathVariable Long reportId,
-      @Parameter(description = "전송 시간 (ISO 8601 형식, 예: 2025-07-31T10:00:00Z)")
+      @Parameter(description = "전송 시간 (ISO 8601 형식, 예: 2025-07-31T10:00:00Z)",
+          examples = {
+              @ExampleObject(name = "UTC_Z", value = "2025-07-31T10:00:00Z"),
+              @ExampleObject(name = "KST_with_offset", value = "2025-07-31T19:00:00+09:00")
+          }
+      )
       @RequestParam(required = false) Instant time
   ) {
 
