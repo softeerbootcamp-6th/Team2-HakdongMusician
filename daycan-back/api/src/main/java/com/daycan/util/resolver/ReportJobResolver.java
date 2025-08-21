@@ -40,7 +40,7 @@ public class ReportJobResolver {
 
   public static Map<String, Object> buildSrc(CareSheet sheet) {
     return Map.of(
-        "breakfast", sheet.getBreakfast().toString(), // Meal → 문자열 변환 로직 따로
+        "breakfast", sheet.getBreakfast().toString(),
         "lunch", sheet.getLunch().toString(),
         "dinner", sheet.getDinner().toString(),
         "physical_comment", sheet.getPhysicalComment(),

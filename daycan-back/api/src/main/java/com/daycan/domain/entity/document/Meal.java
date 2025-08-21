@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Meal{
+public class Meal {
+
   @Column(nullable = false)
   private boolean provided;
 
@@ -25,5 +26,10 @@ public class Meal{
 
   @Enumerated(EnumType.STRING)
   private MealAmount amount;
+
+  @Override
+  public String toString() {
+    return "{" + type + ":" + amount + "}";
+  }
 }
 
