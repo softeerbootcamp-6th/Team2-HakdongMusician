@@ -17,19 +17,22 @@ import com.daycan.domain.model.CareSheetInitVO;
 import com.daycan.api.dto.center.request.CareSheetRequest;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.exceptions.DocumentNonCreatedException;
+import com.daycan.external.worker.job.command.CreateReportCommand;
+import com.daycan.external.worker.job.enums.TaskType;
 import com.daycan.repository.jpa.CareReportRepository;
 import com.daycan.repository.jpa.CareSheetRepository;
 import com.daycan.repository.jpa.DocumentRepository;
 import com.daycan.repository.jpa.VitalRepository;
 import com.daycan.repository.query.DocumentQueryRepository;
+import com.daycan.util.resolver.ReportJobResolver;
 import com.daycan.util.resolver.SheetMapper;
 import com.daycan.util.prefiller.CareReportPrefiller;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,34 +47,59 @@ public class CareSheetWriteService {
   private final CareReportRepository careReportRepository;
   private final VitalRepository vitalRepository;
   private final DocumentRepository documentRepository;
+  private final ApplicationEventPublisher publisher;
 
   @Transactional(propagation = Propagation.MANDATORY)
   protected Long writeSheet(CareSheetRequest req) {
     CareSheetInitVO init = fetchInitOrThrow(req);
     validateStaff(init, req);
-
-    boolean isNew = init.isNew();
     Document doc = init.doc();
-    Staff staff = init.staff();
 
-    List<PersonalProgram> programs = mapPrograms(req);
+    CareSheet sheet = upsertSheet(init, req);
 
-    CareSheet sheet = isNew
-        ? createSheet(doc, req, staff, programs)
-        : updateSheet(doc, req, programs);
-    Vital vital = upsertVital(doc, req.healthCare(), req.physical(), init.prevAgg());
+    // TODO: upsertVital() ExecutorService로 병렬처리 가능
+    Vital vital = upsertVital(init, req);
 
     doc.markSheetDone();
 
-    CareReport report = createReport(sheet, vital, init.member(), init.prevAgg(),
-        init.hasFollowingVital());
+    CareReport report = createReport(
+        sheet, vital, init.member(), init.prevAgg(), init.hasFollowingVital());
 
     doc.markReportPending();
 
-    logSheet(sheet, req, isNew);
-
+    logSheet(sheet, req, init.isNew());
     doc = documentRepository.save(doc);
+
+    publisher.publishEvent(buildCreateReportCommand(report, sheet));
     return doc.getId();
+  }
+
+  private CreateReportCommand buildCreateReportCommand(CareReport report, CareSheet sheet) {
+    Document document = report.getDocument();
+    return CreateReportCommand.of(
+        ReportJobResolver.createJobId(
+            TaskType.REPORT_CREATE,
+            report.getId()),
+        ReportJobResolver.createIdempotencyKey(report.getId()),
+        document.getCenter().getId(),
+        document.getMember().getId(),
+        document.getDate(),
+        ReportJobResolver.buildSrc(sheet),
+        System.currentTimeMillis()
+    );
+  }
+
+  private CareSheet upsertSheet(CareSheetInitVO initVo, CareSheetRequest request) {
+    boolean isNew = initVo.isNew();
+    Document doc = initVo.doc();
+    Staff staff = initVo.staff();
+
+    List<PersonalProgram> programs = mapPrograms(request);
+
+    if (isNew) {
+      return createSheet(doc, request, staff, programs);
+    }
+    return updateSheet(doc, request, programs);
   }
 
   private CareSheetInitVO fetchInitOrThrow(CareSheetRequest req) {
@@ -109,22 +137,26 @@ public class CareSheetWriteService {
     return sheet; // 영속 상태
   }
 
-  private Vital upsertVital(Document doc,
-      HealthCareEntry healthCareEntry,
-      PhysicalEntry physicalEntry,
-      VitalAggregate baseline) {
+  private Vital upsertVital(
+      CareSheetInitVO initVo, CareSheetRequest request
+  ) {
+    Document doc = initVo.doc();
+    VitalAggregate baseline = initVo.prevAgg();
+
+    HealthCareEntry healthCareEntry = request.healthCare();
+    PhysicalEntry physicalEntry = request.physical();
 
     return vitalRepository.findByDocumentId(doc.getId())
-        .map(v -> {
-          v.update(
+        .map(originVital -> {
+          originVital.update(
               healthCareEntry.bloodPressure().systolic(),
               healthCareEntry.bloodPressure().diastolic(),
               healthCareEntry.temperature().temperature(),
               physicalEntry.numberOfStool(),
               physicalEntry.numberOfUrine()
           );
-          v.applyAggregateFrom(baseline);
-          return v; // 영속 엔티티 → save 불필요
+          originVital.applyAggregateFrom(baseline);
+          return originVital;
         })
         .orElseGet(() -> {
           Vital newVital = Vital.builder()
@@ -140,36 +172,26 @@ public class CareSheetWriteService {
         });
   }
 
-  private CareReport createReport(
-      CareSheet sheet,
-      Vital vital,
-      Member member,
-      VitalAggregate baseline,
-      boolean hasFollowingVital
-  ) {
+  private CareReport createReport(CareSheet sheet, Vital vital, Member member,
+      VitalAggregate baseline, boolean hasFollowingVital) {
     final Document doc = (sheet != null) ? sheet.getDocument() : vital.getDocument();
     final CareReportInit init = CareReportPrefiller.computeInit(sheet, vital, member);
-
     CareReport report = careReportRepository.findById(doc.getId())
-        .map(existing -> existing.updatePrefill(init))
-        .orElseGet(() -> {
+        .map(existing -> existing.updatePrefill(init)).orElseGet(() -> {
           return CareReport.prefill(doc, init);
         });
-
-    final Integer newScore = report.getTotalScore();
-    if (!Objects.equals(vital.getHealthScore(), newScore)) {
-      vital.setHealthScore(newScore);
-
+    final int newScore = report.getMealScore() + vital.getHealthScore() + report.getPhysicalScore()
+        + report.getCognitiveScore();
+    if (!vital.getHealthScore().equals(newScore)) {
+      vital.updateScore(newScore);
       if (hasFollowingVital) {
         recomputeChainFromInclusive(doc.getMember().getId(), doc.getDate());
       } else {
         vital.applyAggregateFrom(baseline);
       }
     }
-
     return careReportRepository.save(report);
   }
-
 
   private void recomputeChainFromInclusive(Long memberId, LocalDate fromDate) {
     Vital prev = vitalRepository
