@@ -13,7 +13,7 @@ export const itemsContainer = style({
   flexDirection: "column",
   width: "100%",
   height: "500px",
-  overflowY: "auto",
+  overflowY: "scroll",
   padding: "0px 8px 0px 16px",
   marginTop: "8px",
   boxSizing: "border-box",
