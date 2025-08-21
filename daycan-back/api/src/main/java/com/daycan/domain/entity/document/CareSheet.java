@@ -26,10 +26,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -139,7 +144,7 @@ public class CareSheet extends BaseTimeEntity {
       orphanRemoval = true
   )
   @OrderBy("id ASC")
-  private List<PersonalProgram> personalPrograms;
+  private Set<PersonalProgram> personalPrograms = new LinkedHashSet<>();
 
   @Size(max = 300)
   @Column(name = "functional_comment", length = 300)
@@ -162,28 +167,66 @@ public class CareSheet extends BaseTimeEntity {
   }
 
   public boolean addPersonalProgram(PersonalProgram p) {
-    if (p == null) {
-      return false; // 조용히 무시
-    }
-
+    if (p == null) return false;
     if (p.getProgramName() == null || p.getType() == null) {
       throw new ApplicationException(DocumentErrorStatus.PERSONAL_PROGRAM_INVALID_ARGUMENT);
     }
-
-    // 이미 있으면 점수만 갱신하고 추가 안 함
-    for (PersonalProgram cur : personalPrograms) {
-      if (p.getProgramName().equals(cur.getProgramName()) && p.getType() == cur.getType()) {
-        if (p.getScore() != null && p.getScore() != cur.getScore()) {
-          cur.update(cur.getProgramName(), cur.getType(), p.getScore());
+    ensureSet();
+    p.setCareSheet(this);
+    // Set 동작: 동등한 항목이면 add=false 반환
+    boolean added = personalPrograms.add(p);
+    if (!added) {
+      // 이미 있으면 점수만 갱신
+      for (PersonalProgram cur : personalPrograms) {
+        if (cur.equals(p)) {
+          if (!Objects.equals(cur.getScore(), p.getScore())) {
+            cur.update(cur.getProgramName(), cur.getType(), p.getScore());
+          }
+          break;
         }
-        return false; // 새로운 insert 스케줄링 안 됨
       }
     }
+    return added;
+  }
 
-    // 새로 추가
-    personalPrograms.add(p);
-    p.setCareSheet(this);
-    return true;
+  public void syncPersonalPrograms(Collection<PersonalProgram> incoming) {
+    ensureSet();
+    // incoming 정규화 & 인덱싱
+    Map<String, PersonalProgram> incMap = (incoming == null ? Map.of() :
+        incoming.stream()
+            .filter(Objects::nonNull)
+            .filter(pp -> pp.getProgramName() != null && pp.getType() != null)
+            .collect(Collectors.toMap(
+                pp -> key(pp.getProgramName(), pp.getType()),
+                Function.identity(),
+                (oldV, newV) -> newV,
+                LinkedHashMap::new
+            ))
+    );
+
+    for (PersonalProgram in : incMap.values()) {
+      addPersonalProgram(new PersonalProgram(in.getProgramName(), in.getType(), in.getScore()));
+    }
+
+    Set<String> keep = incMap.keySet();
+    Iterator<PersonalProgram> it = personalPrograms.iterator();
+    while (it.hasNext()) {
+      PersonalProgram cur = it.next();
+      if (!keep.contains(key(cur.getProgramName(), cur.getType()))) {
+        it.remove();
+        cur.setCareSheet(null);
+      }
+    }
+  }
+
+  private static String key(String name, ProgramType type) {
+    return name + "\u0001" + type.name();
+  }
+
+
+
+  private void ensureSet() {
+    if (personalPrograms == null) personalPrograms = new LinkedHashSet<>();
   }
 
   public void removePersonalProgram(PersonalProgram personalProgram) {
@@ -198,35 +241,10 @@ public class CareSheet extends BaseTimeEntity {
       writer = null; // Staff와의 연관관계 제거
     }
   }
-  public void replacePersonalPrograms(List<PersonalProgram> personalProgramList) {
-    if (personalPrograms == null) {
-      personalPrograms = new ArrayList<>();
-    } else {
-      personalPrograms.clear();
-    }
-    if (personalProgramList != null) {
-      personalProgramList.forEach(this::addPersonalProgram);
-    }
-  }
-
-  /**
-   * 편의 오버로드: 바로 값으로 추가
-   */
   public boolean addPersonalProgram(String name, ProgramType type, ProgramScore score) {
     return addPersonalProgram(new PersonalProgram(name, type, score));
   }
 
-  /**
-   * 교체 모드: 중복 없이 싹 갈아끼우기
-   */
-  public void replacePersonalPrograms(Collection<PersonalProgram> newOnes) {
-    personalPrograms.clear();
-    if (newOnes != null) {
-      for (PersonalProgram p : newOnes) {
-        addPersonalProgram(p);
-      }
-    }
-  }
 
   @Builder
   private CareSheet(

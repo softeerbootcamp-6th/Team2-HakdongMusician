@@ -5,7 +5,6 @@ import com.daycan.domain.entity.document.CareSheet;
 import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.entity.document.PersonalProgram;
 import com.daycan.domain.entity.document.Vital;
-import com.daycan.domain.entry.ProgramComment;
 import com.daycan.domain.entity.document.Meal;
 import com.daycan.domain.enums.ProgramType;
 import com.daycan.domain.model.CareReportInit;
@@ -52,7 +51,7 @@ public final class CareReportPrefiller {
     String excrCmt = VitalCommenter.commentExcretion(stool, urine);
     String healthFooter = joinNonEmpty(bpTempCmt, excrCmt, "\n");
 
-    List<PersonalProgram> pList = (sheet != null) ? sheet.getPersonalPrograms() : null;
+    List<PersonalProgram> pList = (sheet != null) ? sheet.getPersonalPrograms().stream().toList() : null;
 
     int physical15 = ProgramScorer.scorePhysical(pList);
     int cognitive15 = ProgramScorer.scoreCognitive(pList);

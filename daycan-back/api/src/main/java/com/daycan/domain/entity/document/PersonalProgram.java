@@ -34,10 +34,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Table(
     name = "personal_program",
-    uniqueConstraints = @UniqueConstraint(
-        name = "uk_pp_sheet_name_type",
-        columnNames = {"care_sheet_id","program_name","type"}
-    ),
     indexes = {
         @Index(name = "idx_pp_care_sheet", columnList = "care_sheet_id")
     }
@@ -75,8 +71,21 @@ public class PersonalProgram extends BaseTimeEntity {
     if (score != null) this.score = score;
   }
 
-  // CareSheet 쪽 컬렉션 헬퍼에서만 세팅되도록 가시성 낮춤
   protected void setCareSheet(CareSheet careSheet) {
     this.careSheet = careSheet;
+  }
+
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof PersonalProgram that)) return false;
+    return Objects.equals(programName, that.programName) && type == that.type;
+  }
+  @Override public int hashCode() { return Objects.hash(programName, type); }
+
+  private static String norm(String s) {
+    if (s == null) return null;
+    s = s.trim();
+    return s.length() <= 100 ? s : s.substring(0, 100);
   }
 }

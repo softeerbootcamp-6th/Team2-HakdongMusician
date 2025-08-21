@@ -109,30 +109,6 @@ public final class SheetMapper {
   }
 
 
-  public static List<PersonalProgram> toPersonalPrograms(List<ProgramEntry> entries) {
-    if (entries == null || entries.isEmpty()) {
-      return List.of();
-    }
-
-    Map<String, ProgramEntry> latestByName = entries.stream()
-        .filter(Objects::nonNull)
-        .filter(e -> e.name() != null && !e.name().isBlank())
-        .collect(Collectors.toMap(
-            e -> truncate(e.name().trim(), 100),
-            e -> e,
-            (oldV, newV) -> newV,              // 같은 이름 있으면 나중 값으로
-            LinkedHashMap::new
-        ));
-
-    return latestByName.entrySet().stream()
-        .map(it -> new PersonalProgram(
-            it.getKey(),
-            it.getValue().type(),
-            it.getValue().score()
-        ))
-        .toList();
-  }
-
   private static String truncate(String s, int max) {
     return s.length() <= max ? s : s.substring(0, max);
   }
@@ -154,4 +130,29 @@ public final class SheetMapper {
   private static <T, R> R safe(T target, java.util.function.Function<T, R> getter) {
     return target == null ? null : getter.apply(target);
   }
+
+  public static List<PersonalProgram> toPersonalPrograms(List<ProgramEntry> entries) {
+    if (entries == null || entries.isEmpty()) return List.of();
+
+    Map<String, ProgramEntry> latestByNameType = entries.stream()
+        .filter(Objects::nonNull)
+        .filter(e -> e.name() != null && !e.name().isBlank() && e.type() != null)
+        .collect(Collectors.toMap(
+            e -> norm(e.name()) + "\u0001" + e.type().name(),
+            e -> e,
+            (oldV, newV) -> newV,
+            LinkedHashMap::new
+        ));
+
+    return latestByNameType.values().stream()
+        .map(e -> new PersonalProgram(norm(e.name()), e.type(), e.score()))
+        .toList();
+  }
+
+  private static String norm(String s) {
+    if (s == null) return null;
+    s = s.trim();
+    return s.length() <= 100 ? s : s.substring(0, 100);
+  }
+
 }

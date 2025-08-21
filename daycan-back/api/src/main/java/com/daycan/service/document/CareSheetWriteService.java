@@ -71,7 +71,7 @@ public class CareSheetWriteService {
     logSheet(sheet, req, init.isNew());
     doc = documentRepository.save(doc);
 
-//    publisher.publishEvent(buildCreateReportCommand(report, sheet));
+    publisher.publishEvent(buildCreateReportCommand(report, sheet));
     return doc.getId();
   }
 
@@ -124,7 +124,7 @@ public class CareSheetWriteService {
       Staff staff,
       List<PersonalProgram> programs) {
     CareSheet sheet = SheetMapper.toEntity(doc, req, staff);
-    sheet.replacePersonalPrograms(programs);
+    sheet.syncPersonalPrograms(programs);
     return careSheetRepository.save(sheet);
   }
 
@@ -134,7 +134,7 @@ public class CareSheetWriteService {
     CareSheet sheet = careSheetRepository.findById(doc.getId())
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.SHEET_NOT_FOUND));
     SheetMapper.updateSheet(sheet, req);
-    sheet.replacePersonalPrograms(programs);
+    sheet.syncPersonalPrograms(programs);
     return sheet; // 영속 상태
   }
 
