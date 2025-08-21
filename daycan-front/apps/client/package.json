@@ -12,20 +12,22 @@
   "dependencies": {
     "@daycan/api": "workspace:*",
     "@daycan/ui": "workspace:*",
+    "@sentry/react": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@vanilla-extract/css": "catalog:",
+    "axios": "catalog:",
     "framer-motion": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-router-dom": "catalog:",
-    "recharts": "^3.1.0",
-    "axios": "catalog:"
+    "recharts": "^3.1.0"
   },
   "peerDependencies": {
     "@vanilla-extract/recipes": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
+    "@sentry/vite-plugin": "catalog:",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "@vanilla-extract/vite-plugin": "catalog:",

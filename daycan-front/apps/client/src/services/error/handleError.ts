@@ -6,10 +6,15 @@ import {
   ServerError,
 } from "@daycan/api";
 import { useToast } from "@daycan/ui";
-import { reIssueToken } from "../auth";
+import { captureServerError } from "./sentry";
 
-export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
+export const handleError = (
+  error: unknown,
+  device: "pc" | "mobile" = "pc",
+  onAuthError?: () => void
+) => {
   const { showToast } = useToast();
+  const SHORT_TOAST_DURATION = 1000;
 
   // 에러 타입별로 다른 처리
   if (error instanceof NetworkError) {
@@ -20,7 +25,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
         type: "error",
         variant: device,
       },
-      autoClose: 3000,
+      autoClose: SHORT_TOAST_DURATION,
       hideProgressBar: true,
     });
 
@@ -34,7 +39,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
         type: "error",
         variant: device,
       },
-      autoClose: 4000,
+      autoClose: SHORT_TOAST_DURATION,
       hideProgressBar: true,
     });
 
@@ -47,7 +52,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
       (error.code >= 40100 && error.code < 40200) ||
       (error.code >= 40300 && error.code < 40400)
     ) {
-      reIssueToken(localStorage.getItem("refreshToken") ?? "");
+      onAuthError?.();
     }
   } else if (error instanceof ClientError) {
     // 클라이언트 에러 (400, 404 등)
@@ -57,7 +62,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
         type: "warning",
         variant: device,
       },
-      autoClose: 3000,
+      autoClose: SHORT_TOAST_DURATION,
       hideProgressBar: true,
     });
 
@@ -71,14 +76,20 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
         type: "error",
         variant: "pc",
       },
-      autoClose: 5000,
+      autoClose: SHORT_TOAST_DURATION,
       hideProgressBar: true,
     });
 
     // 서버 상태 모니터링 또는 재시도 로직
     console.error("🖥️ Server Error:", error);
 
-    // Sentry 등으로 에러 로깅 추가 가능
+    // Sentry로 서버 에러만 전송
+    captureServerError(error, {
+      errorCode: error.code,
+      errorMessage: error.message,
+      device,
+      timestamp: new Date().toISOString(),
+    });
   } else if (error instanceof HttpError) {
     // 기타 HTTP 에러 (300, 200 등)
     showToast({
@@ -87,7 +98,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
         type: "warning",
         variant: device,
       },
-      autoClose: 3000,
+      autoClose: SHORT_TOAST_DURATION,
       hideProgressBar: true,
     });
 
@@ -103,7 +114,7 @@ export const handleError = (error: unknown, device: "pc" | "mobile" = "pc") => {
         type: "error",
         variant: device,
       },
-      autoClose: 4000,
+      autoClose: SHORT_TOAST_DURATION,
       hideProgressBar: true,
     });
 

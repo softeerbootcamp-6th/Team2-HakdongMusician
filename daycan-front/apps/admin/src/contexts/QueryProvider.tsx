@@ -8,6 +8,8 @@ import { type ReactNode } from "react";
 import { AuthError, ClientError } from "@daycan/api";
 import { showToast } from "@/utils/toastUtils";
 import { handleError } from "@/services/error";
+import { useNavigate } from "react-router-dom";
+import { reIssueToken } from "@/services/auth";
 
 /**
  * 이미 QueryClient는 Context API를 통해 구현되어있기에
@@ -19,6 +21,29 @@ import { handleError } from "@/services/error";
  * @author 홍규진
  */
 export function QueryClientProvider({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
+  const handleAuthError = () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
+      navigate("/login");
+    } else {
+      reIssueToken(refreshToken)
+        .then((data) => {
+          if (!data) return;
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
+          window.location.reload();
+        })
+        .catch(() => {
+          showToast({
+            message: "로그인 정보가 만료되었습니다. 다시 로그인해주세요.",
+            type: "error",
+            variant: "pc",
+          });
+          navigate("/login");
+        });
+    }
+  };
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -39,14 +64,14 @@ export function QueryClientProvider({ children }: { children: ReactNode }) {
     },
     queryCache: new QueryCache({
       onError: (error) => {
-        handleError(error, "pc");
+        handleError(error, "pc", handleAuthError);
       },
     }),
     mutationCache: new MutationCache({
       onError: (error, _variables, _ctx, mutation) => {
         // 조용한 에러 처리 설정이 있으면 스킵
         if (mutation.meta?.silentError) return;
-        handleError(error, "pc");
+        handleError(error, "pc", handleAuthError);
       },
       onSuccess: (_data, _variables, _ctx, mutation) => {
         // 성공 메시지가 설정되어 있으면 표시

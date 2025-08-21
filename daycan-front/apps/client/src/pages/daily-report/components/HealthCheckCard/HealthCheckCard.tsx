@@ -22,7 +22,7 @@ export const HealthCheckCard = ({
     <CardLayout
       title={"건강 체크"}
       score={score}
-      scoreMax={65}
+      scoreMax={55}
       isDropdown={isDropdown}
       additionalMemo={additionalMemo}
     >

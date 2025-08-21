@@ -2,17 +2,30 @@ import { COLORS } from "@daycan/ui";
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
-export const cardLayout = style({
-  width: "100%",
-  padding: "12px 10px",
-  boxSizing: "border-box",
-  display: "flex",
-  alignItems: "start",
-  justifyContent: "space-between",
-  flexDirection: "column",
-  gap: 12,
-  backgroundColor: COLORS.white,
-  borderRadius: 16,
+export const cardLayout = recipe({
+  base: {
+    width: "100%",
+    height: "100%",
+    padding: "12px 10px",
+    boxSizing: "border-box",
+    display: "flex",
+    alignItems: "start",
+    justifyContent: "space-between",
+    flexDirection: "column",
+    gap: 12,
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+  },
+  variants: {
+    isDropdown: {
+      true: {
+        height: "auto",
+      },
+    },
+    false: {
+      height: "100%",
+    },
+  },
 });
 
 export const cardLayoutHeader = recipe({
@@ -41,19 +54,20 @@ export const cardLayoutFooter = style({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "start",
-  gap: 13,
+  gap: 16,
   width: "100%",
 });
 
 export const cardLayoutFooterStampContainer = style({
   display: "flex",
-  width: 38,
+  flex: 1,
   alignItems: "center",
   justifyContent: "center",
 });
 
 export const cardLayoutFooterStampDescription = style({
   display: "flex",
+  flex: 4,
   flexDirection: "column",
   alignItems: "start",
   justifyContent: "center",

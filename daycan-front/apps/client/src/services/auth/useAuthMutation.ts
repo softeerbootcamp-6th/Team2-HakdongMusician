@@ -19,6 +19,8 @@ export const useLoginMutation = () => {
       if (!data) return;
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
+      navigate("/");
+
       showToast({
         data: {
           message: "로그인 성공",
@@ -26,7 +28,6 @@ export const useLoginMutation = () => {
           variant: "mobile",
         },
       });
-      navigate("/");
     },
   });
 };

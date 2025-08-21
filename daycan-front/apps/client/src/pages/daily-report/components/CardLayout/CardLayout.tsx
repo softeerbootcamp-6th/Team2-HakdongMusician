@@ -50,16 +50,20 @@ export const CardLayout = ({
     }
   }, [children, isExpanded]);
 
-  function getStampIcon(score: number) {
-    //total을 기준으로 수정 필요
-    if (score >= 8 && score <= 15) {
+  function getStampIcon() {
+    // 정책상 65점이 총점일 때는 40점 이상이면 good
+    // 정책상 15점이 총점일 때는 10점 이상이면 good
+    const isGood = score / scoreMax >= 0.65;
+    if (isGood) {
       return "stampGood";
     }
     return "stampBad";
   }
 
+  // Dropdown 카드일 때는 높이를 제한하지 않아, 카드 내부 콘텐츠가 펴져도 됨
+  // Dropdown 카드가 아닐 때는(DailyReport) 높이를 제한하고, 넘치면 content 영역에 백드롭 및 메시지 추가
   return (
-    <div className={cardLayout}>
+    <div className={cardLayout({ isDropdown })}>
       <div
         className={cardLayoutHeader({ isDropdown })}
         onClick={toggleExpanded}
@@ -112,9 +116,9 @@ export const CardLayout = ({
           <div className={cardLayoutFooter}>
             <div className={cardLayoutFooterStampContainer}>
               <Icon
-                name={getStampIcon(score)}
-                width={38}
-                height={38}
+                name={getStampIcon()}
+                width={50}
+                height={50}
                 color={COLORS.white}
               />
             </div>
