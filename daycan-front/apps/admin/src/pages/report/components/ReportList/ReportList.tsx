@@ -6,6 +6,7 @@ import type { ReportListItemType } from "../ReportListItem/ReportListItem";
 import { reportListContainer } from "./ReportList.css";
 import { useReports } from "../../hooks/useReport";
 import { useState } from "react";
+import { overlayScroll } from "@/styles/scroll.css.ts";
 
 interface ReportListProps {
   reports?: ReportListItemType[];
@@ -61,7 +62,7 @@ export const ReportList = ({
         isIndeterminate={isIndeterminate}
         onSelectAll={onSelectAll}
       />
-      <div className={reportListContainer}>
+      <div className={`${reportListContainer} ${overlayScroll}`}>
         {reports.map((report, index) => {
           const isSelectable = report.status === "REVIEWED";
           const isChecked = checkedReportIds.has(report.id);

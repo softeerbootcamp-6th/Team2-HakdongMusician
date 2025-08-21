@@ -54,7 +54,7 @@ export const itemsContainer = style({
   height: "200px",
   overflowY: "auto",
   gap: "0px",
-  padding: "0px 16px",
+  padding: "0px 8px 0px 16px",
   marginTop: "8px",
   boxSizing: "border-box",
   borderRadius: "8px",

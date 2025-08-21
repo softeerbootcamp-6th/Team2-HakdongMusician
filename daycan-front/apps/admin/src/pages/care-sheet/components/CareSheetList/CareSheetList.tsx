@@ -9,6 +9,7 @@ import {
 import type { TCareSheetListItem } from "@/services/careSheet/types";
 import { CareSheetListItem } from "../CareSheetListItem";
 import { CareSheetListHeader } from "../CareSheetListHeader";
+import { overlayScroll } from "@/styles/scroll.css.ts";
 
 interface CareSheetListProps {
   careSheets: TCareSheetListItem[];
@@ -92,7 +93,7 @@ export const CareSheetList = ({
         onSelectAll={onSelectAll}
         showCheckbox={true}
       />
-      <div className={itemsContainer}>
+      <div className={`${itemsContainer} ${overlayScroll}`}>
         {careSheets.map((careSheet, index) => {
           // 상태에 따라 선택 가능 여부 결정
           const isSelectable =

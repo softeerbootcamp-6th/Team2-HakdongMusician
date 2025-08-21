@@ -5,6 +5,7 @@ import {
 import { MemberDataListHeader } from "../MemberDataListHeader";
 import { MemberDataItem } from "../MemberDataItem/MemberDataItem.tsx";
 import type { TMember } from "@/services/member/types";
+import { overlayScroll } from "@/styles/scroll.css.ts";
 
 interface MemberDataListProps {
   members: TMember[];
@@ -15,7 +16,7 @@ export const MemberDataList = ({ members }: MemberDataListProps) => {
     <div className={memberDataListContainer}>
       <MemberDataListHeader />
       {/* 데이터 리스트 */}
-      <div className={itemsContainer}>
+      <div className={`${itemsContainer} ${overlayScroll}`}>
         {members.map((member, idx) => (
           <MemberDataItem key={member.id} member={member} index={idx} />
         ))}
