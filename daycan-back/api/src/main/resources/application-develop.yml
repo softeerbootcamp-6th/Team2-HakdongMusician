@@ -30,6 +30,7 @@ app:
       bucket: ${APP_S3_BUCKET}
     sns:
       topic-arn: arn:aws:sns:ap-northeast-2:869652444193:daycan-create-report
+      enabled: true
 
 
 springdoc:
