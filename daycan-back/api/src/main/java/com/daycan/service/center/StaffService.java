@@ -4,11 +4,13 @@ import com.daycan.domain.entity.Center;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.StaffErrorStatus;
 import com.daycan.domain.entity.Staff;
+import com.daycan.domain.entity.document.CareSheet;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;
 import com.daycan.api.dto.center.request.AdminStaffRequest;
 import com.daycan.api.dto.center.response.centermanage.AdminStaffResponse;
 import com.daycan.external.storage.StorageService;
+import com.daycan.repository.jpa.CareSheetRepository;
 import com.daycan.repository.jpa.StaffRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class StaffService {
 
   private final StaffRepository staffRepository;
   private final StorageService storageService;
+  private final CareSheetRepository careSheetRepository;
 
   @Transactional(readOnly = true)
   public List<AdminStaffResponse> getStaffList(Long centerId, StaffRole staffRole, Gender gender,
@@ -73,6 +76,9 @@ public class StaffService {
 
   @Transactional
   public void deleteStaff(Long id, Long centerId) {
+    List<CareSheet> written = careSheetRepository.findByWriterId(id);
+
+    written.forEach(CareSheet::removeWriter);
     Staff staff = staffRepository.findByIdAndCenterId(id, centerId)
         .orElseThrow(() -> new ApplicationException(StaffErrorStatus.NOT_FOUND));
     staffRepository.delete(staff);
