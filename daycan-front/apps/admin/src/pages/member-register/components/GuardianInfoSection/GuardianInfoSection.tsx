@@ -38,8 +38,8 @@ export const GuardianInfoSection = ({
     if (mode === "edit" && !isPasswordEditMode) {
       setIsPasswordEditMode(true);
       // 비밀번호 관련 필드들을 모두 초기화 (한 번만 실행)
-      onUpdate("guardianPassword", "");
-      onUpdate("guardianPasswordConfirm", "");
+      onPasswordFieldUpdate("guardianPassword", "");
+      onPasswordFieldUpdate("guardianPasswordConfirm", "");
     }
   };
 
