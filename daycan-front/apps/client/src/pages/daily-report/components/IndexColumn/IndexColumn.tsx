@@ -39,7 +39,7 @@ export const IndexColumn = ({ icon, column }: IndexColumnProps) => {
             }
           >
             <Body type="medium" weight={400} color={COLORS.gray[800]}>
-              {column.value}
+              {column.value || "작성된 내용이 없습니다."}
             </Body>
           </div>
           {column.specificDescription && (

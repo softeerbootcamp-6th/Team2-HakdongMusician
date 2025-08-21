@@ -38,7 +38,7 @@ export const IndexRow = ({ icon, row }: IndexRowProps) => {
             }
           >
             <Body type="medium" weight={400} color={COLORS.gray[800]}>
-              {row.value}
+              {row.value || "작성된 내용이 없습니다."}
             </Body>
           </div>
           {row.warningDescription && (

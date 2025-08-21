@@ -4,8 +4,6 @@ import type { CSSProperties } from "react";
 
 interface SemiCircularGaugeChartProps {
   value: number; // 0 ~ 100
-  startColor?: string;
-  endColor?: string;
   width?: number;
   height?: number;
   fontType?: "xlarge" | "large" | "medium";
@@ -15,8 +13,6 @@ interface SemiCircularGaugeChartProps {
 
 export const SemiCircularGaugeChart = ({
   value,
-  startColor = COLORS.red[500],
-  endColor = COLORS.red[200],
   width = 150,
   height = 100,
   fontType = "medium",
@@ -24,6 +20,31 @@ export const SemiCircularGaugeChart = ({
   fontStyle,
 }: SemiCircularGaugeChartProps) => {
   const clampedValue = Math.min(100, Math.max(0, value));
+
+  // 점수에 따른 색상 결정
+  const getColors = (score: number) => {
+    if (score >= 70) {
+      return {
+        startColor: COLORS.red[500],
+        endColor: COLORS.red[200],
+        fontColor: COLORS.red[500], // 600 대신 500 사용
+      };
+    } else if (score >= 50) {
+      return {
+        startColor: COLORS.green[500],
+        endColor: COLORS.green[200],
+        fontColor: COLORS.green[500], // 600 대신 500 사용
+      };
+    } else {
+      return {
+        startColor: COLORS.blue[500],
+        endColor: COLORS.blue[200],
+        fontColor: COLORS.blue[500], // 600 대신 500 사용
+      };
+    }
+  };
+
+  const colors = getColors(clampedValue);
 
   const data = [
     { name: "progress", value: clampedValue, fill: "url(#gaugeGradient)" },
@@ -53,8 +74,8 @@ export const SemiCircularGaugeChart = ({
       >
         <defs>
           <linearGradient id="gaugeGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="20%" stopColor={startColor} />
-            <stop offset="100%" stopColor={endColor} />
+            <stop offset="20%" stopColor={colors.startColor} />
+            <stop offset="100%" stopColor={colors.endColor} />
           </linearGradient>
         </defs>
 
@@ -62,8 +83,15 @@ export const SemiCircularGaugeChart = ({
         <RadialBar background dataKey="value" cornerRadius={0} />
       </RadialBarChart>
 
-      {/* 중앙 텍스트 */}
-      <Heading type={fontType} weight={600} style={fontStyle}>
+      {/* 중앙 텍스트 - 점수에 따른 색상 적용 */}
+      <Heading
+        type={fontType}
+        weight={600}
+        style={{
+          ...fontStyle,
+          color: colors.fontColor,
+        }}
+      >
         {clampedValue}
       </Heading>
     </div>
