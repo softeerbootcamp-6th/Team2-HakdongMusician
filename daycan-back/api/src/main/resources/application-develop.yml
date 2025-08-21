@@ -32,7 +32,6 @@ app:
       topic-arn: arn:aws:sns:ap-northeast-2:869652444193:daycan-create-report
       enabled: true
 
-
 springdoc:
   swagger-ui:
     path: /api
