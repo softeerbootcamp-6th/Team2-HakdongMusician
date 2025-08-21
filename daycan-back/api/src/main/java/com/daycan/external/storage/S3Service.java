@@ -30,7 +30,7 @@ public class S3Service implements StorageService{
 
   private final S3Presigner presigner;
 
-  @Value("${app.s3.bucket}")
+  @Value("${app.aws.s3.bucket}")
   private String bucket;
 
   private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of("image/jpeg", "image/png", "image/jpg");

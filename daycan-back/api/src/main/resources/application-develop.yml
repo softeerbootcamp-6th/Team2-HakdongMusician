@@ -1,4 +1,9 @@
 spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/daycan?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME}
@@ -21,8 +26,10 @@ jwt:
 app:
   aws:
     region: ${APP_AWS_REGION:ap-northeast-2}
-  s3:
-    bucket: ${APP_S3_BUCKET}
+    s3:
+      bucket: ${APP_S3_BUCKET}
+    sns:
+      topic-arn: arn:aws:sns:ap-northeast-2:869652444193:daycan-create-report
 
 
 springdoc:

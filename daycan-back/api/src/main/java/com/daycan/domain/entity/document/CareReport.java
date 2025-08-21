@@ -141,9 +141,6 @@ public class CareReport extends BaseTimeEntity {
     return this;
   }
 
-  public Integer getTotalScore() {
-    return mealScore + vitalScore + cognitiveScore + physicalScore;
-  }
 
   public void linkDocument(Document doc) {
     if (doc == null) {

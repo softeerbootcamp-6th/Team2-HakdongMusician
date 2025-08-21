@@ -24,6 +24,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -43,6 +44,7 @@ public class VitalService {
     return statisticsQueryRepository.fetchWeeklyHealthScoreAvgs(memberId, today);
   }
 
+  @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
   public Integer getOverallScore(Member member, LocalDate date) {
     Vital vital = vitalRepository.findByDocument_Member_idAndDocument_Date(member.getId(), date)
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.DOCUMENT_NOT_FOUND));
