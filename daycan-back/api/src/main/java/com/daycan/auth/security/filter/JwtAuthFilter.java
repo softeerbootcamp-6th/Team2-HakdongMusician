@@ -27,7 +27,7 @@ public class JwtAuthFilter implements Filter {
   private static final List<String> EXCLUDE_PATTERNS = List.of(
       "/auth/login", "/auth/reissue",
       "/swagger-ui.html", "/swagger-ui/**",
-      "/v3/api-docs/**", "/", "/api"
+      "/v3/api-docs/**", "/", "/api","/external/**"
   );
 
 

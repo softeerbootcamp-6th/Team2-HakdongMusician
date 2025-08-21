@@ -115,8 +115,8 @@ public class Vital extends BaseTimeEntity {
     }
   }
 
-  public void setHealthScore(Integer healthScore) {
-    this.healthScore = healthScore;
+  public void updateScore(int newScore) {
+    this.healthScore = newScore;
   }
 
   public void linkDocument(Document doc) {

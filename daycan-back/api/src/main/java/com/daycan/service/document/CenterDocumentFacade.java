@@ -120,8 +120,8 @@ public class CenterDocumentFacade {
     return getMetaListByDateMulti(
         center, date, null, nameLike,
         reportStatuses,
-        DocumentStatus::allReportStatuses,  // null/empty 때 리포트 전 구간
-        DocumentStatus::fromReport,         // ReportStatus → EnumSet<DocumentStatus>
+        DocumentStatus::allReportStatuses,
+        DocumentStatus::fromReport,
         mv -> memberService.getByMemberIdAndCenter(mv.member().getId(), center.getId())
             .map(m -> mv.toReportResponse(getPresignedUrl(m.getAvatarUrl())))
     );
