@@ -27,9 +27,17 @@ public class SnsWorker implements Worker {
   @Value("${app.aws.sns.topic-arn}")
   private String topicArn;
 
+  @Value("${app.sns.enabled:false}")
+  private boolean enabled;
+
   @Override
   public void enqueue(WorkerCommand command) {
     try {
+      if (!enabled) {
+        log.info("SNS disabled. Skip enqueue. type={} jobId={} key={}",
+            command.taskType(), command.jobId(), command.idempotencyKey());
+        return;
+      }
       final String payload = objectMapper.writeValueAsString(command);
 
       Map<String, MessageAttributeValue> attrs = new HashMap<>();
@@ -53,7 +61,6 @@ public class SnsWorker implements Worker {
     } catch (Exception e) {
       log.error("SNS publish failed type={} jobId={} idemKey={} requestAt={} err={}",
           command.taskType(), nz(command.jobId()), nz(command.idempotencyKey()), command.requestAt(), e.getMessage(), e);
-      throw new RuntimeException("SNS publish failed", e);
     }
   }
 

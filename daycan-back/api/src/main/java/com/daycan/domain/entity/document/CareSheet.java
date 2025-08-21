@@ -193,6 +193,11 @@ public class CareSheet extends BaseTimeEntity {
     personalProgram.setCareSheet(null);
   }
 
+  public void removeWriter(){
+    if (writer != null) {
+      writer = null; // Staff와의 연관관계 제거
+    }
+  }
   public void replacePersonalPrograms(List<PersonalProgram> personalProgramList) {
     if (personalPrograms == null) {
       personalPrograms = new ArrayList<>();

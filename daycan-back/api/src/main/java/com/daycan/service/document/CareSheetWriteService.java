@@ -180,7 +180,7 @@ public class CareSheetWriteService {
         .map(existing -> existing.updatePrefill(init)).orElseGet(() -> {
           return CareReport.prefill(doc, init);
         });
-    final int newScore = report.getMealScore() + vital.getHealthScore() + report.getPhysicalScore()
+    final int newScore = report.getMealScore() + report.getVitalScore() + report.getPhysicalScore()
         + report.getCognitiveScore();
     if (!vital.getHealthScore().equals(newScore)) {
       vital.updateScore(newScore);
