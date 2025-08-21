@@ -30,6 +30,7 @@ import com.daycan.util.prefiller.CareReportPrefiller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -182,7 +183,7 @@ public class CareSheetWriteService {
         });
     final int newScore = report.getMealScore() + report.getVitalScore() + report.getPhysicalScore()
         + report.getCognitiveScore();
-    if (!vital.getHealthScore().equals(newScore)) {
+    if (!Objects.equals(vital.getHealthScore(), newScore)) {
       vital.updateScore(newScore);
       if (hasFollowingVital) {
         recomputeChainFromInclusive(doc.getMember().getId(), doc.getDate());
