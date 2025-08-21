@@ -9,7 +9,6 @@ import {
   dragOverArea,
   dragDropText,
 } from "./ProfileImageSection.css";
-import Image from "@/assets/images/image.png";
 import { useRef, useCallback } from "react";
 import React from "react";
 import { useImageDragAndDrop } from "../../hooks/useImageDragAndDrop";
@@ -85,7 +84,7 @@ export const ProfileImageSection = React.memo(
         {selectedProfileImage && profileImageUrl ? (
           <div style={{ position: "relative" }}>
             <img
-              src={profileImageUrl || Image}
+              src={profileImageUrl || "/src/assets/images/emptyProfile.png"}
               alt="profile"
               className={profileImageSectionImage}
             />

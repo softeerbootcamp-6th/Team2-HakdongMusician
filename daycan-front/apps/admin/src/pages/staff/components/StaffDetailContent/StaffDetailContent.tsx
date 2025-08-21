@@ -10,7 +10,6 @@ import {
   staffListItemExpandedInfoContentDetail,
   staffInfoGrid,
 } from "./StaffDetailContent.css";
-import elder from "@/assets/images/elder.png";
 import { formatBirthDate, formatGender, formatStaffRole } from "@/utils";
 import { DeleteConfirmModal } from "@/components/DeleteConfirmModal/index.ts";
 import { EditDeleteAuthModal } from "@/components/EditDeleteAuthModal/EditDeleteAuthModal";
@@ -48,8 +47,8 @@ export const StaffDetailContent = ({ staff }: StaffDetailContentProps) => {
           </Body>
           <div className={staffListItemExpandedInfoContent}>
             <img
-              src={staff.avatarUrl || elder}
-              alt="avatar"
+              src={staff.avatarUrl || "/src/assets/images/emptyProfile.png"}
+              alt="프로필"
               className={staffListItemExpandedInfoAvatar}
             />
             <div className={staffListItemExpandedInfoContentDetail}>
