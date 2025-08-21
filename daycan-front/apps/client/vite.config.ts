@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import svgr from "vite-plugin-svgr";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -15,10 +16,18 @@ export default defineConfig({
       },
       include: "**/*.svg",
     }),
+    sentryVitePlugin({
+      org: "daycan",
+      project: "daycan-client",
+      telemetry: false,
+    }),
   ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  build: {
+    sourcemap: true, // Sentry를 위해 소스맵 활성화
   },
 });
