@@ -7,6 +7,7 @@ export const container = style({
   flexDirection: "row",
   width: "100vw",
   minHeight: "100vh",
+  overflow: "auto",
 });
 
 export const sidebarWrapper = style({
@@ -33,8 +34,8 @@ export const mainSectionWrapper = style({
 export const mainSection = style({
   backgroundColor: COLORS.gray[50],
   display: "flex",
-  width: "100%",
-  maxWidth: "1256px",
+  width: "1256px",
+
   padding: "0 84px",
   margin: "0 auto 0 0",
   boxSizing: "border-box",

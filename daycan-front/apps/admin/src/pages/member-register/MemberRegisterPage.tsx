@@ -87,7 +87,7 @@ export const MemberRegisterPage = ({ mode }: MemberRegisterPageProps) => {
     return (
       <EditDeleteAuthModal
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={handleAuthCancel}
         onEditAccessConfirm={handleEditAccessConfirm}
         onCancel={handleAuthCancel}
         unitId={Number(memberId)}
