@@ -4,6 +4,7 @@ import com.daycan.domain.entry.document.sheet.CognitiveEntry;
 import com.daycan.domain.entry.document.sheet.HealthCareEntry;
 import com.daycan.domain.entry.document.sheet.PhysicalEntry;
 import com.daycan.domain.entry.document.sheet.RecoveryProgramEntry;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -29,10 +30,12 @@ public record CareSheetRequest(
 
     @Schema(description = "서비스 시작 시간", example = "09:00")
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     LocalTime startTime,
 
     @Schema(description = "서비스 종료 시간", example = "17:00")
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     LocalTime endTime,
 
     @Schema(description = "이동 서비스 차량번호 (nullable)", example = "123가4567")

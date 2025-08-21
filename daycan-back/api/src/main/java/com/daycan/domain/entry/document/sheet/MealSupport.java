@@ -1,5 +1,7 @@
 package com.daycan.domain.entry.document.sheet;
 
+import com.daycan.common.exceptions.ApplicationException;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.document.Meal;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -15,8 +17,10 @@ public record MealSupport(
 ) {
 
   @AssertTrue(message = "식사를 제공한 경우, 식사 정보는 필수입니다.")
-  public boolean isValidProvidedEntry() {
-    return !provided || (entry != null);
+  public void isValidProvidedEntry() {
+    if (!provided || (entry != null)) {
+      throw new ApplicationException(DocumentErrorStatus.INVALID_MEAL_VALUE);
+    }
   }
 
   public static MealSupport from(Meal m) {

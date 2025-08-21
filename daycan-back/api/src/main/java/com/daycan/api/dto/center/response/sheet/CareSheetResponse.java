@@ -5,6 +5,7 @@ import com.daycan.domain.entry.document.sheet.HealthCareEntry;
 import com.daycan.domain.entry.document.sheet.PhysicalEntry;
 import com.daycan.domain.entry.document.sheet.ProgramEntry;
 import com.daycan.domain.entry.document.sheet.RecoveryProgramEntry;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,9 +29,11 @@ public record CareSheetResponse(
     LocalDate date,
 
     @Schema(description = "서비스 시작 시간", example = "09:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     LocalTime startTime,
 
     @Schema(description = "서비스 종료 시간", example = "17:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     LocalTime endTime,
 
     @Schema(description = "이동 서비스 차량번호", example = "123가4567")
