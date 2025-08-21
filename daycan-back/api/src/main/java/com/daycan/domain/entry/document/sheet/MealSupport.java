@@ -17,10 +17,8 @@ public record MealSupport(
 ) {
 
   @AssertTrue(message = "식사를 제공한 경우, 식사 정보는 필수입니다.")
-  public void isValidProvidedEntry() {
-    if (!provided || (entry != null)) {
-      throw new ApplicationException(DocumentErrorStatus.INVALID_MEAL_VALUE);
-    }
+  public boolean isValidProvidedEntry() {
+    return !provided || (entry != null);
   }
 
   public static MealSupport from(Meal m) {

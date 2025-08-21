@@ -105,6 +105,7 @@ public class GlobalExceptionHandler {
   // 9) 마지막 안전망
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ResponseWrapper<Object>> handleException(Exception ex) {
+    log.error("Unhandled exception: ", ex);
     return buildErrorResponse(CommonErrorStatus.INTERNAL_ERROR, null);
   }
 
