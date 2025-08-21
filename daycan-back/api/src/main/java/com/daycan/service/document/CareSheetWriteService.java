@@ -70,7 +70,7 @@ public class CareSheetWriteService {
     logSheet(sheet, req, init.isNew());
     doc = documentRepository.save(doc);
 
-    publisher.publishEvent(buildCreateReportCommand(report, sheet));
+//    publisher.publishEvent(buildCreateReportCommand(report, sheet));
     return doc.getId();
   }
 
