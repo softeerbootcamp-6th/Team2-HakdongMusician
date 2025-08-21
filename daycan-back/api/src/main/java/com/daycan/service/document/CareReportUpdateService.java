@@ -6,6 +6,7 @@ import com.daycan.api.dto.lambda.report.ReportCallbackDto.ReportPayload;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.document.CareReport;
+import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.model.ProgramNote;
 import com.daycan.repository.jpa.CareReportRepository;
 import com.daycan.util.resolver.ReportJobResolver;
@@ -28,11 +29,13 @@ public class CareReportUpdateService {
     Long reportId = getReportId(dto.idempotencyKey());
     CareReport report = careReportRepository.findById(reportId)
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND, reportId));
+    Document document = report.getDocument();
 
     ReportContent content = contentOf(dto.payload());
 
     updateMealSection(report, content);
     updateProgramNotes(report, content);
+    document.markReportCreated();
 
     return report.getId();
   }
