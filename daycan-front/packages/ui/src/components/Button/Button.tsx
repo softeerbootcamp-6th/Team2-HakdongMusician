@@ -1,9 +1,9 @@
-import type { HTMLAttributes, PropsWithChildren } from "react";
+import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import { classNames } from "../../utils";
 import { button, type ButtonVariants } from "./Button.css";
 
 export type ButtonProps = PropsWithChildren<
-  HTMLAttributes<HTMLButtonElement> &
+  ButtonHTMLAttributes<HTMLButtonElement> &
     ButtonVariants & {
       disabled?: boolean;
     }

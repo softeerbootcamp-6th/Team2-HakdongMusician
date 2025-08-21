@@ -5,12 +5,11 @@ import { recipe } from "@vanilla-extract/recipes";
 export const container = style({
   display: "flex",
   width: "100%",
-  height: "100%",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "start",
   backgroundColor: COLORS.white,
-  padding: "16px 20px",
+  padding: "12px 10px",
   borderRadius: 16,
   boxSizing: "border-box",
 });
@@ -66,8 +65,8 @@ export const indexCardContainer = style({
   backgroundColor: COLORS.white,
   borderRadius: 9,
   boxSizing: "border-box",
-  marginTop: 15,
-  gap: 2,
+  marginTop: 24,
+  gap: 1,
 });
 
 export const indexCard = style({
@@ -77,9 +76,9 @@ export const indexCard = style({
   alignItems: "center",
   justifyContent: "center",
   border: `1px solid ${COLORS.gray[100]}`,
-  padding: "8px 10px",
+  padding: "8px 4px",
   borderRadius: 9,
-  gap: 5,
+  gap: 2,
 });
 
 export const indexValue = style({
@@ -88,10 +87,6 @@ export const indexValue = style({
   alignItems: "center",
   justifyContent: "center",
   gap: 4,
-});
-
-export const indexDescription = style({
-  marginTop: 18,
 });
 
 export const dropdownContent = recipe({

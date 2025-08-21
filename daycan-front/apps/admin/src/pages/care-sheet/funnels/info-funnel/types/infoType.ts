@@ -1,10 +1,11 @@
-import type { Member } from "../components/MemberList/types";
+import type { TTime, YearMonthDay } from "@/types/date";
+import type { TMember } from "@/services/member/types";
 
 // 각 Step의 데이터 타입 정의
 export interface Step0Data {
-  recipientId?: string;
+  memberId?: number;
   searchQuery: string;
-  selectedMember?: Member;
+  selectedMember?: TMember;
 }
 
 export interface Step1Data {
@@ -33,9 +34,9 @@ export interface Step4Data {
 
 // info-funnel에서 관리하는 데이터 타입 추후에 API 요청에 사용될 데이터 타입의 형태
 export interface InfoFunnelData {
-  recipientId: string;
-  date: string; // "2025-08-01" 형식
-  startTime: string; // "09:00" 형식
-  endTime: string; // "17:00" 형식
+  memberId: number;
+  date: YearMonthDay;
+  startTime: TTime;
+  endTime: TTime;
   mobilityNumber: string; // "123가 4567" 형식
 }

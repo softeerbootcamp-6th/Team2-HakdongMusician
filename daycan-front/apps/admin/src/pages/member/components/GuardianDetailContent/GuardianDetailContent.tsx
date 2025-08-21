@@ -1,6 +1,5 @@
 import { DetailCardLayout } from "../DetailCardLayout/DetailCardLayout";
-import guardianImage from "@/assets/images/guardian.png";
-import type { MemberData } from "@/types";
+import type { TMember } from "@/services/member/types";
 import { Heading } from "@daycan/ui";
 import {
   guardianDetailContainer,
@@ -10,14 +9,17 @@ import {
 import { MemberDetailItemRow } from "../MemberDetailItemRow/MemberDetailItemRow";
 
 interface GuardianDetailContentProps {
-  member: MemberData;
+  member: TMember;
 }
 
 export const GuardianDetailContent = ({
   member,
 }: GuardianDetailContentProps) => {
   return (
-    <DetailCardLayout dataCategory="보호자 정보" dataAvatarUrl={guardianImage}>
+    <DetailCardLayout
+      dataCategory="보호자 정보"
+      dataAvatarUrl={member.guardianAvatarUrl || ""}
+    >
       <div className={guardianDetailContainer}>
         <Heading type="xsmall" weight={500}>
           {member.guardianName}
@@ -26,7 +28,7 @@ export const GuardianDetailContent = ({
           <div className={guardianDetailContentItemContainer}>
             <MemberDetailItemRow
               label="생년월일"
-              value={member.guardianRelationBirthDate}
+              value={member.guardianBirthDate}
             />
             <MemberDetailItemRow
               label="연락처"

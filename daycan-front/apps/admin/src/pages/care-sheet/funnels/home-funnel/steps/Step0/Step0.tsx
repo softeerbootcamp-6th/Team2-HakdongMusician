@@ -7,32 +7,30 @@ import {
   careSheetPageContentInputInput,
   searchResultsContainer,
 } from "./Step0.css";
-import { mockSearchResults } from "../../../../constants/dummy";
 import { useState, useEffect } from "react";
 import { useFunnel } from "@daycan/hooks";
-import type { SearchResultItem } from "../../components/SearchStaffResultList/types";
 import { StepButtons } from "../../../../components/StepButtons";
+import { useGetStaffListQuery } from "@/services/staff/useStaffQuery";
+import type { TStaff } from "@/services/staff/types";
+import { getStaffRole } from "../../utils/parseData";
 
 export const Step0 = () => {
+  const { data: staffList } = useGetStaffListQuery();
   const { toNext, updateState, getStepState } = useFunnel();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedUser, setSelectedUser] = useState<SearchResultItem | null>(
-    null
-  );
+  const [selectedStaff, setSelectedStaff] = useState<TStaff | null>(null);
 
   // 기존 데이터가 있으면 로드
   useEffect(() => {
     const existingData = getStepState("STEP_0");
     if (existingData) {
-      setSelectedUser(existingData.selectedUser || null);
+      setSelectedStaff(existingData.selectedStaff || null);
       setSearchQuery(existingData.searchQuery || "");
     }
   }, [getStepState]);
 
-  const filteredResults = mockSearchResults.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.role.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredResults = staffList?.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,22 +44,23 @@ export const Step0 = () => {
 
     // 검색어가 비어있으면 선택된 사용자도 초기화
     if (value.length === 0) {
-      setSelectedUser(null);
+      setSelectedStaff(null);
       updateState({
-        selectedUser: null,
+        selectedStaff: null,
         searchQuery: value,
       });
     }
   };
 
-  const handleUserSelect = (user: SearchResultItem) => {
-    setSelectedUser(user);
-    setSearchQuery(user.name);
+  const handleUserSelect = (staff: TStaff) => {
+    setSelectedStaff(staff);
+    setSearchQuery(staff.name);
 
     // FunnelState에 데이터 저장
     updateState({
-      selectedUser: user,
-      searchQuery: user.name,
+      writerId: staff.staffId,
+      selectedStaff: staff,
+      searchQuery: staff.name,
     });
   };
 
@@ -70,40 +69,48 @@ export const Step0 = () => {
   };
 
   return (
-    <div className={careSheetPageContainer}>
-      <Header />
-      <div className={careSheetPageContent}>
-        <Body type="medium" weight={500} color={COLORS.gray[800]}>
-          누가 기록지를 작성하나요?
-        </Body>
-        <div className={careSheetPageContentInputContainer}>
-          <input
-            type="text"
-            placeholder="작성자 이름"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className={careSheetPageContentInputInput}
-          />
-          <Icon name="search" width={24} height={24} color={COLORS.gray[400]} />
-        </div>
-
-        {filteredResults.length > 0 && (
-          <div className={searchResultsContainer}>
-            <SearchStaffResultList
-              results={filteredResults}
-              onSelect={handleUserSelect}
-              selectedStaffId={selectedUser?.id}
+    <>
+      <div className={careSheetPageContainer}>
+        <Header />
+        <div className={careSheetPageContent}>
+          <Body type="medium" weight={500} color={COLORS.gray[800]}>
+            누가 기록지를 작성하나요?
+          </Body>
+          <div className={careSheetPageContentInputContainer}>
+            <input
+              type="text"
+              placeholder="작성자 이름"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className={careSheetPageContentInputInput}
+            />
+            <Icon
+              name="search"
+              width={24}
+              height={24}
+              color={COLORS.gray[400]}
             />
           </div>
-        )}
 
-        {selectedUser && (
-          <Body type="small" weight={400} color={COLORS.gray[600]}>
-            선택된 작성자: {selectedUser.name} ({selectedUser.role})
-          </Body>
-        )}
+          {filteredResults && filteredResults.length > 0 && (
+            <div className={searchResultsContainer}>
+              <SearchStaffResultList
+                staffs={filteredResults}
+                onSelect={handleUserSelect}
+                selectedStaffId={selectedStaff?.staffId}
+              />
+            </div>
+          )}
+
+          {selectedStaff && (
+            <Body type="small" weight={400} color={COLORS.gray[600]}>
+              선택된 작성자: {selectedStaff.name} (
+              {getStaffRole(selectedStaff.staffRole)})
+            </Body>
+          )}
+        </div>
       </div>
-      <StepButtons onNext={handleNext} isNextEnabled={!!selectedUser} />
-    </div>
+      <StepButtons onNext={handleNext} isNextEnabled={!!selectedStaff} />
+    </>
   );
 };

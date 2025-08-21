@@ -11,7 +11,6 @@ import { useSetAtom } from "jotai";
 import { convertFunnelStateToInfoFunnelData } from "./utils/parsingData";
 import { getStoredValue } from "../utils/storage";
 import type { InfoFunnelData } from "./types/infoType";
-import { mockMembers } from "./constants/dummy";
 
 export const InfoFunnelStepContainer = () => {
   const navigate = useNavigate();
@@ -39,36 +38,62 @@ export const InfoFunnelStepContainer = () => {
   useEffect(() => {
     const stored = getStoredValue("careSheet:homeFunnel");
     if (stored === null) {
-      navigate("/care-sheet/new", { replace: true });
+      navigate("/care-sheet/new");
     }
   }, [homeData, navigate]);
 
-  // photo-funnel로부터 채워진 info atom을 funnelState로 프리필
+  // photo-funnel로부터 채워진 info-funnel atom을 funnelState로 프리필
   const initialState: FunnelState | undefined = useMemo(() => {
-    const d: InfoFunnelData | null = infoData;
-    if (!d) return undefined;
+    // atom에서 데이터 확인 - 데이터가 있고 memberId가 존재하는 경우만
+    if (infoData && infoData.memberId) {
+      return {
+        STEP_0: {
+          memberId: infoData.memberId,
+          searchQuery: "",
+        },
+        STEP_1: {
+          date: infoData.date,
+          isToday: false,
+        },
+        STEP_2: {
+          startTime: infoData.startTime,
+        },
+        STEP_3: {
+          endTime: infoData.endTime,
+        },
+        STEP_4: {
+          isUsedCarService: Boolean(infoData.mobilityNumber),
+          carNumber: infoData.mobilityNumber || "",
+        },
+      } as FunnelState;
+    }
 
-    return {
-      STEP_0: {
-        recipientId: d.recipientId,
-        searchQuery: "",
-        selectedMember: mockMembers.find((m) => m.id === d.recipientId),
-      },
-      STEP_1: {
-        date: new Date(d.date),
-        isToday: false,
-      },
-      STEP_2: {
-        startTime: d.startTime,
-      },
-      STEP_3: {
-        endTime: d.endTime,
-      },
-      STEP_4: {
-        isUsedCarService: Boolean(d.mobilityNumber),
-        carNumber: d.mobilityNumber || "",
-      },
-    } as FunnelState;
+    // localStorage에서도 확인 (atom 초기화 전 대비) - 데이터가 있고 memberId가 존재하는 경우만
+    const stored = getStoredValue<InfoFunnelData>("careSheet:infoFunnel");
+    if (stored && stored.memberId) {
+      return {
+        STEP_0: {
+          memberId: stored.memberId,
+          searchQuery: "",
+        },
+        STEP_1: {
+          date: stored.date,
+          isToday: false,
+        },
+        STEP_2: {
+          startTime: stored.startTime,
+        },
+        STEP_3: {
+          endTime: stored.endTime,
+        },
+        STEP_4: {
+          isUsedCarService: Boolean(stored.mobilityNumber),
+          carNumber: stored.mobilityNumber || "",
+        },
+      } as FunnelState;
+    }
+
+    return undefined;
   }, [infoData]);
 
   return (

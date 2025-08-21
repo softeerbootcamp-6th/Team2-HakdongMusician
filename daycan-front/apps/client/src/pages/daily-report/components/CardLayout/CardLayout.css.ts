@@ -2,27 +2,39 @@ import { COLORS } from "@daycan/ui";
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
-export const cardLayout = style({
-  width: "100%",
-  height: "100%",
-  padding: "24px 10px",
-  boxSizing: "border-box",
-  display: "flex",
-  alignItems: "start",
-  justifyContent: "space-between",
-  flexDirection: "column",
-  gap: 12,
-  backgroundColor: COLORS.white,
-  borderRadius: 16,
+export const cardLayout = recipe({
+  base: {
+    width: "100%",
+    height: "100%",
+    padding: "12px 10px",
+    boxSizing: "border-box",
+    display: "flex",
+    alignItems: "start",
+    justifyContent: "space-between",
+    flexDirection: "column",
+    gap: 12,
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+  },
+  variants: {
+    isDropdown: {
+      true: {
+        height: "auto",
+      },
+    },
+    false: {
+      height: "100%",
+    },
+  },
 });
 
 export const cardLayoutHeader = recipe({
   base: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "start",
-    justifyContent: "start",
-    alignSelf: "start",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
     gap: 8,
     width: "100%",
   },
@@ -42,12 +54,20 @@ export const cardLayoutFooter = style({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "start",
-  gap: 13,
+  gap: 16,
   width: "100%",
+});
+
+export const cardLayoutFooterStampContainer = style({
+  display: "flex",
+  flex: 1,
+  alignItems: "center",
+  justifyContent: "center",
 });
 
 export const cardLayoutFooterStampDescription = style({
   display: "flex",
+  flex: 4,
   flexDirection: "column",
   alignItems: "start",
   justifyContent: "center",
@@ -106,6 +126,26 @@ export const arrowIcon = recipe({
         transform: "rotate(0deg)",
       },
     },
+  },
+});
+
+export const overflowMessage = style({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.3)",
+  borderRadius: "16px",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+  zIndex: 10,
+
+  ":hover": {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
 });
 

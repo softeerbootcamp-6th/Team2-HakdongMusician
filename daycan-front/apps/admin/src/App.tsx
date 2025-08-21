@@ -5,12 +5,12 @@ import { ToastContainer } from "@daycan/ui";
 
 function App() {
   return (
-    <QueryClientProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <QueryClientProvider>
         <Router />
         <ToastContainer />
-      </BrowserRouter>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 

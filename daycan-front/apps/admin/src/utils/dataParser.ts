@@ -3,7 +3,7 @@ import {
   type MemberInfo,
   type GuardianInfo,
   type MemberDetailInfo,
-} from "@/types/member";
+} from "@/pages/member/constants/member";
 // 성별 변환 함수
 export const convertGender = (gender: "MALE" | "FEMALE"): string => {
   return gender === "MALE" ? "남성" : "여성";
@@ -26,7 +26,7 @@ export const convertApiToElderMember = (
     name: apiData.name,
     birthDate: apiData.birthDate,
     gender: convertGender(apiData.gender),
-    careNumber: apiData.careNumber,
+    username: apiData.username,
     guardianContact: apiData.guardianPhoneNumber,
     careLevel: apiData.careLevel,
     careGrade: convertCareLevel(apiData.careLevel), // 장기요양등급 문자열 추가

@@ -1,6 +1,7 @@
+import type { TReportStatus } from "@/services/report/types";
 import { COLORS } from "@daycan/ui";
 
-export const getStatusInfo = (status: string) => {
+export const getStatusInfo = (status: TReportStatus) => {
   switch (status) {
     case "NOT_APPLICABLE":
       return {
@@ -57,7 +58,7 @@ export const getStatusInfo = (status: string) => {
   }
 };
 
-export const getButtonInfo = (status: string) => {
+export const getButtonInfo = (status: TReportStatus) => {
   switch (status) {
     case "CREATED":
       return {

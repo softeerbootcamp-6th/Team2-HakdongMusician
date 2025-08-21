@@ -74,6 +74,11 @@ export const InfoSectionRow = ({
     }
   };
 
+  //url에서 member/edit이 포함되면 장기요양인정번호일때 disabled true로 변경
+  const isEditMode = window.location.pathname.includes("/member/edit");
+  const isLongTermCareNumberDisabled =
+    isEditMode && isLongTermCareLabel && name === "careNumber";
+
   return (
     <div className={memberInfoSectionContent}>
       <div className={labelContainer}>
@@ -108,7 +113,7 @@ export const InfoSectionRow = ({
           value={value === undefined ? "" : value}
           name={name}
           type={isPasswordField ? "password" : "text"}
-          disabled={disabled}
+          disabled={disabled || isLongTermCareNumberDisabled}
           onChange={handleChange}
           onFocus={
             label === "비밀번호 확인" ? handlePasswordConfirmClick : undefined

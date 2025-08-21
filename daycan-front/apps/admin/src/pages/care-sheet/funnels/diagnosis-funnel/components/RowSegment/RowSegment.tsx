@@ -10,6 +10,7 @@ interface RowSegmentProps {
   options: string[];
   value: string;
   onSegmentChange: (val: string) => void;
+  fontSize: "large" | "medium" | "small" | "xsmall";
 }
 
 export const RowSegment = ({
@@ -17,6 +18,7 @@ export const RowSegment = ({
   options,
   value,
   onSegmentChange,
+  fontSize,
 }: RowSegmentProps) => {
   return (
     <div className={rowSegmentContainer}>
@@ -31,6 +33,7 @@ export const RowSegment = ({
           value={value}
           onSegmentChange={onSegmentChange}
           type="compact"
+          fontSize={fontSize}
         />
       </div>
     </div>

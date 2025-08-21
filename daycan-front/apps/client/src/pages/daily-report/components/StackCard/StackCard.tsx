@@ -13,6 +13,7 @@ import type { CardData } from "./types";
 import { RotateCard } from "./RotateCard";
 import { Button } from "@daycan/ui";
 import { useNavigate } from "react-router-dom";
+import { FullScreenCardModal } from "../FullScreenCardModal";
 
 interface StackCardProps {
   randomRotation?: boolean;
@@ -29,10 +30,11 @@ export const StackCard = ({
   cardDimensions = { width: 360, height: 400 },
   cardsData = [],
   animationConfig = { stiffness: 260, damping: 20 },
-  sendToBackOnClick = false,
 }: StackCardProps) => {
   const [cards, setCards] = useState<CardData[]>(cardsData);
   const [viewedCards, setViewedCards] = useState<Set<number>>(new Set());
+  const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const totalCount = cardsData.length;
   const navigate = useNavigate();
   const sendToBack = (id: number) => {
@@ -46,6 +48,16 @@ export const StackCard = ({
 
     // 카드를 하나씩 볼 때마다, 확인했음을 기록
     setViewedCards((prev) => new Set([...prev, id]));
+  };
+
+  const openCardModal = (card: CardData) => {
+    setSelectedCard(card);
+    setIsModalOpen(true);
+  };
+
+  const closeCardModal = () => {
+    setIsModalOpen(false);
+    setSelectedCard(null);
   };
 
   const isAllViewed = viewedCards.size === totalCount;
@@ -68,7 +80,7 @@ export const StackCard = ({
             sensitivity={sensitivity}
           >
             <motion.div
-              onClick={() => sendToBackOnClick && sendToBack(card.id)}
+              onClick={() => openCardModal(card)}
               animate={{
                 rotateZ: (cards.length - index - 1) * 4 + randomRotate,
                 scale: 1 + index * 0.06 - cards.length * 0.06,
@@ -84,6 +96,7 @@ export const StackCard = ({
               style={{
                 width: cardDimensions.width,
                 height: cardDimensions.height,
+                cursor: "pointer",
               }}
             >
               {card.content}
@@ -116,6 +129,10 @@ export const StackCard = ({
           </Button>
         </div>
       )}
+
+      <FullScreenCardModal isOpen={isModalOpen} onClose={closeCardModal}>
+        {selectedCard?.content}
+      </FullScreenCardModal>
     </div>
   );
 };

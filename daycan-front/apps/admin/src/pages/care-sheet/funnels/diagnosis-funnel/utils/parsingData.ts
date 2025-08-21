@@ -3,8 +3,11 @@ import {
   DIAGNOSIS_CONSTANTS,
   MEAL_TYPE_CODE_TO_LABEL,
   MEAL_AMOUNT_CODE_TO_LABEL,
+  MEAL_TYPE_LABEL_TO_CODE,
+  MEAL_AMOUNT_LABEL_TO_CODE,
 } from "../constants/diagnosis";
 import type { DiagnosisFunnelData } from "../types/diagnosisType";
+import type { Amount, MealType } from "@/services/careSheet/types";
 
 export interface DiagnosisSummaryItem {
   label: string;
@@ -42,6 +45,14 @@ export const convertFunnelStateToDiagnosisSummary = (
       { label: "세면·구강청결 도움", value: yesNo(s0.isWashHelperChecked) },
       { label: "이동 도움", value: yesNo(s0.isMoveHelperChecked) },
       { label: "목욕 도움", value: yesNo(s0.isBathHelperChecked) },
+      {
+        label: "목욕 방식",
+        value: s0.isBathHelperChecked ? s0.bathingType : "-",
+      },
+      {
+        label: "목욕 시간",
+        value: s0.isBathHelperChecked ? s0.bathingDurationMinutes : "-",
+      },
       {
         label: "아침 식사",
         value: s0.isBreakfastChecked
@@ -125,13 +136,13 @@ export const convertFunnelStateToDiagnosisSummary = (
               entry.type as keyof typeof DIAGNOSIS_CONSTANTS.PROGRAM.TYPE_LABEL
             ] || entry.type;
           // 프로그램 참여도 라벨 (상, 중, 하)
-          const evalLabel =
-            DIAGNOSIS_CONSTANTS.PROGRAM.EVALUATION_LABEL[
-              entry.evaluation as keyof typeof DIAGNOSIS_CONSTANTS.PROGRAM.EVALUATION_LABEL
-            ] || entry.evaluation;
+          const scoreLabel =
+            DIAGNOSIS_CONSTANTS.PROGRAM.SCORE_LABEL[
+              entry.score as keyof typeof DIAGNOSIS_CONSTANTS.PROGRAM.SCORE_LABEL
+            ] || entry.score;
           return {
             label: `프로그램 ${idx + 1}`,
-            value: `${typeLabel} / ${entry.name} / 참여도: ${evalLabel}`,
+            value: `${typeLabel} / ${entry.name} / 참여도: ${scoreLabel}`,
           } as DiagnosisSummaryItem;
         }),
       { label: "특이사항(훈련)", value: s3.trainingSpecialNote || "-" },
@@ -149,17 +160,23 @@ export const convertFunnelStateToDiagnosisFunnelData = (
   const s1 = funnelState.STEP_1 || {};
   const s2 = funnelState.STEP_2 || {};
   const s3 = funnelState.STEP_3 || {};
-
+  const s5 = funnelState.STEP_5 || {};
   return {
     physical: {
       assistWashing: !!s0.isWashHelperChecked,
       assistMovement: !!s0.isMoveHelperChecked,
       assistBathing: !!s0.isBathHelperChecked,
+      bathingDurationMinutes: s0.bathingDurationMinutes || "",
+      bathingType: s0.bathingType || "",
       breakfast: {
         provided: !!s0.isBreakfastChecked,
         entry: {
-          mealType: (s0.breakfastType as any) || "REGULAR",
-          amount: (s0.breakfastAmount as any) || "FULL",
+          mealType: s0.isBreakfastChecked
+            ? (MEAL_TYPE_LABEL_TO_CODE[s0.breakfastType] as MealType)
+            : null,
+          amount: s0.isBreakfastChecked
+            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.breakfastAmount] as Amount)
+            : null,
         },
         validProvidedEntry: !!(
           s0.isBreakfastChecked &&
@@ -170,8 +187,12 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       lunch: {
         provided: !!s0.isLunchChecked,
         entry: {
-          mealType: (s0.lunchType as any) || "REGULAR",
-          amount: (s0.lunchAmount as any) || "FULL",
+          mealType: s0.isLunchChecked
+            ? (MEAL_TYPE_LABEL_TO_CODE[s0.lunchType] as MealType)
+            : null,
+          amount: s0.isLunchChecked
+            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.lunchAmount] as Amount)
+            : null,
         },
         validProvidedEntry: !!(
           s0.isLunchChecked &&
@@ -182,8 +203,12 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       dinner: {
         provided: !!s0.isDinnerChecked,
         entry: {
-          mealType: (s0.dinnerType as any) || "REGULAR",
-          amount: (s0.dinnerAmount as any) || "FULL",
+          mealType: s0.isDinnerChecked
+            ? (MEAL_TYPE_LABEL_TO_CODE[s0.dinnerType] as MealType)
+            : null,
+          amount: s0.isDinnerChecked
+            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.dinnerAmount] as Amount)
+            : null,
         },
         validProvidedEntry: !!(
           s0.isDinnerChecked &&
@@ -193,12 +218,12 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       },
       numberOfStool: typeof s0.stoolCount === "number" ? s0.stoolCount : 0,
       numberOfUrine: typeof s0.urineCount === "number" ? s0.urineCount : 0,
-      note: s0.physicalActivity || "",
+      comment: s0.physicalActivity || "",
     },
     cognitive: {
       assistCognitiveCare: !!s1.isCognitiveHelperChecked,
       assistCommunication: !!s1.isCommunicationHelperChecked,
-      note: s1.physicalActivity || "",
+      comment: s1.physicalActivity || "",
     },
     healthCare: {
       healthCare: !!s2.isHealthManagementChecked,
@@ -208,8 +233,10 @@ export const convertFunnelStateToDiagnosisFunnelData = (
         systolic: typeof s2.systolic === "number" ? s2.systolic : 0,
         diastolic: typeof s2.diastolic === "number" ? s2.diastolic : 0,
       },
-      temperature: typeof s2.temperature === "number" ? s2.temperature : 0,
-      note: s2.healthManageSpecialNote || "",
+      temperature: {
+        temperature: typeof s2.temperature === "number" ? s2.temperature : 0,
+      },
+      comment: s2.healthManageSpecialNote || "",
     },
     recoveryProgram: {
       motionTraining: !!s3.isTrainingChecked,
@@ -217,7 +244,8 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       cognitiveEnhancement: !!s3.isCognitiveFunctionEnhancementTrainingChecked,
       physicalTherapy: !!s3.isPhysicalTherapyChecked,
       programEntries: (s3.programEntries as any[]) || [],
-      note: s3.trainingSpecialNote || "",
+      comment: s3.trainingSpecialNote || "",
     },
+    signatureUrl: s5.signatureUrl || "",
   };
 };

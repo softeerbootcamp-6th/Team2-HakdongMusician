@@ -21,9 +21,9 @@ import { useImageController } from "../../hooks/useImageController";
 
 interface InfoSectionLayoutProps {
   title: string;
-  profileImage?: string;
+  profileImage?: string | null;
   children: React.ReactNode;
-  onImageChange?: (file: File | null) => void;
+  onImageChange?: (file: File[] | null) => void;
 }
 
 export const InfoSectionLayout = ({

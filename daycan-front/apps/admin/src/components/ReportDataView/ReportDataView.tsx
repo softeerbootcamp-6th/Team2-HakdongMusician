@@ -6,11 +6,11 @@ import {
   HealthImproveCard,
   CognitiveCard,
 } from "../../../../client/src/pages/daily-report/components";
-import type { ReportHistoryData } from "../../pages/member/components/HistoryModal/useHistoryModal";
 import { reportDataViewContainer } from "./ReportDataView.css";
+import type { TReportReadResponse } from "@/services/report/types";
 
 interface ReportDataViewProps {
-  reportData: ReportHistoryData | null;
+  reportData: TReportReadResponse | null;
 }
 
 export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
@@ -32,12 +32,13 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
         color={COLORS.gray[900]}
         style={{ marginBottom: "16px" }}
       >
-        📋 리포트 상세 내용
+        📋 리포트 상세 내용 (실제 모바일 앱 화면)
       </Body>
 
       <HealthIndexCard
         index={reportData.totalScore}
         description={`전체 점수: ${reportData.totalScore}점, 변화량: ${reportData.changeAmount}점`}
+        changeAmount={reportData.changeAmount}
         indexCardData={[
           { title: "식사", value: reportData.mealScore },
           { title: "건강", value: reportData.healthScore },
@@ -54,6 +55,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           value: entry.value,
           warningDescription: entry.warning,
         }))}
+        score={reportData.mealCardFooter?.score ?? 15}
+        additionalMemo={reportData.mealCardFooter?.additionalMemo ?? ""}
       />
 
       <HealthCheckCard
@@ -62,6 +65,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           key: entry.key,
           value: entry.value,
         }))}
+        score={reportData.healthCardFooter?.score ?? 15}
+        additionalMemo={reportData.healthCardFooter?.additionalMemo ?? ""}
       />
 
       <HealthImproveCard
@@ -70,6 +75,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           key: entry.key,
           value: entry.value,
         }))}
+        score={reportData.physicalCardFooter?.score ?? 15}
+        additionalMemo={reportData.physicalCardFooter?.additionalMemo ?? ""}
       />
 
       <CognitiveCard
@@ -78,6 +85,8 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
           key: entry.key,
           value: entry.value,
         }))}
+        score={reportData.cognitiveCardFooter?.score ?? 15}
+        additionalMemo={reportData.cognitiveCardFooter?.additionalMemo ?? ""}
       />
     </div>
   );

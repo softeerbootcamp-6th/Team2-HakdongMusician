@@ -17,6 +17,10 @@ export const nameInput = style({
   borderRadius: 8,
 });
 
+export const nameInputElement = style({
+  border: "none",
+});
+
 export const dropdown = style({
   position: "relative",
 });

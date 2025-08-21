@@ -52,3 +52,11 @@ export const dateContainer = style({
   justifyContent: "flex-start",
   gap: 4,
 });
+
+export const emptyDataContainer = style({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "200px",
+  color: COLORS.gray[500],
+});

@@ -15,12 +15,15 @@ export const SegmentItem = ({
   selected,
   type,
   flexRule,
+  fontSize,
   onClick,
   ...props
 }: SegmentItemProps) => {
   return (
     <div
-      className={classNames(segmentItem({ selected, type, flexRule }))}
+      className={classNames(
+        segmentItem({ selected, type, flexRule, fontSize })
+      )}
       onClick={onClick}
       {...props}
     >

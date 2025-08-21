@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Body, COLORS, Icon } from "@daycan/ui";
 import {
   cardLayout,
@@ -9,14 +9,16 @@ import {
   arrowIcon,
   arrowIconContainer,
   content,
+  overflowMessage,
+  cardLayoutFooterStampContainer,
 } from "./CardLayout.css";
 
 interface CardLayoutProps {
   children: React.ReactNode;
   title: string;
-  stampCount: number;
-  stampTotal: number;
-  stampDescription: string;
+  score: number;
+  scoreMax: number;
+  additionalMemo?: string;
   isDropdown?: boolean;
 }
 
@@ -25,28 +27,43 @@ interface CardLayoutProps {
 export const CardLayout = ({
   children,
   title,
-  stampCount,
-  stampTotal,
-  stampDescription,
+  score,
+  scoreMax,
+  additionalMemo,
   isDropdown = false,
 }: CardLayoutProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const toggleExpanded = () => {
     if (isDropdown) {
       setIsExpanded(!isExpanded);
     }
   };
-  function getStampIcon(stampCount: number) {
-    //total을 기준으로 수정 필요
-    if (stampCount >= 8 && stampCount <= 15) {
+
+  // 콘텐츠가 넘치는지 감지
+  useEffect(() => {
+    if (contentRef.current) {
+      const { scrollHeight, clientHeight } = contentRef.current;
+      setIsOverflowing(scrollHeight > clientHeight);
+    }
+  }, [children, isExpanded]);
+
+  function getStampIcon() {
+    // 정책상 65점이 총점일 때는 40점 이상이면 good
+    // 정책상 15점이 총점일 때는 10점 이상이면 good
+    const isGood = score / scoreMax >= 0.65;
+    if (isGood) {
       return "stampGood";
     }
     return "stampBad";
   }
 
+  // Dropdown 카드일 때는 높이를 제한하지 않아, 카드 내부 콘텐츠가 펴져도 됨
+  // Dropdown 카드가 아닐 때는(DailyReport) 높이를 제한하고, 넘치면 content 영역에 백드롭 및 메시지 추가
   return (
-    <div className={cardLayout}>
+    <div className={cardLayout({ isDropdown })}>
       <div
         className={cardLayoutHeader({ isDropdown })}
         onClick={toggleExpanded}
@@ -79,23 +96,38 @@ export const CardLayout = ({
       {(!isDropdown || isExpanded) && (
         <>
           <div
+            ref={contentRef}
             className={isDropdown ? dropdownContent({ isExpanded }) : content}
+            style={{ position: "relative" }}
           >
             {children}
+
+            {/* 콘텐츠가 넘칠 때 메시지 오버레이 */}
+            {isOverflowing && !isDropdown && (
+              <div className={overflowMessage}>
+                <Body type="medium" weight={600} color={COLORS.white}>
+                  터치해서 자세한 정보를 확인하세요!
+                </Body>
+              </div>
+            )}
           </div>
+
+          {/* 스탬프 + 메모 영역 */}
           <div className={cardLayoutFooter}>
-            <Icon
-              name={getStampIcon(stampCount)}
-              width={60}
-              height={60}
-              color={COLORS.white}
-            />
+            <div className={cardLayoutFooterStampContainer}>
+              <Icon
+                name={getStampIcon()}
+                width={50}
+                height={50}
+                color={COLORS.white}
+              />
+            </div>
             <div className={cardLayoutFooterStampDescription}>
               <Body type="large" weight={600} color={COLORS.gray[700]}>
-                {stampCount}/{stampTotal}
+                {score}/{scoreMax}
               </Body>
               <Body type="medium" weight={400} color={COLORS.gray[700]}>
-                {stampDescription}
+                {additionalMemo ?? ""}
               </Body>
             </div>
           </div>

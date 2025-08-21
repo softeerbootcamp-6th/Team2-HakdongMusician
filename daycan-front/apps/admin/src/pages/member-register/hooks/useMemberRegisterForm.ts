@@ -1,340 +1,343 @@
-import { useEffect, useState } from "react";
-import {
-  validateBirthDate,
-  validatePhoneNumber,
-  validateLongTermCareNumber,
-  validatePassword,
-} from "@/utils";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_ELDER_DUMMY_DATA } from "@/constants/memberDummyData";
 import { useToast } from "@daycan/ui";
+import { useGetMemberDetailQuery } from "@/services/member/useMemberQuery";
+import type { TMemberCreateRequest } from "@/services/member/types";
+import {
+  useCreateMemberMutation,
+  useUpdateMemberMutation,
+} from "@/services/member/useMemberMutation";
+import { useUploadImageSingleMutation } from "@/services/image/useUploadImageMutation";
+import { getMemberFormFieldErrors } from "../utils/memberFormValidation";
 
-interface MemberRegisterForm {
-  name: string;
-  gender: string;
-  birthDate: string;
-  careLevel: number;
-  careNumber: string;
-  avatarUrl: string;
-  guardianName: string;
-  guardianRelation: string;
-  guardianRelationBirthDate: string;
-  guardianPhoneNumber: string;
-  guardianAvatarUrl: string;
-  acceptReport: boolean;
-  guardianPassword: string;
-  guardianPasswordConfirm: string;
-  passwordConfirmed: boolean;
-}
+/*
+ * useMemberRegisterForm 커스텀 훅은 수급자 등록, 수정 페이지의 폼 상태 관리와 제출 처리를 담당합니다.
+ * 폼 상태 관리, 폼 제출 데이터 준비, 폼 제출 처리, 폼 제출 시 에러 검증, 폼 제출 버튼 활성화 여부를 담당합니다.
+ *
+ * 이미지를 file을 저장하고 있다가 수정, 등록 요청을 보낼때 s3에 업로드 합니다.
+ * @author 소보길
+ */
 
 export const useMemberRegisterForm = (
   mode: "register" | "edit",
-  memberId: string
+  memberId: number
 ) => {
+  const { mutate: createMember } = useCreateMemberMutation();
+  const { mutate: updateMember } = useUpdateMemberMutation();
+  const { mutateAsync: uploadSingleImage } = useUploadImageSingleMutation();
+
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showErrors, setShowErrors] = useState(false);
+
+  // 상태 관리 개선
+  const [errorMessages, setErrorMessages] = useState<Record<string, string>>(
+    {}
+  );
+  const [showErrorMessages, setShowErrorMessages] = useState(false);
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
-  const [form, setForm] = useState<MemberRegisterForm>({
+  const [form, setForm] = useState<TMemberCreateRequest>({
     name: "",
-    gender: "",
+    gender: "MALE",
     birthDate: "",
     careLevel: 0,
     careNumber: "",
     avatarUrl: "",
     guardianName: "",
     guardianRelation: "",
-    guardianRelationBirthDate: "",
+    guardianBirthDate: "",
     guardianPhoneNumber: "",
     guardianAvatarUrl: "",
-    acceptReport: false,
-    guardianPassword: "",
-    guardianPasswordConfirm: "",
-    passwordConfirmed: false,
+    reportConsent: false,
+    passwordEntry: {
+      guardianPassword: "",
+      guardianPasswordConfirm: "",
+      passwordConfirmed: false,
+    },
   });
-  const [copyForm, setCopyForm] = useState<MemberRegisterForm>(form);
 
-  const getInitialData = async () => {
-    if (mode === "edit") {
-      // 더미파일 가져와서 response에 저장
-      const response = API_ELDER_DUMMY_DATA.result.find(
-        (item) => item.memberId === memberId
-      );
-      if (!response) {
-        showToast({
-          data: {
-            message: "회원 정보를 찾을 수 없어요.",
-            type: "error",
-            variant: "pc",
-          },
-        });
-        navigate("/member");
-        return;
-      }
+  // 이미지 파일 상태 추가
+  const [imageFiles, setImageFiles] = useState<{
+    memberAvatar: File | null;
+    guardianAvatar: File | null;
+  }>({
+    memberAvatar: null,
+    guardianAvatar: null,
+  });
 
+  // 수정 모드에서 초기 데이터와 비교하기 위한 ref
+  const initialFormDataRef = useRef<TMemberCreateRequest | null>(null);
+
+  // 데이터 로딩 상태 관리 개선
+  const { data: memberExistData } = useGetMemberDetailQuery(memberId);
+
+  // getInitialData를 useCallback으로 최적화
+  const getInitialData = useCallback(() => {
+    if (mode === "edit" && memberId && memberExistData) {
       // response를 form에 덮어씌우기
       const updatedForm = {
         ...form,
-        name: response?.name || "",
-        gender: response?.gender || "",
-        birthDate: response?.birthDate || "",
-        careLevel: response?.careLevel || 0,
-        careNumber: response?.careNumber || "",
-        avatarUrl: response?.avatarUrl || "",
-        guardianName: response?.guardianName || "",
-        guardianRelation: response?.guardianRelation || "",
-        guardianRelationBirthDate: response?.guardianRelationBirthDate || "",
-        guardianPhoneNumber: response?.guardianPhoneNumber || "",
-        guardianAvatarUrl: response?.guardianAvatarUrl || "",
-        acceptReport: response?.acceptReport || false,
-        // guardianPassword: response?.guardianPassword || "",
-        // guardianPasswordConfirm: response?.guardianPasswordConfirm || "",
+        name: memberExistData?.name || "",
+        gender: memberExistData?.gender || "",
+        birthDate: memberExistData?.birthDate || "",
+        careLevel: memberExistData?.careLevel || 0,
+        careNumber: memberExistData?.careNumber || "",
+        avatarUrl: memberExistData?.avatarUrl || "",
+        guardianName: memberExistData?.guardianName || "",
+        guardianRelation: memberExistData?.guardianRelation || "",
+        guardianBirthDate: memberExistData?.guardianBirthDate || "",
+        guardianPhoneNumber: memberExistData?.guardianPhoneNumber || "",
+        guardianAvatarUrl: memberExistData?.guardianAvatarUrl || "",
+        reportConsent: memberExistData?.acceptReport || false,
       };
-      console.log("updatedForm", updatedForm);
 
       setForm(updatedForm);
-      // 원본 데이터를 copyForm에 저장하여 변경사항 비교에 사용
-      setCopyForm(updatedForm);
+      // 초기 데이터 ref 업데이트
+      initialFormDataRef.current = updatedForm;
     }
-  };
+  }, [mode, memberId, memberExistData]);
 
+  // useEffect 의존성 배열 수정
   useEffect(() => {
-    getInitialData();
-  }, [mode, memberId]);
+    if (mode === "edit" && memberExistData) {
+      getInitialData();
+    }
+  }, [mode, memberExistData, getInitialData]);
 
-  // 개별 필드 업데이트 함수들 (즉, 여기서 각각 하나씩 값이 바뀌게 하는 거)
-  const updateField = (
-    field: keyof MemberRegisterForm,
-    value: string | boolean | number
+  // 통합된 필드 업데이트 핸들러
+  const handleFieldUpdate = (
+    field: string,
+    value: string | number | boolean,
+    section?: "passwordEntry" | "root"
   ) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    if (section === "passwordEntry") {
+      setForm((prev) => ({
+        ...prev,
+        passwordEntry: {
+          ...prev.passwordEntry,
+          [field]: value,
+        },
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
-  // 수급자 정보 업데이트(수급자 정보 form에서 값이 변하면 이 함수를 감싼 handle이 실행되면서 위의 updateField가 실행)
-  const updateMemberInfo = (
-    field: keyof MemberRegisterForm,
-    value: string | number
-  ) => {
-    updateField(field, value);
+  // 이미지 파일 업데이트 함수들
+  const updateMemberAvatarFile = (file: File | null) => {
+    setImageFiles((prev) => ({ ...prev, memberAvatar: file }));
   };
 
-  // 보호자 정보 업데이트(위 설명과 마찬가지)
-  const updateGuardianInfo = (
-    field: keyof MemberRegisterForm,
-    value: string
-  ) => {
-    updateField(field, value);
+  const updateGuardianAvatarFile = (file: File | null) => {
+    setImageFiles((prev) => ({ ...prev, guardianAvatar: file }));
   };
 
-  // 리포트 수신 동의 업데이트
-  const updateAcceptReport = (consent: boolean) => {
-    updateField("acceptReport", consent);
-  };
+  // 수정 모드에서 폼 데이터가 변경되었는지 확인
+  const hasFormChanged = useCallback(() => {
+    if (mode !== "edit" || !initialFormDataRef.current) return false;
+    const initial = initialFormDataRef.current;
+    const current = form;
 
-  //에러 메시지 Record로 반환
-  const getFieldErrors = (): Record<string, string> => {
-    const errors: Record<string, string> = {};
+    const fieldsToCompare = [
+      "name",
+      "gender",
+      "birthDate",
+      "careLevel",
+      "careNumber",
+      "avatarUrl",
+      "guardianName",
+      "guardianRelation",
+      "guardianBirthDate",
+      "guardianPhoneNumber",
+      "guardianAvatarUrl",
+      "reportConsent",
+      "passwordEntry",
+    ];
 
-    // 수급자 정보 검증
-    if (form.name.trim() === "") {
-      errors.name = "이름을 입력해주세요";
-    }
-    if (form.gender === "") {
-      errors.gender = "성별을 선택해주세요";
-    }
-    if (form.birthDate.trim() === "") {
-      errors.birthDate = "생년월일을 입력해주세요";
-    } else if (!validateBirthDate(form.birthDate).isValid) {
-      errors.birthDate = validateBirthDate(form.birthDate).errorMessage;
-    }
-    if (form.careLevel === 0) {
-      errors.careLevel = "장기요양등급을 입력해주세요";
-    }
-    if (form.careNumber.trim() === "") {
-      errors.careNumber = "장기요양인정번호를 입력해주세요";
-    } else if (!validateLongTermCareNumber(form.careNumber).isValid) {
-      errors.careNumber = validateLongTermCareNumber(
-        form.careNumber
-      ).errorMessage;
-    }
-
-    // 보호자 정보 검증
-    if (form.guardianName.trim() === "") {
-      errors.guardianName = "보호자 이름을 입력해주세요";
-    }
-    if (form.guardianRelation.trim() === "") {
-      errors.guardianRelation = "수급자와의 관계를 입력해주세요";
-    }
-    if (form.guardianRelationBirthDate.trim() === "") {
-      errors.guardianBirthDate = "보호자 생년월일을 입력해주세요";
-    } else if (!validateBirthDate(form.guardianRelationBirthDate).isValid) {
-      errors.guardianRelationBirthDate = validateBirthDate(
-        form.guardianRelationBirthDate
-      ).errorMessage;
-    }
-    if (form.guardianPhoneNumber.trim() === "") {
-      errors.guardianPhoneNumber = "보호자 연락처를 입력해주세요";
-    } else if (!validatePhoneNumber(form.guardianPhoneNumber).isValid) {
-      errors.guardianPhoneNumber = validatePhoneNumber(
-        form.guardianPhoneNumber
-      ).errorMessage;
-    }
-
-    // 수정 모드이고 비밀번호 수정 모드가 비활성화된 경우 비밀번호 관련 필드 검증 제외
-    if (mode === "edit") {
-      if (!isPasswordEditMode) {
-        return errors;
+    return fieldsToCompare.some((field) => {
+      const fieldKey = field as keyof TMemberCreateRequest;
+      if (fieldKey === "passwordEntry") {
+        // passwordEntry는 별도 처리
+        return (
+          initial.passwordEntry.guardianPassword !==
+            current.passwordEntry.guardianPassword ||
+          initial.passwordEntry.guardianPasswordConfirm !==
+            current.passwordEntry.guardianPasswordConfirm
+        );
       }
+      return initial[fieldKey] !== current[fieldKey];
+    });
+  }, [mode, form]);
+
+  // 폼 제출 데이터를 API 요청용으로 변환하는 함수
+  const prepareFormDataForSubmission = useCallback(async () => {
+    let finalForm = { ...form };
+
+    // 수급자 이미지 처리
+    if (imageFiles.memberAvatar) {
+      try {
+        const result = await uploadSingleImage(imageFiles.memberAvatar);
+        finalForm.avatarUrl = result.objectKey;
+      } catch (error) {
+        console.error("수급자 이미지 업로드 실패:", error);
+        throw new Error("수급자 이미지 업로드에 실패했습니다.");
+      }
+    } else if (
+      mode === "edit" &&
+      initialFormDataRef.current &&
+      form.avatarUrl === initialFormDataRef.current.avatarUrl
+    ) {
+      // 수정 모드이고 기존 이미지와 동일한 경우 avatarUrl 삭제
+      delete (finalForm as any).avatarUrl;
     }
 
-    if (form.guardianPassword.trim() === "") {
-      errors.guardianPassword = "비밀번호를 입력해주세요";
-    } else if (!validatePassword(form.guardianPassword).isValid) {
-      errors.guardianPassword = validatePassword(
-        form.guardianPassword
-      ).errorMessage;
-    }
-    if (form.guardianPasswordConfirm.trim() === "") {
-      errors.guardianPasswordConfirm = "비밀번호 확인을 입력해주세요";
-    } else if (form.guardianPassword !== form.guardianPasswordConfirm) {
-      errors.guardianPasswordConfirm = "비밀번호가 일치하지 않아요";
+    // 보호자 이미지 처리
+    if (imageFiles.guardianAvatar) {
+      try {
+        const result = await uploadSingleImage(imageFiles.guardianAvatar);
+        finalForm.guardianAvatarUrl = result.objectKey;
+      } catch (error) {
+        console.error("보호자 이미지 업로드 실패:", error);
+        throw new Error("보호자 이미지 업로드에 실패했습니다.");
+      }
+    } else if (
+      mode === "edit" &&
+      initialFormDataRef.current &&
+      form.guardianAvatarUrl === initialFormDataRef.current.guardianAvatarUrl
+    ) {
+      // 수정 모드이고 기존 이미지와 동일한 경우 guardianAvatarUrl 삭제
+      delete (finalForm as any).guardianAvatarUrl;
     }
 
-    return errors;
-  };
+    // passwordEntry의 모든 값이 빈 문자열이면 passwordEntry 자체를 제거
+    if (
+      finalForm.passwordEntry.guardianPassword === "" &&
+      finalForm.passwordEntry.guardianPasswordConfirm === ""
+    ) {
+      (finalForm as any).passwordEntry = undefined;
+    }
 
-  //등록 버튼 활성화
-  const isRegisterPageFormChangedOrFilled = (): boolean => {
+    return finalForm;
+  }, [form, imageFiles, mode, uploadSingleImage]);
+
+  // 폼 제출 버튼 활성화 여부
+  const handleIsFormFilled = useCallback(() => {
     // 필수 필드들만 확인 (선택적 필드 제외)
     const requiredFields = {
       name: form.name.trim() !== "",
-      gender: form.gender !== "",
+      gender: form.gender === "MALE" || form.gender === "FEMALE",
       birthDate: form.birthDate.trim() !== "",
       careLevel: form.careLevel !== 0,
       careNumber: form.careNumber.trim() !== "",
       guardianName: form.guardianName.trim() !== "",
       guardianRelation: form.guardianRelation.trim() !== "",
-      guardianRelationBirthDate: form.guardianRelationBirthDate.trim() !== "",
-      guardianPhoneNumber: form.guardianPhoneNumber.trim() !== "",
-      guardianPassword: form.guardianPassword.trim() !== "",
-      guardianPasswordConfirm: form.guardianPasswordConfirm.trim() !== "",
-    };
-
-    return Object.values(requiredFields).every(Boolean);
-  };
-
-  //수정 버튼 활성화
-  const isEditPageFormChangedOrFilled = (): boolean => {
-    // 수정 모드이고 변경사항이 없는 경우 false 반환
-    if (mode === "edit") {
-      const hasChanges = Object.keys(form).some((key) => {
-        const fieldKey = key as keyof MemberRegisterForm;
-        return form[fieldKey] !== copyForm[fieldKey];
-      });
-
-      return hasChanges;
-    }
-    const requiredFields = {
-      name: form.name.trim() !== "",
-      gender: form.gender !== "",
-      birthDate: form.birthDate.trim() !== "",
-      careLevel: form.careLevel !== 0,
-      careNumber: form.careNumber.trim() !== "",
-      guardianName: form.guardianName.trim() !== "",
-      guardianRelation: form.guardianRelation.trim() !== "",
-      guardianRelationBirthDate: form.guardianRelationBirthDate.trim() !== "",
+      guardianBirthDate: form.guardianBirthDate.trim() !== "",
       guardianPhoneNumber: form.guardianPhoneNumber.trim() !== "",
     };
-    return Object.values(requiredFields).every(Boolean);
-  };
 
-  // 폼 제출 버튼 활성화 여부(수정 , 등록페이지 구분),,
-  // 다만 활성화 여부만 판단하고 제출해도 폼 형식에 맞지 않으면 handleFormErrorCheck에서 검출
-  const handleIsFormFilled = () => {
-    if (mode === "register") {
-      return isRegisterPageFormChangedOrFilled();
-    } else {
-      return isEditPageFormChangedOrFilled();
-    }
-  };
+    const isFilled = Object.values(requiredFields).every(Boolean);
+
+    // 수정 모드의 경우 변경사항이 있는지도 확인
+    return mode === "register" ? isFilled : isFilled && hasFormChanged();
+  }, [form, mode, hasFormChanged]);
 
   // 폼 제출 시 에러 검증
   const handleFormErrorCheck = () => {
-    const fieldErrors = getFieldErrors();
-    setErrors(fieldErrors);
-    setShowErrors(true);
+    const fieldErrors = getMemberFormFieldErrors(
+      form,
+      mode,
+      isPasswordEditMode
+    );
+    setErrorMessages(fieldErrors);
+    setShowErrorMessages(true);
 
     if (Object.keys(fieldErrors).length === 0) {
       handleSubmit();
     }
   };
 
-  //마지막 제출 함수
-  const handleSubmit = () => {
-    form.passwordConfirmed = true;
+  // 마지막 제출 함수 개선
+  const handleSubmit = async () => {
+    form.passwordEntry.passwordConfirmed = true;
+    const submissionData = await prepareFormDataForSubmission();
 
-    //여기서 API 호출
-    console.log("폼 제출:", form);
+    console.log("finalForm", submissionData);
+
     if (mode === "register") {
-      // 등록 로직
-      console.log("등록 로직");
-
-      showToast({
-        data: {
-          message: `${form.name} 님의 정보가 등록되었어요`,
-          type: "success",
-          variant: "pc",
-        },
-        autoClose: 1500,
-        hideProgressBar: true,
-      });
+      await handleMemberRegistration(submissionData);
     } else if (mode === "edit") {
-      // 수정 로직
-      console.log("수정 로직");
-
-      showToast({
-        data: {
-          message: `${form.name} 님의 정보가 수정되었어요`,
-          type: "success",
-          variant: "pc",
-        },
-        autoClose: 1500,
-        hideProgressBar: true,
-      });
+      await handleMemberUpdate(submissionData);
     }
+  };
 
-    // 폼 초기화
-    setForm({
-      ...form,
-      passwordConfirmed: false,
+  // 수급자 등록 처리
+  const handleMemberRegistration = async (
+    submissionData: TMemberCreateRequest
+  ) => {
+    createMember(submissionData, {
+      onSuccess: () => {
+        showToast({
+          data: {
+            message: `${form.name} 님의 정보가 등록되었어요`,
+            type: "success",
+            variant: "pc",
+          },
+          autoClose: 1500,
+          hideProgressBar: true,
+        });
+        navigate("/member");
+      },
     });
+  };
 
-    navigate("/member");
+  // 수급자 수정 처리
+  const handleMemberUpdate = async (submissionData: TMemberCreateRequest) => {
+    console.log("edit form", submissionData);
+
+    updateMember(
+      { id: memberId, data: submissionData },
+      {
+        onSuccess: () => {
+          showToast({
+            data: {
+              message: `${form.name} 님의 정보가 수정되었어요`,
+              type: "success",
+              variant: "pc",
+            },
+            autoClose: 1500,
+            hideProgressBar: true,
+          });
+          navigate("/member");
+        },
+      }
+    );
   };
 
   return {
-    //폼
+    // 폼
     form,
+    imageFiles,
 
-    //버튼 활성화 여부
+    // 버튼 활성화 여부
     handleIsFormFilled,
-    //폼 제출 시 에러 검증
+
+    // 폼 제출 시 에러 검증
     handleFormErrorCheck,
 
-    //마지막 제출 함수
+    // 마지막 제출 함수
     handleSubmit,
 
-    //개별 필드 업데이트 함수들
-    updateMemberInfo,
-    updateGuardianInfo,
-    updateAcceptReport,
+    // 통합된 필드 업데이트 핸들러
+    handleFieldUpdate,
 
-    //에러 메시지
-    errors,
-    showErrors,
+    // 이미지 파일 업데이트 함수들
+    updateMemberAvatarFile,
+    updateGuardianAvatarFile,
 
-    //비밀번호 수정 모드 여부(수정 페이지에서 비밀번호 수정시 비밀번호 수정 모드 활성화)
+    // 에러 메시지
+    errorMessages,
+    showErrorMessages,
+
+    // 비밀번호 수정 모드 여부
     isPasswordEditMode,
     setIsPasswordEditMode,
   };

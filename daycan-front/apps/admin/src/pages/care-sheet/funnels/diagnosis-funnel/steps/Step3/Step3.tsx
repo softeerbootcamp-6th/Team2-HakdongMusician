@@ -7,11 +7,11 @@ import {
 import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useStep3 } from "./useStep3";
 import { useEffect, useRef, useState } from "react";
-import { Button, COLORS, Icon, Input } from "@daycan/ui";
+import { Button, COLORS, Icon } from "@daycan/ui";
 import {
   DIAGNOSIS_CONSTANTS,
-  type EvaluationLevel,
   type ProgramType,
+  type Score,
 } from "../../constants/diagnosis";
 import {
   addRowContainer,
@@ -21,6 +21,7 @@ import {
   nameInput,
   programRow,
   iconButton,
+  nameInputElement,
 } from "./Step3.css";
 
 export const Step3 = () => {
@@ -62,206 +63,208 @@ export const Step3 = () => {
   }, []);
 
   return (
-    <DiagnosisLayout title="기능회복 훈련" nextTitle="기록지 검토">
-      <DiagnosisCardLayout title="훈련" isRequired={true}>
-        <RowCheckBox
-          label="동작훈련"
-          checked={isTrainingChecked}
-          onClick={() => setIsTrainingChecked(!isTrainingChecked)}
-        />
-        <RowCheckBox
-          label="인지활동 훈련"
-          checked={isCognitiveActivityTrainingChecked}
-          onClick={() =>
-            setIsCognitiveActivityTrainingChecked(
-              !isCognitiveActivityTrainingChecked
-            )
-          }
-        />
-        <RowCheckBox
-          label="인지기능향상 훈련"
-          checked={isCognitiveFunctionEnhancementTrainingChecked}
-          onClick={() =>
-            setIsCognitiveFunctionEnhancementTrainingChecked(
-              !isCognitiveFunctionEnhancementTrainingChecked
-            )
-          }
-        />
-        <RowCheckBox
-          label="물리(작업) 치료"
-          checked={isPhysicalTherapyChecked}
-          onClick={() => setIsPhysicalTherapyChecked(!isPhysicalTherapyChecked)}
-        />
-      </DiagnosisCardLayout>
-      <DiagnosisCardLayout
-        title="신체-인지 기능 향상 프로그램"
-        isRequired={true}
-      >
-        <div ref={areaRef}>
-          {programEntries.map((entry, index) => (
-            <div key={index} className={programRow}>
-              <button
-                type="button"
-                onClick={() => removeProgramEntry(index)}
-                className={iconButton}
-              >
-                <Icon name="minusBox" width={20} height={20} />
-              </button>
-
-              <div className={dropdown}>
-                <Button
-                  size="small"
-                  style={{
-                    background: COLORS.gray[600],
-                    color: COLORS.white,
-                  }}
-                  onClick={() => {
-                    setOpenTypeIndex((prev) => (prev === index ? null : index));
-                    setOpenEvalIndex(null);
-                  }}
+    <>
+      <DiagnosisLayout title="기능회복 훈련" nextTitle="기록지 검토">
+        <DiagnosisCardLayout title="훈련">
+          <RowCheckBox
+            label="동작훈련"
+            checked={isTrainingChecked}
+            onClick={() => setIsTrainingChecked(!isTrainingChecked)}
+          />
+          <RowCheckBox
+            label="인지활동 훈련"
+            checked={isCognitiveActivityTrainingChecked}
+            onClick={() =>
+              setIsCognitiveActivityTrainingChecked(
+                !isCognitiveActivityTrainingChecked
+              )
+            }
+          />
+          <RowCheckBox
+            label="인지기능향상 훈련"
+            checked={isCognitiveFunctionEnhancementTrainingChecked}
+            onClick={() =>
+              setIsCognitiveFunctionEnhancementTrainingChecked(
+                !isCognitiveFunctionEnhancementTrainingChecked
+              )
+            }
+          />
+          <RowCheckBox
+            label="물리(작업) 치료"
+            checked={isPhysicalTherapyChecked}
+            onClick={() =>
+              setIsPhysicalTherapyChecked(!isPhysicalTherapyChecked)
+            }
+          />
+        </DiagnosisCardLayout>
+        <DiagnosisCardLayout title="신체-인지 기능 향상 프로그램">
+          <div ref={areaRef}>
+            {programEntries.map((entry, index) => (
+              <div key={index} className={programRow}>
+                <button
+                  type="button"
+                  onClick={() => removeProgramEntry(index)}
+                  className={iconButton}
                 >
-                  {DIAGNOSIS_CONSTANTS.PROGRAM.TYPE_LABEL[entry.type]}
-                  <Icon
-                    name="chevronDown"
-                    color={COLORS.gray[600]}
-                    width={16}
-                    height={16}
-                  />
-                </Button>
-                {openTypeIndex === index && (
-                  <div className={dropdownMenu}>
-                    <div
-                      className={dropdownItem}
-                      onClick={() => {
-                        updateProgramEntry(index, {
-                          type: "PHYSICAL" as ProgramType,
-                        });
-                        setOpenTypeIndex(null);
-                      }}
-                    >
-                      신체
-                    </div>
-                    <div
-                      className={dropdownItem}
-                      onClick={() => {
-                        updateProgramEntry(index, {
-                          type: "COGNITIVE" as ProgramType,
-                        });
-                        setOpenTypeIndex(null);
-                      }}
-                    >
-                      인지
-                    </div>
-                  </div>
-                )}
-              </div>
+                  <Icon name="minusBox" width={20} height={20} />
+                </button>
 
-              <div className={nameInput}>
-                <Input
-                  value={entry.name}
-                  type="text"
-                  inputSize="full"
-                  onChange={(e) =>
-                    updateProgramEntry(index, {
-                      name: (e.target as HTMLInputElement).value,
-                    })
-                  }
-                  style={{
-                    border: "none",
-                  }}
-                  placeholder="프로그램 명"
-                />
-              </div>
+                <div className={dropdown}>
+                  <Button
+                    size="small"
+                    style={{
+                      background: COLORS.gray[600],
+                      color: COLORS.white,
+                    }}
+                    onClick={() => {
+                      setOpenTypeIndex((prev) =>
+                        prev === index ? null : index
+                      );
+                      setOpenEvalIndex(null);
+                    }}
+                  >
+                    {DIAGNOSIS_CONSTANTS.PROGRAM.TYPE_LABEL[entry.type]}
+                    <Icon
+                      name="chevronDown"
+                      color={COLORS.gray[600]}
+                      width={16}
+                      height={16}
+                    />
+                  </Button>
+                  {openTypeIndex === index && (
+                    <div className={dropdownMenu}>
+                      <div
+                        className={dropdownItem}
+                        onClick={() => {
+                          updateProgramEntry(index, {
+                            type: "PHYSICAL" as ProgramType,
+                          });
+                          setOpenTypeIndex(null);
+                        }}
+                      >
+                        신체
+                      </div>
+                      <div
+                        className={dropdownItem}
+                        onClick={() => {
+                          updateProgramEntry(index, {
+                            type: "COGNITIVE" as ProgramType,
+                          });
+                          setOpenTypeIndex(null);
+                        }}
+                      >
+                        인지
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-              <div className={dropdown}>
-                <Button
-                  size="small"
-                  style={{
-                    background: COLORS.gray[50],
-                    color: COLORS.gray[500],
-                  }}
-                  onClick={() => {
-                    setOpenEvalIndex((prev) => (prev === index ? null : index));
-                    setOpenTypeIndex(null);
-                  }}
-                >
-                  {
-                    DIAGNOSIS_CONSTANTS.PROGRAM.EVALUATION_LABEL[
-                      entry.evaluation
-                    ]
-                  }
-                  <Icon
-                    name="chevronDown"
-                    color={COLORS.gray[500]}
-                    width={16}
-                    height={16}
+                <div className={nameInput}>
+                  <input
+                    className={nameInputElement}
+                    value={entry.name}
+                    type="text"
+                    onChange={(e) =>
+                      updateProgramEntry(index, {
+                        name: (e.target as HTMLInputElement).value,
+                      })
+                    }
+                    placeholder="프로그램 명"
                   />
-                </Button>
-                {openEvalIndex === index && (
-                  <div className={dropdownMenu}>
-                    <div
-                      className={dropdownItem}
-                      onClick={() => {
-                        updateProgramEntry(index, {
-                          evaluation: "HIGH" as EvaluationLevel,
-                        });
-                        setOpenEvalIndex(null);
-                      }}
-                    >
-                      상
+                </div>
+
+                <div className={dropdown}>
+                  <Button
+                    size="small"
+                    style={{
+                      background: COLORS.gray[50],
+                      color: COLORS.gray[500],
+                    }}
+                    onClick={() => {
+                      setOpenEvalIndex((prev) =>
+                        prev === index ? null : index
+                      );
+                      setOpenTypeIndex(null);
+                    }}
+                  >
+                    {DIAGNOSIS_CONSTANTS.PROGRAM.SCORE_LABEL[entry.score]}
+                    <Icon
+                      name="chevronDown"
+                      color={COLORS.gray[500]}
+                      width={16}
+                      height={16}
+                    />
+                  </Button>
+                  {openEvalIndex === index && (
+                    <div className={dropdownMenu}>
+                      <div
+                        className={dropdownItem}
+                        onClick={() => {
+                          updateProgramEntry(index, {
+                            score: "HIGH" as Score,
+                          });
+                          setOpenEvalIndex(null);
+                        }}
+                      >
+                        상
+                      </div>
+                      <div
+                        className={dropdownItem}
+                        onClick={() => {
+                          updateProgramEntry(index, {
+                            score: "MEDIUM" as Score,
+                          });
+                          setOpenEvalIndex(null);
+                        }}
+                      >
+                        중
+                      </div>
+                      <div
+                        className={dropdownItem}
+                        onClick={() => {
+                          updateProgramEntry(index, {
+                            score: "LOW" as Score,
+                          });
+                          setOpenEvalIndex(null);
+                        }}
+                      >
+                        하
+                      </div>
                     </div>
-                    <div
-                      className={dropdownItem}
-                      onClick={() => {
-                        updateProgramEntry(index, {
-                          evaluation: "MEDIUM" as EvaluationLevel,
-                        });
-                        setOpenEvalIndex(null);
-                      }}
-                    >
-                      중
-                    </div>
-                    <div
-                      className={dropdownItem}
-                      onClick={() => {
-                        updateProgramEntry(index, {
-                          evaluation: "LOW" as EvaluationLevel,
-                        });
-                        setOpenEvalIndex(null);
-                      }}
-                    >
-                      하
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div className={addRowContainer}>
-          <Button size="small" variant="unEmphasized" onClick={addProgramEntry}>
-            추가 <Icon name="plus" width={16} height={16} />
-          </Button>
-        </div>
-      </DiagnosisCardLayout>
-      <DiagnosisCardLayout title="특이사항">
-        <ColumnTextArea
-          label="훈련"
-          value={trainingSpecialNote}
-          onChange={setTrainingSpecialNote}
-          autoSelectTags={[
-            {
-              value: "프로그램에 아주 열심히 참여하셨어요!",
-              isGood: true,
-            },
-            {
-              value: "프로그램 도중 피곤하셔서 조금 쉬었어요.",
-              isGood: false,
-            },
-          ]}
-        />
-      </DiagnosisCardLayout>
+            ))}
+          </div>
+          <div className={addRowContainer}>
+            <Button
+              size="small"
+              variant="unEmphasized"
+              onClick={addProgramEntry}
+            >
+              추가 <Icon name="plus" width={16} height={16} />
+            </Button>
+          </div>
+        </DiagnosisCardLayout>
+        <DiagnosisCardLayout title="특이사항">
+          <ColumnTextArea
+            label="훈련"
+            value={trainingSpecialNote}
+            onChange={setTrainingSpecialNote}
+            autoSelectTags={[
+              {
+                value: "프로그램에 아주 열심히 참여하셨어요!",
+                isGood: true,
+              },
+              {
+                value: "프로그램 도중 피곤하셔서 조금 쉬었어요.",
+                isGood: false,
+              },
+            ]}
+          />
+        </DiagnosisCardLayout>
+      </DiagnosisLayout>
       <StepButtons onNext={handleNext} onPrev={toPrev} isNextEnabled={true} />
-    </DiagnosisLayout>
+    </>
   );
 };

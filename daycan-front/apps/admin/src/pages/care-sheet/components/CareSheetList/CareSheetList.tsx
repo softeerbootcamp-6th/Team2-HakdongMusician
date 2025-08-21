@@ -6,12 +6,13 @@ import {
   itemsContainer,
   sectionTitle,
 } from "./CareSheetList.css";
-import type { CareSheetListItemType } from "../../constants/dummy";
+import type { TCareSheetListItem } from "@/services/careSheet/types";
 import { CareSheetListItem } from "../CareSheetListItem";
 import { CareSheetListHeader } from "../CareSheetListHeader";
+import { overlayScroll } from "@/styles/scroll.css.ts";
 
 interface CareSheetListProps {
-  careSheets: CareSheetListItemType[];
+  careSheets: TCareSheetListItem[];
   status: "NOT_APPLICABLE" | "APPLICABLE";
   onProcessItems?: () => void;
   timeLeft?: string;
@@ -92,20 +93,20 @@ export const CareSheetList = ({
         onSelectAll={onSelectAll}
         showCheckbox={true}
       />
-      <div className={itemsContainer}>
+      <div className={`${itemsContainer} ${overlayScroll}`}>
         {careSheets.map((careSheet, index) => {
           // 상태에 따라 선택 가능 여부 결정
           const isSelectable =
-            status === "APPLICABLE" ? careSheet.status !== "SHEET_DONE" : true; // 결석 인원은 모두 선택 가능
+            status === "APPLICABLE" ? careSheet.status !== "DONE" : true; // 결석 인원은 모두 선택 가능
 
           return (
             <CareSheetListItem
-              key={careSheet.careSheetId}
+              key={careSheet.memberMeta.memberId}
               careSheet={careSheet}
               index={index}
-              isChecked={checkedCareSheetIds.has(careSheet.careSheetId)}
+              isChecked={checkedCareSheetIds.has(careSheet.memberMeta.memberId)}
               onCheckChange={(checked) =>
-                onItemCheck(careSheet.careSheetId, checked)
+                onItemCheck(careSheet.memberMeta.memberId, checked)
               }
               isSelectable={isSelectable}
             />

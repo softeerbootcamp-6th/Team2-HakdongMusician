@@ -28,6 +28,7 @@ export const LoginPage = () => {
     isModalOpen,
     setIsModalOpen,
     resetForm,
+    isLoading,
   } = useLoginHook();
 
   return (
@@ -50,6 +51,7 @@ export const LoginPage = () => {
             type="text"
             value={id}
             onChange={handleIdChange}
+            disabled={isLoading}
           />
         </div>
 
@@ -61,6 +63,7 @@ export const LoginPage = () => {
             type="password"
             value={password}
             onChange={handlePasswordChange}
+            disabled={isLoading}
           />
         </div>
         {errorMessage && (
@@ -73,8 +76,9 @@ export const LoginPage = () => {
         <Button
           size="fullWidth"
           variant={isFilled ? "primary" : "unEmphasized"}
+          disabled={!isFilled || isLoading}
         >
-          로그인
+          {isLoading ? "로그인 중..." : "로그인"}
         </Button>
 
         {/* 옵션들 */}

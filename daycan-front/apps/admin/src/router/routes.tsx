@@ -6,13 +6,19 @@ import {
   MemberRegisterPage,
   CareSheetPage,
   NotFoundPage,
+  StaffPage,
+  StaffRegisterPage,
   ReportPage,
+  OCRPage,
+  OCRPhotoPage,
+  TodayCareSheetPage,
 } from "@/pages";
 import {
   HomeFunnelStepContainer,
   InfoFunnelStepContainer,
   DiagnosisFunnelStepContainer,
 } from "@/pages/care-sheet/funnels";
+import { NotFoundLayout } from "@/layout/not-found/NotFoundLayout";
 
 export type TRoutes = {
   path: string;
@@ -33,10 +39,7 @@ export const routes: TRoutes[] = [
         path: "",
         element: <CareSheetPage />,
       },
-      {
-        path: "*",
-        element: <NotFoundPage />,
-      },
+
       {
         path: "care-sheet",
         element: <CareSheetPage />,
@@ -47,10 +50,6 @@ export const routes: TRoutes[] = [
     path: "/member",
     layout: <MainLayout />,
     children: [
-      // {
-      //   path: "",
-      //   element: <div>HomePage</div>, // => 여기 Outlet으로 렌더됨
-      // },
       {
         path: "",
         element: <MemberPage />,
@@ -62,6 +61,24 @@ export const routes: TRoutes[] = [
       {
         path: "edit/:memberId",
         element: <MemberRegisterPage mode="edit" />,
+      },
+    ],
+  },
+  {
+    path: "/staff",
+    layout: <MainLayout />,
+    children: [
+      {
+        path: "",
+        element: <StaffPage />,
+      },
+      {
+        path: "new",
+        element: <StaffRegisterPage mode="register" />,
+      },
+      {
+        path: "edit/:staffId",
+        element: <StaffRegisterPage mode="edit" />,
       },
     ],
   },
@@ -100,6 +117,28 @@ export const routes: TRoutes[] = [
       {
         path: "diagnosis",
         element: <DiagnosisFunnelStepContainer />,
+      },
+      {
+        path: "ocr",
+        element: <OCRPage />,
+      },
+      {
+        path: "ocr/photo",
+        element: <OCRPhotoPage />,
+      },
+      {
+        path: "today/:writerId",
+        element: <TodayCareSheetPage />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    layout: <NotFoundLayout />,
+    children: [
+      {
+        path: "*",
+        element: <NotFoundPage />,
       },
     ],
   },

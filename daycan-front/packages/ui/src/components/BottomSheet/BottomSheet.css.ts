@@ -5,13 +5,13 @@ import { COLORS } from "../../styles";
 
 // 1. keyframes 정의
 const slideUp = keyframes({
-  "0%": { transform: "translateY(100%)" },
-  "100%": { transform: "translateY(0)" },
+  "0%": { transform: "translateY(100%) translateX(-50%)" },
+  "100%": { transform: "translateY(0) translateX(-50%)" },
 });
 
 const slideDown = keyframes({
-  "0%": { transform: "translateY(0)" },
-  "100%": { transform: "translateY(100%)" },
+  "0%": { transform: "translateY(0) translateX(-50%)" },
+  "100%": { transform: "translateY(100%) translateX(-50%)" },
 });
 
 // 2. Overlay는 그대로 유지
@@ -28,15 +28,17 @@ export const overlay = style({
 export const bottomSheetBase = style({
   position: "fixed",
   bottom: 0,
-  left: 0,
-  right: 0,
+  left: "50%",
+  transform: "translateX(-50%)",
   backgroundColor: COLORS.white,
   borderTopLeftRadius: 16,
   borderTopRightRadius: 16,
   padding: "24px",
   zIndex: 1001,
   boxShadow: "0 -4px 12px rgba(0, 0, 0, 0.15)",
-  willChange: "transform",
+  width: "100%",
+  boxSizing: "border-box",
+  maxWidth: "450px",
 });
 
 // 4. 애니메이션 상태별 스타일

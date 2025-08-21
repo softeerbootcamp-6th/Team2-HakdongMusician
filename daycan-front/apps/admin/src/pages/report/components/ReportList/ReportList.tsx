@@ -1,9 +1,12 @@
 import { ReportListHeader } from "../ReportListHeader/ReportListHeader";
 import { ReportListItem } from "../ReportListItem/ReportListItem";
+import { ReportReviewModal } from "../ReportReviewModal/ReportReviewModal";
 import { Body, COLORS } from "@daycan/ui";
 import type { ReportListItemType } from "../ReportListItem/ReportListItem";
 import { reportListContainer } from "./ReportList.css";
 import { useReports } from "../../hooks/useReport";
+import { useState } from "react";
+import { overlayScroll } from "@/styles/scroll.css.ts";
 
 interface ReportListProps {
   reports?: ReportListItemType[];
@@ -21,6 +24,18 @@ export const ReportList = ({
   onSelectAll,
 }: ReportListProps) => {
   const { checkedReportIds, handleCheckChange } = useReports();
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+
+  const handleReviewRequest = (reportId: number) => {
+    setSelectedReportId(reportId);
+    setIsReviewModalOpen(true);
+  };
+
+  const handleCloseReviewModal = () => {
+    setIsReviewModalOpen(false);
+    setSelectedReportId(null);
+  };
 
   // 리포트가 없으면 빈 상태 렌더링
   if (reports.length === 0) {
@@ -47,11 +62,10 @@ export const ReportList = ({
         isIndeterminate={isIndeterminate}
         onSelectAll={onSelectAll}
       />
-      <div className={reportListContainer}>
+      <div className={`${reportListContainer} ${overlayScroll}`}>
         {reports.map((report, index) => {
           const isSelectable = report.status === "REVIEWED";
           const isChecked = checkedReportIds.has(report.id);
-
           return (
             <ReportListItem
               key={report.id}
@@ -60,10 +74,16 @@ export const ReportList = ({
               isChecked={isChecked}
               onCheckChange={handleCheckChange}
               isSelectable={isSelectable}
+              onReviewRequest={handleReviewRequest}
             />
           );
         })}
       </div>
+      <ReportReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={handleCloseReviewModal}
+        reportId={selectedReportId!}
+      />
     </div>
   );
 };

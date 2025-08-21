@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@daycan/api": "workspace:*",
     "@daycan/hooks": "workspace:*",
     "@daycan/ui": "workspace:*",
+    "@sentry/react": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@vanilla-extract/css": "catalog:",
+    "axios": "catalog:",
     "jotai": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
@@ -25,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
+    "@sentry/vite-plugin": "catalog:",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "@vanilla-extract/vite-plugin": "catalog:",

@@ -9,7 +9,7 @@ export type PageKey = (typeof PAGE_KEYS)[keyof typeof PAGE_KEYS];
 
 // 사이드바 텍스트 상수들
 export const SIDEBAR_TEXTS = {
-  CENTER_NAME: "데이케어센터과천점마공원점",
+  CENTER_NAME: "데이케어센터 소프티어점",
   DOCUMENT_MANAGEMENT: "서류 관리",
   PERSON_MANAGEMENT: "사람 관리",
   NEW_RECORD_BUTTON: "새 기록지 작성",

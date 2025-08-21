@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { useAdminLoginMutation } from "@/services/auth/useAdminAuthMutation";
 
 // 상태 타입 정의
 interface AdminLoginState {
@@ -8,6 +9,7 @@ interface AdminLoginState {
   errorMessage: string;
   isChecked: boolean;
   isModalOpen: boolean;
+  isAdminLoginRouteModalOpen: boolean; // 추가
 }
 
 // 액션 타입 정의
@@ -18,6 +20,7 @@ type AdminLoginAction =
   | { type: "CLEAR_ERROR_MESSAGE" }
   | { type: "SET_IS_CHECKED"; payload: boolean }
   | { type: "SET_IS_MODAL_OPEN"; payload: boolean }
+  | { type: "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN"; payload: boolean } // 추가
   | { type: "RESET_FORM" };
 
 // 초기 상태
@@ -28,6 +31,7 @@ const initialState: AdminLoginState = {
   errorMessage: "",
   isChecked: false,
   isModalOpen: false,
+  isAdminLoginRouteModalOpen: false, // 추가
 };
 
 // 리듀서 함수
@@ -74,6 +78,12 @@ const adminLoginReducer = (
         isModalOpen: action.payload,
       };
 
+    case "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN": // 추가
+      return {
+        ...state,
+        isAdminLoginRouteModalOpen: action.payload,
+      };
+
     case "RESET_FORM":
       return {
         ...initialState,
@@ -86,7 +96,7 @@ const adminLoginReducer = (
 
 export const useAdminLoginHook = () => {
   const [state, dispatch] = useReducer(adminLoginReducer, initialState);
-
+  const login = useAdminLoginMutation();
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: "SET_EMAIL", payload: e.target.value });
   };
@@ -95,7 +105,7 @@ export const useAdminLoginHook = () => {
     dispatch({ type: "SET_PASSWORD", payload: e.target.value });
   };
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!state.isFilled) {
       dispatch({
@@ -105,23 +115,15 @@ export const useAdminLoginHook = () => {
       return;
     }
 
-    // 이메일 형식 검증
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(state.email)) {
-      dispatch({
-        type: "SET_ERROR_MESSAGE",
-        payload: "올바른 이메일 형식을 입력해주세요.",
-      });
-      return;
-    }
-
     dispatch({ type: "CLEAR_ERROR_MESSAGE" });
 
-    // 여기에 실제 로그인 API 호출 로직을 추가할 수 있습니다
-    console.log("센터종사자 로그인 시도:", {
-      email: state.email,
+    await login.mutateAsync({
+      username: state.email,
       password: state.password,
     });
+
+    // 로그인 성공 시 라우팅 모달 열기
+    dispatch({ type: "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN", payload: true });
   };
 
   const setIsChecked = (value: boolean) => {
@@ -130,6 +132,10 @@ export const useAdminLoginHook = () => {
 
   const setIsModalOpen = (value: boolean) => {
     dispatch({ type: "SET_IS_MODAL_OPEN", payload: value });
+  };
+
+  const setIsAdminLoginRouteModalOpen = (value: boolean) => {
+    dispatch({ type: "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN", payload: value });
   };
 
   const resetForm = () => {
@@ -144,6 +150,7 @@ export const useAdminLoginHook = () => {
     errorMessage: state.errorMessage,
     isChecked: state.isChecked,
     isModalOpen: state.isModalOpen,
+    isAdminLoginRouteModalOpen: state.isAdminLoginRouteModalOpen, // 추가
 
     // 액션 핸들러
     handleEmailChange,
@@ -151,6 +158,7 @@ export const useAdminLoginHook = () => {
     handleLogin,
     setIsChecked,
     setIsModalOpen,
+    setIsAdminLoginRouteModalOpen, // 추가
     resetForm,
   };
 };

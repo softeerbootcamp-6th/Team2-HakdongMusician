@@ -5,7 +5,7 @@ import { InfoSectionRow } from "../InfoSectionRow";
 interface GuardianInfoSectionProps {
   form: {
     guardianName: string;
-    guardianRelationBirthDate: string;
+    guardianBirthDate: string;
     guardianPhoneNumber: string;
     guardianRelation: string;
     guardianPassword: string;
@@ -13,45 +13,48 @@ interface GuardianInfoSectionProps {
     guardianAvatarUrl?: string;
   };
   onUpdate: (field: string, value: string) => void;
+  onImageFileUpdate: (file: File | null) => void;
   errors: Record<string, string>;
   showErrors: boolean;
   mode?: "register" | "edit";
   isPasswordEditMode: boolean;
   setIsPasswordEditMode: (isPasswordEditMode: boolean) => void;
+  onPasswordFieldUpdate: (field: string, value: string | boolean) => void;
 }
 
 export const GuardianInfoSection = ({
   form,
   onUpdate,
+  onImageFileUpdate,
   errors,
   showErrors,
   mode = "register",
   isPasswordEditMode,
   setIsPasswordEditMode,
+  onPasswordFieldUpdate,
 }: GuardianInfoSectionProps) => {
   // 비밀번호 수정 모드 활성화
   const handlePasswordEditTrigger = () => {
     if (mode === "edit" && !isPasswordEditMode) {
       setIsPasswordEditMode(true);
       // 비밀번호 관련 필드들을 모두 초기화 (한 번만 실행)
-      onUpdate("guardianPassword", "");
-      onUpdate("guardianPasswordConfirm", "");
+      onPasswordFieldUpdate("guardianPassword", "");
+      onPasswordFieldUpdate("guardianPasswordConfirm", "");
     }
   };
 
-  const handleImageChange = (file: File | null) => {
+  // 이미지 변경 처리 (로컬 미리보기용)
+  const handleImageChange = (file: File[] | null) => {
     if (file) {
-      // 이미지 파일을 form에 저장하거나 처리
-      console.log("Selected profile image:", file);
-
-      // 로컬 URL 생성하여 미리보기
-      const imageUrl = URL.createObjectURL(file);
-
-      // form에 이미지 URL 저장
+      // 로컬 URL 생성하여 미리보기만
+      const imageUrl = URL.createObjectURL(file[0]);
       onUpdate("guardianAvatarUrl", imageUrl);
+      // File 객체를 별도로 저장 (S3 업로드는 나중에)
+      onImageFileUpdate(file[0]);
     } else {
       // 이미지 제거
       onUpdate("guardianAvatarUrl", "");
+      onImageFileUpdate(null);
     }
   };
 
@@ -75,14 +78,12 @@ export const GuardianInfoSection = ({
         <InfoSectionRow
           label="생년월일"
           placeholder="YYYY-MM-DD"
-          value={form.guardianRelationBirthDate}
-          name="guardianRelationBirthDate"
+          value={form.guardianBirthDate}
+          name="guardianBirthDate"
           maxLength={10}
-          onChange={(e) =>
-            onUpdate("guardianRelationBirthDate", e.target.value)
-          }
-          errorMessage={showErrors ? errors.guardianRelationBirthDate : ""}
-          showError={showErrors && !!errors.guardianRelationBirthDate}
+          onChange={(e) => onUpdate("guardianBirthDate", e.target.value)}
+          errorMessage={showErrors ? errors.guardianBirthDate : ""}
+          showError={showErrors && !!errors.guardianBirthDate}
         />
         <InfoSectionRow
           label="연락처"
@@ -116,7 +117,9 @@ export const GuardianInfoSection = ({
           name="guardianPassword"
           maxLength={20}
           disabled={mode === "edit" && !isPasswordEditMode}
-          onChange={(e) => onUpdate("guardianPassword", e.target.value)}
+          onChange={(e) =>
+            onPasswordFieldUpdate("guardianPassword", e.target.value)
+          }
           errorMessage={showErrors ? errors.guardianPassword : ""}
           showError={showErrors && !!errors.guardianPassword}
         />
@@ -127,7 +130,9 @@ export const GuardianInfoSection = ({
           name="guardianPasswordConfirm"
           maxLength={20}
           onPasswordEditTrigger={handlePasswordEditTrigger}
-          onChange={(e) => onUpdate("guardianPasswordConfirm", e.target.value)}
+          onChange={(e) =>
+            onPasswordFieldUpdate("guardianPasswordConfirm", e.target.value)
+          }
           errorMessage={showErrors ? errors.guardianPasswordConfirm : ""}
           showError={showErrors && !!errors.guardianPasswordConfirm}
         />

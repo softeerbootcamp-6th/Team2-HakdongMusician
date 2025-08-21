@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useFunnel } from "@daycan/hooks";
-import type { EvaluationLevel, ProgramType } from "../../constants/diagnosis";
+import type { ProgramType } from "../../constants/diagnosis";
 import { useAtomValue } from "jotai";
 import { diagnosisFunnelDataAtom } from "../../atoms/diagnosisAtom";
 import type { DiagnosisFunnelData } from "../../types/diagnosisType";
+import type { Score } from "@/services/careSheet/types";
 
 export const useStep3 = () => {
   const { toNext, toPrev, updateState, getStepState } = useFunnel();
@@ -20,7 +21,7 @@ export const useStep3 = () => {
     useState(false);
   const [trainingSpecialNote, setTrainingSpecialNote] = useState("");
   const [programEntries, setProgramEntries] = useState<
-    Array<{ type: ProgramType; name: string; evaluation: EvaluationLevel }>
+    { type: ProgramType; name: string; score: Score }[]
   >([]);
   const diagnosisAtom = useAtomValue(diagnosisFunnelDataAtom);
 
@@ -44,16 +45,16 @@ export const useStep3 = () => {
     }
     const d: DiagnosisFunnelData | null = diagnosisAtom;
     if (d && d.recoveryProgram) {
-      setIsTrainingChecked(!!d.recoveryProgram.motionTraining);
+      setIsTrainingChecked(!d.recoveryProgram.motionTraining || false);
       setIsCognitiveActivityTrainingChecked(
-        !!d.recoveryProgram.cognitiveProgram
+        !d.recoveryProgram.cognitiveProgram || false
       );
       setIsCognitiveFunctionEnhancementTrainingChecked(
-        !!d.recoveryProgram.cognitiveEnhancement
+        !d.recoveryProgram.cognitiveEnhancement || false
       );
-      setIsPhysicalTherapyChecked(!!d.recoveryProgram.physicalTherapy);
-      setTrainingSpecialNote(d.recoveryProgram.note || "");
-      setProgramEntries(d.recoveryProgram.programEntries || []);
+      setIsPhysicalTherapyChecked(!d.recoveryProgram.physicalTherapy || false);
+      setTrainingSpecialNote(d.recoveryProgram.comment || "");
+      setProgramEntries(d.recoveryProgram.programEntries);
     }
   }, [getStepState, diagnosisAtom]);
 
@@ -72,7 +73,7 @@ export const useStep3 = () => {
   const addProgramEntry = () => {
     setProgramEntries((prev) => [
       ...prev,
-      { type: "PHYSICAL", name: "", evaluation: "MEDIUM" },
+      { type: "PHYSICAL", name: "", score: "MEDIUM" },
     ]);
   };
 
@@ -85,7 +86,7 @@ export const useStep3 = () => {
     patch: Partial<{
       type: ProgramType;
       name: string;
-      evaluation: EvaluationLevel;
+      score: Score;
     }>
   ) => {
     setProgramEntries((prev) =>

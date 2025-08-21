@@ -1,3 +1,29 @@
+import type { YearMonth, YearMonthDay } from "@/types/date";
+
+/**
+ * 오늘 날짜를 (YYYY-MM-DD) 형식으로 반환
+ * @returns 오늘 날짜 (YYYY-MM-DD)
+ * @author 홍규진
+ */
+export const TODAY_DATE = new Date()
+  .toISOString()
+  .split("T")[0] as YearMonthDay;
+
+export const TODAY_YYYYMM = new Date()
+  .toISOString()
+  .split("T")[0]
+  .split("-")
+  .slice(0, 2)
+  .join("-") as YearMonth;
+
+export const formatYYYYMMDD = (date: Date | string): YearMonthDay => {
+  if (typeof date === "string") {
+    // 이미 YYYY-MM-DD 형식의 문자열인 경우 그대로 반환
+    return date as YearMonthDay;
+  }
+  return date.toISOString().split("T")[0] as YearMonthDay;
+};
+
 /**
  * 생년월일 입력 시 자동으로 YYYY.MM.DD 형식으로 변환하는 함수 (실시간 입력용)
  * @param value - 사용자 입력값

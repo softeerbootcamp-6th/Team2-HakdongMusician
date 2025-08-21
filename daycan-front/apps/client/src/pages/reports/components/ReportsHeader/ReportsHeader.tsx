@@ -14,7 +14,7 @@ export const ReportsHeader = () => {
         color={COLORS.gray[50]}
         onClick={() => navigate("/")}
       />
-      <Body type="medium" weight={600} color={COLORS.gray[900]}>
+      <Body type="large" weight={600} color={COLORS.gray[900]}>
         리포트 모아보기
       </Body>
       <div></div>

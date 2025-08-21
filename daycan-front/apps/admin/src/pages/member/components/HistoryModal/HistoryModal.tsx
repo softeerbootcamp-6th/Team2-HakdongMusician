@@ -20,61 +20,53 @@ import {
   confirmButton,
   reportContainer,
 } from "./HistoryModal.css";
-import profileImg from "@/assets/images/profile.png";
 import { useState } from "react";
 
 import { useHistoryModal } from "./useHistoryModal";
 import { ReportDataView } from "@/components/ReportDataView";
 import { CareSheetDataView } from "@/components/CareSheetDataView";
+import { TODAY_YYYYMM } from "@/utils/dateFormatter";
+import type { YearMonthDay } from "@/types/date";
 
 interface HistoryModalProps {
-  memberId?: string;
+  memberId: number;
+  memberName: string;
+  memberProfileImage: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export const HistoryModal = ({
-  memberId = "1",
+  memberId,
+  memberName,
+  memberProfileImage,
   isOpen,
   onClose,
 }: HistoryModalProps) => {
-  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [selectedMonth, setSelectedMonth] = useState(new Date(TODAY_YYYYMM));
 
   const {
-    historyData,
+    reportData,
     careSheetData,
-    isLoading,
-    fetchHistoryData,
+    fetchReportData,
     fetchCareSheetData,
-  } = useHistoryModal();
+    documentList,
+  } = useHistoryModal(memberId);
 
+  // ===== 선택된 데이터 타입 상태 =====
   const [selectedDataType, setSelectedDataType] = useState<
     "report" | "careSheet" | null
   >(null);
 
-  const handleViewReport = async (date: Date) => {
+  const handleViewReport = (date: YearMonthDay) => {
     setSelectedDataType("report");
-    console.log("handleViewReport", date, memberId);
-    await fetchHistoryData(date, memberId);
+
+    fetchReportData(date, memberId);
   };
 
-  const handleViewCareSheet = async (date: Date) => {
+  const handleViewCareSheet = (careSheetId: number) => {
     setSelectedDataType("careSheet");
-    console.log("handleViewCareSheet", date, memberId);
-    await fetchCareSheetData(date, memberId);
-  };
-
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const lastDay = new Date(year, month + 1, 0);
-    const days = [];
-
-    for (let day = 1; day <= lastDay.getDate(); day++) {
-      days.push(new Date(year, month, day));
-    }
-
-    return days;
+    fetchCareSheetData(careSheetId);
   };
 
   const changeMonth = (direction: "prev" | "next") => {
@@ -106,13 +98,12 @@ export const HistoryModal = ({
           </div>
           <div className={historyModalHeaderRight}>
             <img
-              src={profileImg}
+              src={memberProfileImage}
               alt="프로필"
               className={historyModalHeaderRightProfile}
             />
             <Body type="xsmall" weight={500} color={COLORS.white}>
-              {/*TODO - API 로 수정 */}
-              김큐티빠띠할머니
+              {memberName}
             </Body>
           </div>
         </div>
@@ -150,22 +141,24 @@ export const HistoryModal = ({
               일별 기록 현황
             </Body>
             <div className={dateStatusListContainer}>
-              {getDaysInMonth(selectedMonth).map((date) => {
+              {documentList?.map((document) => {
                 const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][
-                  date.getDay()
+                  new Date(document.documentDate).getDay()
                 ];
                 const isWeekend = dayOfWeek === "일" || dayOfWeek === "토";
 
                 return (
-                  <div key={date.getTime()} className={dateStatusItem}>
+                  <div key={document.documentDate} className={dateStatusItem}>
                     <div className={dateStatusHeader}>
                       <Body
                         type="small"
                         weight={600}
                         color={isWeekend ? COLORS.red[500] : COLORS.gray[900]}
                       >
-                        {date.getFullYear()}년 {date.getMonth() + 1}월{" "}
-                        {date.getDate()}일 ({dayOfWeek})
+                        {new Date(document.documentDate).getFullYear()}년{" "}
+                        {new Date(document.documentDate).getMonth() + 1}월{" "}
+                        {new Date(document.documentDate).getDate()}일 (
+                        {dayOfWeek})
                       </Body>
 
                       <Chip
@@ -197,8 +190,9 @@ export const HistoryModal = ({
 
                         <button
                           className={confirmButton}
-                          onClick={() => handleViewCareSheet(date)}
-                          disabled={isLoading}
+                          onClick={() =>
+                            handleViewCareSheet(document.careSheet.careSheetId)
+                          }
                         >
                           <Body
                             type="xsmall"
@@ -227,8 +221,9 @@ export const HistoryModal = ({
                         </Chip>
                         <button
                           className={confirmButton}
-                          onClick={() => handleViewReport(date)}
-                          disabled={isLoading}
+                          onClick={() =>
+                            handleViewReport(document.documentDate)
+                          }
                         >
                           <Body
                             type="xsmall"
@@ -260,22 +255,8 @@ export const HistoryModal = ({
                     날짜를 선택해주세요
                   </Body>
                 </div>
-              ) : isLoading ? (
-                <div style={{ textAlign: "center", padding: "40px 0" }}>
-                  <Body
-                    type="medium"
-                    weight={600}
-                    color={COLORS.gray[900]}
-                    style={{ marginBottom: "16px" }}
-                  >
-                    데이터 로딩 중...
-                  </Body>
-                  <Body type="small" weight={400} color={COLORS.gray[600]}>
-                    잠시만 기다려주세요...
-                  </Body>
-                </div>
               ) : selectedDataType === "report" ? (
-                <ReportDataView reportData={historyData} />
+                <ReportDataView reportData={reportData} />
               ) : (
                 <CareSheetDataView careSheetData={careSheetData} />
               )}

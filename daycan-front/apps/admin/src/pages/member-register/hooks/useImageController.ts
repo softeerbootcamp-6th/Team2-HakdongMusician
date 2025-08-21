@@ -3,15 +3,15 @@ import { processImageFile } from "@/utils";
 import { useToast } from "@daycan/ui";
 
 interface UseImageControllerProps {
-  profileImage?: string;
-  onImageChange?: (file: File | null) => void;
+  profileImage?: string | null;
+  onImageChange?: (file: File[] | null) => void;
 }
 
 export const useImageController = ({
   profileImage,
   onImageChange,
 }: UseImageControllerProps) => {
-  const [selectedImage, setSelectedImage] = useState<string>(
+  const [selectedImage, setSelectedImage] = useState<string | null>(
     profileImage || ""
   );
   const [isDragOver, setIsDragOver] = useState(false);
@@ -22,20 +22,19 @@ export const useImageController = ({
   // profileImage prop이 변경될 때 selectedImage 상태 동기화
   useEffect(() => {
     if (profileImage !== undefined) {
-      setSelectedImage(profileImage);
+      setSelectedImage(profileImage || null);
     }
   }, [profileImage]);
 
+  // 이미지 변경 처리 함수
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // 로컬에서 미리보기용으로 처리
       processImageFile(
         file,
         (imageUrl) => {
           setSelectedImage(imageUrl);
-          if (onImageChange) {
-            onImageChange(file);
-          }
         },
         (errorMessage) => {
           showToast({
@@ -44,11 +43,13 @@ export const useImageController = ({
               type: "error",
               variant: "pc",
             },
-            autoClose: 1500,
-            hideProgressBar: true,
           });
         }
       );
+      console.log("file", file);
+      if (onImageChange) {
+        onImageChange([file]); // File 객체를 폼에 전달
+      }
     }
   };
 
@@ -69,12 +70,13 @@ export const useImageController = ({
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
+      // 드래그앤드롭으로도 동일하게 처리
       processImageFile(
         file,
         (imageUrl) => {
           setSelectedImage(imageUrl);
           if (onImageChange) {
-            onImageChange(file);
+            onImageChange([file]); // File 객체를 폼에 전달
           }
         },
         (errorMessage) => {

@@ -2,17 +2,20 @@ import { ToastContainer } from "@daycan/ui";
 import Router from "./router/Route";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "./contexts/QueryProvider";
-import { ScrollToTop } from "./components";
+import { Loading, ScrollToTop } from "./components";
+import { Suspense } from "react";
 
 function App() {
   return (
-    <QueryClientProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <QueryClientProvider>
         <ScrollToTop />
-        <Router />
+        <Suspense fallback={<Loading />}>
+          <Router />
+        </Suspense>
         <ToastContainer />
-      </BrowserRouter>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 

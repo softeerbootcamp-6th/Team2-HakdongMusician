@@ -1,9 +1,8 @@
 import { InfoSectionLayout } from "../InfoSectionLayout/InfoSectionLayout";
 import { memberInfoSectionContainer } from "./MemberInfoSection.css";
 import { InfoSectionRow } from "../InfoSectionRow";
-import { GenderSelector } from "../GenderSelector";
-import { CareLevelDropDown } from "../CareLevelDropDown";
-import { CARE_LEVEL_OPTIONS } from "@/constants/memberRegister";
+import { GenderSelector, CareLevelRoleDropDownSelector } from "@/components";
+import { CARE_LEVEL_OPTIONS } from "@/pages/member/constants/memberRegister";
 import { Body, COLORS } from "@daycan/ui";
 import { labelContainer } from "../InfoSectionRow/InfoSectionRow.css";
 
@@ -14,9 +13,10 @@ interface MemberInfoSectionProps {
     birthDate: string;
     careLevel: number;
     careNumber: string;
-    avatarUrl?: string;
+    avatarUrl?: string | null;
   };
   onUpdate: (field: string, value: string | number) => void;
+  onImageFileUpdate: (file: File | null) => void;
   errors: Record<string, string>;
   showErrors: boolean;
 }
@@ -24,20 +24,22 @@ interface MemberInfoSectionProps {
 export const MemberInfoSection = ({
   form,
   onUpdate,
+  onImageFileUpdate,
   errors,
   showErrors,
 }: MemberInfoSectionProps) => {
-  // 또 부모로 이동해서 부모에게 전달
-  // 등록 페이지에서 상태값 변환
-  const handleImageChange = (file: File | null) => {
+  // 이미지 변경 처리 (로컬 미리보기용)
+  const handleImageChange = (file: File[] | null) => {
     if (file) {
-      // 로컬 URL 생성하여 미리보기
-      const imageUrl = URL.createObjectURL(file);
-
+      // 로컬 URL 생성하여 미리보기만
+      const imageUrl = URL.createObjectURL(file[0]);
       onUpdate("avatarUrl", imageUrl);
+      // File 객체를 별도로 저장 (S3 업로드는 나중에)
+      onImageFileUpdate(file[0]);
     } else {
       // 이미지 제거
       onUpdate("avatarUrl", "");
+      onImageFileUpdate(null);
     }
   };
 
@@ -101,11 +103,11 @@ export const MemberInfoSection = ({
               </Body>
             </div>
           </div>
-          <CareLevelDropDown
+          <CareLevelRoleDropDownSelector
             options={CARE_LEVEL_OPTIONS}
             value={form.careLevel}
             placeholder="장기요양등급 선택"
-            onChange={(value: number) => onUpdate("careLevel", value)}
+            onChange={(value) => onUpdate("careLevel", value as number)}
           />
         </div>
         <InfoSectionRow

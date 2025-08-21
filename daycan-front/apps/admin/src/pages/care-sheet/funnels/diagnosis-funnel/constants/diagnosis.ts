@@ -1,3 +1,5 @@
+import type { Amount, MealType } from "@/services/careSheet/types";
+
 export const DIAGNOSIS_CONSTANTS = {
   //STEP_0
   MAX_URINE_COUNT: 10,
@@ -15,12 +17,12 @@ export const DIAGNOSIS_CONSTANTS = {
   // STEP_3 프로그램 관련 상수
   PROGRAM: {
     TYPES: ["PHYSICAL", "COGNITIVE"] as const,
-    EVALUATIONS: ["LOW", "MEDIUM", "HIGH"] as const,
+    SCORES: ["LOW", "MEDIUM", "HIGH"] as const,
     TYPE_LABEL: {
       PHYSICAL: "신체",
       COGNITIVE: "인지",
     } as const,
-    EVALUATION_LABEL: {
+    SCORE_LABEL: {
       HIGH: "상",
       MEDIUM: "중",
       LOW: "하",
@@ -29,8 +31,7 @@ export const DIAGNOSIS_CONSTANTS = {
 } as const;
 
 export type ProgramType = (typeof DIAGNOSIS_CONSTANTS.PROGRAM.TYPES)[number];
-export type EvaluationLevel =
-  (typeof DIAGNOSIS_CONSTANTS.PROGRAM.EVALUATIONS)[number];
+export type Score = (typeof DIAGNOSIS_CONSTANTS.PROGRAM.SCORES)[number];
 
 // 식사 코드/라벨 매핑 (UI ↔ API 변환용)
 export const MEAL_TYPE_CODE_TO_LABEL: Record<string, string> = {
@@ -39,7 +40,7 @@ export const MEAL_TYPE_CODE_TO_LABEL: Record<string, string> = {
   RICE_WATER: "유동식",
 };
 
-export const MEAL_TYPE_LABEL_TO_CODE: Record<string, string> = {
+export const MEAL_TYPE_LABEL_TO_CODE: Record<string, MealType> = {
   일반식: "REGULAR",
   죽: "PORRIDGE",
   유동식: "RICE_WATER",
@@ -51,7 +52,7 @@ export const MEAL_AMOUNT_CODE_TO_LABEL: Record<string, string> = {
   LESS_HALF: "1/3이하",
 };
 
-export const MEAL_AMOUNT_LABEL_TO_CODE: Record<string, string> = {
+export const MEAL_AMOUNT_LABEL_TO_CODE: Record<string, Amount> = {
   "1인분": "FULL",
   "1/2이상": "MORE_HALF",
   "1/3이하": "LESS_HALF",

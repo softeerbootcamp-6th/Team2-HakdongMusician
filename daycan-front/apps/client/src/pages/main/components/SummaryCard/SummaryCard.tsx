@@ -9,70 +9,31 @@ import {
   semiCircularGaugeContainer,
 } from "./SummaryCard.css";
 import { SemiCircularGaugeChart } from "@/components";
+import { UpDownIcon } from "@/components/UpDownIcon/UpDownIcon";
 
 interface SummaryCardProps {
   startDate: string;
   endDate: string;
-  healthIndex: number;
-  healthIndexChange: "up" | "down" | "stable";
-  healthDescription: string;
-  gaugeValue: number;
+  weeklyChangeAmount: number;
+  weeklyScore: number;
   onClickInfoModal: () => void;
 }
 
 export const SummaryCard = ({
   startDate,
   endDate,
-  healthIndex,
-  healthIndexChange,
-  healthDescription,
-  gaugeValue = 40,
+  weeklyChangeAmount,
+  weeklyScore,
   onClickInfoModal,
 }: SummaryCardProps) => {
-  const getHealthIndexIcon = () => {
-    switch (healthIndexChange) {
-      case "up":
-        return (
-          <Icon
-            name="arrowUp"
-            width={12}
-            height={12}
-            color={COLORS.green[500]}
-          />
-        );
-      case "down":
-        return (
-          <Icon
-            name="arrowDown"
-            width={12}
-            height={12}
-            color={COLORS.blue[500]}
-          />
-        );
-      case "stable":
-        return (
-          <Icon
-            name="arrowRight"
-            width={12}
-            height={12}
-            color={COLORS.gray[500]}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  const getHealthIndexColor = () => {
-    switch (healthIndexChange) {
-      case "up":
-        return COLORS.green[500];
-      case "down":
-        return COLORS.blue[500];
-      case "stable":
-        return COLORS.gray[500];
-      default:
-        return COLORS.gray[500];
+  // weeklyChangeAmount에 따른 건강 설명 생성
+  const getHealthDescription = (changeAmount: number): string => {
+    if (changeAmount > 0) {
+      return `지난 주 대비 ${Math.abs(changeAmount)}점 상승했어요!`;
+    } else if (changeAmount < 0) {
+      return `지난 주 대비 ${Math.abs(changeAmount)}점 하락했어요.`;
+    } else {
+      return "지난 주와 동일한 건강 상태를 유지하고 있어요.";
     }
   };
 
@@ -96,18 +57,15 @@ export const SummaryCard = ({
               <Body type="medium" weight={600} color={COLORS.gray[900]}>
                 평균 건강 지수
               </Body>
-              {getHealthIndexIcon()}
-              <Body type="small" weight={500} color={getHealthIndexColor()}>
-                {`${healthIndex}`}
-              </Body>
+              <UpDownIcon value={weeklyChangeAmount} />
             </div>
             <Body type="small" weight={500} color={COLORS.gray[600]}>
-              {healthDescription}
+              {getHealthDescription(weeklyChangeAmount)}
             </Body>
           </div>
           <div className={semiCircularGaugeContainer}>
             <SemiCircularGaugeChart
-              value={gaugeValue}
+              value={weeklyScore}
               width={150}
               height={100}
               fontType="large"

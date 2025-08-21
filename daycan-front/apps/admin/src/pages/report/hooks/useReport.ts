@@ -13,16 +13,17 @@ const fetchReports = async (): Promise<ReportListItemType[]> => {
 };
 
 export const useReports = () => {
-  const {
-    data: reports = [],
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: reports = [], isLoading } = useQuery({
     queryKey: ["reports"],
     queryFn: fetchReports,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
+
+  const [isReserveSendModalOpen, setIsReserveSendModalOpen] =
+    useState<boolean>(false);
+  const [isImmediateSendModalOpen, setIsImmediateSendModalOpen] =
+    useState<boolean>(false);
 
   // 로컬 상태로 관리
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
@@ -200,6 +201,7 @@ export const useReports = () => {
     console.log("즉시 전송:", checkedSelectableIds);
     // TODO: API 호출
     setCheckedReportIds(new Set());
+    setIsImmediateSendModalOpen(true);
   };
 
   const handleReserveSend = () => {
@@ -216,15 +218,16 @@ export const useReports = () => {
     console.log("예약 전송:", checkedSelectableIds);
     // TODO: API 호출
     setCheckedReportIds(new Set());
+    setIsReserveSendModalOpen(true);
   };
 
   return {
     // 데이터 상태
     reports,
+    isLoading,
+
     filteredReports,
     selectableReports,
-    isLoading,
-    error,
     selectedStatus,
     resetCounter,
     checkedReportIds,
@@ -233,7 +236,8 @@ export const useReports = () => {
     isIndeterminateFiltered,
     isAllSelectedSended,
     isIndeterminateSended,
-
+    isReserveSendModalOpen,
+    isImmediateSendModalOpen,
     // 핸들러 함수들
     handleFilterReset,
     handleStatusFilterChange,
@@ -243,5 +247,7 @@ export const useReports = () => {
     handleSelectAllSended,
     handleImmediateSend,
     handleReserveSend,
+    setIsReserveSendModalOpen,
+    setIsImmediateSendModalOpen,
   };
 };

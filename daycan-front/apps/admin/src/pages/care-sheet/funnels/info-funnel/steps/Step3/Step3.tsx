@@ -10,7 +10,7 @@ import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useFunnel } from "@daycan/hooks";
 import { useEffect, useState } from "react";
 import { step3HighlightingHeadingContainer } from "./Step3.css";
-import { getRecipientName } from "../../utils/parsingData";
+import { getMemberName } from "../../utils/parsingData";
 
 export const Step3 = () => {
   const { toNext, toPrev, updateState, getStepState, funnelState } =
@@ -19,7 +19,7 @@ export const Step3 = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   // 수급자 이름 가져오기
-  const recipientName = getRecipientName(funnelState);
+  const memberName = getMemberName(funnelState);
 
   // 기존 데이터가 있으면 로드
   useEffect(() => {
@@ -44,29 +44,27 @@ export const Step3 = () => {
   };
 
   return (
-    <InfoFunnelLayout>
-      <div className={step3HighlightingHeadingContainer}>
-        <HighlightingHeading text={recipientName} />
-        <Heading type="medium" weight={600} color={COLORS.gray[800]}>
-          님이 언제 가셨나요?
-        </Heading>
-      </div>
-      <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
-        시간
-      </Body>
-      <TimePicker
-        defaultTime24={getStepState("STEP_3")?.endTime || "17:00"}
-        onConfirm={handleTimeConfirm}
-      />
+    <>
+      <InfoFunnelLayout>
+        <div className={step3HighlightingHeadingContainer}>
+          <HighlightingHeading text={memberName} />
+          <Heading type="medium" weight={600} color={COLORS.gray[800]}>
+            님이 언제 가셨나요?
+          </Heading>
+        </div>
+        <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
+          시간
+        </Body>
+        <TimePicker
+          defaultTime24={getStepState("STEP_3")?.endTime || "17:00"}
+          onConfirm={handleTimeConfirm}
+        />
+      </InfoFunnelLayout>
       <StepButtons
         isNextEnabled={isConfirmed}
-        onNext={() => {
-          toNext();
-        }}
-        onPrev={() => {
-          toPrev();
-        }}
+        onNext={toNext}
+        onPrev={toPrev}
       />
-    </InfoFunnelLayout>
+    </>
   );
 };

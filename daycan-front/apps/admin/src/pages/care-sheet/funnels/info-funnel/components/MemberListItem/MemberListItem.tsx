@@ -9,7 +9,7 @@ import {
 interface MemberListItemProps {
   name: string;
   birthDate: string;
-  code: string;
+  code: number;
   profileImage?: string;
   isSelected?: boolean;
   onClick?: () => void;
