@@ -27,7 +27,7 @@ public class SnsWorker implements Worker {
   @Value("${app.aws.sns.topic-arn}")
   private String topicArn;
 
-  @Value("${app.sns.enabled:false}")
+  @Value("${app.aws.sns.enabled:false}")
   private boolean enabled;
 
   @Override
