@@ -26,6 +26,7 @@ export const useAdminLoginMutation = () => {
       }
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
+      sessionStorage.removeItem("refreshToken");
       showToast({
         data: {
           message: "로그인 성공",
@@ -68,6 +69,41 @@ export const useReAuthMutation = () => {
       showToast({
         data: {
           message: "인증이 완료되었습니다.",
+          type: "success",
+          variant: "pc",
+        },
+      });
+    },
+  });
+};
+
+export const useAdminLoginWithoutCheckMutation = () => {
+  const { showToast } = useToast();
+  return useMutation({
+    mutationFn: ({
+      username,
+      password,
+    }: {
+      username: string;
+      password: string;
+    }) => login(username, password),
+    onSuccess: (data: TLoginResponse | null) => {
+      if (!data) {
+        showToast({
+          data: {
+            message: "로그인 실패",
+            type: "error",
+            variant: "pc",
+          },
+        });
+        return;
+      }
+      localStorage.setItem("accessToken", data.accessToken);
+      sessionStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.removeItem("refreshToken");
+      showToast({
+        data: {
+          message: "로그인 성공",
           type: "success",
           variant: "pc",
         },
