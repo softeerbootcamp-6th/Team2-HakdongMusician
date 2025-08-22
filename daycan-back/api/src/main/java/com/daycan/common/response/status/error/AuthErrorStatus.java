@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 public enum AuthErrorStatus implements Status {
   // 400
   INVALID_USER_TYPE(HttpStatus.BAD_REQUEST,40010 ,"잘못된 사용자 타입입니다."),
-  NON_TOKEN(HttpStatus.UNAUTHORIZED, 40011,"토큰이 없습니다."),
 
   // 401
   INVALID_CREDENTIAL(HttpStatus.UNAUTHORIZED, 40110,"아이디 또는 비밀번호가 일치하지 않습니다."),
@@ -17,6 +16,8 @@ public enum AuthErrorStatus implements Status {
   INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, 40113,"토큰 서명이 유효하지 않습니다."),
   BLACKLISTED_TOKEN(HttpStatus.UNAUTHORIZED, 40114,"블랙리스트에 등록된 토큰입니다."),
   INVALID_REFRESH(HttpStatus.UNAUTHORIZED, 40115,"리프레시 토큰이 invalid 상태입니다."),
+  NON_TOKEN(HttpStatus.UNAUTHORIZED, 40116,"토큰이 없습니다."),
+
 
   // 403
   CENTER_ONLY(HttpStatus.FORBIDDEN, 40310,"접근이 금지된 사용자입니다."),
