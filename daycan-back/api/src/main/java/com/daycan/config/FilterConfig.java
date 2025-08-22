@@ -23,10 +23,10 @@ public class FilterConfig {
   public FilterRegistrationBean<CorsFilter> corsFilter() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    // 프론트 오리진만 정확히 열기
     config.setAllowedOriginPatterns(List.of(
         "http://localhost:5173",
-        "http://localhost:5174"
+        "http://localhost:5174",
+        "https://*.daycan.kr"
     ));
     config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
     config.setAllowedHeaders(List.of("*"));
