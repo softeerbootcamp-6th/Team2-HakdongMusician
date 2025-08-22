@@ -1,5 +1,6 @@
 package com.daycan.api.controller.center;
 
+import com.daycan.api.dto.center.SendMessageRequest;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -186,16 +188,12 @@ public class CenterCareReportController {
           - time 파라미터를 주지 않으면 전송 시간은 현재 시간으로 설정됩니다.
           """
   )
-  @PatchMapping("/{reportId}/send")
+  @PatchMapping("/send")
   public ResponseWrapper<Void> sendReport(
-      @PathVariable Long reportId,
-      @Parameter(description = "전송 시간 (ISO 8601 형식, 예: 2025-07-31T10:00:00Z)",
-          examples = {
-              @ExampleObject(name = "UTC_Z", value = "2025-07-31T10:00:00Z"),
-              @ExampleObject(name = "KST_with_offset", value = "2025-07-31T19:00:00+09:00")
-          }
-      )
-      @RequestParam(required = false) Instant time
+      @AuthenticatedUser
+      CenterDetails centerDetails,
+      @Valid @RequestBody
+      SendMessageRequest request
   ) {
 
     return ResponseWrapper.onSuccess(null);
