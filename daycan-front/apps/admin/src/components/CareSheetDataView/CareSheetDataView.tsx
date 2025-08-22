@@ -31,16 +31,16 @@ export const CareSheetDataView = ({
         items={[
           {
             label: "수급자 ID",
-            value: careSheetData?.memberId || "",
+            value: careSheetData?.memberId || "미작성",
           },
-          { label: "이용 날짜", value: careSheetData?.date || "" },
+          { label: "이용 날짜", value: careSheetData?.date || "미작성" },
           {
             label: "시작 시간",
-            value: careSheetData?.startTime || "",
+            value: careSheetData?.startTime || "미작성",
           },
           {
             label: "종료 시간",
-            value: careSheetData?.endTime || "",
+            value: careSheetData?.endTime || "미작성",
           },
           {
             label: "이동 서비스",

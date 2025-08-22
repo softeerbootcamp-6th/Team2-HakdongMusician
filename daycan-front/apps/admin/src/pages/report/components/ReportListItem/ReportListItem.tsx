@@ -7,36 +7,15 @@ import {
 } from "../../utils/parser";
 import { REPORT_LIST_GRID_TEMPLATE } from "../../constants/grid";
 import { useReportListItem } from "./useReportListItem";
-
-export type ReportListItemType = {
-  id: number;
-  memberMetaEntry: {
-    memberId: string;
-    name: string;
-    birthDate: string;
-    gender: "FEMALE" | "MALE";
-  };
-  guardianMetaEntry: {
-    guardianName: string;
-    guardianContact: string;
-  };
-  status:
-    | "NOT_APPLICABLE"
-    | "PENDING"
-    | "CREATED"
-    | "REVIEWED"
-    | "SENDING"
-    | "RESERVED"
-    | "DONE";
-};
+import type { TReportListItem } from "@/services/report/types";
 
 interface ReportListItemProps {
-  report: ReportListItemType;
+  report: TReportListItem;
   index: number;
   isChecked: boolean;
   onCheckChange: (id: number, checked: boolean) => void;
   isSelectable: boolean;
-  onReviewRequest?: (reportId: number) => void;
+  onReviewRequest?: (memberId: number, reportId: number) => void;
 }
 
 export const ReportListItem = ({
@@ -129,7 +108,11 @@ export const ReportListItem = ({
             variant={buttonInfo.variant}
             style={buttonInfo.style}
             onClick={() =>
-              handleReportStatusButtonClick(report.status, report.id)
+              handleReportStatusButtonClick(
+                report.status,
+                report.memberMetaEntry.memberId,
+                report.id
+              )
             }
           >
             <Body type="small" weight={500}>
@@ -146,7 +129,8 @@ export const ReportListItem = ({
       isSelected={isChecked}
       onSelect={
         isSelectable
-          ? (checked) => onCheckChange(report.id, checked)
+          ? (checked) =>
+              onCheckChange(Number(report.memberMetaEntry.memberId), checked)
           : undefined
       }
       showCheckbox={true}

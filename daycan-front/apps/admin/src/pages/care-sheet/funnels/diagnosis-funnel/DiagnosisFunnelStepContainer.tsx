@@ -96,7 +96,7 @@ export const DiagnosisFunnelStepContainer = () => {
             data: {
               message: "기록지 작성이 완료되었습니다.",
               type: "success",
-              variant: "pc",
+              variant: "mobile",
             },
             autoClose: 1500,
           });
@@ -110,7 +110,7 @@ export const DiagnosisFunnelStepContainer = () => {
             data: {
               message: "기록지 작성 중 오류가 발생했습니다.",
               type: "error",
-              variant: "pc",
+              variant: "mobile",
             },
             autoClose: 1000,
           });
@@ -129,33 +129,48 @@ export const DiagnosisFunnelStepContainer = () => {
           isWashHelperChecked: diagnosisData.physical.assistWashing,
           isMoveHelperChecked: diagnosisData.physical.assistMovement,
           isBathHelperChecked: diagnosisData.physical.assistBathing,
+          bathingDurationMinutes:
+            diagnosisData.physical.bathingDurationMinutes || "",
+          bathingType: diagnosisData.physical.bathingType || "",
           isBreakfastChecked: diagnosisData.physical.breakfast.provided,
           breakfastType:
             MEAL_TYPE_CODE_TO_LABEL[
-              diagnosisData.physical.breakfast.entry.mealType || ""
-            ] || diagnosisData.physical.breakfast.entry.mealType,
+              diagnosisData.physical.breakfast.entry?.mealType || ""
+            ] ||
+            diagnosisData.physical.breakfast.entry?.mealType ||
+            "",
           breakfastAmount:
             MEAL_AMOUNT_CODE_TO_LABEL[
-              diagnosisData.physical.breakfast.entry.amount || ""
-            ] || diagnosisData.physical.breakfast.entry.amount,
+              diagnosisData.physical.breakfast.entry?.amount || ""
+            ] ||
+            diagnosisData.physical.breakfast.entry?.amount ||
+            "",
           isLunchChecked: diagnosisData.physical.lunch.provided,
           lunchType:
             MEAL_TYPE_CODE_TO_LABEL[
-              diagnosisData.physical.lunch.entry.mealType || ""
-            ] || diagnosisData.physical.lunch.entry.mealType,
+              diagnosisData.physical.lunch.entry?.mealType || ""
+            ] ||
+            diagnosisData.physical.lunch.entry?.mealType ||
+            "",
           lunchAmount:
             MEAL_AMOUNT_CODE_TO_LABEL[
-              diagnosisData.physical.lunch.entry.amount || ""
-            ] || diagnosisData.physical.lunch.entry.amount,
+              diagnosisData.physical.lunch.entry?.amount || ""
+            ] ||
+            diagnosisData.physical.lunch.entry?.amount ||
+            "",
           isDinnerChecked: diagnosisData.physical.dinner.provided,
           dinnerType:
             MEAL_TYPE_CODE_TO_LABEL[
-              diagnosisData.physical.dinner.entry.mealType || ""
-            ] || diagnosisData.physical.dinner.entry.mealType,
+              diagnosisData.physical.dinner.entry?.mealType || ""
+            ] ||
+            diagnosisData.physical.dinner.entry?.mealType ||
+            "",
           dinnerAmount:
             MEAL_AMOUNT_CODE_TO_LABEL[
-              diagnosisData.physical.dinner.entry.amount || ""
-            ] || diagnosisData.physical.dinner.entry.amount,
+              diagnosisData.physical.dinner.entry?.amount || ""
+            ] ||
+            diagnosisData.physical.dinner.entry?.amount ||
+            "",
           urineCount: diagnosisData.physical.numberOfUrine,
           stoolCount: diagnosisData.physical.numberOfStool,
           physicalActivity: diagnosisData.physical.comment,
@@ -200,33 +215,47 @@ export const DiagnosisFunnelStepContainer = () => {
           isWashHelperChecked: stored.physical.assistWashing,
           isMoveHelperChecked: stored.physical.assistMovement,
           isBathHelperChecked: stored.physical.assistBathing,
+          bathingDurationMinutes: stored.physical.bathingDurationMinutes || "",
+          bathingType: stored.physical.bathingType || "",
           isBreakfastChecked: stored.physical.breakfast.provided,
           breakfastType:
             MEAL_TYPE_CODE_TO_LABEL[
-              stored.physical.breakfast.entry.mealType || ""
-            ] || stored.physical.breakfast.entry.mealType,
+              stored.physical.breakfast.entry?.mealType || ""
+            ] ||
+            stored.physical.breakfast.entry?.mealType ||
+            "",
           breakfastAmount:
             MEAL_AMOUNT_CODE_TO_LABEL[
-              stored.physical.breakfast.entry.amount || ""
-            ] || stored.physical.breakfast.entry.amount,
+              stored.physical.breakfast.entry?.amount || ""
+            ] ||
+            stored.physical.breakfast.entry?.amount ||
+            "",
           isLunchChecked: stored.physical.lunch.provided,
           lunchType:
             MEAL_TYPE_CODE_TO_LABEL[
-              stored.physical.lunch.entry.mealType || ""
-            ] || stored.physical.lunch.entry.mealType,
+              stored.physical.lunch.entry?.mealType || ""
+            ] ||
+            stored.physical.lunch.entry?.mealType ||
+            "",
           lunchAmount:
             MEAL_AMOUNT_CODE_TO_LABEL[
-              stored.physical.lunch.entry.amount || ""
-            ] || stored.physical.lunch.entry.amount,
+              stored.physical.lunch.entry?.amount || ""
+            ] ||
+            stored.physical.lunch.entry?.amount ||
+            "",
           isDinnerChecked: stored.physical.dinner.provided,
           dinnerType:
             MEAL_TYPE_CODE_TO_LABEL[
-              stored.physical.dinner.entry.mealType || ""
-            ] || stored.physical.dinner.entry.mealType,
+              stored.physical.dinner.entry?.mealType || ""
+            ] ||
+            stored.physical.dinner.entry?.mealType ||
+            "",
           dinnerAmount:
             MEAL_AMOUNT_CODE_TO_LABEL[
-              stored.physical.dinner.entry.amount || ""
-            ] || stored.physical.dinner.entry.amount,
+              stored.physical.dinner.entry?.amount || ""
+            ] ||
+            stored.physical.dinner.entry?.amount ||
+            "",
           urineCount: stored.physical.numberOfUrine,
           stoolCount: stored.physical.numberOfStool,
           physicalActivity: stored.physical.comment,

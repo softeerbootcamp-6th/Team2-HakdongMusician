@@ -45,15 +45,16 @@ export const getCareSheet = async (
 
 /**
  * 기록지 단건 조회 함수
- * /admin/care-sheet/{careSheetId}
+ * /admin/care-sheet/{date}/{memberId}
  * @author 홍규진
  */
 export const getCareSheetDetail = async (
-  careSheetId: number
+  careSheetDate: YearMonthDay,
+  careSheetMemberId: number
 ): Promise<TCareSheetReadResponse | null> => {
   return await safeRequest.get<TCareSheetReadResponse>(
     privateInstance,
-    `/admin/care-sheet/${careSheetId}`
+    `/admin/care-sheet/${careSheetDate}/${careSheetMemberId}`
   );
 };
 

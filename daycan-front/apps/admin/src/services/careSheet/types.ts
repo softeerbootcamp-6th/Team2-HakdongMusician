@@ -142,25 +142,25 @@ export type TCareSheetWriteRequest = {
     breakfast: {
       provided: boolean;
       entry: {
-        mealType: MealType | null;
-        amount: Amount | null;
-      };
+        mealType: MealType;
+        amount: Amount;
+      } | null;
       validProvidedEntry: boolean;
     };
     lunch: {
       provided: boolean;
       entry: {
-        mealType: MealType | null;
-        amount: Amount | null;
-      };
+        mealType: MealType;
+        amount: Amount;
+      } | null;
       validProvidedEntry: boolean;
     };
     dinner: {
       provided: boolean;
       entry: {
-        mealType: MealType | null;
-        amount: Amount | null;
-      };
+        mealType: MealType;
+        amount: Amount;
+      } | null;
       validProvidedEntry: boolean;
     };
     numberOfStool: number;

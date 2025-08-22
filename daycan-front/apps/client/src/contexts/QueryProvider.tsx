@@ -23,7 +23,13 @@ import { reIssueToken } from "@/services/auth";
 export function QueryClientProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const handleAuthError = () => {
-    const refreshToken = localStorage.getItem("refreshToken");
+    let refreshToken = localStorage.getItem("refreshToken");
+    let inSessionStorage = false;
+    if (!refreshToken) {
+      refreshToken = sessionStorage.getItem("refreshToken");
+      inSessionStorage = true;
+    }
+
     if (!refreshToken) {
       navigate("/login");
     } else {
@@ -31,7 +37,15 @@ export function QueryClientProvider({ children }: { children: ReactNode }) {
         .then((data) => {
           if (!data) return;
           localStorage.setItem("accessToken", data.accessToken);
-          localStorage.setItem("refreshToken", data.refreshToken);
+
+          if (inSessionStorage) {
+            sessionStorage.setItem("refreshToken", data.refreshToken);
+            localStorage.removeItem("refreshToken");
+          } else {
+            localStorage.setItem("refreshToken", data.refreshToken);
+            sessionStorage.removeItem("refreshToken");
+          }
+
           window.location.reload();
         })
         .catch(() => {

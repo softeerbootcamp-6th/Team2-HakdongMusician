@@ -1,1 +1,1 @@
-export { checkedReportIdsAtom } from "./reportAtom";
+export { checkedMemberIdsAtom } from "./reportAtom";

@@ -8,11 +8,12 @@ import {
 } from "./ReserveSendModal.css";
 import { useState } from "react";
 import { CustomTimeSelect, type TimeOption } from "../CustomTimeSelect";
+import type { TTime } from "@/types/date";
 
 interface ReserveSendModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSend: () => void;
+  onSend: (reserveTime?: TTime) => void;
 }
 
 export const ReserveSendModal = ({
@@ -34,10 +35,11 @@ export const ReserveSendModal = ({
     }
 
     const minute = parseInt(selectedMinute.replace("분", ""));
-    const time24Format = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+    const time24Format =
+      `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}` as TTime;
 
     console.log("예약된 시간:", time24Format);
-    onSend();
+    onSend(time24Format);
   };
 
   const PERIOD_OPTIONS: TimeOption[] = [

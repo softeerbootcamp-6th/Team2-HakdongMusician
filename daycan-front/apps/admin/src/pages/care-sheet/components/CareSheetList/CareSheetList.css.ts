@@ -60,3 +60,12 @@ export const itemsContainer = style({
   borderRadius: "8px",
   backgroundColor: COLORS.white,
 });
+
+export const emptyContainer = style({
+  display: "flex",
+  textAlign: "center",
+  height: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+  color: COLORS.gray[500],
+});

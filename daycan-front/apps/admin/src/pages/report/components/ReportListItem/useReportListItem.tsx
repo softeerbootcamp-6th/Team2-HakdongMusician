@@ -2,7 +2,7 @@ import { useToast } from "@daycan/ui";
 import type { TReportStatus } from "@/services/report/types";
 
 interface UseReportListItemProps {
-  onReviewRequest?: (reportId: number) => void;
+  onReviewRequest?: (memberId: number, reportId: number) => void;
 }
 
 export const useReportListItem = ({
@@ -17,6 +17,7 @@ export const useReportListItem = ({
    */
   const handleReportStatusButtonClick = (
     status: TReportStatus,
+    memberId: number,
     reportId: number
   ) => {
     switch (status) {
@@ -33,7 +34,7 @@ export const useReportListItem = ({
       case "PENDING":
         showToast({
           data: {
-            message: "기록지를 먼저 작성하세요!",
+            message: "AI 가 리포트를 생성중이예요. 잠시 후 다시 시도해주세요.",
             type: "error",
             variant: "pc",
           },
@@ -43,7 +44,7 @@ export const useReportListItem = ({
       case "CREATED":
         // 검토 로직
         if (onReviewRequest) {
-          onReviewRequest(reportId);
+          onReviewRequest(memberId, reportId);
         }
         break;
       case "REVIEWED":

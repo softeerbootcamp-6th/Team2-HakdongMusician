@@ -1,5 +1,9 @@
 import { useReducer } from "react";
-import { useLoginMutation } from "@/services/auth/useAuthMutation";
+import {
+  useLoginMutation,
+  useLoginWithoutCheckMutation,
+} from "@/services/auth/useAuthMutation";
+import { useNavigate } from "react-router-dom";
 
 // 상태 타입 정의
 interface LoginState {
@@ -85,7 +89,8 @@ const loginReducer = (state: LoginState, action: LoginAction): LoginState => {
 export const useLoginHook = () => {
   const [state, dispatch] = useReducer(loginReducer, initialState);
   const loginMutation = useLoginMutation();
-
+  const loginWithoutCheckMutation = useLoginWithoutCheckMutation();
+  const navigate = useNavigate();
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: "SET_ID", payload: e.target.value });
   };
@@ -109,13 +114,22 @@ export const useLoginHook = () => {
     dispatch({ type: "CLEAR_ERROR_MESSAGE" });
 
     // 로그인 API 호출
-    await loginMutation.mutateAsync({
-      username: state.id,
-      password: state.password,
-    });
+    if (state.isChecked) {
+      await loginMutation.mutateAsync({
+        username: state.id,
+        password: state.password,
+      });
+    } else {
+      await loginWithoutCheckMutation.mutateAsync({
+        username: state.id,
+        password: state.password,
+      });
+    }
 
     // 성공 시 폼 리셋
     resetForm();
+
+    navigate("/");
   };
 
   const setIsChecked = (value: boolean) => {

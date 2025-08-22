@@ -20,7 +20,7 @@ export const HealthImproveCard = ({
 }: HealthImproveCardProps) => {
   return (
     <CardLayout
-      title={"신체 건강 개선"}
+      title={"신체 건강 개선 프로그램"}
       score={score}
       scoreMax={15}
       isDropdown={isDropdown}
