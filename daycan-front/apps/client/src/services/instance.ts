@@ -14,7 +14,17 @@ export const publicInstance = axios.create({
  */
 export const privateInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  },
+});
+
+// 리프레시 토큰이 있을때만 accessToken 헤더에 추가
+// 권한 에러 방지
+privateInstance.interceptors.request.use((config) => {
+  const RefreshToken =
+    localStorage.getItem("refreshToken") ||
+    sessionStorage.getItem("refreshToken");
+  if (RefreshToken) {
+    const accessToken = localStorage.getItem("accessToken");
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
 });
