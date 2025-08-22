@@ -4,7 +4,6 @@ import { Button, Heading, Icon, Body, COLORS } from "@daycan/ui";
 import { useRef, useMemo } from "react";
 import type { FilterItem } from "@/components/Filter";
 import { ReportList, ReserveSendModal, ImmediateSendModal } from "./components";
-import { mockSendedReports } from "./constants/dummy";
 import { useReports } from "./hooks/useReport";
 import { SkeletonList } from "@/components/SkeletonList";
 import { REPORT_LIST_GRID_TEMPLATE } from "./constants/grid";
@@ -33,11 +32,12 @@ export const ReportPage = () => {
   const {
     // 데이터 상태
     filteredReports,
+    sendedReports,
     isLoading,
     // UI 상태
     selectedStatus,
     resetCounter,
-    checkedReportIds,
+    checkedMemberIds,
     hasCheckedItems,
     isAllSelectedSended,
     isIndeterminateSended,
@@ -59,12 +59,14 @@ export const ReportPage = () => {
 
   // 실제로 전송 가능한 항목의 개수 계산
   const sendableCheckedCount = useMemo(() => {
-    return Array.from(checkedReportIds).filter((id) =>
+    return Array.from(checkedMemberIds).filter((memberId) =>
       filteredReports.some(
-        (report) => report.id === id && report.status === "REVIEWED"
+        (report) =>
+          report.memberMetaEntry.memberId === memberId &&
+          report.status === "REVIEWED"
       )
     ).length;
-  }, [checkedReportIds, filteredReports]);
+  }, [checkedMemberIds, filteredReports]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -143,7 +145,7 @@ export const ReportPage = () => {
       <Body
         type="large"
         weight={600}
-        color={COLORS.gray[700]}
+        color={COLORS.gray[200]}
         style={{ marginTop: "50px" }}
       >
         전송 완료 리포트
@@ -153,7 +155,7 @@ export const ReportPage = () => {
         <SkeletonReportList />
       ) : (
         <ReportList
-          reports={mockSendedReports}
+          reports={sendedReports}
           showCheckbox={true}
           isAllSelected={isAllSelectedSended}
           isIndeterminate={isIndeterminateSended}

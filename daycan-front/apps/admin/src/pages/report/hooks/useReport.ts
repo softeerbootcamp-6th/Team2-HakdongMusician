@@ -1,25 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useState, useMemo } from "react";
 
-import type { ReportListItemType } from "../components/ReportListItem/ReportListItem";
-import { checkedReportIdsAtom } from "../atoms";
-import { mockReports } from "../constants/dummy";
-
-const fetchReports = async (): Promise<ReportListItemType[]> => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  return mockReports;
-};
+import { checkedMemberIdsAtom } from "../atoms";
+import { useGetReportListQuery } from "@/services/report/useReportQuery";
+import { TODAY_DATE } from "@/utils/dateFormatter";
+import { useSendReportMutation } from "@/services/report/useReportMutation";
+import type { TTime } from "@/types/date";
 
 export const useReports = () => {
-  const { data: reports = [], isLoading } = useQuery({
-    queryKey: ["reports"],
-    queryFn: fetchReports,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-  });
+  const { data: reports, isLoading } = useGetReportListQuery(TODAY_DATE);
 
+  const { mutate: sendReport } = useSendReportMutation();
   const [isReserveSendModalOpen, setIsReserveSendModalOpen] =
     useState<boolean>(false);
   const [isImmediateSendModalOpen, setIsImmediateSendModalOpen] =
@@ -30,10 +21,11 @@ export const useReports = () => {
   const [resetCounter, setResetCounter] = useState(0);
 
   // 체크된 ID만 atom으로 관리
-  const [checkedReportIds, setCheckedReportIds] = useAtom(checkedReportIdsAtom);
+  const [checkedMemberIds, setCheckedMemberIds] = useAtom(checkedMemberIdsAtom);
 
   // 필터링된 리포트 (로컬 상태 기반)
   const filteredReports = useMemo(() => {
+    if (!reports) return [];
     let filtered = [...reports];
 
     // 상태별 필터링
@@ -56,101 +48,83 @@ export const useReports = () => {
     return filtered;
   }, [reports, selectedStatus]);
 
+  const sendedReports = useMemo(() => {
+    return filteredReports.filter(
+      (report) =>
+        report.status === "DONE" ||
+        report.status === "RESERVED" ||
+        report.status === "SENDING"
+    );
+  }, [filteredReports]);
+
   // 선택 가능한 리포트 (REVIEWED 상태만)
   const selectableReports = useMemo(() => {
     return filteredReports.filter((report) => report.status === "REVIEWED");
   }, [filteredReports]);
 
-  // 전송 완료 리포트 (mockSendedReports)
-  const sendedReports = useMemo(() => {
-    // 실제로는 API에서 가져올 데이터
-    return [
-      {
-        id: 101,
-        memberMetaEntry: {
-          memberId: "M101",
-          name: "전송완료1",
-          birthDate: "1980-01-01",
-          gender: "MALE",
-        },
-        guardianMetaEntry: {
-          guardianName: "전송완료1부모",
-          guardianContact: "010-1111-1111",
-        },
-        status: "DONE",
-      },
-      {
-        id: 102,
-        memberMetaEntry: {
-          memberId: "M102",
-          name: "전송완료2",
-          birthDate: "1985-05-15",
-          gender: "FEMALE",
-        },
-        guardianMetaEntry: {
-          guardianName: "전송완료2부모",
-          guardianContact: "010-2222-2222",
-        },
-        status: "DONE",
-      },
-    ];
-  }, []);
-
   // 각 리스트별 전체 선택 상태 계산
   const isAllSelectedFiltered = useMemo(() => {
     return (
       selectableReports.length > 0 &&
-      selectableReports.every((report) => checkedReportIds.has(report.id))
+      selectableReports.every((report) =>
+        checkedMemberIds.has(report.memberMetaEntry.memberId)
+      )
     );
-  }, [selectableReports, checkedReportIds]);
+  }, [selectableReports, checkedMemberIds]);
 
   const isIndeterminateFiltered = useMemo(() => {
     return (
-      selectableReports.some((report) => checkedReportIds.has(report.id)) &&
-      !isAllSelectedFiltered
+      selectableReports.some((report) =>
+        checkedMemberIds.has(report.memberMetaEntry.memberId)
+      ) && !isAllSelectedFiltered
     );
-  }, [selectableReports, checkedReportIds, isAllSelectedFiltered]);
+  }, [selectableReports, checkedMemberIds, isAllSelectedFiltered]);
 
   const isAllSelectedSended = useMemo(() => {
     return (
       sendedReports.length > 0 &&
-      sendedReports.every((report) => checkedReportIds.has(report.id))
+      sendedReports.every((report) =>
+        checkedMemberIds.has(Number(report.memberMetaEntry.memberId))
+      )
     );
-  }, [sendedReports, checkedReportIds]);
+  }, [sendedReports, checkedMemberIds]);
 
   const isIndeterminateSended = useMemo(() => {
     return (
-      sendedReports.some((report) => checkedReportIds.has(report.id)) &&
-      !isAllSelectedSended
+      sendedReports.some((report) =>
+        checkedMemberIds.has(Number(report.memberMetaEntry.memberId))
+      ) && !isAllSelectedSended
     );
-  }, [sendedReports, checkedReportIds, isAllSelectedSended]);
+  }, [sendedReports, checkedMemberIds, isAllSelectedSended]);
 
   const hasCheckedItems = useMemo(() => {
     // REVIEWED 상태의 체크된 리포트가 있는지 확인
-    return Array.from(checkedReportIds).some((id) =>
-      selectableReports.some((report) => report.id === id)
+    return Array.from(checkedMemberIds).some((memberId) =>
+      selectableReports.some(
+        (report) => report.memberMetaEntry.memberId === memberId
+      )
     );
-  }, [checkedReportIds, selectableReports]);
+  }, [checkedMemberIds, selectableReports]);
 
   // 핸들러 함수들
   const handleFilterReset = () => {
     setSelectedStatus(null);
     setResetCounter((prev) => prev + 1);
-    setCheckedReportIds(new Set());
+    setCheckedMemberIds(new Set());
   };
 
   const handleStatusFilterChange = (option: string | undefined) => {
     setSelectedStatus(option || null);
-    setCheckedReportIds(new Set()); // 필터 변경 시 체크 해제
+    setCheckedMemberIds(new Set()); // 필터 변경 시 체크 해제
   };
 
-  const handleCheckChange = (id: number, checked: boolean) => {
-    setCheckedReportIds((prev) => {
+  const handleCheckChange = (memberId: number, checked: boolean) => {
+    setCheckedMemberIds((prev) => {
       const newSet = new Set(prev);
       if (checked) {
-        newSet.add(id);
+        newSet.add(memberId);
       } else {
-        newSet.delete(id);
+        newSet.delete(memberId);
       }
       return newSet;
     });
@@ -159,38 +133,43 @@ export const useReports = () => {
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       const selectableIds = new Set(
-        selectableReports.map((report) => report.id)
+        selectableReports.map((report) => report.memberMetaEntry.memberId)
       );
-      setCheckedReportIds(selectableIds);
+      setCheckedMemberIds(selectableIds);
     } else {
-      setCheckedReportIds(new Set());
+      setCheckedMemberIds(new Set());
     }
   };
 
   const handleSelectAllFiltered = (checked: boolean) => {
     if (checked) {
       const selectableIds = new Set(
-        selectableReports.map((report) => report.id)
+        selectableReports.map((report) => report.memberMetaEntry.memberId)
       );
-      setCheckedReportIds(selectableIds);
+      setCheckedMemberIds(selectableIds);
     } else {
-      setCheckedReportIds(new Set());
+      setCheckedMemberIds(new Set());
     }
   };
 
   const handleSelectAllSended = (checked: boolean) => {
     if (checked) {
-      const allIds = new Set(sendedReports.map((report) => report.id));
-      setCheckedReportIds(allIds);
+      const allIds = new Set(
+        sendedReports.map((report) => Number(report.memberMetaEntry.memberId))
+      );
+      setCheckedMemberIds(allIds);
     } else {
-      setCheckedReportIds(new Set());
+      setCheckedMemberIds(new Set());
     }
   };
 
   const handleImmediateSend = () => {
     // REVIEWED 상태의 리포트만 전송
-    const checkedSelectableIds = Array.from(checkedReportIds).filter((id) =>
-      selectableReports.some((report) => report.id === id)
+    const checkedSelectableIds = Array.from(checkedMemberIds).filter(
+      (memberId) =>
+        selectableReports.some(
+          (report) => report.memberMetaEntry.memberId === memberId
+        )
     );
 
     if (checkedSelectableIds.length === 0) {
@@ -198,16 +177,21 @@ export const useReports = () => {
       return;
     }
 
-    console.log("즉시 전송:", checkedSelectableIds);
-    // TODO: API 호출
-    setCheckedReportIds(new Set());
-    setIsImmediateSendModalOpen(true);
+    sendReport({
+      memberIds: checkedSelectableIds,
+      sendDate: TODAY_DATE,
+    });
+    setCheckedMemberIds(new Set());
+    setIsImmediateSendModalOpen(false);
   };
 
-  const handleReserveSend = () => {
+  const handleReserveSend = (reserveTime?: TTime) => {
     // REVIEWED 상태의 리포트만 전송
-    const checkedSelectableIds = Array.from(checkedReportIds).filter((id) =>
-      selectableReports.some((report) => report.id === id)
+    const checkedSelectableIds = Array.from(checkedMemberIds).filter(
+      (memberId) =>
+        selectableReports.some(
+          (report) => report.memberMetaEntry.memberId === memberId
+        )
     );
 
     if (checkedSelectableIds.length === 0) {
@@ -215,10 +199,13 @@ export const useReports = () => {
       return;
     }
 
-    console.log("예약 전송:", checkedSelectableIds);
-    // TODO: API 호출
-    setCheckedReportIds(new Set());
-    setIsReserveSendModalOpen(true);
+    sendReport({
+      memberIds: checkedSelectableIds,
+      sendDate: TODAY_DATE,
+      sendTime: reserveTime,
+    });
+    setCheckedMemberIds(new Set());
+    setIsReserveSendModalOpen(false);
   };
 
   return {
@@ -227,10 +214,11 @@ export const useReports = () => {
     isLoading,
 
     filteredReports,
+    sendedReports,
     selectableReports,
     selectedStatus,
     resetCounter,
-    checkedReportIds,
+    checkedMemberIds,
     hasCheckedItems,
     isAllSelectedFiltered,
     isIndeterminateFiltered,
