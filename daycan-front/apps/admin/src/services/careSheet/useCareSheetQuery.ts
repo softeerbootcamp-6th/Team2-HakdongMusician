@@ -14,8 +14,8 @@ export const careSheetKeys = {
   listByDate: (date: YearMonthDay, writerId?: number) =>
     [...careSheetKeys.lists(), date, writerId] as const,
   details: () => [...careSheetKeys.all, "detail"] as const,
-  detail: (careSheetId: number) =>
-    [...careSheetKeys.details(), careSheetId] as const,
+  detail: (date: YearMonthDay, memberId: number) =>
+    [...careSheetKeys.details(), date, memberId] as const,
   detailByDate: (date: YearMonthDay) =>
     [...careSheetKeys.details(), date] as const,
   detailByMemberId: (memberId: number) =>
@@ -57,13 +57,14 @@ export const useGetCareSheetQuery = (date: YearMonthDay, memberId: number) => {
  * @author 홍규진
  */
 export const useGetCareSheetDetailQuery = (
-  careSheetId: number,
-  enabled = true
+  careSheetDate: YearMonthDay,
+  careSheetMemberId: number,
+  enabled: boolean
 ) => {
   return useQuery({
-    queryKey: careSheetKeys.detail(careSheetId),
-    queryFn: () => getCareSheetDetail(careSheetId),
-    enabled: !!careSheetId && enabled,
+    queryKey: careSheetKeys.detail(careSheetDate, careSheetMemberId),
+    queryFn: () => getCareSheetDetail(careSheetDate, careSheetMemberId),
+    enabled: !!careSheetDate && !!careSheetMemberId && enabled,
     ...DEFAULT_QUERY_OPTIONS,
   });
 };
