@@ -13,7 +13,7 @@ import com.daycan.domain.entity.document.VitalAggregate;
 import com.daycan.domain.entry.document.sheet.HealthCareEntry;
 import com.daycan.domain.entry.document.sheet.PhysicalEntry;
 import com.daycan.domain.model.CareReportInit;
-import com.daycan.domain.model.CareSheetInitVO;
+import com.daycan.domain.model.CareSheetInit;
 import com.daycan.api.dto.center.request.CareSheetRequest;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.exceptions.DocumentNonCreatedException;
@@ -52,7 +52,7 @@ public class CareSheetWriteService {
 
   @Transactional(propagation = Propagation.MANDATORY)
   protected Long writeSheet(CareSheetRequest req) {
-    CareSheetInitVO init = fetchInitOrThrow(req);
+    CareSheetInit init = fetchInitOrThrow(req);
     validateStaff(init, req);
     Document doc = init.doc();
 
@@ -90,7 +90,7 @@ public class CareSheetWriteService {
     );
   }
 
-  private CareSheet upsertSheet(CareSheetInitVO initVo, CareSheetRequest request) {
+  private CareSheet upsertSheet(CareSheetInit initVo, CareSheetRequest request) {
     boolean isNew = initVo.isNew();
     Document doc = initVo.doc();
     Staff staff = initVo.staff();
@@ -103,13 +103,13 @@ public class CareSheetWriteService {
     return updateSheet(doc, request, programs);
   }
 
-  private CareSheetInitVO fetchInitOrThrow(CareSheetRequest req) {
+  private CareSheetInit fetchInitOrThrow(CareSheetRequest req) {
     return documentQueryRepository
         .fetchCareSheetInit(req.memberId(), req.date(), req.writerId())
         .orElseThrow(DocumentNonCreatedException::new);
   }
 
-  private void validateStaff(CareSheetInitVO init, CareSheetRequest req) {
+  private void validateStaff(CareSheetInit init, CareSheetRequest req) {
     if (init.staff() == null) {
       throw new ApplicationException(StaffErrorStatus.NOT_FOUND, req.writerId());
     }
@@ -139,7 +139,7 @@ public class CareSheetWriteService {
   }
 
   private Vital upsertVital(
-      CareSheetInitVO initVo, CareSheetRequest request
+      CareSheetInit initVo, CareSheetRequest request
   ) {
     Document doc = initVo.doc();
     VitalAggregate baseline = initVo.prevAgg();

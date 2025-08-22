@@ -4,9 +4,8 @@ import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.entity.document.VitalAggregate;
-import io.micrometer.common.lang.Nullable;
 
-public record CareSheetInitVO(
+public record CareSheetInit(
     Document doc,
     boolean isNew,
     Staff staff,
