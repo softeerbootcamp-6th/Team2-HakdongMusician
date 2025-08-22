@@ -1,5 +1,8 @@
 import { useReducer } from "react";
-import { useAdminLoginMutation } from "@/services/auth/useAdminAuthMutation";
+import {
+  useAdminLoginMutation,
+  useAdminLoginWithoutCheckMutation,
+} from "@/services/auth/useAdminAuthMutation";
 
 // 상태 타입 정의
 interface AdminLoginState {
@@ -97,6 +100,7 @@ const adminLoginReducer = (
 export const useAdminLoginHook = () => {
   const [state, dispatch] = useReducer(adminLoginReducer, initialState);
   const login = useAdminLoginMutation();
+  const loginWithoutCheck = useAdminLoginWithoutCheckMutation();
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: "SET_EMAIL", payload: e.target.value });
   };
@@ -117,10 +121,17 @@ export const useAdminLoginHook = () => {
 
     dispatch({ type: "CLEAR_ERROR_MESSAGE" });
 
-    await login.mutateAsync({
-      username: state.email,
-      password: state.password,
-    });
+    if (state.isChecked) {
+      await login.mutateAsync({
+        username: state.email,
+        password: state.password,
+      });
+    } else {
+      await loginWithoutCheck.mutateAsync({
+        username: state.email,
+        password: state.password,
+      });
+    }
 
     // 로그인 성공 시 라우팅 모달 열기
     dispatch({ type: "SET_IS_ADMIN_LOGIN_ROUTE_MODAL_OPEN", payload: true });
