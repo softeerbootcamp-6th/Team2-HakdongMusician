@@ -7,15 +7,14 @@ import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.enums.DocumentStatus;
-import com.daycan.domain.model.CareSheetMetaView;
+import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
+import com.daycan.repository.jpa.DocumentRepository;
 import com.daycan.repository.query.DocumentQueryRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CareSheetQueryService {
   private final DocumentQueryRepository documentQueryRepository;
-  private final DocumentService documentService;
 
 
   /**
@@ -39,14 +37,20 @@ public class CareSheetQueryService {
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.SHEET_NOT_FOUND));
   }
 
-  protected  List<CareSheetMetaView>findCareSheetMetaViewByDate(
+  protected CareSheetView findCareSheetViewById(Long careSheetId) {
+    return documentQueryRepository.fetchSheetWithVital(careSheetId)
+        .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.SHEET_NOT_FOUND));
+  }
+
+  protected  List<DocumentMetaView> findDocumentMetaViewByDate(
       Center center,
       LocalDate date,
       Long writerId,
-      List<DocumentStatus> docStatuses
+      List<DocumentStatus> docStatuses,
+      String nameLike
   ) {
-    return documentQueryRepository.findMetaViewsByCenterAndDate(
-        center.getId(), date, writerId, docStatuses
+    return documentQueryRepository.findDocumentMetaViewList(
+        center.getId(), date, writerId, docStatuses, nameLike
     );
   }
 

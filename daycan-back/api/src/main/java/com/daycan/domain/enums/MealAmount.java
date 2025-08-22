@@ -1,26 +1,13 @@
 package com.daycan.domain.enums;
 
 public enum MealAmount {
-  FULL("1인분"),
-  MORE_HALF("1/2 이상"),
-  LESS_HALF("1/2 이하");
+  FULL(1.0),        // 충분
+  MORE_HALF(1.0),   // 충분(절반 이상)
+  LESS_HALF(1.0 / 3.0); // 부족(절반 미만 취급)
 
-  private final String kor;
+  private final double weight;
 
-  MealAmount(String kor) {
-    this.kor = kor;
-  }
+  MealAmount(double weight) { this.weight = weight; }
 
-  public String kor() {
-    return kor;
-  }
-
-  public static MealAmount fromLabel(String kor) {
-    for (MealAmount amount : values()) {
-      if (amount.kor.equals(kor)) {
-        return amount;
-      }
-    }
-    throw new IllegalArgumentException("Unknown label: " + kor);
-  }
+  public double weight() { return weight; }
 }

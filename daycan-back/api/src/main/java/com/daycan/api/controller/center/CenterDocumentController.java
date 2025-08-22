@@ -19,6 +19,7 @@ import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/admin/document")
 @Tag(name = "\uD83D\uDCDA 센터용 문서 관리", description = "센터 문서(기록지/리포트 통합) 관련 API")
+@Validated
 @RequiredArgsConstructor
 public class CenterDocumentController {
 
@@ -36,10 +38,10 @@ public class CenterDocumentController {
   @Operation(summary = "기록지/리포트 카운트 조회", description = "미완료된 기록지/리포트 수와 지연된 기록지/리포트 수를 조회합니다. (어드민 페이지 사이드 바)")
   public ResponseWrapper<DocumentCountResponse> getDocumentCount(
       @AuthenticatedUser CenterDetails centerDetails,
-      @Parameter(description = "조회할 날짜 (yyyy-MM)", example = "2025-08")
+      @Parameter(description = "조회할 날짜 (yyyy-MM-dd)", example = "2025-08-07")
       @PathVariable @Valid @NotNull
       LocalDate date
-      ) {
+  ) {
     Center center = centerDetails.getCenter();
     return ResponseWrapper.onSuccess(
         documentService.getDocumentCount(center.getId(), date)
@@ -54,9 +56,11 @@ public class CenterDocumentController {
       @Parameter(description = "수급자 ID", example = "1")
       @PathVariable @Valid @NotNull
       Long memberId,
+
       @Parameter(description = "조회할 월 (yyyy-MM)", example = "2025-08")
       @PathVariable @Valid @NotNull
-      YearMonth month) {
+      YearMonth month
+  ) {
     List<DocumentStatusResponse> statusList = documentService.getDocumentStatusListByMemberAndMonth(
         centerDetails.getCenter(), memberId, month);
     return ResponseWrapper.onSuccess(statusList);

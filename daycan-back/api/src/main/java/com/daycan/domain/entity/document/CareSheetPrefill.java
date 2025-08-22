@@ -28,11 +28,11 @@ import org.hibernate.annotations.Type;
     uniqueConstraints = {
         @UniqueConstraint(
             name = "uk_writer_date_member",
-            columnNames = {"writer_id", "doc_date", "member_id"}
+            columnNames = {"writer_id", "date", "member_id"}
         )
     },
     indexes = {
-        @Index(name = "idx_prefill_writer_date", columnList = "writer_id, doc_date")
+        @Index(name = "idx_prefill_writer_date", columnList = "writer_id, date")
     }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -6,7 +6,7 @@ import com.daycan.domain.entity.document.PersonalProgram;
 import com.daycan.domain.entity.document.Vital;
 import com.daycan.domain.entry.document.sheet.CognitiveEntry;
 import com.daycan.domain.entry.document.sheet.HealthCareEntry;
-import com.daycan.domain.entry.document.sheet.Meal;
+import com.daycan.domain.entity.document.Meal;
 import com.daycan.domain.entry.document.sheet.MealEntry;
 import com.daycan.domain.entry.document.sheet.MealSupport;
 import com.daycan.domain.entry.document.sheet.PhysicalEntry;

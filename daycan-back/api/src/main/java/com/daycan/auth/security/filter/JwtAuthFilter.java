@@ -27,7 +27,7 @@ public class JwtAuthFilter implements Filter {
   private static final List<String> EXCLUDE_PATTERNS = List.of(
       "/auth/login", "/auth/reissue",
       "/swagger-ui.html", "/swagger-ui/**",
-      "/v3/api-docs/**", "/", "/api"
+      "/v3/api-docs/**", "/", "/api","/external/**"
   );
 
 
@@ -57,6 +57,10 @@ public class JwtAuthFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     HttpServletResponse res = (HttpServletResponse) response;
 
+    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+      chain.doFilter(request, response);
+      return;
+    }
     // 경로 제외 하기
     if (isExcluded(req)) {
       log.debug("인증 제외 경로: {}", req.getRequestURI());
@@ -69,26 +73,21 @@ public class JwtAuthFilter implements Filter {
       if (rawToken == null || rawToken.isBlank()) {
         throw new ApplicationException(AuthErrorStatus.NON_TOKEN);
       }
-      // 블랙리스트 확인
       if (blacklistService.isBlacklisted(rawToken, TokenType.ACCESS)) {
         throw new ApplicationException(AuthErrorStatus.BLACKLISTED_TOKEN);
       }
 
-      // 구조·서명 검증
       if (!jwtTokenProvider.validate(rawToken)) {
         throw new ApplicationException(AuthErrorStatus.INVALID_SIGNATURE);
       }
 
-      // 주체(subject) -> UserDetails 복원
-      String subject = jwtTokenProvider.parseSubject(rawToken);   // "CENTER:123456"
+      String subject = jwtTokenProvider.parseSubject(rawToken);
       UserDetails user = authService.loadByUserId(subject);
 
-      // 4. 권한 체크
       if (user.getUserType() == UserType.MEMBER && req.getRequestURI().startsWith(ADMIN_PREFIX)) {
         throw new ApplicationException(AuthErrorStatus.CENTER_ONLY);
       }
 
-      // 컨트롤러로 전달
       log.debug("인증 완료 → {} [{}]", user.getUsername(), user.getUserType());
       req.setAttribute(USER_DETAILS_ATTRIBUTE, user);
 

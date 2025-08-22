@@ -5,6 +5,7 @@ import com.daycan.api.dto.center.response.image.OcrResponse;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
+import com.daycan.domain.enums.Gender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,8 +13,10 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/care-sheet/ocr")
 @RequiredArgsConstructor
 @Tag(name = "\uD83D\uDCF8 기록지 관리 OCR", description = "관리자용 기록지 OCR 관련 API")
+@Validated
 public class CenterOcrController {
 
   // 사진으로 등록 (목: 성공 응답만 반환)
@@ -57,12 +61,19 @@ public class CenterOcrController {
       @Parameter(description = "작성자 ID", example = "1", required = true)
       @RequestParam Long writerId
   ) {
-    // TODO: ocr_daily_counts 연동. 지금은 목데이터 반환.
     OcrResponse mock = new OcrResponse(
-        12L,               // successCount
-        3L,                // continueCount
-        4L,                // failCount
-        List.of(101L, 102L, 103L) // successIds
+        12L,
+        3L,
+        4L,
+        Map.of(
+            101L, new com.daycan.domain.entry.member.MemberMetaEntry(
+                2L, "ABC1234","홍길동", LocalDate.of(1940, 1, 1), Gender.MALE,"https://example.com/photo1.jpg"
+            ),
+            102L, new com.daycan.domain.entry.member.MemberMetaEntry(
+                1L, "ABC1234","김수환", LocalDate.of(1940, 1, 1), Gender.MALE,"https://example.com/photo2.jpg"
+
+            )
+        )
     );
     return ResponseWrapper.onSuccess(List.of(mock));
   }
@@ -79,7 +90,7 @@ public class CenterOcrController {
     CareSheetPrefillResponse mock = new CareSheetPrefillResponse(
         7L,                          // writerId
         45L,                         // memberId
-        "RP123456",                  // memberCode
+        "RP123456",                  // careNumber
         LocalDate.of(2025, 8, 1),    // date
         LocalTime.of(9, 0),          // startTime
         LocalTime.of(17, 0),         // endTime

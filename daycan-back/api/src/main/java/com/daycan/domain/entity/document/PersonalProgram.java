@@ -1,6 +1,8 @@
 package com.daycan.domain.entity.document;
 
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.enums.ProgramScore;
 import com.daycan.domain.enums.ProgramType;
@@ -18,20 +20,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.UniqueConstraint;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 /**
  * 개인 활동 엔티티
  */
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Table(
     name = "personal_program",
     indexes = {
@@ -44,8 +44,7 @@ public class PersonalProgram extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Setter
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = LAZY, optional = false)
   @JoinColumn(name = "care_sheet_id", nullable = false, updatable = false)
   private CareSheet careSheet;
 
@@ -60,29 +59,33 @@ public class PersonalProgram extends BaseTimeEntity {
   @Column(nullable = false)
   private ProgramScore score;
 
-  public PersonalProgram(
-      String programName,
-      ProgramType type,
-      ProgramScore score
-  ) {
-    this.programName = programName;
-    this.type = type;
-    this.score = score;
+  public PersonalProgram(String programName, ProgramType type, ProgramScore score) {
+    this.programName = Objects.requireNonNull(programName, "programName");
+    this.type = Objects.requireNonNull(type, "type");
+    this.score = Objects.requireNonNull(score, "score");
   }
 
-
-  public void update(
-      String programName ,
-      ProgramType type,
-      ProgramScore score) {
+  public void update(String programName, ProgramType type, ProgramScore score) {
     if (programName != null) this.programName = programName;
     if (type != null) this.type = type;
     if (score != null) this.score = score;
   }
 
-  protected void setCareSheet(CareSheet careSheet) { // 완전 private
+  protected void setCareSheet(CareSheet careSheet) {
     this.careSheet = careSheet;
   }
 
-}
 
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof PersonalProgram that)) return false;
+    return Objects.equals(programName, that.programName) && type == that.type;
+  }
+  @Override public int hashCode() { return Objects.hash(programName, type); }
+
+  private static String norm(String s) {
+    if (s == null) return null;
+    s = s.trim();
+    return s.length() <= 100 ? s : s.substring(0, 100);
+  }
+}

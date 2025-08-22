@@ -49,5 +49,7 @@ public abstract class Account extends BaseTimeEntity {
     this.deletedAt = null;
   }
 
+  public abstract boolean equals(Object o);
+  public abstract int hashCode();
 }
 

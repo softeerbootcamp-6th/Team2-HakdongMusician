@@ -2,9 +2,12 @@ package com.daycan.domain.entity.document;
 
 import static jakarta.persistence.CascadeType.*;
 
+import com.daycan.common.exceptions.ApplicationException;
+import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.BaseTimeEntity;
 import com.daycan.domain.entity.Staff;
-import com.daycan.domain.entry.document.sheet.Meal;
+import com.daycan.domain.enums.ProgramScore;
+import com.daycan.domain.enums.ProgramType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -20,14 +23,19 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -132,11 +140,11 @@ public class CareSheet extends BaseTimeEntity {
   @OneToMany(
       mappedBy = "careSheet",
       fetch = FetchType.LAZY,
-      cascade = ALL,      // CareSheet 저장/삭제 시 함께 반영해야 하면
-      orphanRemoval = true            // 교체 전략이면 orphan 제거
+      cascade = ALL,
+      orphanRemoval = true
   )
   @OrderBy("id ASC")
-  private List<PersonalProgram> personalPrograms;
+  private Set<PersonalProgram> personalPrograms = new LinkedHashSet<>();
 
   @Size(max = 300)
   @Column(name = "functional_comment", length = 300)
@@ -157,12 +165,68 @@ public class CareSheet extends BaseTimeEntity {
   public void linkDocument(Document doc) {
     this.document = doc;
   }
-  public void addPersonalProgram(PersonalProgram personalProgram) {
-    if (personalPrograms == null) {
-      personalPrograms = new ArrayList<>();
+
+  public boolean addPersonalProgram(PersonalProgram p) {
+    if (p == null) return false;
+    if (p.getProgramName() == null || p.getType() == null) {
+      throw new ApplicationException(DocumentErrorStatus.PERSONAL_PROGRAM_INVALID_ARGUMENT);
     }
-    personalPrograms.add(personalProgram);
-    personalProgram.setCareSheet(this); // 주인 쪽도 세팅
+    ensureSet();
+    p.setCareSheet(this);
+    // Set 동작: 동등한 항목이면 add=false 반환
+    boolean added = personalPrograms.add(p);
+    if (!added) {
+      // 이미 있으면 점수만 갱신
+      for (PersonalProgram cur : personalPrograms) {
+        if (cur.equals(p)) {
+          if (!Objects.equals(cur.getScore(), p.getScore())) {
+            cur.update(cur.getProgramName(), cur.getType(), p.getScore());
+          }
+          break;
+        }
+      }
+    }
+    return added;
+  }
+
+  public void syncPersonalPrograms(Collection<PersonalProgram> incoming) {
+    ensureSet();
+    // incoming 정규화 & 인덱싱
+    Map<String, PersonalProgram> incMap = (incoming == null ? Map.of() :
+        incoming.stream()
+            .filter(Objects::nonNull)
+            .filter(pp -> pp.getProgramName() != null && pp.getType() != null)
+            .collect(Collectors.toMap(
+                pp -> key(pp.getProgramName(), pp.getType()),
+                Function.identity(),
+                (oldV, newV) -> newV,
+                LinkedHashMap::new
+            ))
+    );
+
+    for (PersonalProgram in : incMap.values()) {
+      addPersonalProgram(new PersonalProgram(in.getProgramName(), in.getType(), in.getScore()));
+    }
+
+    Set<String> keep = incMap.keySet();
+    Iterator<PersonalProgram> it = personalPrograms.iterator();
+    while (it.hasNext()) {
+      PersonalProgram cur = it.next();
+      if (!keep.contains(key(cur.getProgramName(), cur.getType()))) {
+        it.remove();
+        cur.setCareSheet(null);
+      }
+    }
+  }
+
+  private static String key(String name, ProgramType type) {
+    return name + "\u0001" + type.name();
+  }
+
+
+
+  private void ensureSet() {
+    if (personalPrograms == null) personalPrograms = new LinkedHashSet<>();
   }
 
   public void removePersonalProgram(PersonalProgram personalProgram) {
@@ -172,16 +236,15 @@ public class CareSheet extends BaseTimeEntity {
     personalProgram.setCareSheet(null);
   }
 
-  public void replacePersonalPrograms(List<PersonalProgram> personalProgramList) {
-    if (personalPrograms == null) {
-      personalPrograms = new ArrayList<>();
-    } else {
-      personalPrograms.clear();
-    }
-    if (personalProgramList != null) {
-      personalProgramList.forEach(this::addPersonalProgram);
+  public void removeWriter(){
+    if (writer != null) {
+      writer = null; // Staff와의 연관관계 제거
     }
   }
+  public boolean addPersonalProgram(String name, ProgramType type, ProgramScore score) {
+    return addPersonalProgram(new PersonalProgram(name, type, score));
+  }
+
 
   @Builder
   private CareSheet(
@@ -213,20 +276,24 @@ public class CareSheet extends BaseTimeEntity {
       String healthComment,
       String physicalComment
   ) {
-    this.document = document;   // @MapsId라 flush 때 id가 doc.id로 들어감
+    this.document = document;
     this.writer = writer;
-    this.arrivalTime = arrivalTime;
-    this.endTime = endTime;
-    this.vehicleNumber = vehicleNumber;
-    this.signatureUrl = signatureUrl;
+    this.arrivalTime = Objects.requireNonNullElse(arrivalTime, LocalTime.MIN);
+    this.endTime = Objects.requireNonNullElse(endTime, LocalTime.MIN);
+    this.vehicleNumber = Objects.requireNonNullElse(vehicleNumber, "");
+    this.signatureUrl = Objects.requireNonNullElse(signatureUrl, "");
+
     this.washCare = washCare;
     this.mobilityCare = mobilityCare;
     this.bathingCare = bathingCare;
-    this.bathingDurationMinutes = bathingDurationMinutes;
-    this.bathingType = bathingType;
-    this.breakfast = breakfast;
-    this.lunch = lunch;
-    this.dinner = dinner;
+
+    this.bathingDurationMinutes = Objects.requireNonNullElse(bathingDurationMinutes, "");
+    this.bathingType = Objects.requireNonNullElse(bathingType, "");
+
+    this.breakfast = Objects.requireNonNullElse(breakfast, new Meal());
+    this.lunch = Objects.requireNonNullElse(lunch, new Meal());
+    this.dinner = Objects.requireNonNullElse(dinner, new Meal());
+
     this.cognitiveSupport = cognitiveSupport;
     this.communicationSupport = communicationSupport;
     this.healthCare = healthCare;
@@ -236,10 +303,10 @@ public class CareSheet extends BaseTimeEntity {
     this.cognitiveProgram = cognitiveProgram;
     this.cognitiveInitiativeProgram = cognitiveInitiativeProgram;
     this.physicalTherapy = physicalTherapy;
-    this.functionalComment = functionalComment;
-    this.cognitiveComment = cognitiveComment;
-    this.healthComment = healthComment;
-    this.physicalComment = physicalComment;
+    this.functionalComment = Objects.requireNonNullElse(functionalComment, "");
+    this.cognitiveComment = Objects.requireNonNullElse(cognitiveComment, "");
+    this.healthComment = Objects.requireNonNullElse(healthComment, "");
+    this.physicalComment = Objects.requireNonNullElse(physicalComment, "");
   }
 
 

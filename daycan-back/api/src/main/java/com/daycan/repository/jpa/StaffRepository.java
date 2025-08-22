@@ -1,5 +1,6 @@
 package com.daycan.repository.jpa;
 
+import com.daycan.domain.entity.Center;
 import com.daycan.domain.entity.Staff;
 import com.daycan.domain.enums.Gender;
 import com.daycan.domain.enums.StaffRole;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Long> {
+
+  Optional<Staff> findTop1ByCenterAndNameOrderByIdAsc(Center center, String name);
+  Optional<Staff> findTop1ByCenterOrderByIdAsc(Center center); // 필요시 fallback
 
   // 센터별 + 필터(리스트)
   @Query("""

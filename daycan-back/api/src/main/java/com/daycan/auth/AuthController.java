@@ -5,6 +5,7 @@ import com.daycan.auth.dto.LoginResponse;
 import com.daycan.auth.dto.ReissueRequest;
 import com.daycan.auth.service.AuthService;
 import com.daycan.common.response.ResponseWrapper;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -37,12 +38,9 @@ public class AuthController {
 
   @PostMapping("/reissue")
   public ResponseWrapper<LoginResponse> reissue(
-      @Valid @RequestBody ReissueRequest request,
-      @RequestHeader("Authorization") String accessToken) {
+      @Valid @RequestBody ReissueRequest request) {
 
-    String rawAccessToken = extractToken(accessToken);
-
-    LoginResponse response = authService.reissue(request.refreshToken(), rawAccessToken);
+    LoginResponse response = authService.reissue(request.refreshToken());
     return ResponseWrapper.onSuccess(response);
   }
 
