@@ -170,51 +170,33 @@ export const convertFunnelStateToDiagnosisFunnelData = (
       bathingType: s0.bathingType || "",
       breakfast: {
         provided: !!s0.isBreakfastChecked,
-        entry: {
-          mealType: s0.isBreakfastChecked
-            ? (MEAL_TYPE_LABEL_TO_CODE[s0.breakfastType] as MealType)
-            : null,
-          amount: s0.isBreakfastChecked
-            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.breakfastAmount] as Amount)
-            : null,
-        },
-        validProvidedEntry: !!(
-          s0.isBreakfastChecked &&
-          s0.breakfastType &&
-          s0.breakfastAmount
-        ),
+        entry: s0.isBreakfastChecked
+          ? {
+              mealType: MEAL_TYPE_LABEL_TO_CODE[s0.breakfastType] as MealType,
+              amount: MEAL_AMOUNT_LABEL_TO_CODE[s0.breakfastAmount] as Amount,
+            }
+          : null,
+        validProvidedEntry: true,
       },
       lunch: {
         provided: !!s0.isLunchChecked,
-        entry: {
-          mealType: s0.isLunchChecked
-            ? (MEAL_TYPE_LABEL_TO_CODE[s0.lunchType] as MealType)
-            : null,
-          amount: s0.isLunchChecked
-            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.lunchAmount] as Amount)
-            : null,
-        },
-        validProvidedEntry: !!(
-          s0.isLunchChecked &&
-          s0.lunchType &&
-          s0.lunchAmount
-        ),
+        entry: s0.isLunchChecked
+          ? {
+              mealType: MEAL_TYPE_LABEL_TO_CODE[s0.lunchType] as MealType,
+              amount: MEAL_AMOUNT_LABEL_TO_CODE[s0.lunchAmount] as Amount,
+            }
+          : null,
+        validProvidedEntry: true,
       },
       dinner: {
         provided: !!s0.isDinnerChecked,
-        entry: {
-          mealType: s0.isDinnerChecked
-            ? (MEAL_TYPE_LABEL_TO_CODE[s0.dinnerType] as MealType)
-            : null,
-          amount: s0.isDinnerChecked
-            ? (MEAL_AMOUNT_LABEL_TO_CODE[s0.dinnerAmount] as Amount)
-            : null,
-        },
-        validProvidedEntry: !!(
-          s0.isDinnerChecked &&
-          s0.dinnerType &&
-          s0.dinnerAmount
-        ),
+        entry: s0.isDinnerChecked
+          ? {
+              mealType: MEAL_TYPE_LABEL_TO_CODE[s0.dinnerType] as MealType,
+              amount: MEAL_AMOUNT_LABEL_TO_CODE[s0.dinnerAmount] as Amount,
+            }
+          : null,
+        validProvidedEntry: true,
       },
       numberOfStool: typeof s0.stoolCount === "number" ? s0.stoolCount : 0,
       numberOfUrine: typeof s0.urineCount === "number" ? s0.urineCount : 0,

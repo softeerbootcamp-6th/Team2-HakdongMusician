@@ -20,7 +20,7 @@ export const CognitiveCard = ({
 }: CognitiveCardProps) => {
   return (
     <CardLayout
-      title="인지 능력"
+      title="인지 능력 프로그램"
       score={score}
       scoreMax={15}
       isDropdown={isDropdown}

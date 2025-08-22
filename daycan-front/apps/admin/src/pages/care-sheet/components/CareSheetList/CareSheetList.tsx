@@ -5,6 +5,7 @@ import {
   headerButton,
   itemsContainer,
   sectionTitle,
+  emptyContainer,
 } from "./CareSheetList.css";
 import type { TCareSheetListItem } from "@/services/careSheet/types";
 import { CareSheetListItem } from "../CareSheetListItem";
@@ -94,24 +95,34 @@ export const CareSheetList = ({
         showCheckbox={true}
       />
       <div className={`${itemsContainer} ${overlayScroll}`}>
-        {careSheets.map((careSheet, index) => {
-          // 상태에 따라 선택 가능 여부 결정
-          const isSelectable =
-            status === "APPLICABLE" ? careSheet.status !== "DONE" : true; // 결석 인원은 모두 선택 가능
+        {careSheets.length === 0 ? (
+          <div className={emptyContainer}>
+            <Body type="medium" weight={400}>
+              기록지가 없습니다.
+            </Body>
+          </div>
+        ) : (
+          careSheets.map((careSheet, index) => {
+            // 상태에 따라 선택 가능 여부 결정
+            const isSelectable =
+              status === "APPLICABLE" ? careSheet.status !== "DONE" : true; // 결석 인원은 모두 선택 가능
 
-          return (
-            <CareSheetListItem
-              key={careSheet.memberMeta.memberId}
-              careSheet={careSheet}
-              index={index}
-              isChecked={checkedCareSheetIds.has(careSheet.memberMeta.memberId)}
-              onCheckChange={(checked) =>
-                onItemCheck(careSheet.memberMeta.memberId, checked)
-              }
-              isSelectable={isSelectable}
-            />
-          );
-        })}
+            return (
+              <CareSheetListItem
+                key={careSheet.memberMeta.memberId}
+                careSheet={careSheet}
+                index={index}
+                isChecked={checkedCareSheetIds.has(
+                  careSheet.memberMeta.memberId
+                )}
+                onCheckChange={(checked) =>
+                  onItemCheck(careSheet.memberMeta.memberId, checked)
+                }
+                isSelectable={isSelectable}
+              />
+            );
+          })
+        )}
       </div>
     </div>
   );

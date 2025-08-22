@@ -43,14 +43,16 @@ export const Step5 = () => {
             signatureUrl: result.objectKey,
           });
 
-          const diagnosisData =
-            convertFunnelStateToDiagnosisFunnelData(funnelState);
-
-          setDiagnosisData(diagnosisData);
+          // updateState 완료 후 diagnosisData 변환
+          setTimeout(() => {
+            const diagnosisData =
+              convertFunnelStateToDiagnosisFunnelData(funnelState);
+            setDiagnosisData(diagnosisData);
+            setIsSignatureUploaded(true);
+          }, 0);
         },
       });
     }
-    setIsSignatureUploaded(true);
   };
 
   const handleNext = async () => {

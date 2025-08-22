@@ -64,6 +64,7 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
         rows={reportData.healthEntries.map((entry) => ({
           key: entry.key,
           value: entry.value,
+          warningDescription: entry.warning,
         }))}
         score={reportData.healthCardFooter?.score ?? 15}
         additionalMemo={reportData.healthCardFooter?.additionalMemo ?? ""}
@@ -74,6 +75,7 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
         columns={reportData.physicalEntries.map((entry) => ({
           key: entry.key,
           value: entry.value,
+          specificDescription: entry.additionalInfo,
         }))}
         score={reportData.physicalCardFooter?.score ?? 15}
         additionalMemo={reportData.physicalCardFooter?.additionalMemo ?? ""}
@@ -84,6 +86,7 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
         columns={reportData.cognitiveEntries.map((entry) => ({
           key: entry.key,
           value: entry.value,
+          specificDescription: entry.additionalInfo,
         }))}
         score={reportData.cognitiveCardFooter?.score ?? 15}
         additionalMemo={reportData.cognitiveCardFooter?.additionalMemo ?? ""}

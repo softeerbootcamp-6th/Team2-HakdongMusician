@@ -51,7 +51,7 @@ export const HistoryModal = ({
     fetchReportData,
     fetchCareSheetData,
     documentList,
-  } = useHistoryModal(memberId);
+  } = useHistoryModal(memberId, selectedMonth);
 
   // ===== 선택된 데이터 타입 상태 =====
   const [selectedDataType, setSelectedDataType] = useState<
@@ -64,9 +64,9 @@ export const HistoryModal = ({
     fetchReportData(date, memberId);
   };
 
-  const handleViewCareSheet = (careSheetId: number) => {
+  const handleViewCareSheet = (date: YearMonthDay, memberId: number) => {
     setSelectedDataType("careSheet");
-    fetchCareSheetData(careSheetId);
+    fetchCareSheetData(date, memberId);
   };
 
   const changeMonth = (direction: "prev" | "next") => {
@@ -79,6 +79,8 @@ export const HistoryModal = ({
       }
       return newMonth;
     });
+    // 월이 변경되면 선택된 데이터 타입 초기화
+    setSelectedDataType(null);
   };
 
   return (
@@ -141,6 +143,14 @@ export const HistoryModal = ({
               일별 기록 현황
             </Body>
             <div className={dateStatusListContainer}>
+              {/* 데이터가 없을 경우 */}
+              {documentList?.length === 0 && (
+                <div className={dateStatusItem}>
+                  <Body type="small" weight={600} color={COLORS.gray[900]}>
+                    해당 달에는 기록이 없습니다.
+                  </Body>
+                </div>
+              )}
               {documentList?.map((document) => {
                 const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][
                   new Date(document.documentDate).getDay()
@@ -191,7 +201,7 @@ export const HistoryModal = ({
                         <button
                           className={confirmButton}
                           onClick={() =>
-                            handleViewCareSheet(document.careSheet.careSheetId)
+                            handleViewCareSheet(document.documentDate, memberId)
                           }
                         >
                           <Body
@@ -256,9 +266,9 @@ export const HistoryModal = ({
                   </Body>
                 </div>
               ) : selectedDataType === "report" ? (
-                <ReportDataView reportData={reportData} />
+                <ReportDataView reportData={reportData ?? null} />
               ) : (
-                <CareSheetDataView careSheetData={careSheetData} />
+                <CareSheetDataView careSheetData={careSheetData ?? null} />
               )}
             </div>
           </div>

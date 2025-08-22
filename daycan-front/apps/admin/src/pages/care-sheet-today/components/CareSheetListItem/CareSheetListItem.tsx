@@ -6,48 +6,32 @@ import {
   careSheetListItemStatusContainer,
 } from "./CareSheetListItem.css";
 import { Body, COLORS, Icon } from "@daycan/ui";
-import { useGetCareSheetDetailQuery } from "@/services/careSheet/useCareSheetQuery";
-import { useNavigate } from "react-router-dom";
-import { prefillCareSheetData } from "@/utils/careSheetPrefill";
-import { useEffect, useState } from "react";
+import type { YearMonthDay } from "@/types/date";
+import { TODAY_DATE } from "@/utils/dateFormatter";
 
 interface CareSheetListItemProps {
-  careSheet: TCareSheetListItem;
+  todayCareSheet: TCareSheetListItem;
+  onCareSheetClick: (date: YearMonthDay, memberId: number) => void;
 }
 
-export const CareSheetListItem = ({ careSheet }: CareSheetListItemProps) => {
-  const navigate = useNavigate();
-  const [shouldFetchDetail, setShouldFetchDetail] = useState(false);
-
-  // Hook은 컴포넌트 최상위에서 호출, 조건적으로 데이터 fetch
-  const { data: careSheetDetail, isLoading } = useGetCareSheetDetailQuery(
-    careSheet.careSheetId,
-    shouldFetchDetail // 클릭했을 때만 fetch
-  );
-
-  // 데이터가 로드되면 prefill하고 navigate
-  useEffect(() => {
-    if (careSheetDetail && shouldFetchDetail && !isLoading) {
-      prefillCareSheetData(careSheetDetail);
-      navigate(`/care-sheet/new/diagnosis`);
-      setShouldFetchDetail(false); // 상태 리셋
-    }
-  }, [careSheetDetail, shouldFetchDetail, isLoading, navigate]);
-
+export const CareSheetListItem = ({
+  todayCareSheet,
+  onCareSheetClick,
+}: CareSheetListItemProps) => {
   const handleClickWrittenCareSheet = () => {
-    setShouldFetchDetail(true); // 데이터 fetch 트리거
+    onCareSheetClick(TODAY_DATE, todayCareSheet.memberMeta.memberId);
   };
 
   return (
     <div className={careSheetListItemContainer}>
       <img
-        src={careSheet.memberMeta.avatarUrl}
+        src={todayCareSheet.memberMeta.avatarUrl}
         alt="프로필"
         className={careSheetListItemProfile}
       />
       <div className={careSheetListItemInfoContainer}>
         <Body type="medium" weight={500} color={COLORS.gray[600]}>
-          {careSheet.memberMeta.name}
+          {todayCareSheet.memberMeta.name}
         </Body>
       </div>
       <div>

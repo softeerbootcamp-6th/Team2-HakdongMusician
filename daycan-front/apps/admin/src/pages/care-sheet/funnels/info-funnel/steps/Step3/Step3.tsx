@@ -49,9 +49,12 @@ export const Step3 = () => {
         <div className={step3HighlightingHeadingContainer}>
           <HighlightingHeading text={memberName} />
           <Heading type="medium" weight={600} color={COLORS.gray[800]}>
-            님이 언제 가셨나요?
+            님이
           </Heading>
         </div>
+        <Heading type="medium" weight={600} color={COLORS.gray[800]}>
+          언제 가셨나요?
+        </Heading>
         <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
           시간
         </Body>

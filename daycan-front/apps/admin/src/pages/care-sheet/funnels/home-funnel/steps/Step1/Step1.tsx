@@ -17,11 +17,18 @@ import {
   todayWritedCareSheetTitle,
 } from "./Step1.css";
 
-import { useGetCareSheetListQuery } from "@/services/careSheet/useCareSheetQuery";
+import {
+  useGetCareSheetListQuery,
+  useGetCareSheetDetailQuery,
+} from "@/services/careSheet/useCareSheetQuery";
 import { CareSheetListItem } from "@/pages/care-sheet-today/components/CareSheetListItem";
 import { TODAY_DATE } from "@/utils/dateFormatter";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { homeFunnelDataAtom } from "../../atoms/homeAtom";
+import { infoFunnelDataAtom } from "../../../info-funnel/atoms/infoAtom";
+import { diagnosisFunnelDataAtom } from "../../../diagnosis-funnel/atoms/diagnosisAtom";
+import { prefillCareSheetData } from "@/utils/careSheetPrefill";
+import type { YearMonthDay } from "@/types/date";
 
 // localStorage 키 상수
 const RECENT_METHOD_KEY = "careSheet:recentMethod";
@@ -30,7 +37,16 @@ export const Step1 = () => {
   const navigate = useNavigate();
   const { toPrev, toNext, funnelState } = useFunnel();
   const [recentMethod, setRecentMethod] = useState<string | null>(null);
+  const [selectedCareSheet, setSelectedCareSheet] = useState<{
+    date: YearMonthDay;
+    memberId: number;
+  } | null>(null);
   const homeFunnelData = useAtomValue(homeFunnelDataAtom);
+
+  // Jotai setter 함수들
+  const setInfoFunnelData = useSetAtom(infoFunnelDataAtom);
+  const setDiagnosisFunnelData = useSetAtom(diagnosisFunnelDataAtom);
+
   // 작성자 이름 가져오기
   const staffName = getStaffName(funnelState);
 
@@ -38,6 +54,14 @@ export const Step1 = () => {
     TODAY_DATE,
     funnelState?.STEP_0?.selectedStaff?.staffId || funnelState?.STEP_0?.writerId
   );
+
+  // 선택된 기록지 상세 데이터 조회
+  const { data: careSheetDetail } = useGetCareSheetDetailQuery(
+    selectedCareSheet?.date!,
+    selectedCareSheet?.memberId!,
+    !!selectedCareSheet
+  );
+
   // 컴포넌트 마운트 시 localStorage에서 최근 사용한 방법 불러오기
   useEffect(() => {
     const stored = localStorage.getItem(RECENT_METHOD_KEY);
@@ -45,6 +69,30 @@ export const Step1 = () => {
       setRecentMethod(stored);
     }
   }, []);
+
+  // careSheetDetail이 로드되면 prefill 실행
+  useEffect(() => {
+    if (careSheetDetail && selectedCareSheet) {
+      toNext();
+
+      prefillCareSheetData(
+        careSheetDetail,
+        () => {}, // homeFunnelData는 이미 설정되어 있음
+        setInfoFunnelData,
+        setDiagnosisFunnelData
+      );
+      // prefill 완료 후 navigate
+      navigate(`/care-sheet/new/diagnosis`);
+      // 상태 초기화
+      setSelectedCareSheet(null);
+    }
+  }, [
+    careSheetDetail,
+    selectedCareSheet,
+    setInfoFunnelData,
+    setDiagnosisFunnelData,
+    navigate,
+  ]);
 
   const handleMethodSelect = (method: string) => {
     // localStorage에 선택된 방법 저장
@@ -57,6 +105,11 @@ export const Step1 = () => {
     } else {
       navigate("/care-sheet/new/ocr");
     }
+  };
+
+  // 기록지 클릭 핸들러
+  const handleCareSheetClick = (date: YearMonthDay, memberId: number) => {
+    setSelectedCareSheet({ date, memberId });
   };
 
   return (
@@ -97,7 +150,7 @@ export const Step1 = () => {
                     `/care-sheet/new/today/${funnelState?.STEP_0?.writerId}`
                   );
                 } else {
-                  `/care-sheet/new/today/${homeFunnelData?.writerId}`;
+                  navigate(`/care-sheet/new/today/${homeFunnelData?.writerId}`);
                 }
               }}
             >
@@ -113,7 +166,11 @@ export const Step1 = () => {
               />
             </div>
             {careSheetList?.map((careSheet) => (
-              <CareSheetListItem careSheet={careSheet} />
+              <CareSheetListItem
+                key={careSheet.memberMeta.memberId}
+                todayCareSheet={careSheet}
+                onCareSheetClick={handleCareSheetClick}
+              />
             ))}
           </div>
         </div>

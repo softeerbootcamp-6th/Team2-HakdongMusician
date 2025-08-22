@@ -6,6 +6,7 @@ import {
   ServerError,
 } from "@daycan/api";
 import { useToast } from "@daycan/ui";
+import { captureServerError } from "./sentry";
 
 export const handleError = (
   error: unknown,
@@ -81,7 +82,7 @@ export const handleError = (
     console.error("🖥️ Server Error:", error);
 
     // Sentry 등으로 에러 로깅
-    // captureException(error);
+    captureServerError(error);
   } else if (error instanceof HttpError) {
     // 기타 HTTP 에러 (300, 200 등)
     showToast({

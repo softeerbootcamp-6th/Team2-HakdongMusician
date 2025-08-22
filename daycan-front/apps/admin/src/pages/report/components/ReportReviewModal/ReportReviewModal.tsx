@@ -1,7 +1,7 @@
 import { Modal, Button, Body, Icon, COLORS } from "@daycan/ui";
 import { ReportDataView } from "@/components/ReportDataView";
 import { ReportEntryEditor } from "../ReportEntryEditor";
-import { useReviewModal } from "./useReportReviewModal";
+import { useReportReviewModal } from "./useReportReviewModal";
 import {
   reviewModalHeader,
   reviewModalHeaderLeft,
@@ -15,12 +15,14 @@ import {
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  memberId: number;
   reportId: number;
 }
 
 export const ReportReviewModal = ({
   isOpen,
   onClose,
+  memberId,
   reportId,
 }: ReviewModalProps) => {
   const {
@@ -31,7 +33,7 @@ export const ReportReviewModal = ({
     handleMemoChange,
     handleSaveAndClose,
     getUpdatedReportData,
-  } = useReviewModal({ reportId, isOpen });
+  } = useReportReviewModal({ memberId, isOpen, reportId, onClose });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

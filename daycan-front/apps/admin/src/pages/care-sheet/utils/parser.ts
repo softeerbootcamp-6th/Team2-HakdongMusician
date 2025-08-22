@@ -8,7 +8,7 @@ export const getStatusInfo = (status: string) => {
         icon: "warningFilled",
         color: COLORS.yellow[500],
       };
-    case "SHEET_DONE":
+    case "DONE":
       return {
         text: "작성 완료",
         icon: "circleCheck",
@@ -18,8 +18,8 @@ export const getStatusInfo = (status: string) => {
     case "NOT_APPLICABLE":
       return {
         text: "작성 불가",
-        icon: "info",
-        color: COLORS.gray[600],
+        icon: "warningFilled",
+        color: COLORS.red[500],
       };
     default:
       return {

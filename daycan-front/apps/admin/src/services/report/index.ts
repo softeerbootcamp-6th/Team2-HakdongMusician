@@ -1,5 +1,6 @@
-import type { YearMonthDay } from "@/types/date";
+import type { TTime, YearMonthDay } from "@/types/date";
 import type {
+  TReportEditRequest,
   TReportListItem,
   TReportReadResponse,
   TReportStatus,
@@ -21,7 +22,7 @@ export const getReportList = async (
 ): Promise<TReportListItem[] | null> => {
   return await safeRequest.get<TReportListItem[]>(
     privateInstance,
-    `/admin/report/${yyyymm}`,
+    `/admin/care-report/${yyyymm}`,
     {
       params: {
         statuses,
@@ -43,23 +44,27 @@ export const getReport = async (
 ): Promise<TReportReadResponse | null> => {
   return await safeRequest.get<TReportReadResponse>(
     privateInstance,
-    `/admin/report/${yyyymmdd}/${memberId}`
+    `/admin/care-report/${yyyymmdd}/${memberId}`
   );
 };
 
 /**
  * 리포트 전송
- * @param reportId 리포트 ID
+ * @param memberIds 수급자 ID 리스트
+ * @param sendDate 전송 날짜
+ * @param sendTime 전송 시간
  * @author 홍규진
  */
-export const sendReport = async (reportId: number): Promise<void> => {
-  return await safeRequest.patch(
-    privateInstance,
-    `/admin/care-report/${reportId}/send`,
-    {
-      reportId,
-    }
-  );
+export const sendReport = async (
+  memberIds: number[],
+  sendDate?: YearMonthDay,
+  sendTime?: TTime
+): Promise<void> => {
+  return await safeRequest.patch(privateInstance, `/admin/care-report/send`, {
+    memberIds,
+    sendDate,
+    sendTime,
+  });
 };
 
 /**
@@ -67,9 +72,13 @@ export const sendReport = async (reportId: number): Promise<void> => {
  * @param reportId 리포트 ID
  * @author 홍규진
  */
-export const reviewReport = async (reportId: number): Promise<void> => {
-  return await safeRequest.patch(
+export const reviewReport = async (
+  reportId: number,
+  editRequest: TReportEditRequest
+): Promise<void> => {
+  return await safeRequest.put(
     privateInstance,
-    `/admin/care-report/${reportId}/review`
+    `/admin/care-report/${reportId}/review`,
+    editRequest
   );
 };

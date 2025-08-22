@@ -1,12 +1,12 @@
 import type { TReportReadResponse } from "@/services/report/types";
-import type { ReportListItemType } from "../components/ReportListItem/ReportListItem";
+import type { TReportListItem } from "@/services/report/types";
 
 // 더미 데이터 (실제로는 API에서 가져올 데이터)
-export const mockReports: ReportListItemType[] = [
+export const mockReports: TReportListItem[] = [
   {
     id: 1,
     memberMetaEntry: {
-      memberId: "M001",
+      memberId: 1,
       name: "김철수",
       birthDate: "1980-05-15",
       gender: "MALE",
@@ -20,7 +20,7 @@ export const mockReports: ReportListItemType[] = [
   {
     id: 2,
     memberMetaEntry: {
-      memberId: "M002",
+      memberId: 2,
       name: "이영희",
       birthDate: "1975-08-22",
       gender: "FEMALE",
@@ -34,7 +34,7 @@ export const mockReports: ReportListItemType[] = [
   {
     id: 3,
     memberMetaEntry: {
-      memberId: "M002",
+      memberId: 3,
       name: "이영희",
       birthDate: "1975-08-22",
       gender: "FEMALE",
@@ -49,7 +49,7 @@ export const mockReports: ReportListItemType[] = [
   {
     id: 7,
     memberMetaEntry: {
-      memberId: "M007",
+      memberId: 7,
       name: "윤민호",
       birthDate: "1988-04-12",
       gender: "MALE",
@@ -62,11 +62,11 @@ export const mockReports: ReportListItemType[] = [
   },
 ];
 
-export const mockSendedReports: ReportListItemType[] = [
+export const mockSendedReports: TReportListItem[] = [
   {
     id: 4,
     memberMetaEntry: {
-      memberId: "M004",
+      memberId: 4,
       name: "최지영",
       birthDate: "1970-03-18",
       gender: "FEMALE",
@@ -80,7 +80,7 @@ export const mockSendedReports: ReportListItemType[] = [
   {
     id: 5,
     memberMetaEntry: {
-      memberId: "M005",
+      memberId: 5,
       name: "정현우",
       birthDate: "1982-07-25",
       gender: "MALE",
@@ -94,7 +94,7 @@ export const mockSendedReports: ReportListItemType[] = [
   {
     id: 6,
     memberMetaEntry: {
-      memberId: "M006",
+      memberId: 6,
       name: "한소영",
       birthDate: "1978-11-08",
       gender: "FEMALE",
