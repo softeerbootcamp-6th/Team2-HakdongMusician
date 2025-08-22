@@ -13,7 +13,7 @@ import com.daycan.domain.entity.document.QVital;
 import com.daycan.domain.entity.document.VitalAggregate;
 import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.model.CareSheetInitRow;
-import com.daycan.domain.model.CareSheetInitVO;
+import com.daycan.domain.model.CareSheetInit;
 import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
@@ -27,7 +27,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.criteria.JoinType;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
   private final QCareReport report = QCareReport.careReport;
 
   @Override
-  public Optional<CareSheetInitVO> fetchCareSheetInit(Long memberId, LocalDate date,
+  public Optional<CareSheetInit> fetchCareSheetInit(Long memberId, LocalDate date,
       Long writerId) {
     CareSheetInitRow row = fetchCareSheetInitRow(memberId, date, writerId);
     if (row == null) {
@@ -75,7 +74,7 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
             row.prevSumHealthScore()
         );
 
-    CareSheetInitVO vo = new CareSheetInitVO(
+    CareSheetInit vo = new CareSheetInit(
         row.doc(),
         Boolean.TRUE.equals(row.isNew()),
         row.staff(),

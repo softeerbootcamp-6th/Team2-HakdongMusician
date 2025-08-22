@@ -1,7 +1,7 @@
 package com.daycan.repository.query;
 
 import com.daycan.domain.enums.DocumentStatus;
-import com.daycan.domain.model.CareSheetInitVO;
+import com.daycan.domain.model.CareSheetInit;
 import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface DocumentQueryRepository {
 
-  Optional<CareSheetInitVO> fetchCareSheetInit(
+  Optional<CareSheetInit> fetchCareSheetInit(
       Long memberId, LocalDate date, Long writerId
   );
 
