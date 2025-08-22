@@ -20,11 +20,13 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -269,10 +271,17 @@ public class CareReport extends BaseTimeEntity {
   }
 
   private Map<String, ProgramNote> filterNotes(Map<String, ProgramNote> notes) {
+    if (notes == null || notes.isEmpty()) return Map.of();
+
     return notes.entrySet().stream()
-        .filter(e -> hasText(e.getKey()))
-        .map(e -> Map.entry(e.getKey().trim(), normalizeNote(e.getValue())))
-        .filter(e -> e.getValue() != null) // benefit·personal 모두 blank면 제거
+        .filter(e -> hasText(e.getKey())) // key null/blank 제거
+        .map(e -> {
+          ProgramNote n = normalizeNote(e.getValue());
+          if (n == null) return null;
+          String k = e.getKey().trim();
+          return new AbstractMap.SimpleEntry<>(k, n);
+        })
+        .filter(Objects::nonNull)
         .collect(Collectors.toMap(
             Map.Entry::getKey,
             Map.Entry::getValue,
@@ -280,6 +289,7 @@ public class CareReport extends BaseTimeEntity {
             LinkedHashMap::new
         ));
   }
+
 
   private ProgramNote normalizeNote(ProgramNote n) {
     if (n == null) return null;
