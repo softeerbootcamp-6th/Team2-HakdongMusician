@@ -3,8 +3,6 @@ package com.daycan.service.document;
 import com.daycan.api.dto.center.request.AttendanceAction;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.Center;
-import com.daycan.domain.entry.document.report.ReportStatus;
-import com.daycan.domain.entry.document.sheet.SheetStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
@@ -25,7 +23,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,16 +35,12 @@ public class DocumentService {
   private final DocumentQueryRepository documentQueryRepository;
   private final MemberService memberService;
 
-  /**
-   * [Upsert] members 중 (memberId + date) 없는 것만 INSERT
-   */
   @Transactional
   public void upsertAll(List<Member> members, LocalDate date) {
     if (members.isEmpty()) {
       return;
     }
 
-    // 이제 Long memberId 집합
     Set<Long> existing = documentRepository.findMemberIdsByDate(date);
 
     List<Document> toInsert = members.stream()
@@ -88,7 +81,7 @@ public class DocumentService {
           incompleteReportStatuses, date, centerId);
 
       return new DocumentCountResponse(
-          (int)todaySheet, (int)todayReport
+          (int) todaySheet, (int) todayReport
       );
     } catch (Exception e) {
       log.error("문서 카운트 조회 중 오류 발생", e);
@@ -100,7 +93,7 @@ public class DocumentService {
   public List<DocumentStatusResponse> getDocumentStatusListByMemberAndMonth(
       Center center, Long memberId, YearMonth month) {
 
-    Member member = memberService.getByMemberIdAndCenter(memberId, center.getId());
+    Member member = memberService.requireActiveMember(memberId, center.getId());
 
     LocalDate start = month.atDay(1);
     LocalDate end = month.atEndOfMonth();
@@ -128,13 +121,16 @@ public class DocumentService {
     return updated;
   }
 
-
-  protected void findOrCreateDocument(Member member, LocalDate date) {
-    documentRepository.findByMemberIdAndDate(member.getId(), date)
-        .orElseGet(() -> createDocument(member, date));
+  protected boolean isInvalidCenterDocument(Center center, Long documentId) {
+    Document document = documentRepository.findById(documentId)
+        .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.DOCUMENT_NOT_FOUND));
+    return !document.getCenter().equals(center);
   }
 
-  // ───────────────────────── private helpers ─────────────────────────
+  protected Document findOrCreateDocument(Member member, LocalDate date) {
+    return documentRepository.findByMemberIdAndDate(member.getId(), date)
+        .orElseGet(() -> createDocument(member, date));
+  }
 
   private List<Document> findDocumentsByMemberAndDate(
       List<Member> members, LocalDate date) {

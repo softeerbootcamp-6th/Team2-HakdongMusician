@@ -2,14 +2,12 @@ package com.daycan.repository.query;
 
 import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.model.CareSheetInitVO;
-import com.daycan.domain.model.CareSheetMetaView;
+import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface DocumentQueryRepository {
 
@@ -21,9 +19,13 @@ public interface DocumentQueryRepository {
       Long memberId, LocalDate date
   );
 
-  List<CareSheetMetaView> findMetaViewsByCenterAndDate(
+  Optional<CareSheetView> fetchSheetWithVital(
+      Long sheetId
+  );
+
+  List<DocumentMetaView> findDocumentMetaViewList(
       Long centerId, LocalDate date, Long writerId,
-      List<DocumentStatus> statuses
+      List<DocumentStatus> statuses, String nameLike
   );
 
   List<DocumentMonthlyStatusRow> findMemberStatusInRange(

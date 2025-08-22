@@ -18,7 +18,7 @@ public record FullReportDto(
     List<ReportEntry> physicalEntries,
     CardFooter physicalCardFooter, // 카드 푸터 정보, nullable
     List<ReportEntry> cognitiveEntries,
-    CardFooter CognitiveCardFooter // 카드 푸터 정보, nullable
+    CardFooter cognitiveCardFooter // 카드 푸터 정보, nullable
 ) {
 
 }

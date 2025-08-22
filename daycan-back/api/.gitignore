@@ -4,3 +4,5 @@
 resources/data.sql
 
 /src/main/java/com/daycan/config/DevSeedConfig.java
+
+/src/main/java/com/daycan/config/seed/**

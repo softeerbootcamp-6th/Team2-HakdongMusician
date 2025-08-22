@@ -9,9 +9,10 @@ import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.service.document.DocumentFacade;
+import com.daycan.domain.entry.document.sheet.SheetStatus;
+import com.daycan.service.document.CenterDocumentFacade;
+
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,8 +21,10 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,12 +39,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/care-sheet")
 @RequiredArgsConstructor
+@Slf4j
+@Validated
 @Tag(name = "\uD83D\uDCDC 기록지 관리", description = "관리자용 기록지 관련 API")
 public class CenterCareSheetController {
 
-  private final DocumentFacade documentFacade;
+  private final CenterDocumentFacade centerDocumentFacade;
 
-  // 단건 조회
   @GetMapping("/{date}/{memberId}")
   @Operation(summary = "기록지 단건 조회", description = "수급자 ID와 날짜로 기록지를 조회합니다.")
   public ResponseWrapper<CareSheetResponse> getCareSheetByRecipientAndDate(
@@ -54,7 +58,7 @@ public class CenterCareSheetController {
       @PathVariable
       @Schema(description = "수급자 ID", example = "1") Long memberId
   ) {
-    CareSheetResponse response = documentFacade.getCareSheetByMemberAndDate(
+    CareSheetResponse response = centerDocumentFacade.getCareSheetByMemberAndDate(
         centerDetails.getCenter(),
         memberId, date
     );
@@ -63,8 +67,26 @@ public class CenterCareSheetController {
     );
   }
 
+  @GetMapping("/{sheetId:\\d+}")
+  @Operation(summary = "기록지 단건 조회", description = "기록지 id로 기록지를 조회합니다.")
+  public ResponseWrapper<CareSheetResponse> getCareSheetByRecipientAndDate(
+      @AuthenticatedUser
+      CenterDetails centerDetails,
+
+      @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      @Schema(description = "기록지 id", example = "1") Long sheetId
+  ) {
+    CareSheetResponse response = centerDocumentFacade.getCareSheetById(
+        centerDetails.getCenter(),
+        sheetId
+    );
+    return ResponseWrapper.onSuccess(
+        response
+    );
+  }
+
   // 리스트 조회
-  @GetMapping("/{date}")
+  @GetMapping("/{date:\\d{4}-\\d{2}-\\d{2}}")
   @Operation(
       summary = "기록지 리스트 조회",
       description = """
@@ -79,25 +101,24 @@ public class CenterCareSheetController {
       CenterDetails centerDetails,
 
       @ParameterObject @ModelAttribute @Valid
-      SheetQueryParameters queryParameters,
+      SheetQueryParameters query,
 
       @PathVariable
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       @Schema(description = "조회 날짜", example = "2025-08-04")
       LocalDate date,
 
-      @Parameter(description = "작성자 ID (optional)", example = "1", required = false)
       @RequestParam(required = false)
       Long writerId
   ) {
+    List<SheetStatus> statuses = query.statuses();
     return ResponseWrapper.onSuccess(
-        documentFacade.getCareSheetMetaListByDate(
-            centerDetails.getCenter(), date, writerId, queryParameters.statuses()
+        centerDocumentFacade.getCareSheetMetaListByDate(
+            centerDetails.getCenter(), date, writerId, statuses
         )
     );
   }
 
-  // 기록지 등록
   @PostMapping("")
   @Operation(summary = "기록지 직접 등록",
       description = "기록지 내용을 업로드합니다. (신체, 인지, 건강, 기능 회복 항목 포함)")
@@ -105,11 +126,10 @@ public class CenterCareSheetController {
       @AuthenticatedUser CenterDetails centerDetails,
       @Valid @RequestBody CareSheetRequest request
   ) {
-    Long id = documentFacade.writeCareSheet(centerDetails.getCenter(), request);
+    Long id = centerDocumentFacade.writeCareSheet(centerDetails.getCenter(), request);
     return ResponseWrapper.onSuccess(id);
   }
 
-  // 출석 처리
   @PatchMapping("/attendance")
   @Operation(
       summary = "수급자 출결 일괄 처리",
@@ -120,7 +140,7 @@ public class CenterCareSheetController {
       @AuthenticatedUser CenterDetails centerDetails,
       @RequestBody @Valid AttendanceMarkRequest request
   ) {
-    AttendanceResultResponse response = documentFacade.markAttendance(
+    AttendanceResultResponse response = centerDocumentFacade.markAttendance(
         centerDetails.getCenter(),
         request.memberIds(),
         request.date(),

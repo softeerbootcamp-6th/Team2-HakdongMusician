@@ -104,7 +104,7 @@ public class Member extends Account {
       throw new ApplicationException(MemberErrorStatus.MEMBER_INVALID_PARAM, "필수 파라미터가 누락되었습니다.");
     }
     Member m = new Member();
-    m.username = username; // 정규화된 값 전달 전제
+    m.username = username;
     m.center = center;
     m.name = name;
     m.gender = gender;
@@ -158,5 +158,24 @@ public class Member extends Account {
     if (cmd.hashedPassword() != null) {
       this.changePassword(cmd.hashedPassword());
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Member))
+      return false;
+    Member other = (Member) o;
+    if (this.id == null || other.id == null) {
+      return false; // id가 없는 경우 비교 불가
+    }
+    return this.id.equals(other.id) && this.center.equals(other.center);
+  }
+
+  @Override
+  public int hashCode() {
+    if (this.id == null) {
+      return 0;
+    }
+    return this.id.hashCode();
   }
 }

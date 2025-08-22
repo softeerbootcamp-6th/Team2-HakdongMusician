@@ -59,8 +59,13 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-    // s3
-    implementation "software.amazon.awssdk:s3:2.25.+"
+    /* aws */
+
+    implementation platform("software.amazon.awssdk:bom:2.25.66") // 버전은 팀 기준으로 고정
+    implementation "software.amazon.awssdk:s3"
+    implementation "software.amazon.awssdk:sns"
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" // LocalDate 직렬화용
 
     // thumbnailator
     implementation "net.coobird:thumbnailator:0.4.20"
