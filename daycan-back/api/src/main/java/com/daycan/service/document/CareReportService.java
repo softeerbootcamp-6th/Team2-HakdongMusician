@@ -4,6 +4,7 @@ import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.common.response.status.error.MemberErrorStatus;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
+import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.CareReport;
 
 import com.daycan.domain.entry.ProgramComment;
@@ -15,9 +16,14 @@ import com.daycan.domain.model.ReportReview;
 import com.daycan.domain.model.ReportWithDto;
 import com.daycan.repository.jpa.CareReportRepository;
 import com.daycan.repository.jpa.MemberRepository;
+import com.daycan.repository.query.DocumentQueryRepository;
 import com.daycan.util.resolver.ReportEntryResolver;
 import com.daycan.util.resolver.ReportReviewAssembler;
+import jakarta.annotation.Nullable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +41,7 @@ public class CareReportService {
 
   private final CareReportRepository careReportRepository;
   private final MemberRepository memberRepository;
+  private final DocumentQueryRepository documentQueryRepository;
 
   @Transactional(readOnly = true)
   public ReportWithDto getReport(Long memberId, LocalDate date) {
@@ -60,10 +67,22 @@ public class CareReportService {
 
 
   public boolean isReportOpened(Long memberId, LocalDate date) {
-   return careReportRepository.findByDocumentMemberIdAndDocumentDate(memberId, date)
+    return careReportRepository.findByDocumentMemberIdAndDocumentDate(memberId, date)
         .map(CareReport::isOpened)
         .orElse(false);
   }
+
+  @Transactional(readOnly = true)
+  public List<LocalDate> getReportedDateInMonth(Long memberId, YearMonth month) {
+    if (!memberRepository.existsById(memberId)) {
+      throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
+    }
+    LocalDate start = month.atDay(1);
+    LocalDate end = month.atEndOfMonth();
+    return careReportRepository.findReportedDatesInRange(memberId, start, end);
+  }
+
+
 
   protected void reviewReport(ReportReviewRequest request) {
     CareReport report = careReportRepository.findById(request.reportId())
@@ -101,16 +120,24 @@ public class CareReportService {
         current.getCognitiveFooterComment());
 
     return new ReportWithDto(
-        current
-        ,assembleDto(total, change, meal, health, physical, cognitive)
+        current,
+        assembleDto(
+            current.getDocument().getDate(),
+            total,
+            change,
+            meal,
+            health,
+            physical,
+            cognitive
+        )
     );
   }
 
 
-  // private helpers
   private int totalScore(CareReport r) {
     return r.getMealScore() + r.getVitalScore() + r.getPhysicalScore() + r.getCognitiveScore();
   }
+
   private SectionBundle buildMealSection(CareReport r) {
     return new SectionBundle(ReportEntryResolver.mealEntries(r),
         CardFooter.of(r.getMealScore(), r.getMealFooterComment()));
@@ -127,12 +154,16 @@ public class CareReportService {
         CardFooter.of(score, footerMemo));
   }
 
-  private FullReportDto assembleDto(Integer total, Integer change, SectionBundle meal,
+  private FullReportDto assembleDto(
+      LocalDate date, Integer total, Integer change,
+      SectionBundle meal,
       SectionBundle health,
       SectionBundle physical, SectionBundle cognitive) {
     return new FullReportDto(
-        total, change,
-        meal.footer().score(), health.footer().score(), physical.footer().score(),
+        date, total, change,
+        meal.footer().score(),
+        health.footer().score(),
+        physical.footer().score(),
         cognitive.footer().score(),
         meal.entries(), meal.footer(),
         health.entries(), health.footer(),
