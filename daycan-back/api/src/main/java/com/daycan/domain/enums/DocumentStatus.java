@@ -117,17 +117,23 @@ public enum DocumentStatus {
       case REVIEWED -> EnumSet.of(REPORT_REVIEWED, REPORT_SENDING, REPORT_RESERVED, REPORT_DONE);
     };
   }
-
-  public static EnumSet<DocumentStatus> fromSheetStatuses(Collection<SheetStatus> sheets) {
-    if (sheets == null || sheets.isEmpty()) {
-      return allSheetStatuses();
-    }
-    EnumSet<DocumentStatus> out = EnumSet.noneOf(DocumentStatus.class);
-    for (SheetStatus s : sheets) {
-      out.addAll(fromSheet(s));
-    }
-    return out;
+  public static EnumSet<DocumentStatus> unfinished() {
+    return EnumSet.of(
+        DocumentStatus.SHEET_PENDING,
+        DocumentStatus.SHEET_DONE,
+        DocumentStatus.REPORT_PENDING,
+        DocumentStatus.REPORT_CREATED
+    );
   }
+
+  public static EnumSet<DocumentStatus> finished() {
+    return EnumSet.of(
+        DocumentStatus.REPORT_SENDING,
+        DocumentStatus.REPORT_RESERVED,
+        DocumentStatus.REPORT_DONE
+    );
+  }
+
 
   public static EnumSet<DocumentStatus> fromReport(ReportStatus report) {
     if (report == null || report == ReportStatus.NOT_APPLICABLE) {
@@ -143,18 +149,6 @@ public enum DocumentStatus {
       default -> EnumSet.of(NOT_APPLICABLE);
     };
   }
-
-  public static EnumSet<DocumentStatus> fromReportStatuses(Collection<ReportStatus> reports) {
-    if (reports == null || reports.isEmpty()) {
-      return allReportStatuses();
-    }
-    EnumSet<DocumentStatus> out = EnumSet.noneOf(DocumentStatus.class);
-    for (ReportStatus r : reports) {
-      out.addAll(fromReport(r));
-    }
-    return out;
-  }
-
 
   public static EnumSet<DocumentStatus> allReportStatuses() {
     return EnumSet.of(

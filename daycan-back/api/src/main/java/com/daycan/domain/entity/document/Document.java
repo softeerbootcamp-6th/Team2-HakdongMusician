@@ -39,12 +39,10 @@ import lombok.NoArgsConstructor;
         columnNames = {"member_id", "date"}
     ),
     indexes = {
-        @Index(name = "idx_document_member", columnList = "member_id"),
-        @Index(name = "idx_document_center", columnList = "center_id"),
-        @Index(name = "idx_document_date", columnList = "date")
+        @Index(name = "idx_doc_date_member_status",
+            columnList = "date, status, member_id"),
     }
 )
-
 public class Document extends BaseTimeEntity {
 
   @Id
@@ -96,7 +94,6 @@ public class Document extends BaseTimeEntity {
     return new Document(member, center, docDate);
   }
 
-  // 상태 전이
   public void transitTo(DocumentStatus next) {
     if (!status.canTransitTo(next)) {
       throw new ApplicationException(DocumentErrorStatus.INVALID_STATUS_TRANSITION);
