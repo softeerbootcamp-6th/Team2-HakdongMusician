@@ -45,7 +45,6 @@ public enum DocumentStatus {
     return ALLOWED.getOrDefault(this, Set.of()).contains(next);
   }
 
-  /* ---------- 표시축 변환 ---------- */
   public SheetStatus toSheetStatus() {
     return switch (this) {
       case NOT_APPLICABLE -> SheetStatus.NOT_APPLICABLE;
@@ -58,7 +57,8 @@ public enum DocumentStatus {
   public ReportStatus toReportStatus(Long careReportId) {
     return switch (this) {
       case NOT_APPLICABLE, SHEET_PENDING -> ReportStatus.NOT_APPLICABLE;
-      case SHEET_DONE -> (careReportId == null ? ReportStatus.NOT_APPLICABLE : ReportStatus.PENDING);
+      case SHEET_DONE ->
+          (careReportId == null ? ReportStatus.NOT_APPLICABLE : ReportStatus.PENDING);
       case REPORT_PENDING -> ReportStatus.PENDING;
       case REPORT_CREATED -> ReportStatus.CREATED;
       case REPORT_REVIEWED -> ReportStatus.REVIEWED;
@@ -68,9 +68,7 @@ public enum DocumentStatus {
     };
   }
 
-  /* ---------- 양축 → 단일 DocumentStatus (기존 호환) ---------- */
   public static DocumentStatus from(SheetStatus sheet, ReportStatus report) {
-    // 리포트 축이 유효하면 리포트 축 우선
     if (report != null && report != ReportStatus.NOT_APPLICABLE) {
       if (sheet != null && sheet != SheetStatus.DONE) {
         throw new IllegalArgumentException(
@@ -88,8 +86,9 @@ public enum DocumentStatus {
       };
     }
 
-    // 리포트 축이 없으면 시트 축으로
-    if (sheet == null) return NOT_APPLICABLE;
+    if (sheet == null) {
+      return NOT_APPLICABLE;
+    }
     return switch (sheet) {
       case NOT_APPLICABLE -> NOT_APPLICABLE;
       case PENDING -> SHEET_PENDING;
@@ -108,20 +107,25 @@ public enum DocumentStatus {
 
 
   public static EnumSet<DocumentStatus> fromSheet(SheetStatus sheet) {
-    if (sheet == null) return EnumSet.of(NOT_APPLICABLE);
+    if (sheet == null) {
+      return EnumSet.of(NOT_APPLICABLE);
+    }
     return switch (sheet) {
       case NOT_APPLICABLE -> EnumSet.of(NOT_APPLICABLE);
-      case PENDING       -> EnumSet.of(SHEET_PENDING);
-      case DONE          -> EnumSet.of(SHEET_DONE, REPORT_PENDING, REPORT_CREATED);
-      case REVIEWED      -> EnumSet.of(REPORT_REVIEWED, REPORT_SENDING, REPORT_RESERVED, REPORT_DONE);
+      case PENDING -> EnumSet.of(SHEET_PENDING);
+      case DONE -> EnumSet.of(SHEET_DONE, REPORT_PENDING, REPORT_CREATED);
+      case REVIEWED -> EnumSet.of(REPORT_REVIEWED, REPORT_SENDING, REPORT_RESERVED, REPORT_DONE);
     };
   }
 
-  /** 여러 SheetStatus를 합집합으로 변환 (null/empty면 시트 탭 전 구간) */
   public static EnumSet<DocumentStatus> fromSheetStatuses(Collection<SheetStatus> sheets) {
-    if (sheets == null || sheets.isEmpty()) return allSheetStatuses();
+    if (sheets == null || sheets.isEmpty()) {
+      return allSheetStatuses();
+    }
     EnumSet<DocumentStatus> out = EnumSet.noneOf(DocumentStatus.class);
-    for (SheetStatus s : sheets) out.addAll(fromSheet(s));
+    for (SheetStatus s : sheets) {
+      out.addAll(fromSheet(s));
+    }
     return out;
   }
 
@@ -130,27 +134,28 @@ public enum DocumentStatus {
       return EnumSet.of(NOT_APPLICABLE);
     }
     return switch (report) {
-      case PENDING  -> EnumSet.of(REPORT_PENDING);
-      case CREATED  -> EnumSet.of(REPORT_CREATED);
+      case PENDING -> EnumSet.of(REPORT_PENDING);
+      case CREATED -> EnumSet.of(REPORT_CREATED);
       case REVIEWED -> EnumSet.of(REPORT_REVIEWED);
-      case SENDING  -> EnumSet.of(REPORT_SENDING);
+      case SENDING -> EnumSet.of(REPORT_SENDING);
       case RESERVED -> EnumSet.of(REPORT_RESERVED);
-      case DONE     -> EnumSet.of(REPORT_DONE);
+      case DONE -> EnumSet.of(REPORT_DONE);
       default -> EnumSet.of(NOT_APPLICABLE);
     };
   }
 
-  /** 여러 ReportStatus를 합집합으로 변환 (null/empty면 리포트 전 구간) */
   public static EnumSet<DocumentStatus> fromReportStatuses(Collection<ReportStatus> reports) {
-    if (reports == null || reports.isEmpty()) return allReportStatuses();
+    if (reports == null || reports.isEmpty()) {
+      return allReportStatuses();
+    }
     EnumSet<DocumentStatus> out = EnumSet.noneOf(DocumentStatus.class);
-    for (ReportStatus r : reports) out.addAll(fromReport(r));
+    for (ReportStatus r : reports) {
+      out.addAll(fromReport(r));
+    }
     return out;
   }
 
-  /* ---------- 프리셋 ---------- */
 
-  /** 리포트 탭에서 의미 있는 모든 상태 */
   public static EnumSet<DocumentStatus> allReportStatuses() {
     return EnumSet.of(
         REPORT_PENDING,
@@ -162,7 +167,6 @@ public enum DocumentStatus {
     );
   }
 
-  /** 시트 탭에서 의미 있는 모든 상태(= 시트~리포트 완료까지 전 구간) */
   public static EnumSet<DocumentStatus> allSheetStatuses() {
     return EnumSet.of(
         NOT_APPLICABLE,

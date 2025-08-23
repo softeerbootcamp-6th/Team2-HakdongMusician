@@ -20,10 +20,10 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -76,6 +76,8 @@ public class Document extends BaseTimeEntity {
   @OneToOne(mappedBy = "document")
   private CareReport careReport;
 
+  @Column(name="reserved_send_time", nullable = true)
+  private LocalDateTime reservedSendTime;
 
   // 생성 일원화
   private Document(Member member, Center center, LocalDate date) {
@@ -129,7 +131,10 @@ public class Document extends BaseTimeEntity {
     transitTo(DocumentStatus.REPORT_SENDING);
   }
 
-  public void reserveSending() {
+  public void reserveSending(
+      LocalDateTime reservedTime
+  ) {
+    this.reservedSendTime = Objects.requireNonNull(reservedTime);
     transitTo(DocumentStatus.REPORT_RESERVED);
   }
 

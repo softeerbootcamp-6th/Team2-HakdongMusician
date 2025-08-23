@@ -1,5 +1,7 @@
 package com.daycan.repository.query;
 
+
+import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.QMember;
 import com.daycan.domain.entity.document.CareSheet;
 import com.daycan.domain.entity.document.PersonalProgram;
@@ -17,6 +19,7 @@ import com.daycan.domain.model.CareSheetInit;
 import com.daycan.domain.model.DocumentMetaView;
 import com.daycan.domain.model.CareSheetView;
 import com.daycan.domain.model.DocumentMonthlyStatusRow;
+import com.daycan.domain.model.PrevAggSubs;
 import com.daycan.domain.model.QCareSheetInitRow;
 import com.daycan.domain.model.QDocumentMetaView;
 import com.daycan.domain.model.QDocumentMonthlyStatusRow;
@@ -27,13 +30,18 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +53,7 @@ import org.springframework.stereotype.Repository;
 public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
 
   private final JPAQueryFactory qf;
+  private final EntityManager em;
 
   private final QDocument doc = QDocument.document;
   private final QCareSheet sheet = QCareSheet.careSheet;
@@ -110,7 +119,7 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
       LocalDate end) {
     return qf
         .select(new QDocumentMonthlyStatusRow(
-            doc.date,sheet.id,report.id,doc.status
+            doc.date, sheet.id, report.id, doc.status
         ))
         .from(doc)
         .leftJoin(sheet).on(sheet.id.eq(doc.id))
@@ -148,7 +157,6 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
             nameFilter
         );
 
-    // 분기: writerId 유무에 따라 join/where 설정
     if (writerId != null) {
       base.innerJoin(doc.careSheet, sheet)
           .innerJoin(sheet.writer, staff)
@@ -180,13 +188,13 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
             sheet.id.isNull(),
             staff,
             doc.member,
-            subs.prevAggCount,
-            subs.prevSumSystolic,
-            subs.prevSumDiastolic,
-            subs.prevSumTempT,
-            subs.prevSumStool,
-            subs.prevSumUrine,
-            subs.prevSumHealthScore,
+            subs.prevAggCount(),
+            subs.prevSumSystolic(),
+            subs.prevSumDiastolic(),
+            subs.prevSumTempT(),
+            subs.prevSumStool(),
+            subs.prevSumUrine(),
+            subs.prevSumHealthScore(),
             hasFollowingVital
         ))
         .from(doc)
@@ -198,6 +206,35 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
         )
         .fetchOne();
   }
+
+  @Override
+  public Long registerSendingMessages(
+      List<Member> members,
+      LocalDate date,
+      boolean immediate,
+      @Nullable LocalDateTime reservedSendTime) {
+    BooleanExpression guard = doc.status.in(DocumentStatus.REPORT_REVIEWED,
+        DocumentStatus.REPORT_RESERVED);
+
+    JPAUpdateClause u = qf.update(doc)
+        .where(doc.member.in(members)
+            .and(doc.date.eq(date))
+            .and(guard));
+
+    if (immediate) {
+      u.set(doc.reservedSendTime, (LocalDateTime) null)
+          .set(doc.status, DocumentStatus.REPORT_SENDING);
+    } else {
+      Objects.requireNonNull(reservedSendTime, "reservedSendTime");
+      u.set(doc.reservedSendTime, reservedSendTime)
+          .set(doc.status, DocumentStatus.REPORT_RESERVED);
+    }
+
+    long updated = u.execute();
+    em.clear();
+    return updated;
+  }
+
 
   private PrevAggSubs buildPrevAggSubqueries(Long memberId, LocalDate date) {
     QDocument dPrev = new QDocument("dPrev");
@@ -357,6 +394,7 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
     }
     EnumSet<DocumentStatus> set = EnumSet.noneOf(DocumentStatus.class);
     for (DocumentStatus s : statuses) {
+      log.info("status filter: {}", s);
       if (s != null) {
         set.add(s);
       }
@@ -367,18 +405,5 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
   private static boolean hasText(String s) {
     return s != null && !s.isBlank();
   }
-
-  private record PrevAggSubs(
-      SubQueryExpression<Integer> prevAggCount,
-      SubQueryExpression<Long> prevSumSystolic,
-      SubQueryExpression<Long> prevSumDiastolic,
-      SubQueryExpression<Long> prevSumTempT,
-      SubQueryExpression<Long> prevSumStool,
-      SubQueryExpression<Long> prevSumUrine,
-      SubQueryExpression<Long> prevSumHealthScore
-  ) {
-
-  }
-
 }
 
