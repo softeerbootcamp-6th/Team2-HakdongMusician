@@ -33,13 +33,13 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
     Object attribute = request.getAttribute(USER_DETAILS_ATTRIBUTE);
 
     if (!(attribute instanceof UserDetails principal)) {
-      throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
+      throw new ApplicationException(AuthErrorStatus.UNAUTHENTICATED);
     }
 
     Class<?> requiredType = parameter.getParameterType();
 
     if (!requiredType.isInstance(principal)) {
-      throw new ApplicationException(AuthErrorStatus.INVALID_CREDENTIAL);
+      throw new ApplicationException(AuthErrorStatus.PRINCIPAL_TYPE_MISMATCH);
     }
 
     return requiredType.cast(principal);

@@ -43,4 +43,13 @@ public interface CareReportRepository extends JpaRepository<CareReport, Long> {
   Optional<CareReport> findByDocumentMemberIdAndDocumentDate(Long memberId, LocalDate date);
   // 단건 접근 편의
   Optional<CareReport> findByDocumentId(Long documentId);
+
+  @Query("""
+      select c.document.date
+      from CareReport c
+      where c.document.member.id = :memberId
+        and c.document.date between :start and :end
+      order by c.document.date asc
+      """)
+  List<LocalDate> findReportedDatesInRange(Long memberId, LocalDate start, LocalDate end);
 }

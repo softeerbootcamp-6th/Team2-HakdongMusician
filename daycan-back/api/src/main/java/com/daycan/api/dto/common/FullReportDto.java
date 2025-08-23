@@ -2,9 +2,11 @@ package com.daycan.api.dto.common;
 
 import com.daycan.domain.entry.document.report.ReportEntry;
 import com.daycan.domain.entry.document.report.CardFooter;
+import java.time.LocalDate;
 import java.util.List;
 
 public record FullReportDto(
+    LocalDate date,
     Integer totalScore,
     Integer changeAmount,
     Integer mealScore,
