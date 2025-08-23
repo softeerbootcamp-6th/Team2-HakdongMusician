@@ -17,6 +17,8 @@ public enum AuthErrorStatus implements Status {
   BLACKLISTED_TOKEN(HttpStatus.UNAUTHORIZED, 40114,"블랙리스트에 등록된 토큰입니다."),
   INVALID_REFRESH(HttpStatus.UNAUTHORIZED, 40115,"리프레시 토큰이 invalid 상태입니다."),
   NON_TOKEN(HttpStatus.UNAUTHORIZED, 40116,"토큰이 없습니다."),
+  UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, 40100, "인증이 필요합니다."),
+
 
 
   // 403
@@ -27,6 +29,8 @@ public enum AuthErrorStatus implements Status {
 
   // 500
   UNKNOWN_AUTH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,50000, "인증 중 알 수 없는 오류가 발생했습니다."),
+  PRINCIPAL_TYPE_MISMATCH(HttpStatus.INTERNAL_SERVER_ERROR, 50001, "인증 객체 타입 불일치"),
+
   ;
 
   private final HttpStatus httpStatus;
