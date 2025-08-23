@@ -34,7 +34,8 @@ public class MemberFacade {
 
   @Transactional
   public MemberReportResponse getReport(Member member, LocalDate date) {
-    ReportWithDto reportWithDto = careReportService.getReport(member.getId(), date);
+    ReportWithDto reportWithDto = careReportService.getReport(member.getId(), date,
+        DocumentStatus.finished());
     // todo: 주석 해제
 //    if(report.getDocument().getStatus()!= DocumentStatus.REPORT_REVIEWED) {
 //      throw new ApplicationException(DocumentErrorStatus.INVALID_REPORT_ACCESS);
@@ -65,6 +66,7 @@ public class MemberFacade {
     );
   }
 
+  @Transactional(readOnly = true)
   public MemberReportedDateListResponse getReportedDates(Member member, YearMonth month){
     List<LocalDate> dateList = careReportService.getReportedDateInMonth(
         member.getId(),month

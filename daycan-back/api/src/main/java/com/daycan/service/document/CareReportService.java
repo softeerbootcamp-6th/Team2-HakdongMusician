@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
@@ -44,20 +45,13 @@ public class CareReportService {
   private final DocumentQueryRepository documentQueryRepository;
 
   @Transactional(readOnly = true)
-  public ReportWithDto getReport(Long memberId, LocalDate date) {
+  public ReportWithDto getReport(Long memberId, LocalDate date, EnumSet<DocumentStatus> statuses) {
     if (!memberRepository.existsById(memberId)) {
       throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
     }
     return buildFromPair(() ->
         careReportRepository.findTopByMemberAndDateBeforeEq(
-            memberId, date, PageRequest.of(0, 2)));
-  }
-
-  @Transactional(readOnly = true)
-  public ReportWithDto getReport(Long documentId) {
-    return buildFromPair(() ->
-        careReportRepository.findTopByIdBeforeEq(
-            documentId, PageRequest.of(0, 2)));
+            memberId, date,statuses ,PageRequest.of(0, 2)));
   }
 
   @Transactional(propagation = Propagation.MANDATORY)
@@ -72,21 +66,26 @@ public class CareReportService {
         .orElse(false);
   }
 
-  @Transactional(readOnly = true)
+  @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
   public List<LocalDate> getReportedDateInMonth(Long memberId, YearMonth month) {
     if (!memberRepository.existsById(memberId)) {
       throw new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND);
     }
     LocalDate start = month.atDay(1);
     LocalDate end = month.atEndOfMonth();
-    return careReportRepository.findReportedDatesInRange(memberId, start, end);
+
+    return careReportRepository.findReportedDatesInRange(
+        memberId, start, end, DocumentStatus.finished()
+    );
   }
 
   @Transactional(propagation = Propagation.MANDATORY)
   public void sendReports(List<Member> members,
       LocalDate reportDate,
       @Nullable LocalDateTime scheduled) {
-    if (members == null || members.isEmpty()) return;
+    if (members == null || members.isEmpty()) {
+      return;
+    }
 
     ZoneId KST = ZoneId.of("Asia/Seoul");
     LocalDateTime now = LocalDateTime.now(KST);
@@ -116,7 +115,8 @@ public class CareReportService {
   private ReportWithDto buildFromPair(Supplier<List<CareReport>> loader) {
     List<CareReport> pair = loader.get();
     if (pair.isEmpty()) {
-      throw new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND);
+      // throw new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND);
+      return emptyReport();
     }
     CareReport current = pair.get(0);
     CareReport previous = (pair.size() > 1) ? pair.get(1) : null;
@@ -185,7 +185,19 @@ public class CareReportService {
         cognitive.entries(), cognitive.footer()
     );
   }
-
+  private ReportWithDto emptyReport() {
+    return new ReportWithDto(
+        null,
+        new FullReportDto(
+            null, 0, null,
+            0, 0, 0, 0,
+            List.of(), null,
+            List.of(), null,
+            List.of(), null,
+            List.of(), null
+        )
+    );
+  }
   private record SectionBundle(List<ReportEntry> entries, CardFooter footer) {
 
   }

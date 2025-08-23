@@ -131,15 +131,8 @@ public class CenterDocumentFacade {
   @Transactional(readOnly = true)
   public FullReportDto getCareReportByMemberIdAndDate(Center center, Long memberId, LocalDate date) {
     Member member = memberService.requireActiveMember(memberId, center.getId());
-    return careReportService.getReport(member.getId(), date).fullReportDto();
-  }
-
-  @Transactional(readOnly = true)
-  public FullReportDto getCareReportByMemberIdAndReportId(Center center, Long reportId) {
-    if (documentService.isInvalidCenterDocument(center, reportId)) {
-      throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ACCESS, reportId);
-    }
-    return careReportService.getReport(reportId).fullReportDto();
+    return careReportService.getReport(member.getId(), date,
+        DocumentStatus.allReportStatuses()).fullReportDto();
   }
 
   @Transactional
