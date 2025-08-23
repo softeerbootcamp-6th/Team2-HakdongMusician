@@ -184,7 +184,7 @@ public class CenterCareReportController {
       summary = "리포트 전송 api",
       description = """
           검토 완료된 리포트를 전송합니다.
-          - 전송 시 CareReportStatus.SENT 로 상태 변경됩니다.
+          - 호출 시 CareReportStatus.SENT 로 상태 변경됩니다.
           - time 파라미터를 주지 않으면 전송 시간은 현재 시간으로 설정됩니다.
           """
   )
@@ -195,6 +195,10 @@ public class CenterCareReportController {
       @Valid @RequestBody
       SendMessageRequest request
   ) {
+    centerDocumentFacade.sendReportToMembers(
+        centerDetails.getCenter(),
+        request
+    );
 
     return ResponseWrapper.onSuccess(null);
   }
