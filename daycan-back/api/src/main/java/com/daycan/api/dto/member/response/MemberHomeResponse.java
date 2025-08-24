@@ -9,8 +9,8 @@ public record MemberHomeResponse(
     String guardianName,
     String avatarUrl,
     boolean isReportArrived, // 안읽었으면 true
-    int weeklyScore,
-    int weeklyChangeAmount
+    Integer weeklyScore,
+    Integer weeklyChangeAmount
 ) {
 
   public static MemberHomeResponse of(
@@ -25,6 +25,18 @@ public record MemberHomeResponse(
         !opened,
         weeklyScore,
         weeklyScore - lastWeekScore
+    );
+  }
+
+  public static MemberHomeResponse ofEmpty(
+      Member member, String url
+  ) {
+    return new MemberHomeResponse(
+        member.getName(),
+        member.getGender(),
+        member.getGuardianName(),
+        url,
+        false,null, null
     );
   }
 }

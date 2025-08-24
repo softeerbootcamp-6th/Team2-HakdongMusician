@@ -26,6 +26,7 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,7 @@ public class CareReportService {
     }
     return buildFromPair(() ->
         careReportRepository.findTopByMemberAndDateBeforeEq(
-            memberId, date,statuses ,PageRequest.of(0, 2)));
+            memberId, date, statuses, PageRequest.of(0, 2)));
   }
 
   @Transactional(propagation = Propagation.MANDATORY)
@@ -60,10 +61,13 @@ public class CareReportService {
   }
 
 
-  public boolean isReportOpened(Long memberId, LocalDate date) {
-    return careReportRepository.findByDocumentMemberIdAndDocumentDate(memberId, date)
-        .map(CareReport::isOpened)
-        .orElse(false);
+  @Transactional(propagation = Propagation.MANDATORY)
+  public Optional<Boolean> isReportOpened(Long memberId, LocalDate date) {
+    Optional<CareReport> report = careReportRepository.findByDocumentMemberIdAndDocumentDate(
+        memberId, date);
+    log.info("isReportOpened: report={}", report);
+
+    return report.map(CareReport::isOpened);
   }
 
   @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
@@ -185,6 +189,7 @@ public class CareReportService {
         cognitive.entries(), cognitive.footer()
     );
   }
+
   private ReportWithDto emptyReport() {
     return new ReportWithDto(
         null,
@@ -198,7 +203,9 @@ public class CareReportService {
         )
     );
   }
+
   private record SectionBundle(List<ReportEntry> entries, CardFooter footer) {
 
   }
 }
+
