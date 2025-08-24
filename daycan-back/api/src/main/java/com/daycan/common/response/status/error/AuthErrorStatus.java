@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 public enum AuthErrorStatus implements Status {
   // 400
   INVALID_USER_TYPE(HttpStatus.BAD_REQUEST,40010 ,"잘못된 사용자 타입입니다."),
+  WRONG_PASSWORD(HttpStatus.BAD_REQUEST, 40011,"비밀번호가 일치하지 않습니다."),
 
   // 401
   INVALID_CREDENTIAL(HttpStatus.UNAUTHORIZED, 40110,"아이디 또는 비밀번호가 일치하지 않습니다."),

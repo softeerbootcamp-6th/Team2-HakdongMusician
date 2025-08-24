@@ -10,6 +10,6 @@ public abstract class UserDetails {
 
   public abstract String getUniqueIdentifier(); // JWT subject
 
-  public abstract boolean checkPassword(String inputPassword);
+  public abstract String getPassword();
 }
 

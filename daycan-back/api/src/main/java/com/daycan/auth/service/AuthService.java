@@ -125,13 +125,12 @@ public class AuthService {
   }
 
   public void verifyPassword(UserDetails principal, String inputPassword) {
-    String hashed = PasswordHasher.hash(inputPassword);
-    if (!principal.checkPassword(hashed)) {
-      throw new ApplicationException(AuthErrorStatus.CENTER_ONLY);
+    if (!PasswordHasher.matches(inputPassword, principal.getPassword())) {
+      throw new ApplicationException(AuthErrorStatus.WRONG_PASSWORD);
     }
   }
 
-  @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
+  @Transactional(readOnly = true)
   public UserDetails loadByUserId(String sub) {
     String[] parts = sub.split(":");
     if (parts.length != 2) {

@@ -2,7 +2,9 @@ package com.daycan.auth.model;
 
 import com.daycan.domain.entity.Center;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public class CenterDetails extends UserDetails {
 
@@ -15,8 +17,8 @@ public class CenterDetails extends UserDetails {
   }
 
   @Override
-  public boolean checkPassword(String hashedPassword) {
-    return center.getPassword().equals(hashedPassword);
+  public String getPassword() {
+    return center.getPassword();
   }
 
   @Override
