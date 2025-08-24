@@ -1,5 +1,6 @@
 import { Body, Button, Heading, Modal, COLORS } from "@daycan/ui";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@daycan/hooks";
 import {
   container,
   successIcon,
@@ -16,6 +17,7 @@ export const AdminLoginRouteModal = ({
   onClose,
 }: AdminLoginRouteModalProps) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleCenterStaffLogin = () => {
     navigate("/care-sheet/new");
@@ -23,6 +25,10 @@ export const AdminLoginRouteModal = ({
   };
 
   const handleAdminLogin = () => {
+    // 모바일에서는 PC 페이지로 접근하지 못하도록 제한
+    if (isMobile) {
+      return; // 모바일에서는 아무 동작 안함
+    }
     navigate("/"); // 또는 원하는 관리자 페이지 경로
     onClose(); // 모달 닫기
   };
@@ -43,6 +49,17 @@ export const AdminLoginRouteModal = ({
           환영합니다! 어떤 페이지로 이동하시겠습니까?
         </Body>
 
+        {/* 모바일 안내 메시지 */}
+        {isMobile && (
+          <Body
+            type="small"
+            weight={400}
+            style={{ color: COLORS.gray[500], textAlign: "center" }}
+          >
+            모바일에서는 센터 종사자 페이지만 이용 가능합니다.
+          </Body>
+        )}
+
         {/* 버튼 그룹 */}
         <div className={buttonGroup}>
           <Button
@@ -57,8 +74,9 @@ export const AdminLoginRouteModal = ({
             onClick={handleAdminLogin}
             variant="unEmphasized"
             size="fullWidth"
+            disabled={isMobile}
           >
-            관리자 페이지
+            {isMobile ? "모바일에서는 접근 불가" : "관리자 페이지"}
           </Button>
         </div>
       </div>
