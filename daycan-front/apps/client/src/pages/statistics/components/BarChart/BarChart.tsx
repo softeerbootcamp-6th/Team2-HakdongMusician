@@ -62,6 +62,8 @@ export const BarChartComponent = ({
             margin={{
               top: 10,
               bottom: 5,
+              left: 10,
+              right: -20,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke={COLORS.gray[200]} />

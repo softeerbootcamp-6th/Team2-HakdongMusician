@@ -75,8 +75,16 @@ export const LineChartComponent = ({
           </Body>
         </div>
       ) : (
-        <ResponsiveContainer width={"100%"} height={height}>
-          <LineChart data={data}>
+        <ResponsiveContainer height={height}>
+          <LineChart
+            data={data}
+            margin={{
+              top: 10,
+              bottom: 5,
+              left: 10,
+              right: -30,
+            }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke={COLORS.gray[200]} />
             <XAxis
               dataKey={xAxisKey}
