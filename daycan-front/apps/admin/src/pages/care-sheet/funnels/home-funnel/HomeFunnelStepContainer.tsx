@@ -52,19 +52,21 @@ export const HomeFunnelStepContainer = () => {
   }, [homeData]);
 
   return (
-    <FunnelProvider
-      steps={homeFunnelSteps}
-      funnelId="home-funnel"
-      onComplete={handleComplete}
-      initialState={initialState}
-      initialStep={initialState ? "STEP_1" : undefined}
-    >
-      <FunnelStep name="STEP_0">
-        <Step0 />
-      </FunnelStep>
-      <FunnelStep name="STEP_1">
-        <Step1 />
-      </FunnelStep>
-    </FunnelProvider>
+    <>
+      <FunnelProvider
+        steps={homeFunnelSteps}
+        funnelId="home-funnel"
+        onComplete={handleComplete}
+        initialState={initialState}
+        initialStep={initialState ? "STEP_1" : undefined}
+      >
+        <FunnelStep name="STEP_0">
+          <Step0 />
+        </FunnelStep>
+        <FunnelStep name="STEP_1">
+          <Step1 />
+        </FunnelStep>
+      </FunnelProvider>
+    </>
   );
 };
