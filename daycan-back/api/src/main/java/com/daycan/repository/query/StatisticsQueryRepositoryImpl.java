@@ -4,6 +4,7 @@ import static com.daycan.domain.entity.document.QDocument.document;
 
 import com.daycan.domain.entity.document.QDocument;
 import com.daycan.domain.entity.document.QVital;
+import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.model.MemberWeeklyScoreView;
 import com.daycan.domain.model.VitalSlice;
 import com.querydsl.core.Tuple;
@@ -13,39 +14,45 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
+public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository {
+
   private final JPAQueryFactory qf;
 
   QDocument doc = QDocument.document;
   QVital vital = QVital.vital;
 
   @Override
-  public MemberWeeklyScoreView fetchWeeklyHealthScoreAvgs(Long memberId, LocalDate today) {
-    LocalDate d0  = today;
-    LocalDate d7  = today.minusDays(7);
+  public MemberWeeklyScoreView fetchWeeklyHealthScoreAvgs(
+      Long memberId, LocalDate today, Collection<DocumentStatus> allowedStatuses) {
+    LocalDate d0 = today;
+    LocalDate d7 = today.minusDays(7);
     LocalDate d14 = today.minusDays(14);
 
-    Agg a0  = aggAt(memberId, d0);
-    Agg a7  = aggAt(memberId, d7);
-    Agg a14 = aggAt(memberId, d14);
+    Agg a0 = aggAt(memberId, d0, allowedStatuses);
+    Agg a7 = aggAt(memberId, d7, allowedStatuses);
+    Agg a14 = aggAt(memberId, d14, allowedStatuses);
 
-    long wSum = a0.sum - a7.sum;   long wCnt = a0.cnt - a7.cnt;   // 이번 주: D-6..D
-    long pSum = a7.sum - a14.sum;  long pCnt = a7.cnt - a14.cnt;  // 지난 주: D-13..D-7
+    long wSum = a0.sum - a7.sum;
+    long wCnt = a0.cnt - a7.cnt;   // 이번 주: D-6..D
+    long pSum = a7.sum - a14.sum;
+    long pCnt = a7.cnt - a14.cnt;  // 지난 주: D-13..D-7
 
-    int weeklyAvg   = wCnt == 0 ? 0 : (int)Math.round((double) wSum / wCnt);
-    int lastWeekAvg = pCnt == 0 ? 0 : (int)Math.round((double) pSum / pCnt);
+    int weeklyAvg = wCnt == 0 ? 0 : (int) Math.round((double) wSum / wCnt);
+    int lastWeekAvg = pCnt == 0 ? 0 : (int) Math.round((double) pSum / pCnt);
 
     return new MemberWeeklyScoreView(weeklyAvg, lastWeekAvg);
   }
 
   @Override
-  public List<VitalSlice<LocalDate>> fetchVitalsByDate(Long memberId, LocalDate start, LocalDate end) {
+  public List<VitalSlice<LocalDate>> fetchVitalsByDate(Long memberId, LocalDate start,
+      LocalDate end, Collection<DocumentStatus> allowedStatuses) {
     return qf
         .select(
             doc.date,
@@ -60,7 +67,8 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
         .leftJoin(vital).on(vital.id.eq(doc.id))
         .where(
             doc.member.id.eq(memberId),
-            doc.date.between(start, end)
+            doc.date.between(start, end),
+            doc.status.in(allowedStatuses)
         )
         .orderBy(doc.date.asc())
         .fetch()
@@ -76,8 +84,10 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
         ))
         .toList();
   }
+
   @Override
-  public List<VitalSlice<YearMonth>> fetchVitalsByMonth(Long memberId, YearMonth start, YearMonth end) {
+  public List<VitalSlice<YearMonth>> fetchVitalsByMonth(Long memberId, YearMonth start,
+      YearMonth end) {
     List<VitalSlice<YearMonth>> out = new ArrayList<>();
 
     AggAll prev = aggAtAll(memberId, start.minusMonths(1).atEndOfMonth());
@@ -86,25 +96,27 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
       LocalDate monthEnd = ym.atEndOfMonth();
       AggAll cur = aggAtAll(memberId, monthEnd);
 
-      int  dCnt   = (int) (cur.cnt - prev.cnt);
-      long dSys   = cur.sumSys    - prev.sumSys;
-      long dDia   = cur.sumDia    - prev.sumDia;
-      long dTempT = cur.sumTempT  - prev.sumTempT;
-      long dStool = cur.sumStool  - prev.sumStool;
-      long dUrine = cur.sumUrine  - prev.sumUrine;
-      long dHsum  = cur.sumHealth - prev.sumHealth;
+      int dCnt = (int) (cur.cnt - prev.cnt);
+      long dSys = cur.sumSys - prev.sumSys;
+      long dDia = cur.sumDia - prev.sumDia;
+      long dTempT = cur.sumTempT - prev.sumTempT;
+      long dStool = cur.sumStool - prev.sumStool;
+      long dUrine = cur.sumUrine - prev.sumUrine;
+      long dHsum = cur.sumHealth - prev.sumHealth;
 
       Double avgTemp = avgOrNull(dTempT, dCnt);
-      if (avgTemp != null) avgTemp /= 10.0;
+      if (avgTemp != null) {
+        avgTemp /= 10.0;
+      }
 
       out.add(new VitalSlice<>(
           ym,
           avgTemp,
-          avgOrNull(dDia,   dCnt),
-          avgOrNull(dSys,   dCnt),
+          avgOrNull(dDia, dCnt),
+          avgOrNull(dSys, dCnt),
           avgOrNull(dStool, dCnt),
           avgOrNull(dUrine, dCnt),
-          avgOrNull(dHsum,  dCnt)
+          avgOrNull(dHsum, dCnt)
       ));
 
       prev = cur;
@@ -122,7 +134,9 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
         )
         .fetchOne();
 
-    if (latest == null) return AggAll.ZERO;
+    if (latest == null) {
+      return AggAll.ZERO;
+    }
 
     Tuple t = qf.select(
             vital.aggregate.aggCount,
@@ -141,7 +155,9 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
         )
         .fetchOne();
 
-    if (t == null) return AggAll.ZERO;
+    if (t == null) {
+      return AggAll.ZERO;
+    }
 
     return new AggAll(
         nz(t.get(vital.aggregate.aggCount)),
@@ -155,10 +171,11 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
   }
 
   private static final class AggAll {
+
     final long cnt;
     final long sumSys, sumDia, sumTempT, sumStool, sumUrine, sumHealth;
 
-    static final AggAll ZERO = new AggAll(0,0,0,0,0,0,0);
+    static final AggAll ZERO = new AggAll(0, 0, 0, 0, 0, 0, 0);
 
     AggAll(long cnt, long sumSys, long sumDia, long sumTempT,
         long sumStool, long sumUrine, long sumHealth) {
@@ -177,14 +194,14 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
   }
 
 
-
-  private Agg aggAt(Long memberId, LocalDate bound) {
+  private Agg aggAt(Long memberId, LocalDate bound, Collection<DocumentStatus> allowedStatuses) {
     Tuple t = qf
         .select(QVital.vital.aggregate.aggCount, QVital.vital.aggregate.sumHealthScore)
         .from(QVital.vital)
         .join(QVital.vital.document, document)
         .where(document.member.id.eq(memberId),
-            document.date.loe(bound))
+            document.date.loe(bound),
+            document.status.in(allowedStatuses))
         .orderBy(document.date.desc())
         .limit(1)
         .fetchOne();
@@ -194,9 +211,20 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository{
     return new Agg(cnt, sum);
   }
 
-  private record Agg(long cnt, long sum) {}
-  private static long nz(Long v)    { return v == null ? 0L : v; }
-  private static Long nz(Integer v) { return v == null ? 0L : v.longValue(); }
-  private static Long nl(Long v)    { return v == null ? 0L : v; }
+  private record Agg(long cnt, long sum) {
+
+  }
+
+  private static long nz(Long v) {
+    return v == null ? 0L : v;
+  }
+
+  private static Long nz(Integer v) {
+    return v == null ? 0L : v.longValue();
+  }
+
+  private static Long nl(Long v) {
+    return v == null ? 0L : v;
+  }
 
 }
