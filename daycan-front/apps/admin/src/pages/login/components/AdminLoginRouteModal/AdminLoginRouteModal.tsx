@@ -1,6 +1,6 @@
 import { Body, Button, Heading, Modal, COLORS } from "@daycan/ui";
 import { useNavigate } from "react-router-dom";
-import { useIsMobile } from "@/hooks";
+import { useIsMobile } from "@daycan/hooks";
 import {
   container,
   successIcon,

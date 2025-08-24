@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useIsMobile } from "@/hooks";
+import { useIsMobile } from "@daycan/hooks";
 import { useToast } from "@daycan/ui";
 
 interface MobileAccessGuardProps {
@@ -19,7 +19,7 @@ export const MobileAccessGuard = ({ children }: MobileAccessGuardProps) => {
         data: {
           message: "모바일에서는 센터 종사자 페이지만 이용 가능합니다.",
           type: "error",
-          variant: "pc",
+          variant: "mobile",
         },
       });
       navigate("/care-sheet/new");
