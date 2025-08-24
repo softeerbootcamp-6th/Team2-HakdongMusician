@@ -68,7 +68,7 @@ public class MemberController {
       @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 달 (yyyy-MM)", example = "2025-07", required = true)
       @PathVariable
-      @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      @Valid @NotNull
       YearMonth month
   ) {
     MemberReportedDateListResponse reportedDates = memberFacade.getReportedDates(

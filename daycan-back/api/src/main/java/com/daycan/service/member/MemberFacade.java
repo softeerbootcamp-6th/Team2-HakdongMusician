@@ -18,6 +18,7 @@ import com.daycan.service.document.VitalService;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,9 +41,9 @@ public class MemberFacade {
 //    if(report.getDocument().getStatus()!= DocumentStatus.REPORT_REVIEWED) {
 //      throw new ApplicationException(DocumentErrorStatus.INVALID_REPORT_ACCESS);
 //    }
-   careReportService.saveReport(
-       reportWithDto.careReport().openThis()
-   );
+    careReportService.saveReport(
+        reportWithDto.careReport().openThis()
+    );
     return new MemberReportResponse(
         member.getName(),
         member.getGender(),
@@ -53,14 +54,18 @@ public class MemberFacade {
   @Transactional(readOnly = true)
   public MemberHomeResponse getMemberHome(Member member, LocalDate today) {
     String imageUrl = storageService.presignGet(member.getAvatarUrl());
-    boolean isOpened = careReportService.isReportOpened(member.getId(), today);
+    Optional<Boolean> isOpened = careReportService.isReportOpened(member.getId(), today);
+
+    if (isOpened.isEmpty()) {
+      return buildEmptyHome(member, imageUrl);
+    }
     MemberWeeklyScoreView weeklyScoreView =
         vitalService.getMemberWeeklyScore(member.getId(), today);
 
-    return  MemberHomeResponse.of(
+    return MemberHomeResponse.of(
         member,
         imageUrl,
-        isOpened,
+        isOpened.get(),
         weeklyScoreView.weeklyAvg(),
         weeklyScoreView.lastWeekAvg()
     );
@@ -69,7 +74,7 @@ public class MemberFacade {
   @Transactional(readOnly = true)
   public MemberReportedDateListResponse getReportedDates(Member member, YearMonth month){
     List<LocalDate> dateList = careReportService.getReportedDateInMonth(
-        member.getId(),month
+        member.getId(), month
     );
 
     return new MemberReportedDateListResponse(dateList);
@@ -81,12 +86,26 @@ public class MemberFacade {
   }
 
   @Transactional(readOnly = true)
-  public MemberStatisticsResponse getMemberStatistics(Member member, LocalDate startDate, LocalDate endDate) {
+  public MemberStatisticsResponse getMemberStatistics(Member member, LocalDate startDate,
+      LocalDate endDate) {
     return vitalService.getVitals(member.getId(), startDate, endDate);
   }
 
   @Transactional(readOnly = true)
-  public MemberStatisticsResponse getMemberStatistics(Member member, YearMonth startMonth, YearMonth endMonth) {
+  public MemberStatisticsResponse getMemberStatistics(Member member, YearMonth startMonth,
+      YearMonth endMonth) {
     return vitalService.getVitals(member.getId(), startMonth, endMonth);
   }
+
+  private MemberHomeResponse buildEmptyHome(
+      Member member,
+      String imageUrl
+  ) {
+    return MemberHomeResponse.ofEmpty(
+        member,
+        imageUrl
+    );
+  }
+
+
 }
