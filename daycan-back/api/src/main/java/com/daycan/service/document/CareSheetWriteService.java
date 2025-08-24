@@ -61,7 +61,7 @@ public class CareSheetWriteService {
     // TODO: upsertVital() ExecutorService로 병렬처리 가능
     Vital vital = upsertVital(init, req);
 
-    doc.markSheetDone();
+    markSheetDone(doc);
 
     CareReport report = createReport(
         sheet, vital, init.member(), init.prevAgg(), init.hasFollowingVital());
@@ -219,5 +219,13 @@ public class CareSheetWriteService {
   private void logSheet(CareSheet savedSheet, CareSheetRequest req, boolean isNew) {
     log.debug("[CareSheet] id={} date={} {}", savedSheet.getId(), req.date(),
         isNew ? "created" : "updated");
+  }
+
+  private void markSheetDone(Document doc) {
+    try{
+      doc.markSheetDone();
+    }catch (ApplicationException e){
+      throw new ApplicationException(DocumentErrorStatus.INVALID_STATUS_WRITE_SHEET, doc.getId());
+    }
   }
 }

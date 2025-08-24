@@ -15,6 +15,10 @@ public class MemberDetails extends UserDetails {
   }
 
   @Override
+  public String getPassword() {
+    return member.getPassword();
+  }
+  @Override
   public String getUniqueIdentifier() {
     return "MEMBER:" + username;
   }

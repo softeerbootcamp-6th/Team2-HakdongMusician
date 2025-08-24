@@ -43,12 +43,4 @@ public class AuthController {
     LoginResponse response = authService.reissue(request.refreshToken());
     return ResponseWrapper.onSuccess(response);
   }
-
-  private String extractToken(String bearer) {
-    if (bearer == null || !bearer.startsWith("Bearer ")) {
-      throw new IllegalArgumentException("잘못된 인증 헤더 형식입니다.");
-    }
-    return bearer.substring(7);
-  }
-
 }
