@@ -13,14 +13,6 @@ export const layout = style({
   backgroundColor: COLORS.gray[50],
 });
 
-export const wrapper = style({
-  flex: 1,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "100%",
-});
-
 export const container = style({
   width: "100%",
   margin: "0 auto",

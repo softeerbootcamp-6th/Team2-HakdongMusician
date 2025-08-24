@@ -33,7 +33,7 @@ export const CareSheetListItem = ({ careSheet }: CareSheetListItemProps) => {
             name={"chevronRight"}
             width={20}
             height={20}
-            color={COLORS.gray[200]}
+            color={COLORS.gray[50]}
             stroke={COLORS.white}
           />
         </div>

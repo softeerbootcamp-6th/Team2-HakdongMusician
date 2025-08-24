@@ -7,4 +7,9 @@ export const diagnosisFunnelLayout = style({
   gap: "10px",
   paddingBottom: "100px",
   overflowY: "auto",
+  scrollbarWidth: "none",
+  msOverflowStyle: "none",
+  "::-webkit-scrollbar": {
+    display: "none",
+  },
 });

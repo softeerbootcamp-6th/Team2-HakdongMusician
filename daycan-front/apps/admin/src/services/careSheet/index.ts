@@ -4,6 +4,7 @@ import type {
   TCareSheetReadResponse,
   TCareSheetWriteRequest,
   TCareSheetAttendanceRequest,
+  CareSheetStatus,
 } from "./types";
 import { safeRequest } from "@daycan/api";
 import { privateInstance } from "@/services/instance";
@@ -15,7 +16,8 @@ import { privateInstance } from "@/services/instance";
  */
 export const getCareSheetList = async (
   date: YearMonthDay,
-  writerId?: number
+  writerId?: number,
+  statuses?: CareSheetStatus[]
 ): Promise<TCareSheetListItem[] | null> => {
   return await safeRequest.get<TCareSheetListItem[]>(
     privateInstance,
@@ -23,6 +25,7 @@ export const getCareSheetList = async (
     {
       params: {
         writerId,
+        statuses: statuses?.join(","),
       },
     }
   );

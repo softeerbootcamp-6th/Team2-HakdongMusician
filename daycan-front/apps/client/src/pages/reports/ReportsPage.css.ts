@@ -10,6 +10,6 @@ export const reportsPageContainer = style({
   minHeight: "100dvh",
   overflow: "auto",
   boxSizing: "border-box",
-
+  paddingBottom: "20px",
   backgroundColor: COLORS.gray[50],
 });

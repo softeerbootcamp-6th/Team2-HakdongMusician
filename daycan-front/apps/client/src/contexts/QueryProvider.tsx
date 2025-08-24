@@ -78,14 +78,14 @@ export function QueryClientProvider({ children }: { children: ReactNode }) {
     },
     queryCache: new QueryCache({
       onError: (error) => {
-        handleError(error, "pc", handleAuthError);
+        handleError(error, "mobile", handleAuthError);
       },
     }),
     mutationCache: new MutationCache({
       onError: (error, _variables, _ctx, mutation) => {
         // 조용한 에러 처리 설정이 있으면 스킵
         if (mutation.meta?.silentError) return;
-        handleError(error, "pc", handleAuthError);
+        handleError(error, "mobile", handleAuthError);
       },
       onSuccess: (_data, _variables, _ctx, mutation) => {
         // 성공 메시지가 설정되어 있으면 표시

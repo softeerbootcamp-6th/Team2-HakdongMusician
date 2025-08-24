@@ -3,6 +3,7 @@ import { getCareSheetList, getCareSheet, getCareSheetDetail } from "./index";
 
 import type { YearMonthDay } from "@/types/date";
 import { DEFAULT_QUERY_OPTIONS } from "@/constants/query";
+import type { CareSheetStatus } from "./types";
 
 /**
  * 케어시트를 위한 Query Keys
@@ -29,11 +30,12 @@ export const careSheetKeys = {
  */
 export const useGetCareSheetListQuery = (
   date: YearMonthDay,
-  writerId?: number
+  writerId?: number,
+  statuses?: CareSheetStatus[]
 ) => {
   return useQuery({
     queryKey: careSheetKeys.listByDate(date, writerId),
-    queryFn: () => getCareSheetList(date, writerId),
+    queryFn: () => getCareSheetList(date, writerId, statuses),
     enabled: !!date,
     ...DEFAULT_QUERY_OPTIONS,
   });

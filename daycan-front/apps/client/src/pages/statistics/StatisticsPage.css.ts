@@ -1,3 +1,4 @@
+import { COLORS } from "@daycan/ui";
 import { style } from "@vanilla-extract/css";
 
 export const statisticsPageContainer = style({
@@ -5,11 +6,16 @@ export const statisticsPageContainer = style({
   width: "100%",
   flexDirection: "column",
   gap: 20,
+  paddingBottom: "20px",
 });
 
 export const statisticsHeader = style({
   display: "flex",
   width: "100%",
+  position: "sticky",
+  top: 0,
+  zIndex: 100,
+  backgroundColor: COLORS.gray[50],
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
@@ -22,6 +28,11 @@ export const statisticsHeader = style({
 export const statisticsCalendarContainer = style({
   display: "flex",
   width: "100%",
+  position: "sticky",
+  top: 64,
+  zIndex: 100,
+  backgroundColor: COLORS.gray[50],
+  paddingBottom: "20px",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",

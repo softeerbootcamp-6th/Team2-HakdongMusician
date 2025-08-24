@@ -13,14 +13,11 @@ export const layout = style({
   margin: "0 auto",
   boxSizing: "border-box",
   backgroundColor: COLORS.gray[50],
-});
-
-export const wrapper = style({
-  flex: 1,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "100%",
+  scrollbarWidth: "none",
+  msOverflowStyle: "none",
+  "::-webkit-scrollbar": {
+    display: "none",
+  },
 });
 
 export const container = style({

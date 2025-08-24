@@ -105,7 +105,10 @@ export const CareSheetList = ({
           careSheets.map((careSheet, index) => {
             // 상태에 따라 선택 가능 여부 결정
             const isSelectable =
-              status === "APPLICABLE" ? careSheet.status !== "DONE" : true; // 결석 인원은 모두 선택 가능
+              status === "APPLICABLE"
+                ? careSheet.status !== "REVIEWED" && careSheet.status !== "DONE"
+                : careSheet.status !== "REVIEWED" &&
+                  careSheet.status !== "DONE"; // 결석 인원도 작성 완료 상태는 선택 불가
 
             return (
               <CareSheetListItem

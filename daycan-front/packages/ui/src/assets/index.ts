@@ -66,10 +66,22 @@ export { default as ElderIcon } from "./svg/elder.svg";
 export { default as WorkerIcon } from "./svg/worker.svg";
 export { default as HealthIcon } from "./svg/health.svg";
 export { default as MealIcon } from "./svg/meal.svg";
+export { default as RiceIcon } from "./svg/rice.svg";
 export { default as StampGoodIcon } from "./svg/stamp-good.svg";
 export { default as StampBadIcon } from "./svg/stamp-bad.svg";
 export { default as BrainIcon } from "./svg/brain.svg";
 export { default as ActivityIcon } from "./svg/activity.svg";
 export { default as TransportationIcon } from "./svg/transportation.svg";
+export { default as BaseballIcon } from "./svg/baseball.svg";
+export { default as BasketballIcon } from "./svg/basketball.svg";
+export { default as SoccerIcon } from "./svg/soccer.svg";
+export { default as PokerIcon } from "./svg/poker.svg";
+export { default as BookIcon } from "./svg/book.svg";
+export { default as ChessIcon } from "./svg/chess.svg";
+export { default as ChickenIcon } from "./svg/chicken.svg";
+export { default as SwimmingIcon } from "./svg/swimming.svg";
+export { default as TennisIcon } from "./svg/tennis.svg";
+export { default as BadmintonIcon } from "./svg/badminton.svg";
+export { default as PingpongIcon } from "./svg/pingpong.svg";
 
 // 기타 아이콘들

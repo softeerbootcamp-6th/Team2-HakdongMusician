@@ -19,5 +19,4 @@ export const todayCareSheetPageContentContainer = style({
   paddingBottom: 100,
   boxSizing: "border-box",
   gap: 10,
-  marginTop: 25,
 });

@@ -5,6 +5,7 @@ import type {
 } from "./types";
 import { updateCareSheetAttendance, writeCareSheet } from ".";
 import { careSheetKeys } from "./useCareSheetQuery";
+import { documentKeys } from "../document/useDocumentQuery";
 
 /**
  * 케어시트를 작성하는 훅
@@ -25,6 +26,9 @@ export const useWriteCareSheetMutation = () => {
       });
       queryClient.invalidateQueries({
         queryKey: careSheetKeys.listByDate(request.date),
+      });
+      queryClient.invalidateQueries({
+        queryKey: documentKeys.count(request.date),
       });
     },
   });
