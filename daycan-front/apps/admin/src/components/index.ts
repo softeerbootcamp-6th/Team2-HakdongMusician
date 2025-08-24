@@ -15,3 +15,4 @@ export * from "./DeleteConfirmModal";
 export * from "./GenderSelector";
 export * from "./CareLevelRoleDropDownSelector";
 export * from "./SkeletonList";
+export * from "./MobileAccessGuard";

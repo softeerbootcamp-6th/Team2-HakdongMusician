@@ -103,7 +103,16 @@ export const EditDeleteAuthModal = ({
       title="센터 아이디와 비밀번호를 입력해 주세요."
     >
       <div className={editAuthModalContent}>
-        <form className={editAuthModalForm} onSubmit={handleSubmit}>
+        <form
+          className={editAuthModalForm}
+          onSubmit={handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && username.trim() && password.trim()) {
+              e.preventDefault();
+              handleSubmit(e as any);
+            }
+          }}
+        >
           <div className={editAuthModalFormHeader}>
             <Heading type="xsmall" weight={600}>
               센터 아이디와 비밀번호를 입력해 주세요.
