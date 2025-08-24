@@ -5,8 +5,11 @@ import { useGetCareSheetListQuery } from "@/services/careSheet/useCareSheetQuery
 import { TODAY_DATE } from "@/utils/dateFormatter";
 import { useUpdateCareSheetAttendanceMutation } from "@/services/careSheet/useCareSheetMutation";
 import { useToast } from "@daycan/ui";
+import { useQueryClient } from "@tanstack/react-query";
+import { documentKeys } from "@/services/document/useDocumentQuery";
 
 export const useCareSheets = () => {
+  const queryClient = useQueryClient();
   const { data, isLoading } = useGetCareSheetListQuery(TODAY_DATE);
   const { showToast } = useToast();
   // 로컬 상태로 관리
@@ -65,13 +68,24 @@ export const useCareSheets = () => {
     if (!data) return { result: [] };
 
     let result = data.filter(
-      (item) => item.status === "PENDING" || item.status === "DONE"
+      (item) =>
+        item.status === "PENDING" ||
+        item.status === "DONE" ||
+        item.status === "REVIEWED"
     );
 
     // 작성 필요를 먼저, 작성 완료를 나중에
     result.sort((a, b) => {
-      if (a.status === "PENDING" && b.status === "DONE") return -1;
-      if (a.status === "DONE" && b.status === "PENDING") return 1;
+      if (
+        a.status === "PENDING" &&
+        (b.status === "DONE" || b.status === "REVIEWED")
+      )
+        return -1;
+      if (
+        (a.status === "DONE" || a.status === "REVIEWED") &&
+        b.status === "PENDING"
+      )
+        return 1;
       return 0;
     });
 
@@ -88,7 +102,9 @@ export const useCareSheets = () => {
 
   // 선택 가능한 케어시트 (작성 완료 제외)
   const selectableApplicableCareSheets = useMemo(() => {
-    return applicableCareSheets.result.filter((item) => item.status !== "DONE");
+    return applicableCareSheets.result.filter(
+      (item) => item.status !== "DONE" && item.status !== "REVIEWED"
+    );
   }, [applicableCareSheets]);
 
   const selectableNotApplicableCareSheets = useMemo(() => {
@@ -194,6 +210,9 @@ export const useCareSheets = () => {
               type: "success",
             },
           });
+          queryClient.invalidateQueries({
+            queryKey: documentKeys.count(TODAY_DATE),
+          });
         },
       }
     );
@@ -220,6 +239,9 @@ export const useCareSheets = () => {
               variant: "pc",
               type: "success",
             },
+          });
+          queryClient.invalidateQueries({
+            queryKey: documentKeys.count(TODAY_DATE),
           });
         },
       }

@@ -1,6 +1,5 @@
 import { Body, COLORS, Icon, type IconProps } from "@daycan/ui";
-import { ListItemLayout } from "@/components";
-import profileImg from "@/assets/images/profile.png";
+import { ListItemLayout } from "@/components";  
 import { getGenderText, getStatusInfo } from "../../utils/parser";
 import type { TCareSheetListItem } from "@/services/careSheet/types";
 
@@ -51,7 +50,7 @@ export const CareSheetListItem = ({
       content: (
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <img
-            src={profileImg}
+            src={careSheet.memberMeta.avatarUrl}
             alt="프로필"
             style={{ width: "24px", height: "24px", borderRadius: "50%" }}
           />

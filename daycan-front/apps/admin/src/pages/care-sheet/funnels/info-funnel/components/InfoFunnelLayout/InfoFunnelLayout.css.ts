@@ -6,4 +6,12 @@ export const infoFunnelLayoutContainer = style({
   height: "100%",
   flexDirection: "column",
   gap: "10px",
+  overflow: "auto",
+  scrollbarWidth: "none",
+  selectors: {
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+  },
+  marginBottom: "80px",
 });

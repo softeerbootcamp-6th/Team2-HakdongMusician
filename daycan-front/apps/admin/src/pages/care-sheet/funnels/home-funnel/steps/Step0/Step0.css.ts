@@ -8,6 +8,14 @@ export const careSheetPageContainer = style({
   width: "100%",
   height: "100%",
   position: "relative",
+  overflowY: "auto",
+  overflowX: "hidden",
+  paddingBottom: "88px",
+  scrollbarWidth: "none",
+  msOverflowStyle: "none",
+  "::-webkit-scrollbar": {
+    display: "none",
+  },
 });
 
 export const careSheetPageContent = style({
@@ -15,7 +23,7 @@ export const careSheetPageContent = style({
   flexDirection: "column",
   gap: "10px",
   width: "100%",
-  padding: "24px 0px",
+
   boxSizing: "border-box",
 });
 

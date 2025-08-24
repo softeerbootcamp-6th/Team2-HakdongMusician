@@ -10,7 +10,7 @@ import {
   roleTag,
 } from "./SearchStaffResultList.css";
 import type { TStaff } from "@/services/staff/types";
-import { getStaffRole } from "../../utils/parseData";
+import { getStaffRole, colorByStaffRole } from "../../utils/parseData";
 
 interface SearchStaffResultListProps {
   staffs: TStaff[];
@@ -57,10 +57,12 @@ export const SearchStaffResultList: React.FC<SearchStaffResultListProps> = ({
             </Body>
           </div>
           <div className={roleTag}>
-            <Chip style={{ backgroundColor: COLORS.green[200] }} round="s">
-              <Body type="xsmall" weight={500} color={COLORS.green[500]}>
-                {getStaffRole(staff.staffRole)}
-              </Body>
+            <Chip
+              color={colorByStaffRole(staff.staffRole)}
+              round="s"
+              style={{ padding: "4px 6px" }}
+            >
+              {getStaffRole(staff.staffRole)}
             </Chip>
           </div>
         </div>

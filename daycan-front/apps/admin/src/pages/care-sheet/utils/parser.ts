@@ -12,7 +12,7 @@ export const getStatusInfo = (status: string) => {
       return {
         text: "작성 완료",
         icon: "circleCheck",
-        color: COLORS.blue[500],
+        color: COLORS.green[500],
         strokeColor: COLORS.white,
       };
     case "NOT_APPLICABLE":
@@ -20,6 +20,13 @@ export const getStatusInfo = (status: string) => {
         text: "작성 불가",
         icon: "warningFilled",
         color: COLORS.red[500],
+      };
+    case "REVIEWED":
+      return {
+        text: "검토 완료",
+        icon: "circleCheck",
+        color: COLORS.blue[500],
+        strokeColor: COLORS.white,
       };
     default:
       return {

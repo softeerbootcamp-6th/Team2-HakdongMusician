@@ -8,7 +8,7 @@ export const careSheetPageContentButtonContainer = style({
   flexDirection: "row",
   justifyContent: "center",
   alignItems: "center",
-  padding: "20px 10px 30px 10px",
+  padding: "20px 10px 20px 10px",
   width: "100%",
   maxWidth: "450px",
   backgroundColor: "rgba(255, 255, 255, 0.48)",
