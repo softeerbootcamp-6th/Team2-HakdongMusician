@@ -26,16 +26,26 @@ export const CognitiveCard = ({
       isDropdown={isDropdown}
       additionalMemo={additionalMemo}
     >
-      {columns.map((column) => (
+      {columns.length > 0 ? (
+        columns.map((column) => (
+          <IndexColumn
+            key={column.key}
+            column={{
+              key: column.key,
+              value: column.value,
+              specificDescription: column.specificDescription,
+            }}
+          />
+        ))
+      ) : (
         <IndexColumn
-          key={column.key}
+          key={"empty"}
           column={{
-            key: column.key,
-            value: column.value,
-            specificDescription: column.specificDescription,
+            key: "인지 활동 미참여",
+            value: "오늘 인지 능력 프로그램에 참여하지 않았어요!",
           }}
         />
-      ))}
+      )}
     </CardLayout>
   );
 };
