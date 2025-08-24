@@ -31,21 +31,6 @@ export const handleError = (
     // 네트워크 상태 체크 로직 추가 가능
     console.error("🌐 Network Error:", error);
   } else if (error instanceof AuthError) {
-    // 인증/인가 에러 (401, 403 등)
-    showToast({
-      data: {
-        message: `권한 오류: ${error.message}`,
-        type: "error",
-        variant: device,
-      },
-      autoClose: SHORT_TOAST_DURATION,
-      hideProgressBar: true,
-    });
-
-    // 로그인 페이지로 리다이렉트 또는 권한 체크
-    console.error("🔐 Auth Error:", error);
-
-    // 추후에 더 확정되면, reissue 토큰 요청으로 변경 필요
     if (
       (error.code >= 40100 && error.code < 40200) ||
       (error.code >= 40300 && error.code < 40400)
