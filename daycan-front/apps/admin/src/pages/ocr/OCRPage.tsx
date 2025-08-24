@@ -1,16 +1,11 @@
-import { useGetCareSheetListQuery } from "@/services/careSheet/useCareSheetQuery";
-
 import {
   ocrPageButtonContainer,
   ocrPageContainer,
   ocrPageContentContainer,
 } from "./OCRPage.css";
-import type { YearMonthDay } from "@/types/date";
 import { PhotoSelectBottomSheet } from "./components/PhotoSelectBottomSheet/PhotoSelectBottomSheet";
 import { useState } from "react";
 import { Button } from "@daycan/ui";
-import { useAtomValue } from "jotai";
-import { homeFunnelDataAtom } from "@/pages/care-sheet/funnels/home-funnel/atoms/homeAtom";
 import { CareSheetListItem } from "./components/CareSheetListItem";
 import { emptyCareSheetList } from "./constants/dummy";
 import { MobileFunnelHeader } from "@/components/MobileFunnelHeader";
@@ -23,16 +18,9 @@ export const OCRPage = () => {
   const [isPhotoSelectBottomSheetOpen, setIsPhotoSelectBottomSheetOpen] =
     useState(false);
 
-  const today = new Date().toISOString().split("T")[0] as YearMonthDay;
-  const homeFunnelData = useAtomValue(homeFunnelDataAtom);
-  const { data: careSheetList } = useGetCareSheetListQuery(
-    today,
-    homeFunnelData?.writerId
-  );
-
   // 개발용 더미 데이터 사용 (실제 데이터가 없을 때)
   // 빈 상태를 테스트하려면 위에서 emptyCareSheetList를 import하고 mockCareSheetList 대신 사용하세요
-  const displayData = careSheetList || emptyCareSheetList;
+  const displayData = emptyCareSheetList;
 
   return (
     <>
