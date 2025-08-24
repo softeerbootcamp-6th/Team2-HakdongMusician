@@ -9,6 +9,7 @@ import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.Vital;
 import com.daycan.domain.entry.statistics.DailyHealthStatisticsEntry;
 import com.daycan.domain.entry.statistics.MonthlyHealthStatisticsEntry;
+import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.model.MemberWeeklyScoreView;
 import com.daycan.domain.model.VitalSeries;
 import com.daycan.domain.model.VitalSlice;
@@ -41,7 +42,8 @@ public class VitalService {
   }
 
   public MemberWeeklyScoreView getMemberWeeklyScore(Long memberId, LocalDate today) {
-    return statisticsQueryRepository.fetchWeeklyHealthScoreAvgs(memberId, today);
+    return statisticsQueryRepository.fetchWeeklyHealthScoreAvgs(
+        memberId, today, DocumentStatus.finished());
   }
 
   @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
@@ -59,7 +61,7 @@ public class VitalService {
     validateRange(start, end);
 
     List<VitalSlice<LocalDate>> rows =
-        statisticsQueryRepository.fetchVitalsByDate(memberId, start, end);
+        statisticsQueryRepository.fetchVitalsByDate(memberId, start, end, DocumentStatus.finished());
 
     VitalSeries series = aggregate(rows);
     return toResponse(series);

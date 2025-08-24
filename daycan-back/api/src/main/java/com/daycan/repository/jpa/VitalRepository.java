@@ -2,7 +2,9 @@ package com.daycan.repository.jpa;
 
 
 import com.daycan.domain.entity.document.Vital;
+import com.daycan.domain.enums.DocumentStatus;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +25,12 @@ public interface VitalRepository extends JpaRepository<Vital, Long> {
   List<Vital> findByDocument_Member_IdAndDocument_DateGreaterThanEqualOrderByDocument_DateAsc(
       Long memberId, LocalDate date);
 
-  List<Vital> findByDocument_Member_IdAndDocument_DateIn(Long memberId, List<LocalDate> dates);
+  Optional<Vital> findTopByDocument_Member_IdAndDocument_DateBeforeAndDocument_StatusInOrderByDocument_DateDesc(
+      Long memberId, LocalDate date, Collection<DocumentStatus> statuses);
+
+  List<Vital> findByDocument_Member_IdAndDocument_DateGreaterThanEqualAndDocument_StatusInOrderByDocument_DateAsc(
+      Long memberId, LocalDate fromDate, Collection<DocumentStatus> statuses);
+
 
   Optional<Vital> findByDocument_Member_idAndDocument_Date(
       Long memberId, LocalDate date);
