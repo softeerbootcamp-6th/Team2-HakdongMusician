@@ -7,6 +7,9 @@ import com.daycan.common.response.status.error.DocumentErrorStatus;
 import com.daycan.domain.entity.Member;
 import com.daycan.domain.entity.document.CareReport;
 
+import com.daycan.domain.entity.document.Document;
+import com.daycan.domain.entity.document.Vital;
+import com.daycan.domain.entity.document.VitalAggregate;
 import com.daycan.domain.entry.ProgramComment;
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.domain.entry.document.report.ReportEntry;
@@ -16,6 +19,7 @@ import com.daycan.domain.model.ReportReview;
 import com.daycan.domain.model.ReportWithDto;
 import com.daycan.repository.jpa.CareReportRepository;
 import com.daycan.repository.jpa.MemberRepository;
+import com.daycan.repository.jpa.VitalRepository;
 import com.daycan.repository.query.DocumentQueryRepository;
 import com.daycan.util.resolver.ReportEntryResolver;
 import com.daycan.util.resolver.ReportReviewAssembler;
@@ -44,6 +48,7 @@ public class CareReportService {
   private final CareReportRepository careReportRepository;
   private final MemberRepository memberRepository;
   private final DocumentQueryRepository documentQueryRepository;
+  private final VitalRepository vitalRepository;
 
   @Transactional(readOnly = true)
   public ReportWithDto getReport(Long memberId, LocalDate date, EnumSet<DocumentStatus> statuses) {
@@ -101,6 +106,7 @@ public class CareReportService {
   }
 
 
+  @Transactional(propagation = Propagation.MANDATORY)
   protected void reviewReport(ReportReviewRequest request) {
     CareReport report = careReportRepository.findById(request.reportId())
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND));
@@ -114,7 +120,14 @@ public class CareReportService {
     ReportReview review = ReportReviewAssembler.from(request);
     report.applyReview(review, true);
     report.getDocument().markReviewed();
+
+    Document doc = report.getDocument();
+    recomputeChainFromInclusiveFinalizedOnly(
+        doc.getMember().getId(),
+        doc.getDate()
+    );
   }
+
 
   private ReportWithDto buildFromPair(Supplier<List<CareReport>> loader) {
     List<CareReport> pair = loader.get();
@@ -203,6 +216,27 @@ public class CareReportService {
         )
     );
   }
+
+  private void recomputeChainFromInclusiveFinalizedOnly(Long memberId, LocalDate fromDate) {
+    EnumSet<DocumentStatus> finalized = DocumentStatus.finished(); // REPORT_SENDING, REPORT_RESERVED, REPORT_DONE
+
+    Vital prev = vitalRepository
+        .findTopByDocument_Member_IdAndDocument_DateBeforeAndDocument_StatusInOrderByDocument_DateDesc(
+            memberId, fromDate, finalized)
+        .orElse(null);
+
+    VitalAggregate agg = (prev == null) ? null : prev.getAggregate();
+
+    List<Vital> chain = vitalRepository
+        .findByDocument_Member_IdAndDocument_DateGreaterThanEqualAndDocument_StatusInOrderByDocument_DateAsc(
+            memberId, fromDate, finalized);
+
+    for (Vital v : chain) {
+      v.applyAggregateFrom(agg);
+      agg = v.getAggregate();
+    }
+  }
+
 
   private record SectionBundle(List<ReportEntry> entries, CardFooter footer) {
 

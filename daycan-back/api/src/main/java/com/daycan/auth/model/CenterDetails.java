@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Getter
-public class CenterDetails extends UserDetails {
+public class CenterDetails extends UserDetails<Center> {
 
   private final Center center;
 
@@ -24,6 +23,15 @@ public class CenterDetails extends UserDetails {
   @Override
   public String getUniqueIdentifier() {
     return "CENTER:" + username;
+  }
+
+  @Override
+  public Center getEntity() {
+    return center;
+  }
+
+  public Center getCenter() {
+    return this.getEntity();
   }
 }
 

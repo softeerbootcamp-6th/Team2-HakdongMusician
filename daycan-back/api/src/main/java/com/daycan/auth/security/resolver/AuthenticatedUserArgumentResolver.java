@@ -4,8 +4,10 @@ import com.daycan.auth.model.UserDetails;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.AuthErrorStatus;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -14,36 +16,44 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
-
   private static final String USER_DETAILS_ATTRIBUTE = "userDetails";
+
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
-    return parameter.hasParameterAnnotation(AuthenticatedUser.class)
-        && UserDetails.class.isAssignableFrom(parameter.getParameterType());
+    return parameter.hasParameterAnnotation(AuthenticatedUser.class);
   }
 
   @Override
   public Object resolveArgument(
-      MethodParameter parameter,
+      @NonNull MethodParameter parameter,
       ModelAndViewContainer mavContainer,
-      NativeWebRequest webRequest,
+      @NonNull NativeWebRequest webRequest,
       WebDataBinderFactory binderFactory
   ) {
     HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-    Object attribute = request.getAttribute(USER_DETAILS_ATTRIBUTE);
+    Object attr = request.getAttribute(USER_DETAILS_ATTRIBUTE);
 
-    if (!(attribute instanceof UserDetails principal)) {
+    if (!(attr instanceof UserDetails<?> principal)) {
       throw new ApplicationException(AuthErrorStatus.UNAUTHENTICATED);
     }
 
-    Class<?> requiredType = parameter.getParameterType();
+    Class<?> required = parameter.getParameterType();
 
-    if (!requiredType.isInstance(principal)) {
-      throw new ApplicationException(AuthErrorStatus.PRINCIPAL_TYPE_MISMATCH);
+    if (required.isInstance(principal)) {
+      return required.cast(principal);
     }
 
-    return requiredType.cast(principal);
-  }
+    Object entity = principal.getEntity();
+    if (required.isInstance(entity)) {
+      return entity;
+    }
 
+    throw new ApplicationException(
+        AuthErrorStatus.PRINCIPAL_TYPE_MISMATCH,
+        "required=" + required.getName()
+            + ", actualPrincipal=" + principal.getClass().getName()
+            + ", entity=" + (entity == null ? "null" : entity.getClass().getName())
+    );
+  }
 }
 
