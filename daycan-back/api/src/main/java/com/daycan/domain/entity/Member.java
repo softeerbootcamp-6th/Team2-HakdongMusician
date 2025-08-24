@@ -48,7 +48,7 @@ public class Member extends Account {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "center_id", nullable = false)
-  private Center center; // 소속 센터(1:1 전제)
+  private Center center;
 
   @Column(name = "name", nullable = false)
   private String name;
