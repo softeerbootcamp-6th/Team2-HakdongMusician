@@ -1,10 +1,10 @@
 package com.daycan.auth.model;
 
+import com.daycan.domain.entity.Center;
 import com.daycan.domain.entity.Member;
 import lombok.Getter;
 
-@Getter
-public class MemberDetails extends UserDetails {
+public class MemberDetails extends UserDetails<Member> {
 
   private final Member member;
 
@@ -21,5 +21,14 @@ public class MemberDetails extends UserDetails {
   @Override
   public String getUniqueIdentifier() {
     return "MEMBER:" + username;
+  }
+
+  @Override
+  public Member getEntity() {
+    return member;
+  }
+
+  public Member getMember() {
+    return this.getEntity();
   }
 }
