@@ -14,16 +14,7 @@ export const useLoginMutation = () => {
       password: string;
     }) => login(username, password),
     onSuccess: (data: TLoginResponse | null) => {
-      if (!data) {
-        showToast({
-          data: {
-            message: "로그인 실패",
-            type: "error",
-            variant: "mobile",
-          },
-        });
-        return;
-      }
+      if (!data) return;
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
       sessionStorage.removeItem("refreshToken");
@@ -31,6 +22,15 @@ export const useLoginMutation = () => {
         data: {
           message: "로그인 성공",
           type: "success",
+          variant: "mobile",
+        },
+      });
+    },
+    onError: () => {
+      showToast({
+        data: {
+          message: "로그인 실패: 아이디 또는 비밀번호를 확인해주세요.",
+          type: "error",
           variant: "mobile",
         },
       });
@@ -78,6 +78,15 @@ export const useLoginWithoutCheckMutation = () => {
         data: {
           message: "로그인 성공",
           type: "success",
+          variant: "mobile",
+        },
+      });
+    },
+    onError: () => {
+      showToast({
+        data: {
+          message: "로그인 실패: 아이디 또는 비밀번호를 확인해주세요.",
+          type: "error",
           variant: "mobile",
         },
       });

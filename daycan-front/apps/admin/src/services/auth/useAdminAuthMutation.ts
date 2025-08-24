@@ -14,16 +14,7 @@ export const useAdminLoginMutation = () => {
       password: string;
     }) => login(username, password),
     onSuccess: (data: TLoginResponse | null) => {
-      if (!data) {
-        showToast({
-          data: {
-            message: "로그인 실패",
-            type: "error",
-            variant: "pc",
-          },
-        });
-        return;
-      }
+      if (!data) return;
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
       sessionStorage.removeItem("refreshToken");
@@ -31,6 +22,15 @@ export const useAdminLoginMutation = () => {
         data: {
           message: "로그인 성공",
           type: "success",
+          variant: "pc",
+        },
+      });
+    },
+    onError: () => {
+      showToast({
+        data: {
+          message: "로그인 실패: 아이디 또는 비밀번호를 확인해주세요.",
+          type: "error",
           variant: "pc",
         },
       });
@@ -88,16 +88,7 @@ export const useAdminLoginWithoutCheckMutation = () => {
       password: string;
     }) => login(username, password),
     onSuccess: (data: TLoginResponse | null) => {
-      if (!data) {
-        showToast({
-          data: {
-            message: "로그인 실패",
-            type: "error",
-            variant: "pc",
-          },
-        });
-        return;
-      }
+      if (!data) return;
       localStorage.setItem("accessToken", data.accessToken);
       sessionStorage.setItem("refreshToken", data.refreshToken);
       localStorage.removeItem("refreshToken");
@@ -105,6 +96,15 @@ export const useAdminLoginWithoutCheckMutation = () => {
         data: {
           message: "로그인 성공",
           type: "success",
+          variant: "pc",
+        },
+      });
+    },
+    onError: () => {
+      showToast({
+        data: {
+          message: "로그인 실패: 아이디 또는 비밀번호를 확인해주세요.",
+          type: "error",
           variant: "pc",
         },
       });
