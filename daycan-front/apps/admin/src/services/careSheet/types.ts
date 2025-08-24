@@ -9,7 +9,11 @@ export type MealType = "REGULAR" | "PORRIDGE" | "RICE_WATER";
 export type Amount = "FULL" | "MORE_HALF" | "LESS_HALF";
 export type ProgramType = "PHYSICAL" | "COGNITIVE";
 export type Score = "HIGH" | "MEDIUM" | "LOW";
-export type CareSheetStatus = "NOT_APPLICABLE" | "PENDING" | "DONE";
+export type CareSheetStatus =
+  | "NOT_APPLICABLE"
+  | "PENDING"
+  | "DONE"
+  | "REVIEWED";
 export type CareSheetAttendanceAction = "ABSENT" | "PRESENT";
 /**
  * 기록지 조회 리스트 내 응답 타입
