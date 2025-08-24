@@ -1,5 +1,6 @@
 package com.daycan.service.document;
 
+import com.daycan.api.dto.center.SendMessageRequest;
 import com.daycan.api.dto.center.request.AttendanceAction;
 import com.daycan.api.dto.center.request.CareSheetRequest;
 import com.daycan.api.dto.center.request.ReportReviewRequest;
@@ -21,6 +22,7 @@ import com.daycan.external.storage.StorageService;
 import com.daycan.service.member.MemberService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -101,14 +103,13 @@ public class CenterDocumentFacade {
     return getMetaListByDateMulti(
         center, date, writerId, null,
         sheetStatuses,
-        DocumentStatus::allSheetStatuses,   // null/empty 때 전체(시트 탭 전 구간)
-        DocumentStatus::fromSheet,          // SheetStatus → EnumSet<DocumentStatus>
+        DocumentStatus::allSheetStatuses,
+        DocumentStatus::fromSheet,
         mv -> memberService.getByMemberIdAndCenter(mv.member().getId(), center.getId())
             .map(m -> mv.toSheetResponse(getPresignedUrl(m.getAvatarUrl())))
     );
   }
 
-  // ====== 변경 2: 리포트 메타 조회 ======
   @Transactional(readOnly = true)
   public List<CareReportMetaResponse> getCareReportMetaListByDate(
       Center center,
@@ -130,15 +131,8 @@ public class CenterDocumentFacade {
   @Transactional(readOnly = true)
   public FullReportDto getCareReportByMemberIdAndDate(Center center, Long memberId, LocalDate date) {
     Member member = memberService.requireActiveMember(memberId, center.getId());
-    return careReportService.getReport(member.getId(), date).fullReportDto();
-  }
-
-  @Transactional(readOnly = true)
-  public FullReportDto getCareReportByMemberIdAndReportId(Center center, Long reportId) {
-    if (documentService.isInvalidCenterDocument(center, reportId)) {
-      throw new ApplicationException(DocumentErrorStatus.INVALID_DOCUMENT_ACCESS, reportId);
-    }
-    return careReportService.getReport(reportId).fullReportDto();
+    return careReportService.getReport(member.getId(), date,
+        DocumentStatus.allReportStatuses()).fullReportDto();
   }
 
   @Transactional
@@ -152,6 +146,24 @@ public class CenterDocumentFacade {
     careReportService.reviewReport(request);
 
   }
+
+  @Transactional
+  public void sendReportToMembers(Center center, SendMessageRequest request) {
+    List<Member> members = mapPresent(
+        request.memberIds(),
+        id -> memberService.getByMemberIdAndCenter(id, center.getId())
+    );
+    if (members.isEmpty()) {
+      return;
+    }
+    LocalDate reportDate = request.sendDate();
+    LocalDateTime scheduled = (request.sendTime() == null)
+        ? null
+        : LocalDateTime.of(request.sendDate(), request.sendTime());
+
+    careReportService.sendReports(members, reportDate, scheduled);
+  }
+
 
   private <S, R> List<R> getMetaListByDate(
       Center center,

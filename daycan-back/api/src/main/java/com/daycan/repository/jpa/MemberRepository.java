@@ -1,9 +1,13 @@
 package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.Member;
+import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.enums.Gender;
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,22 +43,22 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
       @Param("name") String name
   );
 
-  // --- 센터별 필터링 (페이징) ---
+  @EntityGraph(attributePaths = {
+      "center"
+  })
   @Query("""
-      select m from Member m
-      where m.center.id = :centerId
-        and m.deletedAt is null
-        and (:gender is null or m.gender = :gender)
-        and (:careLevel is null or m.careLevel = :careLevel)
-        and (:name is null or m.name like concat('%', :name, '%'))
-      """)
-  List<Member> findPageByCenterWithFilters(
-      @Param("centerId") Long centerId,
-      @Param("gender") Gender gender,
-      @Param("careLevel") Integer careLevel,
-      @Param("name") String name
+    select distinct m
+    from Document d
+      join d.member m
+    where d.date = :date
+      and d.status in :statuses
+      and d.center.id = :centerId
+  """)
+  List<Member> findMembersByDateAndStatusesAndCenter(
+      @Param("date") LocalDate date,
+      @Param("statuses") Collection<DocumentStatus> statuses,
+      @Param("centerId") Long centerId
   );
-
   // --- 센터별 이름 검색 ---
   List<Member> findByCenterIdAndNameContainingAndDeletedAtIsNull(Long centerId, String name);
 

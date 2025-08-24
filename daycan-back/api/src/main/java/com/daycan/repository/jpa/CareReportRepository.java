@@ -1,7 +1,9 @@
 package com.daycan.repository.jpa;
 
 import com.daycan.domain.entity.document.CareReport;
+import com.daycan.domain.enums.DocumentStatus;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import java.util.Optional;
@@ -15,17 +17,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CareReportRepository extends JpaRepository<CareReport, Long> {
 
-  // member 기준, 특정 일자 이전(포함)에서 최신순 상위 N (Pageable로 2개 등 제한)
   @Query("""
       select c
       from CareReport c
       where c.document.member.id = :memberId
         and c.document.date <= :date
+        and c.document.status in :statuses
       order by c.document.date desc
       """)
   List<CareReport> findTopByMemberAndDateBeforeEq(
       @Param("memberId") Long memberId,
       @Param("date") LocalDate date,
+      @Param("statuses") Collection<DocumentStatus> statuses,
       Pageable pageable
   );
 
@@ -43,4 +46,20 @@ public interface CareReportRepository extends JpaRepository<CareReport, Long> {
   Optional<CareReport> findByDocumentMemberIdAndDocumentDate(Long memberId, LocalDate date);
   // 단건 접근 편의
   Optional<CareReport> findByDocumentId(Long documentId);
+
+  @Query("""
+    select c.document.date
+    from CareReport c
+    where c.document.member.id = :memberId
+      and c.document.date between :start and :end
+      and c.document.status in :statuses
+    order by c.document.date asc
+    """)
+  List<LocalDate> findReportedDatesInRange(
+      @Param("memberId") Long memberId,
+      @Param("start") LocalDate start,
+      @Param("end") LocalDate end,
+      @Param("statuses") Collection<DocumentStatus> statuses
+  );
+
 }

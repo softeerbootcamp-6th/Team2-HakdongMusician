@@ -2,11 +2,10 @@ package com.daycan.api.controller.member;
 
 import com.daycan.api.dto.member.response.MemberHomeResponse;
 import com.daycan.api.dto.member.response.MemberReportResponse;
+import com.daycan.api.dto.member.response.MemberReportedDateListResponse;
 import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.MemberDetails;
-import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.common.response.ResponseWrapper;
-import com.daycan.service.document.CareReportService;
 import com.daycan.service.member.MemberFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
     description = "고령자의 일일 상태 리포트를 조회하는 API입니다. 식사, 건강, 신체/인지 활동별 리포트를 각각 조회할 수 있습니다.")
 @Validated
 public class MemberController {
+
   private final MemberFacade memberFacade;
 
   @Operation(
@@ -41,7 +42,7 @@ public class MemberController {
           인지 program, 건강 program이 여러개인 경우 점수는 분야별로 평균이 계산됩니다.
           """
   )
-  @GetMapping("report/{date}")
+  @GetMapping("report/{date:\\d{4}-\\d{2}-\\d{2}}")
   public ResponseWrapper<MemberReportResponse> getReport(
       @AuthenticatedUser MemberDetails memberDetails,
       @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
@@ -49,9 +50,31 @@ public class MemberController {
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate date
   ) {
-    MemberReportResponse report = memberFacade.getReport(memberDetails.getMember(), date);
+    MemberReportResponse report = memberFacade.getReport(
+        memberDetails.getMember(), date);
     return ResponseWrapper.onSuccess(
         report
+    );
+  }
+
+  @Operation(
+      summary = "리포트 월별 존재 여부 조회",
+      description = """
+          해당 월에 대해 리포트가 있는 날짜 리스트를 반환합니다.
+          """
+  )
+  @GetMapping("report/{month:\\d{4}-\\d{2}}")
+  public ResponseWrapper<MemberReportedDateListResponse> getReport(
+      @AuthenticatedUser MemberDetails memberDetails,
+      @Parameter(description = "조회 달 (yyyy-MM)", example = "2025-07", required = true)
+      @PathVariable
+      @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      YearMonth month
+  ) {
+    MemberReportedDateListResponse reportedDates = memberFacade.getReportedDates(
+        memberDetails.getMember(), month);
+    return ResponseWrapper.onSuccess(
+        reportedDates
     );
   }
 
@@ -63,7 +86,8 @@ public class MemberController {
       @Valid @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
       LocalDate date
   ) {
-    MemberHomeResponse response = memberFacade.getMemberHome(memberDetails.getMember(),date);
+    MemberHomeResponse response = memberFacade.getMemberHome(
+        memberDetails.getMember(), date);
     return ResponseWrapper.onSuccess(
         response
     );

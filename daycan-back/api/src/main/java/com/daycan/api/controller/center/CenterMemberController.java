@@ -4,6 +4,7 @@ import com.daycan.auth.annotation.AuthenticatedUser;
 import com.daycan.auth.model.CenterDetails;
 import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
+import com.daycan.domain.entry.member.MemberMetaEntry;
 import com.daycan.domain.enums.Gender;
 import com.daycan.api.dto.center.request.MemberRequest;
 import com.daycan.api.dto.center.response.centermanage.AdminMemberResponse;
@@ -14,8 +15,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/member")
 @Tag(name = "\uD83D\uDC75 수급자 관리", description = "관리자용 수급자 관련 API")
 @RequiredArgsConstructor
+@Slf4j
 @Validated
 public class CenterMemberController {
 
@@ -47,6 +51,22 @@ public class CenterMemberController {
 
     List<AdminMemberResponse> memberList = memberService.getMemberList(
         center.getId(), gender, careLevel, name);
+
+    return ResponseWrapper.onSuccess(memberList);
+  }
+
+
+  @GetMapping("/unfinished/{date}")
+  @Operation(summary = "수급자 목록 조회", description = "성별, 장기요양등급, 이름으로 필터링하여 수급자 목록을 조회합니다.")
+  public ResponseWrapper<List<MemberMetaEntry>> getUnfinishedMemberListByDate(
+      @AuthenticatedUser CenterDetails centerDetails,
+      @Parameter(description = "조회 날짜 (yyyy-MM-dd)", example = "2025-07-31", required = true)
+      @PathVariable @Valid LocalDate date) {
+    Center center = centerDetails.getCenter();
+
+    List<MemberMetaEntry> memberList = memberService.getUnfinishedMemberListByDate(
+        center, date
+    );
 
     return ResponseWrapper.onSuccess(memberList);
   }

@@ -4,17 +4,19 @@ import com.daycan.auth.security.PasswordHasher;
 import com.daycan.common.response.status.error.MemberErrorStatus;
 import com.daycan.domain.entity.Center;
 import com.daycan.domain.entry.member.MemberCommand;
+import com.daycan.domain.entry.member.MemberMetaEntry;
 import com.daycan.domain.entry.member.PasswordEntry;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.CenterErrorStatus;
-import com.daycan.common.response.status.error.CommonErrorStatus;
 import com.daycan.domain.entity.Member;
+import com.daycan.domain.enums.DocumentStatus;
 import com.daycan.domain.enums.Gender;
 import com.daycan.api.dto.center.request.MemberRequest;
 import com.daycan.api.dto.center.response.centermanage.AdminMemberResponse;
 import com.daycan.external.storage.StorageService;
 import com.daycan.repository.jpa.CenterRepository;
 import com.daycan.repository.jpa.MemberRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +40,7 @@ public class MemberService {
       Integer careLevel,
       String name
   ) {
-    List<Member> memberList = memberRepository.findPageByCenterWithFilters(
+    List<Member> memberList = memberRepository.findByCenterWithFilters(
         centerId,
         gender,
         careLevel,
@@ -47,6 +49,26 @@ public class MemberService {
     return memberList.stream()
         .map(this::convertToAdminMemberResponse)
         .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<MemberMetaEntry> getUnfinishedMemberListByDate(Center center, LocalDate date) {
+    List<Member> memberList = memberRepository.findMembersByDateAndStatusesAndCenter(
+        date,
+        DocumentStatus.unfinished(),
+        center.getId()
+    );
+    return memberList.stream()
+        .map(m -> new MemberMetaEntry(
+            m.getId(),
+            m.getUsername(),
+            m.getName(),
+            m.getBirthDate(),
+            m.getGender(),
+            m.getAvatarUrl() != null ? storageService.presignGet(m.getAvatarUrl()) : null
+        ))
+        .toList();
+
   }
 
   @Transactional(readOnly = true)

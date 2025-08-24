@@ -3,6 +3,7 @@ package com.daycan.service.member;
 import com.daycan.api.dto.common.FullReportDto;
 import com.daycan.api.dto.member.response.MemberHomeResponse;
 import com.daycan.api.dto.member.response.MemberReportResponse;
+import com.daycan.api.dto.member.response.MemberReportedDateListResponse;
 import com.daycan.api.dto.member.response.MemberStatisticsResponse;
 import com.daycan.common.exceptions.ApplicationException;
 import com.daycan.common.response.status.error.DocumentErrorStatus;
@@ -16,6 +17,7 @@ import com.daycan.service.document.CareReportService;
 import com.daycan.service.document.VitalService;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,8 @@ public class MemberFacade {
 
   @Transactional
   public MemberReportResponse getReport(Member member, LocalDate date) {
-    ReportWithDto reportWithDto = careReportService.getReport(member.getId(), date);
+    ReportWithDto reportWithDto = careReportService.getReport(member.getId(), date,
+        DocumentStatus.finished());
     // todo: 주석 해제
 //    if(report.getDocument().getStatus()!= DocumentStatus.REPORT_REVIEWED) {
 //      throw new ApplicationException(DocumentErrorStatus.INVALID_REPORT_ACCESS);
@@ -61,6 +64,15 @@ public class MemberFacade {
         weeklyScoreView.weeklyAvg(),
         weeklyScoreView.lastWeekAvg()
     );
+  }
+
+  @Transactional(readOnly = true)
+  public MemberReportedDateListResponse getReportedDates(Member member, YearMonth month){
+    List<LocalDate> dateList = careReportService.getReportedDateInMonth(
+        member.getId(),month
+    );
+
+    return new MemberReportedDateListResponse(dateList);
   }
 
   @Transactional(readOnly = true)
