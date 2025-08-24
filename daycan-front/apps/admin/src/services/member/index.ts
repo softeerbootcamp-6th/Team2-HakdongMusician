@@ -3,8 +3,10 @@ import type {
   TMember,
   TMemberCreateRequest,
   TmemberPatchRequest,
+  TUnWrittenMember,
 } from "./types";
 import { privateInstance } from "../instance";
+import type { YearMonthDay } from "@/types/date";
 
 /**
  * 수급자 목록을 조회합니다.
@@ -12,6 +14,19 @@ import { privateInstance } from "../instance";
  */
 export const getMemberList = (): Promise<TMember[] | null> => {
   return safeRequest.get<TMember[]>(privateInstance, "/admin/member");
+};
+
+/**
+ * 작성되지 않은 수급자 목록을 조회합니다.
+ * @author 홍규진
+ */
+export const getUnwrittenMemberList = (
+  date: YearMonthDay
+): Promise<TUnWrittenMember[] | null> => {
+  return safeRequest.get<TUnWrittenMember[]>(
+    privateInstance,
+    `/admin/member/unfinished/${date}`
+  );
 };
 
 /**

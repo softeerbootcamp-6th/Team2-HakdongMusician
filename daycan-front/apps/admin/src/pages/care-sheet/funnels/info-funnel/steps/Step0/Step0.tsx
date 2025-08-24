@@ -6,15 +6,16 @@ import { useEffect, useState } from "react";
 import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useNavigate } from "react-router-dom";
 import { useFunnel } from "@daycan/hooks";
-import { useGetMemberListQuery } from "@/services/member/useMemberQuery";
-import type { TMember } from "@/services/member/types";
+import { useGetUnwrittenMemberListQuery } from "@/services/member/useMemberQuery";
+import type { TUnWrittenMember } from "@/services/member/types";
+import { TODAY_DATE } from "@/utils/dateFormatter";
 
 export const Step0 = () => {
   const navigate = useNavigate();
   const { toNext, getStepState, updateState } = useFunnel();
   const [memberId, setMemberId] = useState<number>();
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: memberList } = useGetMemberListQuery();
+  const { data: memberList } = useGetUnwrittenMemberListQuery(TODAY_DATE);
   // 기존 데이터가 있으면 로드 (API prefill 포함)
   useEffect(() => {
     const existingData = getStepState("STEP_0");
@@ -24,19 +25,19 @@ export const Step0 = () => {
 
       // API prefill로 받은 selectedMember가 있으면 UI에 반영
       if (existingData.selectedMember) {
-        setMemberId(existingData.selectedMember.id);
+        setMemberId(existingData.selectedMember.memberId);
         setSearchQuery(existingData.selectedMember.name);
       }
     }
   }, [getStepState]);
 
-  const handleMemberSelect = (member: TMember) => {
-    setMemberId(member.id);
+  const handleMemberSelect = (member: TUnWrittenMember) => {
+    setMemberId(member.memberId);
     setSearchQuery(member.name);
 
     // FunnelState에 데이터 저장
     updateState({
-      memberId: member.id,
+      memberId: member.memberId,
       searchQuery: member.name,
       selectedMember: member,
     });

@@ -1,11 +1,11 @@
-import type { TMember } from "@/services/member/types";
+import type { TUnWrittenMember } from "@/services/member/types";
 import { MemberListItem } from "../MemberListItem/MemberListItem";
 import { memberListContainer } from "./MemberList.css";
 
 interface MemberListProps {
-  members: TMember[];
+  members: TUnWrittenMember[];
   selectedMemberId?: number;
-  onMemberSelect?: (member: TMember) => void;
+  onMemberSelect?: (member: TUnWrittenMember) => void;
 }
 
 export const MemberList = ({
@@ -17,12 +17,12 @@ export const MemberList = ({
     <div className={memberListContainer}>
       {members.map((member) => (
         <MemberListItem
-          key={member.id}
+          key={member.memberId}
+          memberId={member.memberId}
           name={member.name}
           birthDate={member.birthDate}
-          code={member.id}
           profileImage={member.avatarUrl}
-          isSelected={selectedMemberId === member.id}
+          isSelected={selectedMemberId === member.memberId}
           onClick={() => onMemberSelect?.(member)}
         />
       ))}
