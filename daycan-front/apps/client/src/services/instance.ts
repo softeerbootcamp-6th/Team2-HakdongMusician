@@ -19,10 +19,11 @@ export const privateInstance = axios.create({
 // 리프레시 토큰이 있을때만 accessToken 헤더에 추가
 // 권한 에러 방지
 privateInstance.interceptors.request.use((config) => {
-  const RefreshToken =
+  const refreshToken =
     localStorage.getItem("refreshToken") ||
     sessionStorage.getItem("refreshToken");
-  if (RefreshToken) {
+
+  if (refreshToken) {
     const accessToken = localStorage.getItem("accessToken");
     config.headers.Authorization = `Bearer ${accessToken}`;
   }

@@ -110,6 +110,18 @@
   outline: none !important;
 }
 
+.daycan-calendar .daycan-disabled {
+  color: #d1d5db !important;
+  background-color: #f9fafb !important;
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+}
+
+.daycan-calendar .daycan-disabled:hover {
+  background-color: #f9fafb !important;
+  cursor: not-allowed !important;
+}
+
 .daycan-calendar .react-datepicker__navigation {
   top: 10px;
 }

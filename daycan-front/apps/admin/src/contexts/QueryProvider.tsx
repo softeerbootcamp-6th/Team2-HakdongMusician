@@ -46,7 +46,6 @@ export function QueryClientProvider({ children }: { children: ReactNode }) {
             localStorage.setItem("refreshToken", data.refreshToken);
             sessionStorage.removeItem("refreshToken");
           }
-
           window.location.reload();
         })
         .catch(() => {
@@ -55,7 +54,10 @@ export function QueryClientProvider({ children }: { children: ReactNode }) {
             type: "error",
             variant: "pc",
           });
-          navigate("/login");
+          // 비동기 처리로 각 onError 메시지 보여주고 로그인 페이지로 이동
+          setTimeout(() => {
+            navigate("/login");
+          }, 100);
         });
     }
   };

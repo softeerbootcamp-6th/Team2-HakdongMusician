@@ -11,9 +11,10 @@ import { TODAY_DATE } from "@/utils/dateUtils";
 import { Loading } from "@/components";
 
 export const MainPage = () => {
+  const SEVEN_DAYS_AGO = 7 * 24 * 60 * 60 * 1000;
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const { data: mainData, isLoading } = useGetMainDataQuery(TODAY_DATE);
-  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const oneWeekAgo = new Date(Date.now() - SEVEN_DAYS_AGO);
 
   return (
     <div className={container}>

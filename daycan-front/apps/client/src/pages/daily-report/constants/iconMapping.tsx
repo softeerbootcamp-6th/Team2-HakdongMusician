@@ -64,6 +64,19 @@ export const getIconByRowKey = (key: string, size: number = 32) => {
     return <Icon name="pingpong" width={size} height={size} />;
   }
 
+  // 인지 능력 관련
+  if (
+    keyLower.includes("인지") ||
+    keyLower.includes("뇌") ||
+    keyLower.includes("퍼즐") ||
+    keyLower.includes("게임")
+  ) {
+    return <Icon name="brain" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("노래")) {
+    return <Icon name="sing" width={size} height={size} />;
+  }
   if (
     keyLower.includes("독서") ||
     keyLower.includes("책") ||
@@ -79,23 +92,12 @@ export const getIconByRowKey = (key: string, size: number = 32) => {
   if (
     keyLower.includes("포커") ||
     keyLower.includes("플레이") ||
-    keyLower.includes("카드")
+    keyLower.includes("카드") ||
+    keyLower.includes("블랙잭") ||
+    keyLower.includes("홀덤") ||
+    keyLower.includes("화투")
   ) {
     return <Icon name="poker" width={size} height={size} />;
-  }
-
-  // 인지 능력 관련
-  if (
-    keyLower.includes("인지") ||
-    keyLower.includes("뇌") ||
-    keyLower.includes("퍼즐") ||
-    keyLower.includes("게임")
-  ) {
-    return <Icon name="brain" width={size} height={size} />;
-  }
-
-  if (keyLower.includes("노래")) {
-    return <Icon name="sing" width={size} height={size} />;
   }
 
   // 배변 관련

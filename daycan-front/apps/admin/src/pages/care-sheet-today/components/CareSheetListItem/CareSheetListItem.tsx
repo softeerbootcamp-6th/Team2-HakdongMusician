@@ -5,7 +5,7 @@ import {
   careSheetListItemInfoContainer,
   careSheetListItemStatusContainer,
 } from "./CareSheetListItem.css";
-import { Body, COLORS, Icon } from "@daycan/ui";
+import { Body, COLORS, Icon, useToast } from "@daycan/ui";
 import type { YearMonthDay } from "@/types/date";
 import { TODAY_DATE } from "@/utils/dateFormatter";
 
@@ -18,9 +18,59 @@ export const CareSheetListItem = ({
   todayCareSheet,
   onCareSheetClick,
 }: CareSheetListItemProps) => {
+  const { showToast } = useToast();
   const handleClickWrittenCareSheet = () => {
-    onCareSheetClick(TODAY_DATE, todayCareSheet.memberMeta.memberId);
+    // REVIEWED 상태가 아닐 때만 클릭 가능
+    if (todayCareSheet.status !== "REVIEWED") {
+      onCareSheetClick(TODAY_DATE, todayCareSheet.memberMeta.memberId);
+    } else {
+      showToast({
+        data: {
+          message: "검토 완료된 기록지는 수정 불가합니다.",
+          type: "info",
+          variant: "mobile",
+        },
+      });
+    }
   };
+
+  // 상태에 따른 문구와 스타일 결정
+  const getStatusInfo = () => {
+    switch (todayCareSheet.status) {
+      case "REVIEWED":
+        return {
+          text: "검토 완료",
+          color: COLORS.gray[400],
+          clickable: false,
+        };
+      case "DONE":
+        return {
+          text: "수정 하기",
+          color: COLORS.green[500],
+          clickable: true,
+        };
+      case "PENDING":
+        return {
+          text: "작성 중",
+          color: COLORS.yellow[500],
+          clickable: true,
+        };
+      case "NOT_APPLICABLE":
+        return {
+          text: "해당 없음",
+          color: COLORS.gray[500],
+          clickable: true,
+        };
+      default:
+        return {
+          text: "상태 없음",
+          color: COLORS.gray[400],
+          clickable: false,
+        };
+    }
+  };
+
+  const statusInfo = getStatusInfo();
 
   return (
     <div className={careSheetListItemContainer}>
@@ -38,17 +88,22 @@ export const CareSheetListItem = ({
         <div
           className={careSheetListItemStatusContainer}
           onClick={handleClickWrittenCareSheet}
+          style={{
+            cursor: statusInfo.clickable ? "pointer" : "default",
+            opacity: statusInfo.clickable ? 1 : 0.6,
+          }}
         >
-          <Body type="small" weight={500} color={COLORS.gray[600]}>
-            기록지 보러 가기
+          <Body type="small" weight={500} color={statusInfo.color}>
+            {statusInfo.text}
           </Body>
-          <Icon
-            name={"chevronRight"}
-            width={20}
-            height={20}
-            color={COLORS.gray[50]}
-            stroke={COLORS.white}
-          />
+          {statusInfo.clickable && (
+            <Icon
+              name={"chevronRight"}
+              width={20}
+              height={20}
+              color={COLORS.gray[50]}
+            />
+          )}
         </div>
       </div>
     </div>

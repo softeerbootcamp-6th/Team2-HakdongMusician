@@ -1,3 +1,5 @@
+import type { Gender } from "@/types/gender";
+
 export type TMember = {
   id: number;
   careNumber: string;
@@ -15,6 +17,15 @@ export type TMember = {
   organizationId: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type TUnWrittenMember = {
+  memberId: number;
+  careNumber: string;
+  name: string;
+  birthDate: string;
+  gender: Gender;
+  avatarUrl: string;
 };
 
 export type TMemberCreateRequest = {

@@ -7,18 +7,18 @@ import {
 } from "./MemberListItem.css";
 
 interface MemberListItemProps {
+  memberId: number;
   name: string;
   birthDate: string;
-  code: number;
   profileImage?: string;
   isSelected?: boolean;
   onClick?: () => void;
 }
 
 export const MemberListItem = ({
+  memberId,
   name,
   birthDate,
-  code,
   profileImage,
   isSelected = false,
   onClick,
@@ -47,7 +47,7 @@ export const MemberListItem = ({
           weight={500}
           color={isSelected ? COLORS.white : COLORS.gray[700]}
         >
-          {code}
+          {memberId}
         </Body>
       </div>
     </div>
