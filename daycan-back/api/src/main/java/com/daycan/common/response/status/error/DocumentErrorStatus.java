@@ -18,6 +18,8 @@ public enum DocumentErrorStatus implements Status {
   INVALID_DOCUMENT_ID(HttpStatus.BAD_REQUEST, 40054 ,"문서 ID가 잘못되었습니다"),
   INVALID_MEAL_VALUE(HttpStatus.BAD_REQUEST, 40055,
       "식사 정보가 잘못되었습니다. 제공 여부가 true인 경우, 식사 정보는 필수입니다."),
+  INVALID_STATUS_WRITE_SHEET(HttpStatus.BAD_REQUEST, 40056,
+      "기록지를 작성할 수 없는 상태입니다. 리포트가 이미 검토 완료 됐습니다."),
 
   // 403
   INVALID_DOCUMENT_ACCESS(HttpStatus.FORBIDDEN, 40350, "해당 문서에 접근할 수 없습니다."),
