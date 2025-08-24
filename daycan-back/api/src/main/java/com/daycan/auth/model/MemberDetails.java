@@ -15,6 +15,10 @@ public class MemberDetails extends UserDetails {
   }
 
   @Override
+  public boolean checkPassword(String hashedPassword) {
+    return member.getPassword().equals(hashedPassword);
+  }
+  @Override
   public String getUniqueIdentifier() {
     return "MEMBER:" + username;
   }

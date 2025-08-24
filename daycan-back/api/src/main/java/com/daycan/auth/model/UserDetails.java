@@ -9,5 +9,7 @@ public abstract class UserDetails {
   protected UserType userType;
 
   public abstract String getUniqueIdentifier(); // JWT subject
+
+  public abstract boolean checkPassword(String inputPassword);
 }
 

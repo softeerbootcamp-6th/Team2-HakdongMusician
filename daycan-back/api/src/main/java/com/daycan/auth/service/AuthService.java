@@ -20,6 +20,7 @@ import com.daycan.repository.jpa.MemberRepository;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -123,6 +124,14 @@ public class AuthService {
     return new LoginResponse(newAccess.value(), newRefresh.value());
   }
 
+  public void verifyPassword(UserDetails principal, String inputPassword) {
+    String hashed = PasswordHasher.hash(inputPassword);
+    if (!principal.checkPassword(hashed)) {
+      throw new ApplicationException(AuthErrorStatus.CENTER_ONLY);
+    }
+  }
+
+  @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
   public UserDetails loadByUserId(String sub) {
     String[] parts = sub.split(":");
     if (parts.length != 2) {

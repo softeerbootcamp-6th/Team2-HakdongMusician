@@ -23,7 +23,6 @@ public enum AuthErrorStatus implements Status {
 
   // 403
   CENTER_ONLY(HttpStatus.FORBIDDEN, 40310,"접근이 금지된 사용자입니다."),
-
   // 404
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, 40410,"사용자를 찾을 수 없습니다."),
 

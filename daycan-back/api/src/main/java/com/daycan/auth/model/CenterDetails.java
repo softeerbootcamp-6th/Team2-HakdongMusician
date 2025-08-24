@@ -15,6 +15,11 @@ public class CenterDetails extends UserDetails {
   }
 
   @Override
+  public boolean checkPassword(String hashedPassword) {
+    return center.getPassword().equals(hashedPassword);
+  }
+
+  @Override
   public String getUniqueIdentifier() {
     return "CENTER:" + username;
   }
