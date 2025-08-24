@@ -50,10 +50,7 @@ export const useReports = () => {
 
   const sendedReports = useMemo(() => {
     return filteredReports.filter(
-      (report) =>
-        report.status === "DONE" ||
-        report.status === "RESERVED" ||
-        report.status === "SENDING"
+      (report) => report.status === "DONE" || report.status === "RESERVED"
     );
   }, [filteredReports]);
 

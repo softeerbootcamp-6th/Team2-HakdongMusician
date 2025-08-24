@@ -20,7 +20,6 @@
     "jotai": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "react-hook-form": "^7.62.0",
     "react-router-dom": "catalog:"
   },
   "peerDependencies": {
