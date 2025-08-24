@@ -56,6 +56,10 @@ export const Greeting = ({ parentName, isReportArrived }: GreetingProps) => {
       <DailyReportModal
         isOpen={isDailyReportModalOpen}
         onClose={() => setIsDailyReportModalOpen(false)}
+        onAgain={() => {
+          setIsDailyReportModalOpen(false);
+          navigate("/to-daily-report");
+        }}
       />
     </>
   );
