@@ -61,7 +61,7 @@ export const OCRPhotoPage = () => {
             name="chevronLeft"
             width={24}
             height={24}
-            color={COLORS.white}
+            color={COLORS.gray[900]}
           />
         </button>
         <Body type="medium" weight={600} color={COLORS.white}>
