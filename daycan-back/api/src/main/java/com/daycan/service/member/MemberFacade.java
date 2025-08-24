@@ -72,7 +72,7 @@ public class MemberFacade {
   }
 
   @Transactional(readOnly = true)
-  public MemberReportedDateListResponse getReportedDates(Member member, YearMonth month) {
+  public MemberReportedDateListResponse getReportedDates(Member member, YearMonth month){
     List<LocalDate> dateList = careReportService.getReportedDateInMonth(
         member.getId(), month
     );
