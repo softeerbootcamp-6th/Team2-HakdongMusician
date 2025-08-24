@@ -1,3 +1,5 @@
+import type { YearMonthDay } from "@/types/date";
+
 export type TReportEntry = {
   key: string;
   value: string;
@@ -29,4 +31,8 @@ export type TReport = {
     cognitiveEntries: TReportEntry[];
     cognitiveCardFooter: TReportCardFooter;
   };
+};
+
+export type TReportList = {
+  reportedDates: YearMonthDay[];
 };

@@ -15,55 +15,32 @@ import {
   CognitiveCard,
   MealCard,
 } from "../../../daily-report/components";
-import { useState } from "react";
-import {
-  formatYYYYMMDD,
-  getDateString,
-  isToday,
-} from "../../../../utils/dateUtils";
-import { useGetReportQuery } from "@/services/report/useReportQuery";
+import { getDateString, isToday } from "../../../../utils/dateUtils";
+import { useReportDateSelection } from "../../hooks";
 
 export const ReportsContent = () => {
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const {
-    data: reportsData,
+    isCalendarOpen,
+    selectedDate,
+    availableDates,
+    reportsData,
     isLoading,
     isError,
-  } = useGetReportQuery(formatYYYYMMDD(selectedDate));
+    openCalendar,
+    handleDateSelect,
+    handleDateConfirm,
+    handleMonthChange,
+  } = useReportDateSelection();
 
   return (
     <div className={reportsContentContainer}>
       <div className={reportsContentHeader}>
         <div className={reportsContentHeaderLeft}>
-          <Icon
-            name="chevronLeft"
-            width={24}
-            height={24}
-            color={COLORS.white}
-            onClick={() => {
-              setSelectedDate(
-                new Date(selectedDate.setDate(selectedDate.getDate() - 1))
-              );
-            }}
-          />
           <div className={dateContainer}>
             <Body type="medium" weight={600} color={COLORS.gray[900]}>
               {getDateString(selectedDate)}
             </Body>
           </div>
-
-          <Icon
-            name="chevronRight"
-            width={24}
-            height={24}
-            color={COLORS.white}
-            onClick={() => {
-              setSelectedDate(
-                new Date(selectedDate.setDate(selectedDate.getDate() + 1))
-              );
-            }}
-          />
           {isToday(selectedDate) && (
             <Chip
               round="l"
@@ -82,9 +59,7 @@ export const ReportsContent = () => {
             width={28}
             height={28}
             color={COLORS.gray[900]}
-            onClick={() => {
-              setIsCalendarOpen(true);
-            }}
+            onClick={openCalendar}
           />
         </div>
       </div>
@@ -92,14 +67,11 @@ export const ReportsContent = () => {
       <div className={reportsContentBody}>
         {isCalendarOpen && (
           <Calendar
-            onDateSelect={(date) => {
-              setSelectedDate(date);
-            }}
-            onConfirm={(date) => {
-              setSelectedDate(date);
-              setIsCalendarOpen(false);
-            }}
+            onDateSelect={handleDateSelect}
+            onConfirm={handleDateConfirm}
             initialDate={selectedDate}
+            availableDates={availableDates}
+            onMonthChange={handleMonthChange}
           />
         )}
         {isLoading ? (

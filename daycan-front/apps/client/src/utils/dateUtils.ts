@@ -24,6 +24,18 @@ export const formatYYYYMMDD = (date: Date | string): YearMonthDay => {
   return date.toISOString().split("T")[0] as YearMonthDay;
 };
 
+export const formatYYYYMM = (date: Date | string): YearMonth => {
+  if (typeof date === "string") {
+    return date as YearMonth;
+  }
+  return date
+    .toISOString()
+    .split("T")[0]
+    .split("-")
+    .slice(0, 2)
+    .join("-") as YearMonth;
+};
+
 export const getDateString = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
