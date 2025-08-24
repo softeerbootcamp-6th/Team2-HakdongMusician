@@ -5,14 +5,16 @@ export const getIconByRowKey = (key: string, size: number = 32) => {
   const keyLower = key.toLowerCase();
 
   // 식사 관련
-  if (
-    keyLower.includes("식사") ||
-    keyLower.includes("아침") ||
-    keyLower.includes("점심") ||
-    keyLower.includes("저녁") ||
-    keyLower.includes("간식")
-  ) {
+  if (keyLower.includes("아침") || keyLower.includes("식사")) {
     return <Icon name="meal" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("점심")) {
+    return <Icon name="rice" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("저녁") || keyLower.includes("간식")) {
+    return <Icon name="chicken" width={size} height={size} />;
   }
 
   // 건강 체크 관련
@@ -27,12 +29,59 @@ export const getIconByRowKey = (key: string, size: number = 32) => {
   // 신체 건강 개선 관련
   if (
     keyLower.includes("운동") ||
-    keyLower.includes("활동") ||
     keyLower.includes("게이트볼") ||
     keyLower.includes("체조") ||
     keyLower.includes("산책")
   ) {
     return <Icon name="activity" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("테니스")) {
+    return <Icon name="tennis" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("축구")) {
+    return <Icon name="soccer" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("야구")) {
+    return <Icon name="baseball" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("농구")) {
+    return <Icon name="basketball" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("배드민턴")) {
+    return <Icon name="badminton" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("수영")) {
+    return <Icon name="swimming" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("탁구")) {
+    return <Icon name="pingpong" width={size} height={size} />;
+  }
+
+  if (
+    keyLower.includes("독서") ||
+    keyLower.includes("책") ||
+    keyLower.includes("책읽기")
+  ) {
+    return <Icon name="book" width={size} height={size} />;
+  }
+
+  if (keyLower.includes("체스")) {
+    return <Icon name="chess" width={size} height={size} />;
+  }
+
+  if (
+    keyLower.includes("포커") ||
+    keyLower.includes("플레이") ||
+    keyLower.includes("카드")
+  ) {
+    return <Icon name="poker" width={size} height={size} />;
   }
 
   // 인지 능력 관련
