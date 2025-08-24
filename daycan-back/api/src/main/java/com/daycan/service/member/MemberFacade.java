@@ -41,9 +41,7 @@ public class MemberFacade {
 //    if(report.getDocument().getStatus()!= DocumentStatus.REPORT_REVIEWED) {
 //      throw new ApplicationException(DocumentErrorStatus.INVALID_REPORT_ACCESS);
 //    }
-    careReportService.saveReport(
-        reportWithDto.careReport().openThis()
-    );
+    openReportIfNeeded(reportWithDto.careReport());
     return new MemberReportResponse(
         member.getName(),
         member.getGender(),
@@ -107,5 +105,12 @@ public class MemberFacade {
     );
   }
 
-
+  private void openReportIfNeeded(CareReport report) {
+    if(report == null){
+      return;
+    }
+    careReportService.saveReport(
+        report.openThis()
+    );
+  }
 }
