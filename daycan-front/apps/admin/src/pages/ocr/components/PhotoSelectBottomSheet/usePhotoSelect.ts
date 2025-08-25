@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@daycan/ui";
 // import { useFunnel } from "@daycan/hooks";
 // import { prefillCareSheetData } from "@/utils/careSheetPrefill";
 // import { getDefaultInfoData } from "@/utils/careSheetPrefill";
@@ -7,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export const usePhotoSelect = () => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   // const { funnelState } = useFunnel();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -71,7 +73,6 @@ export const usePhotoSelect = () => {
   // 사진 등록 방법 선택 후 처리
   const handlePhotoMethodSelect = async (photoMethod: "camera" | "album") => {
     console.log("handlePhotoMethodSelect", photoMethod);
-
     if (photoMethod === "camera") {
       // OCR 사진 촬영 페이지로 이동
       navigate("/care-sheet/new/ocr/photo");
@@ -94,10 +95,16 @@ export const usePhotoSelect = () => {
       console.log("업로드된 이미지 URL:", uploadedImageUrl);
 
       // OCR 데이터를 기반으로 care-sheet 폼에 기본값 설정
-      // prefillCareSheetData();
-
       // diagnosis 페이지로 이동 (모든 데이터가 설정된 상태)
-      navigate("/care-sheet/new/diagnosis");
+
+      showToast({
+        data: {
+          message: "OCR 기능은 아직 준비중입니다.",
+          type: "info",
+          variant: "mobile",
+        },
+        autoClose: 1000,
+      });
     } catch (error) {
       console.error("이미지 업로드 실패:", error);
       alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");

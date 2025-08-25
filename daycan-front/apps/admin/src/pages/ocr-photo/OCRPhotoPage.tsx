@@ -1,6 +1,6 @@
 import { useCamera } from "./hooks/useCamera";
 import { useNavigate } from "react-router-dom";
-import { Button, Icon, Body, COLORS } from "@daycan/ui";
+import { Button, Icon, Body, COLORS, useToast } from "@daycan/ui";
 import {
   pageContainer,
   header,
@@ -20,6 +20,7 @@ import {
 
 export const OCRPhotoPage = () => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const {
     videoRef,
     canvasRef,
@@ -42,7 +43,16 @@ export const OCRPhotoPage = () => {
 
       // OCR 처리를 위해 이미지를 전달하고 이전 페이지로 돌아가기
       // 여기서는 간단히 뒤로가기 처리
+      // navigate("/care-sheet/new/");
       navigate(-1);
+      showToast({
+        data: {
+          message: "OCR 기능은 아직 준비중입니다.",
+          type: "info",
+          variant: "mobile",
+        },
+        autoClose: 1000,
+      });
     }
   };
 

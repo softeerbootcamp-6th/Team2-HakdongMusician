@@ -43,7 +43,9 @@ export const PhotoSelectBottomSheet = ({
             {/* 앨범에서 선택 영역 */}
             <div
               className={methodCard}
-              onClick={() => handlePhotoMethodSelect("album")}
+              onClick={() => {
+                handlePhotoMethodSelect("album");
+              }}
             >
               <Icon
                 name="addPhoto"
