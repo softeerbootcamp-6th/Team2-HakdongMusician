@@ -92,7 +92,6 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 | **Messaging & Async** | ![Amazon SNS](https://img.shields.io/badge/Amazon_SNS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white) ![AWS Lambda](https://img.shields.io/badge/AWS_Lambda-FF9900?style=for-the-badge&logo=awslambda&logoColor=white) |
 | **Infrastructure** | ![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white) ![EC2](https://img.shields.io/badge/Amazon_EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white) ![S3](https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white) ![RDS](https://img.shields.io/badge/Amazon_RDS-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white) ![Route53](https://img.shields.io/badge/Amazon_Route_53-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white) |
 | **CI/CD** | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white) ![AWS CodeDeploy](https://img.shields.io/badge/AWS_CodeDeploy-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)|
-| **Auth / Security** | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
 </div>
 
 ---
