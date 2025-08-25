@@ -69,7 +69,9 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 |   팀원   |   김수환    |    홍규진    |    소보길    |
 | :------: | :---------: | :----------: | :----------: |
 | **역할** | Web Backend | Web Frontend | Web Frontend |
-| **사진** |     🖼️      |      🖼️      |      🖼️      |
+| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |      🖼️      |      🖼️      |
+
+
 
 </div>
 
@@ -98,7 +100,7 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 
 ### 아키텍처 개요
 
-<여기 아키텍쳐 사진>
+<img width="1000" alt="architecture" src="https://github.com/user-attachments/assets/6af4d762-94fd-4a40-92b1-728fd0ff18da" />
 
 ## 프로젝트 구조
 
@@ -107,13 +109,17 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 ```
 Team2-HakdongMusician/
 ├── 📁 daycan-back/          # 백엔드 서버 (Spring Boot)
+│   ├── 📁 src/              # 비즈니스 로직
+│   └── 📁 scripts/          # 배포 스크립트
 ├── 📁 daycan-front/         # 프론트엔드 애플리케이션
 │   ├── 📁 apps/
 │   │   ├── 📁 admin/        # 센터 종사자용 관리자 포털
 │   │   └── 📁 client/       # 보호자용 클라이언트 포털
 │   └── 📁 packages/         # 공유 패키지들
-└── 📁 docs/                 # 프로젝트 문서
 ```
+#### [Wiki](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki)
+#### [FE README](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/blob/main/daycan-front/README.md)
+#### [BE README](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/blob/main/daycan-back/README.md)
 
 ### 프론트엔드 구조
 
@@ -144,23 +150,19 @@ Team2-HakdongMusician/
 ```
 
 ### 백엔드 구조
-
+[백엔드 패키지 구조](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BBE%5D-System-architecture#%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B5%AC%EC%A1%B0)
 ```
 📁 daycan-back/
 ├── 📁 src/
-│   ├── 📁 main/
-│   │   ├── 📁 java/
-│   │   │   └── 📁 com/
-│   │   │       └── 📁 daycan/
-│   │   │           ├── 📁 controller/    # REST API 컨트롤러
-│   │   │           ├── 📁 service/       # 비즈니스 로직
-│   │   │           ├── 📁 repository/    # 데이터 접근 계층
-│   │   │           ├── 📁 entity/        # 데이터베이스 엔티티
-│   │   │           └── 📁 config/        # 설정 클래스
-│   │   └── 📁 resources/                 # 설정 파일
-│   └── 📁 test/                          # 테스트 코드
-├── 📁 docker-compose.yml                 # 개발 환경 설정
-└── 📁 scripts/                           # 배포 스크립트
+│   ├── 📁 main/java/com/daycan
+│   │   ├─ auth        # 인증/인가(필터·리졸버·JWT·토큰/블랙리스트·컨트롤러)
+│   │   ├─ common      # 예외/로깅/MDC/응답 규격 및 에러코드
+│   │   ├─ config      # 전역 설정(AOP/Async/Filter/JPA/Swagger/Web/Seed)
+│   │   ├─ domain      # 핵심 도메인(엔티티/값객체/열거형/조회모델)
+│   │   ├─ external    # 외부 연동(S3/SNS/워커·커맨드·전략)
+│   │   ├─ service     # 유스케이스/파사드/도메인 오케스트레이션
+│   │   └─ util        # 프리필/스코어링/코멘트/리포트 조립 유틸
+└── 📁 scripts         # 배포 스크립트
 ```
 
 ---
