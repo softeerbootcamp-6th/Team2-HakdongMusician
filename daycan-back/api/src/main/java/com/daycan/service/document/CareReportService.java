@@ -201,7 +201,7 @@ public class CareReportService {
   }
 
   private void recomputeChainFromInclusiveFinalizedOnly(Long memberId, LocalDate fromDate) {
-    EnumSet<DocumentStatus> finalized = DocumentStatus.finished(); // REPORT_SENDING, REPORT_RESERVED, REPORT_DONE
+    EnumSet<DocumentStatus> finalized = DocumentStatus.reviewed();
 
     Vital prev = vitalRepository
         .findTopByDocument_Member_IdAndDocument_DateBeforeAndDocument_StatusInOrderByDocument_DateDesc(

@@ -134,6 +134,15 @@ public enum DocumentStatus {
     );
   }
 
+  public static EnumSet<DocumentStatus> reviewed() {
+    return EnumSet.of(
+        DocumentStatus.REPORT_REVIEWED,
+        DocumentStatus.REPORT_SENDING,
+        DocumentStatus.REPORT_RESERVED,
+        DocumentStatus.REPORT_DONE
+    );
+  }
+
 
   public static EnumSet<DocumentStatus> fromReport(ReportStatus report) {
     if (report == null || report == ReportStatus.NOT_APPLICABLE) {
