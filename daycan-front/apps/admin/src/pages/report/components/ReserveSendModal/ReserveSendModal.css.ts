@@ -6,7 +6,7 @@ export const reserveSendModalContainer = style({
 
   padding: "32px",
   width: "716px",
-  height: "261px",
+  height: "280px",
 });
 
 export const reserveSendModalButtonContainer = style({

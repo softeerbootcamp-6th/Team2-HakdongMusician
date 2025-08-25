@@ -5,7 +5,7 @@ export const getStatusInfo = (status: TReportStatus) => {
   switch (status) {
     case "NOT_APPLICABLE":
       return {
-        text: "검토 불가능",
+        text: "검토 불가",
         icon: "warningFilled",
         strokeColor: COLORS.white,
         color: COLORS.red[500],
