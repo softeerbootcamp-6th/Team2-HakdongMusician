@@ -60,10 +60,10 @@ public final class SheetMapper {
         .physicalTherapy(safe(req.recoveryProgram(), RecoveryProgramEntry::physicalTherapy))
 
         // ── 코멘트 ──
-        .functionalComment(safe(req.physical(), PhysicalEntry::comment))
+        .physicalComment(safe(req.physical(), PhysicalEntry::comment))
         .cognitiveComment(safe(req.cognitive(), CognitiveEntry::comment))
         .healthComment(safe(req.healthCare(), HealthCareEntry::comment))
-        .physicalComment(safe(req.recoveryProgram(), RecoveryProgramEntry::comment))
+        .functionalComment(safe(req.recoveryProgram(), RecoveryProgramEntry::comment))
         .build();
   }
 
@@ -90,10 +90,10 @@ public final class SheetMapper {
         safe(req.recoveryProgram(), RecoveryProgramEntry::cognitiveProgram),
         safe(req.recoveryProgram(), RecoveryProgramEntry::cognitiveEnhancement),
         safe(req.recoveryProgram(), RecoveryProgramEntry::physicalTherapy),
-        safe(req.physical(), PhysicalEntry::comment),
+        safe(req.recoveryProgram(), RecoveryProgramEntry::comment),
         safe(req.cognitive(), CognitiveEntry::comment),
         safe(req.healthCare(), HealthCareEntry::comment),
-        safe(req.recoveryProgram(), RecoveryProgramEntry::comment)
+        safe(req.physical(), PhysicalEntry::comment)
     );
   }
 
@@ -126,13 +126,14 @@ public final class SheetMapper {
     return new Meal(support.provided(), entry.mealType(), entry.amount());
   }
 
-  // 작은 널가드 유틸 (req 서브객체가 null이어도 NPE 방지)
   private static <T, R> R safe(T target, java.util.function.Function<T, R> getter) {
     return target == null ? null : getter.apply(target);
   }
 
   public static List<PersonalProgram> toPersonalPrograms(List<ProgramEntry> entries) {
-    if (entries == null || entries.isEmpty()) return List.of();
+    if (entries == null || entries.isEmpty()) {
+      return List.of();
+    }
 
     Map<String, ProgramEntry> latestByNameType = entries.stream()
         .filter(Objects::nonNull)
@@ -150,7 +151,9 @@ public final class SheetMapper {
   }
 
   private static String norm(String s) {
-    if (s == null) return null;
+    if (s == null) {
+      return null;
+    }
     s = s.trim();
     return s.length() <= 100 ? s : s.substring(0, 100);
   }

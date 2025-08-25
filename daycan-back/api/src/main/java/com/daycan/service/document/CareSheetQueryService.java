@@ -1,7 +1,6 @@
 package com.daycan.service.document;
 
 
-
 import com.daycan.common.exceptions.ApplicationException;
 
 import com.daycan.common.response.status.error.DocumentErrorStatus;
@@ -21,16 +20,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class CareSheetQueryService {
+
   private final DocumentQueryRepository documentQueryRepository;
 
 
-  /**
-   * 특정 날짜에 작성된 특정 수급자에 대한 기록지를 조회합니다.
-   *
-   * @param memberId 수급자 ID
-   * @param date     조회할 날짜
-   * @return 해당 날짜에 작성된 기록지의 개수
-   */
   protected CareSheetView findCareSheetViewByMemberAndDate(Long memberId, LocalDate date) {
 
     return documentQueryRepository.fetchSheetWithVital(memberId, date)
@@ -42,7 +35,7 @@ public class CareSheetQueryService {
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.SHEET_NOT_FOUND));
   }
 
-  protected  List<DocumentMetaView> findDocumentMetaViewByDate(
+  protected List<DocumentMetaView> findDocumentMetaViewByDate(
       Center center,
       LocalDate date,
       Long writerId,
@@ -53,7 +46,6 @@ public class CareSheetQueryService {
         center.getId(), date, writerId, docStatuses, nameLike
     );
   }
-
 
 
 }

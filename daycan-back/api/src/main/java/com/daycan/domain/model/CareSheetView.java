@@ -37,7 +37,7 @@ public record CareSheetView(
     PhysicalEntry physical   = mapPhysical(cs, vt);
     CognitiveEntry cognitive = mapCognitive(cs);
     HealthCareEntry health   = mapHealth(cs, vt);
-    RecoveryProgramEntry rec = mapRecovery(cs, programs);
+    RecoveryProgramEntry recognize = mapRecovery(cs, programs);
 
     return new CareSheetResponse(
         id,
@@ -51,7 +51,7 @@ public record CareSheetView(
         physical,
         cognitive,
         health,
-        rec
+        recognize
     );
   }
 
