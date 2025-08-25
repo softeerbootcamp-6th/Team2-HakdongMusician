@@ -24,7 +24,7 @@ export const MainPage = () => {
         <>
           <Greeting
             parentName={mainData?.name ?? "김수급"}
-            isReportArrived={mainData?.isReportArrived ?? false}
+            isReportArrived={mainData?.isReportArrived}
           />
           {/* 이번 주 건강 요약하기 */}
           <SummaryCard

@@ -3,11 +3,16 @@ import { dailyReportModalContent } from "./DailyReportModal.css";
 
 interface DailyReportModalProps {
   isOpen: boolean;
+  title: string;
+  content: string;
   onClose: () => void;
-  onAgain: () => void;
+  onAgain?: () => void;
 }
+
 export const DailyReportModal = ({
   isOpen,
+  title,
+  content,
   onClose,
   onAgain,
 }: DailyReportModalProps) => {
@@ -15,19 +20,21 @@ export const DailyReportModal = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className={dailyReportModalContent}>
         <Body type="medium" weight={600} color={COLORS.gray[900]}>
-          이미 데일리 리포트를 확인했어요!
+          {title}
         </Body>
         <Body
           type="small"
           weight={400}
           style={{ color: COLORS.gray[600], whiteSpace: "pre-line" }}
         >
-          {`\n오늘 데일리 리포트를 확인하셨다면, 그 날의 리포트는 하단의, 리포트 모아보기 버튼을 통해 확인할 수 있어요.`}
+          {content}
         </Body>
 
-        <Button size="fullWidth" variant="unEmphasized" onClick={onAgain}>
-          다시 보기
-        </Button>
+        {onAgain && (
+          <Button size="fullWidth" variant="unEmphasized" onClick={onAgain}>
+            다시 보기
+          </Button>
+        )}
 
         <Button size="fullWidth" variant="primary" onClick={onClose}>
           확인
