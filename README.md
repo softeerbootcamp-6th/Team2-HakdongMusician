@@ -69,7 +69,7 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 |   팀원   |   김수환    |    홍규진    |    소보길    |
 | :------: | :---------: | :----------: | :----------: |
 | **역할** | Web Backend | Web Frontend | Web Frontend |
-| **사진** | <img width="500" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |      🖼️      |      🖼️      |
+| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |      🖼️      |      🖼️      |
 
 
 
