@@ -53,17 +53,13 @@ public class MemberFacade {
   public MemberHomeResponse getMemberHome(Member member, LocalDate today) {
     String imageUrl = storageService.presignGet(member.getAvatarUrl());
     Optional<Boolean> isOpened = careReportService.isReportOpened(member.getId(), today);
-
-    if (isOpened.isEmpty()) {
-      isOpened = Optional.of(true);
-    }
     MemberWeeklyScoreView weeklyScoreView =
         vitalService.getMemberWeeklyScore(member.getId(), today);
 
     return MemberHomeResponse.of(
         member,
         imageUrl,
-        isOpened.get(),
+        isOpened.isPresent() ? !isOpened.get() : null,
         weeklyScoreView.weeklyAvg(),
         weeklyScoreView.lastWeekAvg()
     );
