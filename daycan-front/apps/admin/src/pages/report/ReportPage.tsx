@@ -1,5 +1,9 @@
 import { PageToolbar, Filter } from "@/components";
-import { reportContainer, reportButtons } from "./ReportPage.css";
+import {
+  reportContainer,
+  reportButtons,
+  reportFilterRefetchContainer,
+} from "./ReportPage.css";
 import { Button, Heading, Icon, Body, COLORS } from "@daycan/ui";
 import { useRef, useMemo } from "react";
 import type { FilterItem } from "@/components/Filter";
@@ -31,7 +35,7 @@ const SkeletonReportList = () => {
 export const ReportPage = () => {
   const {
     // 데이터 상태
-    filteredReports,
+    beforeSendReports,
     sendedReports,
     isLoading,
     // UI 상태
@@ -55,18 +59,19 @@ export const ReportPage = () => {
     isImmediateSendModalOpen,
     setIsReserveSendModalOpen,
     setIsImmediateSendModalOpen,
+    refetch,
   } = useReports();
 
   // 실제로 전송 가능한 항목의 개수 계산
   const sendableCheckedCount = useMemo(() => {
     return Array.from(checkedMemberIds).filter((memberId) =>
-      filteredReports.some(
+      beforeSendReports.some(
         (report) =>
           report.memberMetaEntry.memberId === memberId &&
           report.status === "REVIEWED"
       )
     ).length;
-  }, [checkedMemberIds, filteredReports]);
+  }, [checkedMemberIds, beforeSendReports]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -123,18 +128,33 @@ export const ReportPage = () => {
               marginLeft: "8px",
             }}
           >
-            ({filteredReports.length}개)
+            ({beforeSendReports.length}개)
           </span>
         )}
       </Body>
+      <div className={reportFilterRefetchContainer}>
+        <Filter resetKey={resetCounter} items={filterItems} ref={dropdownRef} />
 
-      <Filter resetKey={resetCounter} items={filterItems} ref={dropdownRef} />
-
+        <Button
+          variant="primary"
+          size="fullWidth"
+          style={{
+            width: "150px",
+            height: "36px",
+          }}
+          onClick={() => refetch()}
+        >
+          <Body type="xsmall" weight={600} color={COLORS.gray[700]}>
+            다시 불러오기
+          </Body>
+          <Icon name="reset" width={20} height={20} />
+        </Button>
+      </div>
       {isLoading ? (
         <SkeletonReportList />
       ) : (
         <ReportList
-          reports={filteredReports}
+          reports={beforeSendReports}
           isAllSelected={isAllSelectedFiltered}
           isIndeterminate={isIndeterminateFiltered}
           onSelectAll={handleSelectAllFiltered}

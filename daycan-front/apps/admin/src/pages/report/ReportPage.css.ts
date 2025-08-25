@@ -41,3 +41,9 @@ export const divider = style({
   height: "16px",
   backgroundColor: COLORS.gray[200],
 });
+
+export const reportFilterRefetchContainer = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+});

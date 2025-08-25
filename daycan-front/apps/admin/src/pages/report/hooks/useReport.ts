@@ -9,7 +9,11 @@ import type { TTime } from "@/types/date";
 import type { YearMonthDay } from "@/types/date";
 
 export const useReports = () => {
-  const { data: reports, isLoading } = useGetReportListQuery(TODAY_DATE);
+  const {
+    data: reports,
+    isLoading,
+    refetch,
+  } = useGetReportListQuery(TODAY_DATE);
 
   const { mutate: sendReport } = useSendReportMutation();
   const [isReserveSendModalOpen, setIsReserveSendModalOpen] =
@@ -24,10 +28,15 @@ export const useReports = () => {
   // 체크된 ID만 atom으로 관리
   const [checkedMemberIds, setCheckedMemberIds] = useAtom(checkedMemberIdsAtom);
 
-  // 필터링된 리포트 (로컬 상태 기반)
-  const filteredReports = useMemo(() => {
+  // 전송 전 상태의 리포트만 필터링 (sending, done, reserved 상태 제외)
+  const beforeSendReports = useMemo(() => {
     if (!reports) return [];
-    let filtered = [...reports];
+    let filtered = reports.filter(
+      (report) =>
+        report.status !== "SENDING" &&
+        report.status !== "DONE" &&
+        report.status !== "RESERVED"
+    );
 
     // 상태별 필터링
     if (selectedStatus) {
@@ -50,15 +59,17 @@ export const useReports = () => {
   }, [reports, selectedStatus]);
 
   const sendedReports = useMemo(() => {
-    return filteredReports.filter(
-      (report) => report.status === "DONE" || report.status === "RESERVED"
+    return (
+      reports?.filter(
+        (report) => report.status === "DONE" || report.status === "RESERVED"
+      ) || []
     );
-  }, [filteredReports]);
+  }, [reports]);
 
   // 선택 가능한 리포트 (REVIEWED 상태만)
   const selectableReports = useMemo(() => {
-    return filteredReports.filter((report) => report.status === "REVIEWED");
-  }, [filteredReports]);
+    return beforeSendReports.filter((report) => report.status === "REVIEWED");
+  }, [beforeSendReports]);
 
   // 각 리스트별 전체 선택 상태 계산
   const isAllSelectedFiltered = useMemo(() => {
@@ -214,7 +225,7 @@ export const useReports = () => {
     reports,
     isLoading,
 
-    filteredReports,
+    beforeSendReports,
     sendedReports,
     selectableReports,
     selectedStatus,
@@ -238,5 +249,6 @@ export const useReports = () => {
     handleReserveSend,
     setIsReserveSendModalOpen,
     setIsImmediateSendModalOpen,
+    refetch,
   };
 };
