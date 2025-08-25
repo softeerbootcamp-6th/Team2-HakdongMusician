@@ -106,6 +106,22 @@ export const HistoryModal = ({
     };
   };
 
+  // 케어시트 상태에 따른 표시 정보 가져오기
+  const getCareSheetStatusDisplay = (status: string) => {
+    switch (status) {
+      case "NOT_APPLICABLE":
+        return { text: "미출석", color: "red" as const };
+      case "PENDING":
+        return { text: "작성 필요", color: "yellow" as const };
+      case "DONE":
+        return { text: "작성 완료", color: "green" as const };
+      case "REVIEWED":
+        return { text: "검토 완료", color: "blue" as const };
+      default:
+        return { text: "작성 필요", color: "yellow" as const };
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className={historyModalContainer}>
@@ -185,6 +201,15 @@ export const HistoryModal = ({
                   document.careReport.status
                 );
 
+                // 케어시트 상태 정보 가져오기
+                const careSheetStatusInfo = getCareSheetStatusDisplay(
+                  document.careSheet.status
+                );
+
+                // careSheetId나 reportId가 null인지 확인
+                const hasCareSheet = document.careSheet.careSheetId !== null;
+                const hasReport = document.careReport.careReportId !== null;
+
                 return (
                   <div key={document.documentDate} className={dateStatusItem}>
                     <div className={dateStatusHeader}>
@@ -219,27 +244,32 @@ export const HistoryModal = ({
                         </Body>
 
                         <Chip
-                          color="blue"
+                          color={careSheetStatusInfo.color}
                           round="s"
                           style={{ padding: "6px 8px" }}
                         >
-                          작성 완료
+                          {careSheetStatusInfo.text}
                         </Chip>
 
-                        <button
-                          className={confirmButton}
-                          onClick={() =>
-                            handleViewCareSheet(document.documentDate, memberId)
-                          }
-                        >
-                          <Body
-                            type="xsmall"
-                            weight={500}
-                            color={COLORS.gray[600]}
+                        {hasCareSheet && (
+                          <button
+                            className={confirmButton}
+                            onClick={() =>
+                              handleViewCareSheet(
+                                document.documentDate,
+                                memberId
+                              )
+                            }
                           >
-                            확인 &gt;
-                          </Body>
-                        </button>
+                            <Body
+                              type="xsmall"
+                              weight={500}
+                              color={COLORS.gray[600]}
+                            >
+                              확인 &gt;
+                            </Body>
+                          </button>
+                        )}
                       </div>
 
                       <div className={statusItem}>
@@ -257,20 +287,22 @@ export const HistoryModal = ({
                         >
                           {reportStatusInfo.text}
                         </Chip>
-                        <button
-                          className={confirmButton}
-                          onClick={() =>
-                            handleViewReport(document.documentDate)
-                          }
-                        >
-                          <Body
-                            type="xsmall"
-                            weight={500}
-                            color={COLORS.gray[600]}
+                        {hasReport && (
+                          <button
+                            className={confirmButton}
+                            onClick={() =>
+                              handleViewReport(document.documentDate)
+                            }
                           >
-                            확인 &gt;
-                          </Body>
-                        </button>
+                            <Body
+                              type="xsmall"
+                              weight={500}
+                              color={COLORS.gray[600]}
+                            >
+                              확인 &gt;
+                            </Body>
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
