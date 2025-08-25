@@ -27,6 +27,8 @@ import { ReportDataView } from "@/components/ReportDataView";
 import { CareSheetDataView } from "@/components/CareSheetDataView";
 import { TODAY_YYYYMM } from "@/utils/dateFormatter";
 import type { YearMonthDay } from "@/types/date";
+import { getStatusInfo } from "@/pages/report/utils/parser";
+import type { TReportStatus } from "@/services/report/types";
 
 interface HistoryModalProps {
   memberId: number;
@@ -81,6 +83,27 @@ export const HistoryModal = ({
     });
     // 월이 변경되면 선택된 데이터 타입 초기화
     setSelectedDataType(null);
+  };
+
+  // 리포트 상태에 따른 표시 정보 가져오기
+  const getReportStatusDisplay = (status: TReportStatus) => {
+    const statusInfo = getStatusInfo(status);
+
+    // Chip 컴포넌트가 지원하는 색상으로 매핑
+    const getChipColor = (
+      color: string
+    ): "red" | "yellow" | "green" | "blue" | "grayDark" => {
+      if (color === COLORS.red[500]) return "red";
+      if (color === COLORS.yellow[500]) return "yellow";
+      if (color === COLORS.green[500]) return "green";
+      if (color === COLORS.blue[500]) return "blue";
+      return "grayDark";
+    };
+
+    return {
+      text: statusInfo.text,
+      color: getChipColor(statusInfo.color),
+    };
   };
 
   return (
@@ -157,6 +180,11 @@ export const HistoryModal = ({
                 ];
                 const isWeekend = dayOfWeek === "일" || dayOfWeek === "토";
 
+                // 리포트 상태 정보 가져오기
+                const reportStatusInfo = getReportStatusDisplay(
+                  document.careReport.status
+                );
+
                 return (
                   <div key={document.documentDate} className={dateStatusItem}>
                     <div className={dateStatusHeader}>
@@ -223,11 +251,11 @@ export const HistoryModal = ({
                           리포트
                         </Body>
                         <Chip
-                          color="blue"
+                          color={reportStatusInfo.color}
                           round="s"
                           style={{ padding: "6px 8px" }}
                         >
-                          전송 완료
+                          {reportStatusInfo.text}
                         </Chip>
                         <button
                           className={confirmButton}
