@@ -8,3 +8,7 @@ export type TLoginResponse = {
   accessToken: string;
   refreshToken: string;
 };
+
+export type TReAuthResponse = {
+  password: string;
+};
