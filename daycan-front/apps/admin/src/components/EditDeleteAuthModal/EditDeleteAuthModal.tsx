@@ -10,7 +10,6 @@ import {
 } from "./EditDeleteAuthModal.css";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { useReAuthMutation } from "@/services/auth/useAdminAuthMutation";
-import { showToast } from "@/utils/toastUtils";
 
 /* 
   unitId: memberId, staffId를 포괄적으로 사용하기 위한 Id
@@ -36,7 +35,6 @@ export const EditDeleteAuthModal = ({
   unitId,
   actionType,
 }: EditDeleteAuthModalProps) => {
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isError, setIsError] = useState(false);
 
@@ -44,7 +42,7 @@ export const EditDeleteAuthModal = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!username.trim() || !password.trim()) {
+    if (!password.trim()) {
       setIsError(true);
       return;
     }
@@ -52,20 +50,7 @@ export const EditDeleteAuthModal = ({
     try {
       // TODO: 실제 인증 API 호출
       // const response = await authenticateUser(centerId, password);
-      await reAuthMutation.mutateAsync(
-        {
-          username,
-          password,
-        },
-        {
-          onSuccess: () => {
-            showToast({
-              message: "인증이 완료되었습니다.",
-              type: "success",
-            });
-          },
-        }
-      );
+      await reAuthMutation.mutateAsync(password);
 
       // 인증 성공 후 actionType에 따라 다른 콜백 호출
       if (actionType === "edit" && onEditAccessConfirm) {
@@ -79,14 +64,12 @@ export const EditDeleteAuthModal = ({
   };
 
   const handleClose = () => {
-    setUsername("");
     setPassword("");
     setIsError(false);
     onClose();
   };
 
   const handleCancel = () => {
-    setUsername("");
     setPassword("");
     setIsError(false);
     if (onCancel) {
@@ -100,14 +83,14 @@ export const EditDeleteAuthModal = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="센터 아이디와 비밀번호를 입력해 주세요."
+      title="센터 비밀번호를 입력해 주세요."
     >
       <div className={editAuthModalContent}>
         <form
           className={editAuthModalForm}
           onSubmit={handleSubmit}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && username.trim() && password.trim()) {
+            if (e.key === "Enter" && password.trim()) {
               e.preventDefault();
               handleSubmit(e as any);
             }
@@ -115,24 +98,13 @@ export const EditDeleteAuthModal = ({
         >
           <div className={editAuthModalFormHeader}>
             <Heading type="xsmall" weight={600}>
-              센터 아이디와 비밀번호를 입력해 주세요.
+              센터 비밀번호를 입력해 주세요.
             </Heading>
             <Body type="medium" weight={400} color={COLORS.gray[600]}>
               정보를 수정하거나 삭제할 때는 계정 확인이 필요해요
             </Body>
           </div>
           <div className={editAuthModalFormBody}>
-            <Input
-              type="text"
-              inputSize="pcTextFieldLarge"
-              placeholder="아이디"
-              variant="grayLight"
-              value={username}
-              fontSize="large"
-              color={COLORS.gray[500]}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-
             <Input
               inputSize="pcTextFieldLarge"
               type="password"
@@ -145,7 +117,7 @@ export const EditDeleteAuthModal = ({
             />
             <div className={editAuthModalErrorMessage}>
               <ErrorMessage
-                message="아이디 또는 비밀번호가 잘못되었어요. 다시 입력해 주세요."
+                message="비밀번호가 잘못되었어요. 다시 입력해 주세요."
                 isVisible={isError}
               />
             </div>
@@ -159,11 +131,7 @@ export const EditDeleteAuthModal = ({
             >
               취소
             </Button>
-            <Button
-              disabled={!username.trim() || !password.trim()}
-              size="fullWidth"
-              type="submit"
-            >
+            <Button disabled={!password.trim()} size="fullWidth" type="submit">
               {"확인"}
             </Button>
           </div>
