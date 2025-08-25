@@ -114,6 +114,9 @@ Team2-HakdongMusician/
 │   └── 📁 packages/         # 공유 패키지들
 └── 📁 docs/                 # 프로젝트 문서
 ```
+#### [Wiki](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki)
+#### [FE README](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/blob/main/daycan-front/README.md)
+#### [BE README](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/blob/main/daycan-back/README.md)
 
 ### 프론트엔드 구조
 
