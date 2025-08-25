@@ -1,5 +1,6 @@
 package com.daycan.service.document;
 
+import com.daycan.api.dto.lambda.SmsCallbackDto;
 import com.daycan.api.dto.lambda.report.ReportCallbackDto;
 import com.daycan.api.dto.lambda.report.ReportCallbackDto.ReportContent;
 import com.daycan.api.dto.lambda.report.ReportCallbackDto.ReportPayload;
@@ -25,7 +26,7 @@ public class CareReportUpdateService {
   private final CareReportRepository careReportRepository;
 
   @Transactional
-  public void applyCallback(ReportCallbackDto dto) {
+  public void applyUpdateReport(ReportCallbackDto dto) {
     Long reportId = getReportId(dto.idempotencyKey());
     CareReport report = careReportRepository.findById(reportId)
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND, reportId));
@@ -36,7 +37,6 @@ public class CareReportUpdateService {
     updateMealSection(report, content);
     updateProgramNotes(report, content);
     document.markReportCreated();
-
   }
   private ReportContent contentOf(ReportPayload payload){
     if(payload == null) return null;
