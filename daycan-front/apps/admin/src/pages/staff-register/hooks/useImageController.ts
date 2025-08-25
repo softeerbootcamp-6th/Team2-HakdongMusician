@@ -63,6 +63,10 @@ export const useImageController = (
 
       // formData에서도 이미지 URL 제거
       setStaffAvatarFile(null);
+      setStaffFormData((prev) => ({
+        ...prev,
+        avatarUrl: "",
+      }));
     }
   }, []);
   return {
