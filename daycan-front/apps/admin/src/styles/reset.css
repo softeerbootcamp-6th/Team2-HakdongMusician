@@ -204,6 +204,11 @@ textarea {
   -webkit-appearance: none;
   appearance: none;
   user-select: none;
+  /* …반드시 폼 요소에선 되돌려주세요 */
+
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  pointer-events: auto !important;
 }
 
 a {
