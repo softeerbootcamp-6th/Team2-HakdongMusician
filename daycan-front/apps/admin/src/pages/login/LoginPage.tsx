@@ -133,7 +133,7 @@ export const LoginPage = () => {
           >
             <a
               href="https://www.daycan.kr/login"
-              style={{ color: COLORS.gray[800] }}
+              style={{ color: COLORS.gray[800], textDecoration: "underline" }}
             >
               보호자 로그인 바로가기
             </a>

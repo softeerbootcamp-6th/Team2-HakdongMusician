@@ -121,7 +121,7 @@ export const LoginPage = () => {
           혹시 센터종사자신가요?
         </Body>
 
-        <a href="#" className={footerLink}>
+        <a href="https://admin.daycan.kr/login" className={footerLink}>
           센터 로그인 바로가기
         </a>
       </div>
