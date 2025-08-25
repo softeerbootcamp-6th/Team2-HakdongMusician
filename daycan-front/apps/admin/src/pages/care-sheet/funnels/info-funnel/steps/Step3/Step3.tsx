@@ -56,9 +56,10 @@ export const Step3 = () => {
           언제 가셨나요?
         </Heading>
         <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
-          시간
+          종료시간
         </Body>
         <TimePicker
+          label="종료시간"
           defaultTime24={getStepState("STEP_3")?.endTime || "17:00"}
           onConfirm={handleTimeConfirm}
         />

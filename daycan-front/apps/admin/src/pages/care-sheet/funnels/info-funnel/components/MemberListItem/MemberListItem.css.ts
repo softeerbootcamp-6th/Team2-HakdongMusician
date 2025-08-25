@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 import { COLORS } from "@daycan/ui";
 
 export const memberListItemContainer = style({
@@ -35,15 +36,24 @@ export const memberListItemInfo = style({
   gap: "4px",
 });
 
-export const memberListItemCode = style({
-  padding: "4px 8px",
-  borderRadius: "4px",
-  backgroundColor: COLORS.gray[100],
-  transition: "all 0.2s ease",
-  selectors: {
-    [`${memberListItemContainer}:hover &`]: {
-      backgroundColor: COLORS.gray[200],
-      color: COLORS.gray[900],
+export const memberListItemCode = recipe({
+  base: {
+    padding: "4px 8px",
+    borderRadius: "4px",
+  },
+  variants: {
+    isSelected: {
+      true: {
+        backgroundColor: COLORS.primary[200],
+        color: COLORS.black,
+      },
+      false: {
+        backgroundColor: COLORS.gray[100],
+        color: COLORS.gray[700],
+      },
     },
+  },
+  defaultVariants: {
+    isSelected: false,
   },
 });

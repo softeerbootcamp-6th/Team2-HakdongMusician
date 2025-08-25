@@ -41,12 +41,8 @@ export const MemberListItem = ({
       <Body type="small" weight={400} color={COLORS.gray[600]}>
         {birthDate}
       </Body>
-      <div className={memberListItemCode}>
-        <Body
-          type="small"
-          weight={500}
-          color={isSelected ? COLORS.white : COLORS.gray[700]}
-        >
+      <div className={memberListItemCode({ isSelected })}>
+        <Body type="small" weight={500}>
           {memberId}
         </Body>
       </div>

@@ -1,10 +1,11 @@
 import {
   Body,
-  Calendar,
+  // Calendar,
   COLORS,
   Heading,
   HighlightingHeading,
   Icon,
+  useToast,
 } from "@daycan/ui";
 import { InfoFunnelLayout } from "../../components/InfoFunnelLayout";
 import { useEffect, useState } from "react";
@@ -22,9 +23,10 @@ import { formatYYYYMMDD, TODAY_DATE } from "@/utils/dateFormatter";
 export const Step1 = () => {
   const [date, setDate] = useState<Date>();
   const [isToday, setIsToday] = useState(false);
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  // const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const { toNext, toPrev, getStepState, updateState, funnelState } =
     useFunnel();
+  const { showToast } = useToast();
 
   // 수급자 이름 가져오기
   const memberName = getMemberName(funnelState);
@@ -60,14 +62,6 @@ export const Step1 = () => {
         date: undefined,
       });
     }
-  };
-
-  const handleDateSelect = (date: Date) => {
-    setDate(date);
-    updateState({
-      date: formatYYYYMMDD(date),
-      isToday: false, // 다른 날짜 선택 시 오늘 선택 해제
-    });
   };
 
   return (
@@ -108,7 +102,14 @@ export const Step1 = () => {
           <div
             className={step1DateContainer}
             onClick={() => {
-              setIsDatePickerOpen(!isDatePickerOpen);
+              // setIsDatePickerOpen(!isDatePickerOpen);
+              showToast({
+                data: {
+                  message: "다른 날짜 선택 기능은 준비 중입니다.",
+                  type: "info",
+                  variant: "pc",
+                },
+              });
             }}
           >
             <Body type="xsmall" weight={500} color={COLORS.gray[600]}>
@@ -126,7 +127,7 @@ export const Step1 = () => {
               color={COLORS.gray[600]}
             />
           </div>
-          {isDatePickerOpen && (
+          {/* {isDatePickerOpen && (
             <Calendar
               onDateSelect={(date) => {
                 handleDateSelect(date);
@@ -137,7 +138,7 @@ export const Step1 = () => {
               }}
               initialDate={date || new Date()}
             />
-          )}
+          )} */}
         </div>
       </InfoFunnelLayout>
       <StepButtons
