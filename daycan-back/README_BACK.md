@@ -28,4 +28,8 @@
 
 [인덱스 설계](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BBE%5D-document-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%84%A4%EA%B3%84)
 
+## 비동기 워커 
 
+[비동기 워커 결정 과정](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BBE%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%EC%9E%91%EC%97%85-%EC%84%A4%EA%B3%84-%EB%B0%A9%EC%95%88-%EA%B2%B0%EC%A0%95-%EA%B8%B0%EB%A1%9D)
+
+[비동기 워커 옵션들](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BBE%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%EC%9E%91%EC%97%85-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EC%98%B5%EC%85%98)
