@@ -5,12 +5,15 @@ import com.daycan.domain.entity.document.Document;
 import com.daycan.domain.enums.DocumentStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -79,4 +82,19 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
 
   List<Document> findDocumentByDateAndMemberIn(LocalDate date, List<Member> members);
+
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query("""
+      update Document d
+         set d.status = :done
+       where d.id in :ids
+         and d.status <> :done
+      """)
+  int markDocumentsDoneByIds(@Param("ids") Collection<Long> ids,
+      @Param("done") DocumentStatus done);
+
+
+
+  List<Document> findByStatusAndReservedSendTimeLessThanEqual(DocumentStatus status, LocalDateTime now);
+
 }

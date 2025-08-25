@@ -9,6 +9,7 @@ import com.daycan.domain.model.DocumentMonthlyStatusRow;
 import jakarta.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,10 +36,12 @@ public interface DocumentQueryRepository {
       Long memberId, LocalDate start, LocalDate end
   );
 
-  Long registerSendingMessages(
+  List<Long> registerSendingMessages(
       List<Member> members, LocalDate date,
       boolean immediate, @Nullable LocalDateTime reservedSendTime
   );
+
+  void markDoneByPhonesAndDate(Collection<String> maskedPhones, LocalDate date);
 }
 
 
