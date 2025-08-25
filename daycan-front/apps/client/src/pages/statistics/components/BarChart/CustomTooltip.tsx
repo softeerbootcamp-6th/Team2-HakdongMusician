@@ -6,7 +6,7 @@ export const CustomTooltip = ({ active, payload }: any) => {
     return (
       <div className={customTooltip}>
         <Body type="xsmall" weight={600} color={COLORS.gray[700]}>
-          {payload[0].value}점
+          {payload[0].value.toFixed(1)}점
         </Body>
       </div>
     );

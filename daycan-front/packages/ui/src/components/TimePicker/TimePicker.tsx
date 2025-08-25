@@ -23,12 +23,17 @@ const minutes = Array.from(
 
 type AMPM = "오전" | "오후";
 
-interface Props {
+interface TimePickerProps {
+  label?: string;
   defaultTime24?: string; // "HH:MM" 형태의 24시간 초기값
   onConfirm: (time24: string) => void; // 24시간 "HH:MM" 형태로 반환
 }
 
-export const TimePicker = ({ defaultTime24 = "09:00", onConfirm }: Props) => {
+export const TimePicker = ({
+  label = "시작시간",
+  defaultTime24 = "09:00",
+  onConfirm,
+}: TimePickerProps) => {
   // 24시간 → 12시간 변환
   const parseTime24 = (time24: string) => {
     const [hStr, mStr] = time24.split(":");
@@ -98,7 +103,7 @@ export const TimePicker = ({ defaultTime24 = "09:00", onConfirm }: Props) => {
 
   return (
     <div className={wrapper}>
-      <p className={label}>시작시간</p>
+      <p className={label}>{label}</p>
 
       <div className={wheels}>
         <div className={overlay} />
