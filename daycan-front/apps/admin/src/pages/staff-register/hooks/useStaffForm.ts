@@ -122,9 +122,14 @@ export const useStaffForm = (
       "birthDate",
       "phoneNumber",
     ];
-    const isFilled = requiredFields.every(
-      (field) => staffFormData[field as keyof TStaff] !== ""
-    );
+    const isFilled = requiredFields.every((field) => {
+      const value = staffFormData[field as keyof TStaff];
+      // staffRole의 경우 "UNKNOWN"도 빈 값으로 처리
+      if (field === "staffRole") {
+        return value !== "" && value !== "UNKNOWN";
+      }
+      return value !== "";
+    });
     return mode === "register" ? isFilled : isFilled && hasFormChanged();
   }, [staffFormData, mode, hasFormChanged]);
 

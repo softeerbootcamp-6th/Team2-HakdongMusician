@@ -124,7 +124,9 @@ export const StaffRegisterPage = ({ mode }: StaffRegisterPageProps) => {
         placeholder: "직무를 선택해 주세요",
         required: true,
         value:
-          staffFormData.staffRole === "UNKNOWN" ? "" : staffFormData.staffRole,
+          staffFormData.staffRole === "UNKNOWN"
+            ? undefined
+            : staffFormData.staffRole,
         onChange: handleInputChange,
       },
     ],
