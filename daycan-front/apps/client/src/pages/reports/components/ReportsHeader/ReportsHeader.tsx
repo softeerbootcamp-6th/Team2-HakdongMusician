@@ -12,7 +12,7 @@ export const ReportsHeader = () => {
         width={24}
         height={24}
         color={COLORS.gray[50]}
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/", { replace: true })}
       />
       <Body type="large" weight={600} color={COLORS.gray[900]}>
         리포트 모아보기

@@ -48,7 +48,7 @@ export const StatisticsPage = () => {
           width={24}
           height={24}
           color={COLORS.gray[50]}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/", { replace: true })}
         />
         <Body type="large" weight={600}>
           변화 리포트

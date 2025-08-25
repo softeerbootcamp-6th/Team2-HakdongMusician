@@ -8,7 +8,7 @@ export const useToReportHook = () => {
   useEffect(() => {
     if (isAnimationComplete) {
       const timer = setTimeout(() => {
-        navigate("/daily-report");
+        navigate("/daily-report", { replace: true });
       }, 2000);
 
       return () => clearTimeout(timer);
@@ -20,7 +20,7 @@ export const useToReportHook = () => {
 
   const handleAnimationComplete = () => {
     setIsAnimationComplete(true);
-    navigate("/daily-report");
+    navigate("/daily-report", { replace: true });
   };
 
   return {
