@@ -9,8 +9,8 @@ export const useStep2 = () => {
     useState(false);
   const [isEmergencyServiceChecked, setIsEmergencyServiceChecked] =
     useState(false);
-  const [systolic, setSystolic] = useState(80);
-  const [diastolic, setDiastolic] = useState(120);
+  const [systolic, setSystolic] = useState(110);
+  const [diastolic, setDiastolic] = useState(70);
   const [temperature, setTemperature] = useState(36.5);
   const [healthManageSpecialNote, setHealthManageSpecialNote] = useState("");
 
@@ -27,8 +27,8 @@ export const useStep2 = () => {
       setIsEmergencyServiceChecked(
         existingData.isEmergencyServiceChecked || false
       );
-      setSystolic(existingData.systolic || 80);
-      setDiastolic(existingData.diastolic || 120);
+      setSystolic(existingData.systolic || 110);
+      setDiastolic(existingData.diastolic || 70);
       setTemperature(existingData.temperature || 36.5);
       setHealthManageSpecialNote(existingData.healthManageSpecialNote || "");
     }
