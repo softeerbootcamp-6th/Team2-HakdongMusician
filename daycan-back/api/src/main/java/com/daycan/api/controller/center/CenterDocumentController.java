@@ -6,6 +6,7 @@ import com.daycan.common.response.ResponseWrapper;
 import com.daycan.domain.entity.Center;
 import com.daycan.api.dto.center.response.document.DocumentCountResponse;
 import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
+import com.daycan.service.document.CenterDocumentFacade;
 import com.daycan.service.document.DocumentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CenterDocumentController {
 
-  private final DocumentService documentService;
+  private final CenterDocumentFacade centerDocumentFacade;
 
   @GetMapping("/count/{date}")
   @Operation(summary = "기록지/리포트 카운트 조회", description = "미완료된 기록지/리포트 수와 지연된 기록지/리포트 수를 조회합니다. (어드민 페이지 사이드 바)")
@@ -44,7 +45,7 @@ public class CenterDocumentController {
   ) {
     Center center = centerDetails.getCenter();
     return ResponseWrapper.onSuccess(
-        documentService.getDocumentCount(center.getId(), date)
+        centerDocumentFacade.getDocumentCount(center, date)
     );
   }
 
@@ -61,7 +62,7 @@ public class CenterDocumentController {
       @PathVariable @Valid @NotNull
       YearMonth month
   ) {
-    List<DocumentStatusResponse> statusList = documentService.getDocumentStatusListByMemberAndMonth(
+    List<DocumentStatusResponse> statusList = centerDocumentFacade.getDocumentStatusListByMemberAndMonth(
         centerDetails.getCenter(), memberId, month);
     return ResponseWrapper.onSuccess(statusList);
   }

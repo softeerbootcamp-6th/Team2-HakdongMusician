@@ -59,7 +59,6 @@ public class CareSheetWriteService {
 
     CareSheet sheet = upsertSheet(init, req);
 
-    // TODO: upsertVital() ExecutorService로 병렬처리 가능
     Vital vital = upsertVital(init, req);
 
     markSheetDone(doc);

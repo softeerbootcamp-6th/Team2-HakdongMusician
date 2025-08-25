@@ -18,15 +18,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
   // --- 로그인/중복 체크 (username 전역 유니크 전제) ---
   Optional<Member> findByUsername(String username);
-  boolean existsByUsername(String username);
-
   // --- 활성 회원 (소프트 삭제 제외) ---
   @Query("select m from Member m where m.active = true and m.deletedAt is null")
   List<Member> findAllActive();
 
-  // --- 센터별 조회 (1 Member - 1 Center) ---
-  List<Member> findByCenterIdAndDeletedAtIsNull(Long centerId);
-
+  List<Member> findAllByCenterIdAndActiveTrueAndAcceptReportTrue(Long centerId);
   // --- 센터별 필터링 (리스트) ---
   @Query("""
       select m from Member m
@@ -59,16 +55,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
       @Param("statuses") Collection<DocumentStatus> statuses,
       @Param("centerId") Long centerId
   );
-  // --- 센터별 이름 검색 ---
-  List<Member> findByCenterIdAndNameContainingAndDeletedAtIsNull(Long centerId, String name);
-
-  // --- 센터별 성별/등급 조회 ---
-  List<Member> findByCenterIdAndGenderAndDeletedAtIsNull(Long centerId, Gender gender);
-  List<Member> findByCenterIdAndCareLevelAndDeletedAtIsNull(Long centerId, Integer careLevel);
-
-  // --- 센터별 회원 수 (삭제 제외) ---
-  long countByCenterIdAndDeletedAtIsNull(Long centerId);
-
-  // (과거: 같은 센터 내 username 중복 체크) → 이제 전역 유니크이므로 아래로 단순화
-  // boolean existsByUsernameAndOrganizationIdAndDeletedAtIsNull(...)  <-- 삭제
 }

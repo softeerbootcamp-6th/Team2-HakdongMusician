@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -64,7 +65,7 @@ public class DocumentService {
     log.info("[DocumentService] {}: {} documents inserted (upsert)", date, toInsert.size());
   }
 
-  @Transactional(readOnly = true)
+  @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
   public DocumentCountResponse getDocumentCount(Long centerId, LocalDate date) {
     try {
       List<DocumentStatus> incompleteSheetStatuses = List.of(DocumentStatus.SHEET_PENDING);
@@ -89,11 +90,9 @@ public class DocumentService {
     }
   }
 
-  @Transactional(readOnly = true)
+  @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
   public List<DocumentStatusResponse> getDocumentStatusListByMemberAndMonth(
-      Center center, Long memberId, YearMonth month) {
-
-    Member member = memberService.requireActiveMember(memberId, center.getId());
+      Member member, YearMonth month) {
 
     LocalDate start = month.atDay(1);
     LocalDate end = month.atEndOfMonth();
@@ -127,7 +126,8 @@ public class DocumentService {
     return !document.getCenter().equals(center);
   }
 
-  protected Document findOrCreateDocument(Member member, LocalDate date) {
+  @Transactional(propagation = Propagation.MANDATORY)
+  public Document findOrCreateDocument(Member member, LocalDate date) {
     return documentRepository.findByMemberIdAndDate(member.getId(), date)
         .orElseGet(() -> createDocument(member, date));
   }

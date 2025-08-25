@@ -16,7 +16,10 @@ import com.daycan.api.dto.center.response.centermanage.AdminMemberResponse;
 import com.daycan.external.storage.StorageService;
 import com.daycan.repository.jpa.CenterRepository;
 import com.daycan.repository.jpa.MemberRepository;
+import com.daycan.service.document.DocumentService;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -165,7 +168,9 @@ public class MemberService {
     return Optional.of(member);
   }
 
-
+  public List<Member> getMembersByCenterWhenAcceptReport(Long centerId) {
+    return memberRepository.findAllByCenterIdAndActiveTrueAndAcceptReportTrue(centerId);
+  }
 
   private Center requireCenter(Long centerId) {
     return centerRepository.findById(centerId)

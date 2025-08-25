@@ -93,6 +93,7 @@ public class CenterMemberController {
 
     AdminMemberResponse newMember = memberService.createMember(memberRequest,
         center.getId());
+
     return ResponseWrapper.onSuccess(newMember);
   }
 

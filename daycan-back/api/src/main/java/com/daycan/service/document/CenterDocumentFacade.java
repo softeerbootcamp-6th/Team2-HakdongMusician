@@ -5,6 +5,8 @@ import com.daycan.api.dto.center.request.AttendanceAction;
 import com.daycan.api.dto.center.request.CareSheetRequest;
 import com.daycan.api.dto.center.request.ReportReviewRequest;
 import com.daycan.api.dto.center.response.centermanage.AttendanceResultResponse;
+import com.daycan.api.dto.center.response.document.DocumentCountResponse;
+import com.daycan.api.dto.center.response.document.DocumentStatusResponse;
 import com.daycan.api.dto.center.response.report.CareReportMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetMetaResponse;
 import com.daycan.api.dto.center.response.sheet.CareSheetResponse;
@@ -23,6 +25,7 @@ import com.daycan.service.member.MemberService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -51,11 +54,15 @@ public class CenterDocumentFacade {
 
   @Transactional
   public Long writeCareSheet(Center center, CareSheetRequest req) {
-    Member member = memberService.requireActiveMember(req.memberId());
+    Member member = memberService.requireActiveMember(req.memberId(), center.getId());
     documentService.findOrCreateDocument(member, req.date());
     return careSheetWriteService.writeSheet(req);
   }
 
+  @Transactional(readOnly = true)
+  public DocumentCountResponse getDocumentCount(Center center, LocalDate date) {
+    return documentService.getDocumentCount(center.getId(), date);
+  }
   @Transactional
   public AttendanceResultResponse markAttendance(
       Center center, List<Long> memberIds, LocalDate date, AttendanceAction action) {
@@ -151,10 +158,7 @@ public class CenterDocumentFacade {
 
   @Transactional
   public void sendReportToMembers(Center center, SendMessageRequest request) {
-    List<Member> members = mapPresent(
-        request.memberIds(),
-        id -> memberService.getByMemberIdAndCenter(id, center.getId())
-    );
+    List<Member> members = memberService.getMembersByCenterWhenAcceptReport(center.getId());
     if (members.isEmpty()) {
       return;
     }
@@ -166,6 +170,12 @@ public class CenterDocumentFacade {
     careReportSmsService.sendReports(members, reportDate, scheduled);
   }
 
+  @Transactional(readOnly = true)
+  public List<DocumentStatusResponse> getDocumentStatusListByMemberAndMonth(
+      Center center, Long memberId, YearMonth month){
+    Member member = memberService.requireActiveMember(memberId, center.getId());
+    return documentService.getDocumentStatusListByMemberAndMonth(member, month);
+  }
 
   private <S, R> List<R> getMetaListByDate(
       Center center,
