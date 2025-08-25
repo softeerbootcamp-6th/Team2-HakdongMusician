@@ -40,9 +40,9 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository 
     Agg a14 = aggAt(memberId, d14, allowedStatuses);
 
     long wSum = a0.sum - a7.sum;
-    long wCnt = a0.cnt - a7.cnt;   // 이번 주: D-6..D
+    long wCnt = a0.cnt - a7.cnt;
     long pSum = a7.sum - a14.sum;
-    long pCnt = a7.cnt - a14.cnt;  // 지난 주: D-13..D-7
+    long pCnt = a7.cnt - a14.cnt;
 
     int weeklyAvg = wCnt == 0 ? 0 : (int) Math.round((double) wSum / wCnt);
     int lastWeekAvg = pCnt == 0 ? 0 : (int) Math.round((double) pSum / pCnt);

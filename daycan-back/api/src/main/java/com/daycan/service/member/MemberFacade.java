@@ -55,7 +55,7 @@ public class MemberFacade {
     Optional<Boolean> isOpened = careReportService.isReportOpened(member.getId(), today);
 
     if (isOpened.isEmpty()) {
-      return buildEmptyHome(member, imageUrl);
+      isOpened = Optional.of(true);
     }
     MemberWeeklyScoreView weeklyScoreView =
         vitalService.getMemberWeeklyScore(member.getId(), today);
@@ -93,16 +93,6 @@ public class MemberFacade {
   public MemberStatisticsResponse getMemberStatistics(Member member, YearMonth startMonth,
       YearMonth endMonth) {
     return vitalService.getVitals(member.getId(), startMonth, endMonth);
-  }
-
-  private MemberHomeResponse buildEmptyHome(
-      Member member,
-      String imageUrl
-  ) {
-    return MemberHomeResponse.ofEmpty(
-        member,
-        imageUrl
-    );
   }
 
   private void openReportIfNeeded(CareReport report) {

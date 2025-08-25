@@ -88,22 +88,6 @@ public class CareReportService {
     );
   }
 
-  @Transactional(propagation = Propagation.MANDATORY)
-  public void sendReports(List<Member> members,
-      LocalDate reportDate,
-      @Nullable LocalDateTime scheduled) {
-    if (members == null || members.isEmpty()) {
-      return;
-    }
-
-    ZoneId KST = ZoneId.of("Asia/Seoul");
-    LocalDateTime now = LocalDateTime.now(KST);
-
-    boolean immediate = (scheduled == null) || !scheduled.isAfter(now);
-    LocalDateTime reserved = immediate ? null : scheduled;
-
-    documentQueryRepository.registerSendingMessages(members, reportDate, immediate, reserved);
-  }
 
 
   @Transactional(propagation = Propagation.MANDATORY)
