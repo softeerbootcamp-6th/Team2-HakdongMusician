@@ -35,14 +35,4 @@ public class LambdaCallbackController {
 
     reportUpdateService.applyCallback(dto);
   }
-
-
-  private String preview(Object o, int limit) {
-    try {
-      String s = objectMapper.writeValueAsString(o);
-      return s.length() > limit ? s.substring(0, limit) + "…" : s;
-    } catch (Exception e) {
-      return String.valueOf(o);
-    }
-  }
 }

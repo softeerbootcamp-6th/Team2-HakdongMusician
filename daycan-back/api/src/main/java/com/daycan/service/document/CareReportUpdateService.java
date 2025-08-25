@@ -25,7 +25,7 @@ public class CareReportUpdateService {
   private final CareReportRepository careReportRepository;
 
   @Transactional
-  public Long applyCallback(ReportCallbackDto dto) {
+  public void applyCallback(ReportCallbackDto dto) {
     Long reportId = getReportId(dto.idempotencyKey());
     CareReport report = careReportRepository.findById(reportId)
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.REPORT_NOT_FOUND, reportId));
@@ -37,9 +37,7 @@ public class CareReportUpdateService {
     updateProgramNotes(report, content);
     document.markReportCreated();
 
-    return report.getId();
   }
-
   private ReportContent contentOf(ReportPayload payload){
     if(payload == null) return null;
     return payload.content();

@@ -8,21 +8,21 @@ public record MemberHomeResponse(
     Gender gender,
     String guardianName,
     String avatarUrl,
-    boolean isReportArrived, // 안읽었으면 true
+    Boolean isReportArrived, // 안읽었으면 true
     Integer weeklyScore,
     Integer weeklyChangeAmount
 ) {
 
   public static MemberHomeResponse of(
       Member member, String url,
-      boolean opened, int weeklyScore, int lastWeekScore
+      Boolean isReportArrived , int weeklyScore, int lastWeekScore
   ) {
     return new MemberHomeResponse(
         member.getName(),
         member.getGender(),
         member.getGuardianName(),
         url,
-        !opened,
+        isReportArrived,
         weeklyScore,
         weeklyScore - lastWeekScore
     );

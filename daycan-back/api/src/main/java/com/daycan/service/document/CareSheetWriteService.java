@@ -24,6 +24,7 @@ import com.daycan.repository.jpa.CareSheetRepository;
 import com.daycan.repository.jpa.DocumentRepository;
 import com.daycan.repository.jpa.VitalRepository;
 import com.daycan.repository.query.DocumentQueryRepository;
+import com.daycan.service.event.CreateReportEvent;
 import com.daycan.util.resolver.ReportJobResolver;
 import com.daycan.util.resolver.SheetMapper;
 import com.daycan.util.prefiller.CareReportPrefiller;
@@ -61,26 +62,23 @@ public class CareSheetWriteService {
     // TODO: upsertVital() ExecutorService로 병렬처리 가능
     Vital vital = upsertVital(init, req);
 
-    doc.markSheetDone();
+    markSheetDone(doc);
 
-    CareReport report = createReport(
-        sheet, vital, init.member(), init.prevAgg(), init.hasFollowingVital());
+    CareReport report = createReport(sheet, vital, init.member());
 
     doc.markReportPending();
 
     logSheet(sheet, req, init.isNew());
     doc = documentRepository.save(doc);
 
-    publisher.publishEvent(buildCreateReportCommand(report, sheet));
+    publisher.publishEvent(buildCreateReportEvent(report, sheet));
     return doc.getId();
   }
 
-  private CreateReportCommand buildCreateReportCommand(CareReport report, CareSheet sheet) {
+  private CreateReportEvent buildCreateReportEvent(CareReport report, CareSheet sheet) {
     Document document = report.getDocument();
-    return CreateReportCommand.of(
-        ReportJobResolver.createJobId(
-            TaskType.REPORT_CREATE,
-            report.getId()),
+    return CreateReportEvent.of(
+        ReportJobResolver.createJobId(TaskType.REPORT_CREATE, report.getId()),
         ReportJobResolver.createIdempotencyKey(report.getId()),
         document.getCenter().getId(),
         document.getMember().getId(),
@@ -89,6 +87,7 @@ public class CareSheetWriteService {
         System.currentTimeMillis()
     );
   }
+
 
   private CareSheet upsertSheet(CareSheetInit initVo, CareSheetRequest request) {
     boolean isNew = initVo.isNew();
@@ -135,14 +134,11 @@ public class CareSheetWriteService {
         .orElseThrow(() -> new ApplicationException(DocumentErrorStatus.SHEET_NOT_FOUND));
     SheetMapper.updateSheet(sheet, req);
     sheet.syncPersonalPrograms(programs);
-    return sheet; // 영속 상태
+    return sheet;
   }
 
-  private Vital upsertVital(
-      CareSheetInit initVo, CareSheetRequest request
-  ) {
+  private Vital upsertVital(CareSheetInit initVo, CareSheetRequest request) {
     Document doc = initVo.doc();
-    VitalAggregate baseline = initVo.prevAgg();
 
     HealthCareEntry healthCareEntry = request.healthCare();
     PhysicalEntry physicalEntry = request.physical();
@@ -156,7 +152,6 @@ public class CareSheetWriteService {
               physicalEntry.numberOfStool(),
               physicalEntry.numberOfUrine()
           );
-          originVital.applyAggregateFrom(baseline);
           return originVital;
         })
         .orElseGet(() -> {
@@ -168,56 +163,41 @@ public class CareSheetWriteService {
               .numberOfStool(physicalEntry.numberOfStool())
               .numberOfUrine(physicalEntry.numberOfUrine())
               .build();
-          newVital.applyAggregateFrom(baseline);
           return vitalRepository.save(newVital);
         });
   }
 
-  private CareReport createReport(CareSheet sheet, Vital vital, Member member,
-      VitalAggregate baseline, boolean hasFollowingVital) {
+
+  private CareReport createReport(CareSheet sheet, Vital vital, Member member) {
     final Document doc = (sheet != null) ? sheet.getDocument() : vital.getDocument();
     final CareReportInit init = CareReportPrefiller.computeInit(sheet, vital, member);
+
     CareReport report = careReportRepository.findById(doc.getId())
-        .map(existing -> existing.updatePrefill(init)).orElseGet(() -> {
-          return CareReport.prefill(doc, init);
-        });
-    final int newScore = report.getMealScore() + report.getVitalScore() + report.getPhysicalScore()
+        .map(existing -> existing.updatePrefill(init))
+        .orElseGet(() -> CareReport.prefill(doc, init));
+
+    final int newScore = report.getMealScore()
+        + report.getVitalScore()
+        + report.getPhysicalScore()
         + report.getCognitiveScore();
+
     if (!Objects.equals(vital.getHealthScore(), newScore)) {
       vital.updateScore(newScore);
-      if (hasFollowingVital) {
-        recomputeChainFromInclusive(doc.getMember().getId(), doc.getDate());
-      } else {
-        vital.applyAggregateFrom(baseline);
-      }
     }
+
     return careReportRepository.save(report);
-  }
-
-  private void recomputeChainFromInclusive(Long memberId, LocalDate fromDate) {
-    Vital prev = vitalRepository
-        .findTopByDocument_Member_IdAndDocument_DateBeforeOrderByDocument_DateDesc(memberId,
-            fromDate)
-        .orElse(null);
-
-    VitalAggregate agg = (prev == null) ? null : prev.getAggregate();
-
-    List<Vital> chain = vitalRepository
-        .findByDocument_Member_IdAndDocument_DateGreaterThanEqualOrderByDocument_DateAsc(memberId,
-            fromDate);
-
-    if (chain.isEmpty()) {
-      return;
-    }
-
-    for (Vital v : chain) {
-      v.applyAggregateFrom(agg);
-      agg = v.getAggregate();
-    }
   }
 
   private void logSheet(CareSheet savedSheet, CareSheetRequest req, boolean isNew) {
     log.debug("[CareSheet] id={} date={} {}", savedSheet.getId(), req.date(),
         isNew ? "created" : "updated");
+  }
+
+  private void markSheetDone(Document doc) {
+    try{
+      doc.markSheetDone();
+    }catch (ApplicationException e){
+      throw new ApplicationException(DocumentErrorStatus.INVALID_STATUS_WRITE_SHEET, doc.getId());
+    }
   }
 }
