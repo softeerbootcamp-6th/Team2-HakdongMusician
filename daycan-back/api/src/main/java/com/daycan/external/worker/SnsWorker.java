@@ -1,7 +1,12 @@
 package com.daycan.external.worker;
 
 import com.daycan.external.worker.job.command.WorkerCommand;
+import com.daycan.external.worker.job.enums.TaskType;
+import com.daycan.external.worker.job.strategy.CommandStrategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,12 +28,22 @@ public class SnsWorker implements Worker {
 
   private final SnsClient snsClient;
   private final ObjectMapper objectMapper;
+  private final List<CommandStrategy> strategies;
 
   @Value("${app.aws.sns.topic-arn}")
   private String topicArn;
 
   @Value("${app.aws.sns.enabled:false}")
   private boolean enabled;
+
+  private final Map<TaskType, CommandStrategy> strategyMap = new ConcurrentHashMap<>();
+
+  @PostConstruct
+  void init() {
+    for (var s : strategies) {
+      strategyMap.put(s.supports(), s);
+    }
+  }
 
   @Override
   public void enqueue(WorkerCommand command) {
@@ -38,7 +53,13 @@ public class SnsWorker implements Worker {
             command.taskType(), command.jobId(), command.idempotencyKey());
         return;
       }
-      final String payload = objectMapper.writeValueAsString(command);
+
+      CommandStrategy strategy = strategyMap.get(command.taskType());
+      if (strategy == null) {
+        throw new IllegalStateException("No strategy for taskType=" + command.taskType());
+      }
+
+      final String messageJson = strategy.buildMessage(command, objectMapper);
 
       Map<String, MessageAttributeValue> attrs = new HashMap<>();
       putAttrString(attrs, "Task-Type", command.taskType().name());
@@ -49,12 +70,11 @@ public class SnsWorker implements Worker {
 
       PublishRequest req = PublishRequest.builder()
           .topicArn(topicArn)
-          .message(payload)
+          .message(messageJson)
           .messageAttributes(attrs)
           .build();
 
       var res = snsClient.publish(req);
-
       log.info("SNS published type={} msgId={} jobId={} idemKey={} requestAt={}",
           command.taskType(), res.messageId(), nz(command.jobId()), nz(command.idempotencyKey()), command.requestAt());
 
@@ -69,12 +89,10 @@ public class SnsWorker implements Worker {
       attrs.put(key, MessageAttributeValue.builder().dataType("String").stringValue(val).build());
     }
   }
-
   private static void putAttrNumber(Map<String, MessageAttributeValue> attrs, String key, long val) {
     if (val > 0) {
       attrs.put(key, MessageAttributeValue.builder().dataType("Number").stringValue(Long.toString(val)).build());
     }
   }
-
   private static String nz(String s) { return (s == null ? "" : s); }
 }

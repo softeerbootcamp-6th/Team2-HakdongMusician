@@ -46,6 +46,8 @@ public class CenterDocumentFacade {
   private final DocumentService documentService;
   private final CareReportService careReportService;
   private final StorageService storageService;
+  private final CareReportUpdateService careReportUpdateService;
+  private final CareReportSmsService careReportSmsService;
 
   @Transactional
   public Long writeCareSheet(Center center, CareSheetRequest req) {
@@ -161,7 +163,7 @@ public class CenterDocumentFacade {
         ? null
         : LocalDateTime.of(request.sendDate(), request.sendTime());
 
-    careReportService.sendReports(members, reportDate, scheduled);
+    careReportSmsService.sendReports(members, reportDate, scheduled);
   }
 
 

@@ -24,6 +24,7 @@ import com.daycan.repository.jpa.CareSheetRepository;
 import com.daycan.repository.jpa.DocumentRepository;
 import com.daycan.repository.jpa.VitalRepository;
 import com.daycan.repository.query.DocumentQueryRepository;
+import com.daycan.service.event.CreateReportEvent;
 import com.daycan.util.resolver.ReportJobResolver;
 import com.daycan.util.resolver.SheetMapper;
 import com.daycan.util.prefiller.CareReportPrefiller;
@@ -70,13 +71,13 @@ public class CareSheetWriteService {
     logSheet(sheet, req, init.isNew());
     doc = documentRepository.save(doc);
 
-    publisher.publishEvent(buildCreateReportCommand(report, sheet));
+    publisher.publishEvent(buildCreateReportEvent(report, sheet));
     return doc.getId();
   }
 
-  private CreateReportCommand buildCreateReportCommand(CareReport report, CareSheet sheet) {
+  private CreateReportEvent buildCreateReportEvent(CareReport report, CareSheet sheet) {
     Document document = report.getDocument();
-    return CreateReportCommand.of(
+    return CreateReportEvent.of(
         ReportJobResolver.createJobId(TaskType.REPORT_CREATE, report.getId()),
         ReportJobResolver.createIdempotencyKey(report.getId()),
         document.getCenter().getId(),
