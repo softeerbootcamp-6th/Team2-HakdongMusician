@@ -1,3 +1,7 @@
+/**
+ * admin 도메인 내에서 재사용 가능한 컴포넌트들을 모아둔 파일입니다.
+ * @author 홍규진
+ */
 export * from "./ErrorMessage";
 export * from "./Footer";
 export * from "./Sidebar";
@@ -16,3 +20,4 @@ export * from "./GenderSelector";
 export * from "./CareLevelRoleDropDownSelector";
 export * from "./SkeletonList";
 export * from "./MobileAccessGuard";
+export * from "./ErrorFallback";
