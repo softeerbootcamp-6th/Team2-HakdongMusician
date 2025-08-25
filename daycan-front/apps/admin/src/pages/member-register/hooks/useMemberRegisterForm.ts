@@ -234,6 +234,13 @@ export const useMemberRegisterForm = (
       guardianPhoneNumber: form.guardianPhoneNumber.trim() !== "",
     };
 
+    // 등록 모드에서만 passwordEntry 검증
+    if (mode === "register") {
+      (requiredFields as any).passwordEntry =
+        form.passwordEntry.guardianPassword !== "" &&
+        form.passwordEntry.guardianPasswordConfirm !== "";
+    }
+
     const isFilled = Object.values(requiredFields).every(Boolean);
 
     // 수정 모드의 경우 변경사항이 있는지도 확인
