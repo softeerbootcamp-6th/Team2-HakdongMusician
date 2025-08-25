@@ -31,11 +31,11 @@ public class StatisticsQueryRepositoryImpl implements StatisticsQueryRepository 
   @Override
   public MemberWeeklyScoreView fetchWeeklyHealthScoreAvgs(
       Long memberId, LocalDate today, Collection<DocumentStatus> allowedStatuses) {
-    LocalDate d0 = today;
+
     LocalDate d7 = today.minusDays(7);
     LocalDate d14 = today.minusDays(14);
 
-    Agg a0 = aggAt(memberId, d0, allowedStatuses);
+    Agg a0 = aggAt(memberId, today, allowedStatuses);
     Agg a7 = aggAt(memberId, d7, allowedStatuses);
     Agg a14 = aggAt(memberId, d14, allowedStatuses);
 

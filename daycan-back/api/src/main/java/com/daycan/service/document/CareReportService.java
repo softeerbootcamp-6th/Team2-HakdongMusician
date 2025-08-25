@@ -68,9 +68,8 @@ public class CareReportService {
 
   @Transactional(propagation = Propagation.MANDATORY)
   public Optional<Boolean> isReportOpened(Long memberId, LocalDate date) {
-    Optional<CareReport> report = careReportRepository.findByDocumentMemberIdAndDocumentDate(
-        memberId, date);
-    log.info("isReportOpened: report={}", report);
+    Optional<CareReport> report = careReportRepository.findByDocumentMemberIdAndDocumentDateAndDocumentStatusIn(
+        memberId, date, DocumentStatus.finished());
 
     return report.map(CareReport::isOpened);
   }
