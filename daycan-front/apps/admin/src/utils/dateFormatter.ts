@@ -154,7 +154,7 @@ export const validatePhoneNumber = (
   if (!value) {
     return {
       isValid: false,
-      errorMessage: "정확한 연락처를 하이픈(-) 없이 입력해주세요",
+      errorMessage: "정확한 연락처를 하이픈(-) 을 포함해 입력해주세요",
     };
   }
 
@@ -164,7 +164,7 @@ export const validatePhoneNumber = (
   if (numbers.length !== 11) {
     return {
       isValid: false,
-      errorMessage: "정확한 연락처를 하이픈(-) 없이 입력해주세요",
+      errorMessage: "정확한 연락처를 하이픈(-) 을 포함해 입력해주세요",
     };
   }
 
@@ -175,7 +175,7 @@ export const validatePhoneNumber = (
   if (!validPrefixes.includes(prefix)) {
     return {
       isValid: false,
-      errorMessage: "정확한 연락처를 하이픈(-) 없이 입력해주세요",
+      errorMessage: "정확한 연락처를 하이픈(-) 을 포함해 입력해주세요",
     };
   }
 
