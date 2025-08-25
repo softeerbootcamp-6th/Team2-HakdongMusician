@@ -1,6 +1,6 @@
 import { safeRequest } from "@daycan/api";
-import { publicInstance } from "../instance";
-import type { TLoginResponse } from "./types";
+import { privateInstance, publicInstance } from "../instance";
+import type { TLoginResponse, TReAuthResponse } from "./types";
 
 /**
  * 센터종사자 로그인 API
@@ -29,6 +29,22 @@ export const reIssueToken = async (
     "/auth/reissue",
     {
       refreshToken,
+    }
+  );
+};
+
+/*
+ * 수정 삭제 인증 모달 확인
+ * @author 소보길
+ */
+export const reAuth = async (
+  password: string
+): Promise<TReAuthResponse | null> => {
+  return await safeRequest.post<TReAuthResponse>(
+    privateInstance,
+    "/admin/center/verify-password",
+    {
+      password,
     }
   );
 };

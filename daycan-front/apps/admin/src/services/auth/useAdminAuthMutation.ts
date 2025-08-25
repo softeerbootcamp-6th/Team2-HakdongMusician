@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { login, reIssueToken } from ".";
-import type { TLoginResponse } from "./types";
+import { login, reAuth, reIssueToken } from ".";
+import type { TLoginResponse, TReAuthResponse } from "./types";
 import { useToast } from "@daycan/ui";
 
 export const useAdminLoginMutation = () => {
@@ -57,14 +57,8 @@ export const useReIssueTokenMutation = () => {
 export const useReAuthMutation = () => {
   const { showToast } = useToast();
   return useMutation({
-    mutationFn: ({
-      username,
-      password,
-    }: {
-      username: string;
-      password: string;
-    }) => login(username, password),
-    onSuccess: (data: TLoginResponse | null) => {
+    mutationFn: (password: string) => reAuth(password),
+    onSuccess: (data: TReAuthResponse | null) => {
       if (!data) return;
       showToast({
         data: {
