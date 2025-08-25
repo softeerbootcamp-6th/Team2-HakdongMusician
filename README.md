@@ -73,9 +73,7 @@ Client
 |   팀원   |   김수환    |    홍규진    |    소보길    |
 | :------: | :---------: | :----------: | :----------: |
 | **역할** | Web Backend | Web Frontend | Web Frontend |
-| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |<img width="300" alt="image" src="https://github.com/user-attachments/assets/3993389a-14be-4e7d-9aa2-1d1934154f33" />
-
-      |      🖼️      |
+| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |<img width="300" alt="image" src="https://github.com/user-attachments/assets/3993389a-14be-4e7d-9aa2-1d1934154f33" />|🖼️|
 
 
 
@@ -93,7 +91,7 @@ Client
 |영역| 기술 스택|
 |---|---|
 |    **Backend**     | ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white) ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white) |
-|    **Frontend**    | ![Turborepo](https://img.shields.io/badge/Turborepo-000000.svg?&logo=turborepo) ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![Vanilla Extract CSS](https://img.shields.io/badge/VanillaExtract-4ADCF2?style=for-the-badge&logo=vanillaextract&logoColor=FB73A0) ![Pnpm](https://img.shields.io/badge/Pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white) ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=React%20Query&logoColor=white))          |
+|    **Frontend**    | ![Turborepo](https://img.shields.io/badge/Turborepo-000000.svg?&logo=turborepo) ![Pnpm](https://img.shields.io/badge/Pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)  ![Vanilla Extract CSS](https://img.shields.io/badge/VanillaExtract-4ADCF2?style=for-the-badge&logo=vanillaextract&logoColor=FB73A0)  ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=React%20Query&logoColor=white)|
 |    **Database**    | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)                                                                                                                                                                                                                            |
 | **Infrastructure** | ![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)                                                                                                                                                                                                                            |
 |     **CI/CD**      | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)                                                                                                                                                                                                 |
