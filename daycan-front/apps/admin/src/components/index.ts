@@ -21,3 +21,4 @@ export * from "./CareLevelRoleDropDownSelector";
 export * from "./SkeletonList";
 export * from "./MobileAccessGuard";
 export * from "./ErrorFallback";
+export * from "./ErrorThrower";
