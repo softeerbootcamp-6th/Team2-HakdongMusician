@@ -26,9 +26,18 @@ export const MealCard = ({
       isDropdown={isDropdown}
       additionalMemo={additionalMemo}
     >
-      {rows.map((row) => (
-        <IndexRow key={row.key} row={row} />
-      ))}
+      {rows.length > 0 ? (
+        rows.map((row) => <IndexRow key={row.key} row={row} />)
+      ) : (
+        <IndexRow
+          key="empty"
+          row={{
+            key: "식사 미참여",
+            value: "식사 항목이 없습니다.",
+            warningDescription: "관리자에게 문의하세요",
+          }}
+        />
+      )}
     </CardLayout>
   );
 };
