@@ -43,8 +43,11 @@ public interface CareReportRepository extends JpaRepository<CareReport, Long> {
       Pageable pageable
   );
 
-  Optional<CareReport> findByDocumentMemberIdAndDocumentDate(Long memberId, LocalDate date);
-  // 단건 접근 편의
+  Optional<CareReport> findByDocumentMemberIdAndDocumentDateAndDocumentStatusIn(
+      Long memberId,
+      LocalDate date,
+      @Param("statuses") Collection<DocumentStatus> statuses
+  );  // 단건 접근 편의
   Optional<CareReport> findByDocumentId(Long documentId);
 
   @Query("""
