@@ -10,3 +10,5 @@ export { Header } from "./Header/Header";
 export { UpDownIcon } from "./UpDownIcon";
 export { ScrollToTop } from "./ScrollToTop";
 export { Loading } from "./Loading";
+export { ErrorFallback } from "./ErrorFallback";
+export { ErrorThrower } from "./ErrorThrower";

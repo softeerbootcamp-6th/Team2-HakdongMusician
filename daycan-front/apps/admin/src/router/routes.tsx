@@ -5,7 +5,6 @@ import {
   MemberPage,
   MemberRegisterPage,
   CareSheetPage,
-  NotFoundPage,
   StaffPage,
   StaffRegisterPage,
   ReportPage,
@@ -18,7 +17,6 @@ import {
   InfoFunnelStepContainer,
   DiagnosisFunnelStepContainer,
 } from "@/pages/care-sheet/funnels";
-import { NotFoundLayout } from "@/layout/not-found/NotFoundLayout";
 
 export type TRoutes = {
   path: string;
@@ -129,16 +127,6 @@ export const routes: TRoutes[] = [
       {
         path: "today/:writerId",
         element: <TodayCareSheetPage />,
-      },
-    ],
-  },
-  {
-    path: "/",
-    layout: <NotFoundLayout />,
-    children: [
-      {
-        path: "*",
-        element: <NotFoundPage />,
       },
     ],
   },

@@ -56,7 +56,7 @@ export const Step2 = () => {
         </DiagnosisCardLayout>
         <DiagnosisCardLayout title="혈압" isRequired={true}>
           <RowInput
-            label="최저 혈압"
+            label="최고 혈압"
             value={systolic}
             setValue={setSystolic}
             min={50}
@@ -65,7 +65,7 @@ export const Step2 = () => {
             unit="mmHg"
           />
           <RowInput
-            label="최고 혈압"
+            label="최저 혈압"
             value={diastolic}
             setValue={setDiastolic}
             min={50}

@@ -6,6 +6,7 @@ import { useGetReportListQuery } from "@/services/report/useReportQuery";
 import { TODAY_DATE } from "@/utils/dateFormatter";
 import { useSendReportMutation } from "@/services/report/useReportMutation";
 import type { TTime } from "@/types/date";
+import type { YearMonthDay } from "@/types/date";
 
 export const useReports = () => {
   const { data: reports, isLoading } = useGetReportListQuery(TODAY_DATE);
@@ -182,7 +183,10 @@ export const useReports = () => {
     setIsImmediateSendModalOpen(false);
   };
 
-  const handleReserveSend = (reserveTime?: TTime) => {
+  const handleReserveSend = (
+    reserveTime?: TTime,
+    reserveDate?: YearMonthDay
+  ) => {
     // REVIEWED 상태의 리포트만 전송
     const checkedSelectableIds = Array.from(checkedMemberIds).filter(
       (memberId) =>
@@ -198,7 +202,7 @@ export const useReports = () => {
 
     sendReport({
       memberIds: checkedSelectableIds,
-      sendDate: TODAY_DATE,
+      sendDate: reserveDate || TODAY_DATE,
       sendTime: reserveTime,
     });
     setCheckedMemberIds(new Set());

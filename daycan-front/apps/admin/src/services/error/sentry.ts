@@ -28,9 +28,14 @@ export const initSentry = () => {
       Sentry.replayIntegration(),
     ],
 
-    // 에러 필터링 (서버 에러만 전송)
+    // 에러 필터링 (서버 에러와 ErrorFallback 에러는 전송)
     beforeSend(event, hint) {
       const error = hint.originalException;
+
+      // ErrorFallback에서 발생한 클라이언트 에러는 전송
+      if (event.tags?.errorType === "client_fatal_error") {
+        return event;
+      }
 
       // ServerError 인스턴스만 전송
       if (error && typeof error === "object" && "code" in error) {

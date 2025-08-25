@@ -6,14 +6,14 @@ import {
   timeSelectionContainer,
   timeSelectGroup,
 } from "./ReserveSendModal.css";
-import { useState } from "react";
-import { CustomTimeSelect, type TimeOption } from "../CustomTimeSelect";
-import type { TTime } from "@/types/date";
+import { CustomTimeSelect } from "../CustomTimeSelect";
+import type { TTime, YearMonthDay } from "@/types/date";
+import { useReserveSendModal } from "./useReserveSendModal";
 
 interface ReserveSendModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSend: (reserveTime?: TTime) => void;
+  onSend: (reserveTime?: TTime, reserveDate?: YearMonthDay) => void;
 }
 
 export const ReserveSendModal = ({
@@ -21,43 +21,23 @@ export const ReserveSendModal = ({
   onClose,
   onSend,
 }: ReserveSendModalProps) => {
-  const [selectedPeriod, setSelectedPeriod] = useState("오전");
-  const [selectedHour, setSelectedHour] = useState("8시");
-  const [selectedMinute, setSelectedMinute] = useState("00분");
+  const {
+    selectedPeriod,
+    selectedHour,
+    selectedMinute,
+    setSelectedPeriod,
+    setSelectedHour,
+    setSelectedMinute,
+    getReserveDateDisplay,
+    handleSend,
+    PERIOD_OPTIONS,
+    HOUR_OPTIONS,
+    MINUTE_OPTIONS,
+  } = useReserveSendModal();
 
-  const handleSend = () => {
-    // 24시간 형식으로 변환
-    let hour = parseInt(selectedHour.replace("시", ""));
-    if (selectedPeriod === "오후" && hour !== 12) {
-      hour += 12;
-    } else if (selectedPeriod === "오전" && hour === 12) {
-      hour = 0;
-    }
-
-    const minute = parseInt(selectedMinute.replace("분", ""));
-    const time24Format =
-      `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}` as TTime;
-
-    console.log("예약된 시간:", time24Format);
-    onSend(time24Format);
+  const handleSendClick = () => {
+    handleSend(onSend);
   };
-
-  const PERIOD_OPTIONS: TimeOption[] = [
-    { value: "오전", label: "오전" },
-    { value: "오후", label: "오후" },
-  ];
-
-  const HOUR_OPTIONS: TimeOption[] = [
-    { value: "8시", label: "8시" },
-    { value: "9시", label: "9시" },
-    { value: "10시", label: "10시" },
-    { value: "11시", label: "11시" },
-  ];
-
-  const MINUTE_OPTIONS: TimeOption[] = [
-    { value: "00분", label: "00분" },
-    { value: "30분", label: "30분" },
-  ];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -90,6 +70,11 @@ export const ReserveSendModal = ({
           </div>
         </div>
 
+        {/* 예약 날짜 표시 */}
+        <Body type="medium" weight={400} color={COLORS.gray[900]}>
+          📅 예약 날짜: {getReserveDateDisplay()}
+        </Body>
+
         <div className={reserveSendModalButtonContainer}>
           <Button
             variant="unEmphasized"
@@ -105,7 +90,7 @@ export const ReserveSendModal = ({
           <Button
             variant="primary"
             size="small"
-            onClick={handleSend}
+            onClick={handleSendClick}
             style={{
               width: 160,
               height: 52,

@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { routes, type TRoutes } from "./routes";
+import { NotFoundPage } from "@/pages";
 
 export default function Router() {
   return (
@@ -11,7 +12,7 @@ export default function Router() {
           ))}
         </Route>
       ))}
-      <Route path="*" element={<div>NotFound</div>} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
