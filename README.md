@@ -34,14 +34,18 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 
 - **손쉬운 기록지 작성**: 센터 종사자가 간편하게 모바일로 기록지 작성
 - **실시간 리포트 생성**: 입력된 데이터를 바탕으로 상세한 건강 리포트 자동 생성
+- **리포트 검토** : 자동 생성된 리포트 중 오타 및 할루시네이션을 방지하고자 하는 리포트 검토
 - **예약 전송 || 즉시 전송**: 생성된 리포트를 보호자에게 예약 전송 또는 즉시 전송
 - **건강 수치 통계** 리포트 내용을 토대로 어르신의 건강상태 데이터를 통계로 확인할 수 있습니다.
 
 ### 서비스 플로우
 
 ```
-센터 종사자 로그인 → 기록지 작성 → 리포트 생성 → 보호자에게 전송
-보호자 로그인 -> 리포트 확인
+Admin
+센터 종사자 로그인 → 기록지 작성 → 리포트 생성 → 리포트 검토 → 보호자에게 전송
+
+Client
+보호자 로그인 -> 데일리 리포트 확인 , 리포트 모아보기 , 통계 보기 
 ```
 
 ---
@@ -69,7 +73,9 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 |   팀원   |   김수환    |    홍규진    |    소보길    |
 | :------: | :---------: | :----------: | :----------: |
 | **역할** | Web Backend | Web Frontend | Web Frontend |
-| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |      🖼️      |      🖼️      |
+| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |<img width="300" alt="image" src="https://github.com/user-attachments/assets/3993389a-14be-4e7d-9aa2-1d1934154f33" />
+
+      |      🖼️      |
 
 
 
@@ -84,10 +90,10 @@ Daycan은 데이케어센터에서 일일 건강 상태를 체크하고, 이를 
 
 <div align="center">
 
-|        영역        | 기술 스택                                                                                                                                                                                                                                                                                                                     |
-| :----------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|영역| 기술 스택|
+|---|---|
 |    **Backend**     | ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white) ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white) |
-|    **Frontend**    | ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)         |
+|    **Frontend**    | ![Turborepo](https://img.shields.io/badge/Turborepo-000000.svg?&logo=turborepo) ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) ![Vanilla Extract CSS](https://img.shields.io/badge/VanillaExtract-4ADCF2?style=for-the-badge&logo=vanillaextract&logoColor=FB73A0) ![Pnpm](https://img.shields.io/badge/Pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white) ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=React%20Query&logoColor=white))          |
 |    **Database**    | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)                                                                                                                                                                                                                            |
 | **Infrastructure** | ![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)                                                                                                                                                                                                                            |
 |     **CI/CD**      | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)                                                                                                                                                                                                 |
