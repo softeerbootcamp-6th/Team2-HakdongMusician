@@ -37,6 +37,7 @@ import java.time.LocalDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -207,14 +208,13 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
         .fetchOne();
   }
 
-  @Override
-  public Long registerSendingMessages(
+  public List<Long> registerSendingMessages(
       List<Member> members,
       LocalDate date,
       boolean immediate,
       @Nullable LocalDateTime reservedSendTime) {
-    BooleanExpression guard = doc.status.in(DocumentStatus.REPORT_REVIEWED,
-        DocumentStatus.REPORT_RESERVED);
+
+    BooleanExpression guard = doc.status.in(DocumentStatus.REPORT_REVIEWED, DocumentStatus.REPORT_RESERVED);
 
     JPAUpdateClause u = qf.update(doc)
         .where(doc.member.in(members)
@@ -230,10 +230,58 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
           .set(doc.status, DocumentStatus.REPORT_RESERVED);
     }
 
-    long updated = u.execute();
+    u.execute();
+    em.flush();
     em.clear();
-    return updated;
+
+    DocumentStatus target =
+        immediate ? DocumentStatus.REPORT_SENDING : DocumentStatus.REPORT_RESERVED;
+
+    List<Long> ids = qf
+        .select(doc.id)
+        .from(doc)
+        .where(doc.member.in(members)
+            .and(doc.date.eq(date))
+            .and(doc.status.eq(target)))
+        .fetch();
+
+    return ids;
   }
+
+
+  @Override
+  public void markDoneByPhonesAndDate(Collection<String> phones, LocalDate date) {
+    if (phones == null || phones.isEmpty() || date == null) return;
+
+    List<Long> memberIds = em.createQuery("""
+        select m.id
+          from Member m
+         where m.guardianPhoneNumber in :phones
+        """, Long.class)
+        .setParameter("phones", phones)
+        .getResultList();
+
+    if (memberIds.isEmpty()) return;
+
+    em.createQuery("""
+        update Document d
+           set d.status = :done
+         where d.date = :date
+           and d.member.id in :memberIds
+           and d.status <> :done
+        """)
+        .setParameter("done", DocumentStatus.REPORT_DONE)
+        .setParameter("date", date)
+        .setParameter("memberIds", memberIds)
+        .executeUpdate();
+
+    log.info("markDoneByPhonesAndDate: phones={}, date={}, memberIds={}",
+        phones, date, memberIds);
+  }
+
+
+
+
 
 
   private PrevAggSubs buildPrevAggSubqueries(Long memberId, LocalDate date) {

@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
         .allowedHeaders("*")
         .allowCredentials(true)
-        .maxAge(3600); // CORS preflight 요청의 캐시 시간 (1시간)
+        .maxAge(3600);
   }
 
   @Override
