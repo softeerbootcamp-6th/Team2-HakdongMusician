@@ -45,18 +45,27 @@ ExecStart=/bin/bash -lc '/usr/bin/java \
 
 
 Restart=on-failure
-RestartSec=5
-LimitNOFILE=65535
+RestartSec=3
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+MemoryMax=800M
+OOMPolicy=kill
+OOMScoreAdjust=0
+
+TimeoutStopSec=90s
+KillMode=control-group
 SuccessExitStatus=143
-SyslogIdentifier=daycan
 KillSignal=SIGTERM
-TimeoutStopSec=30s
-OOMScoreAdjust=300
+
+LimitNOFILE=32768
+
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=full
 ProtectHome=true
 ReadWritePaths=/var/log/daycan /opt/daycan
+
 
 [Install]
 WantedBy=multi-user.target
