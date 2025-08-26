@@ -11,7 +11,7 @@
 
 **보호자용 클라이언트 포털**: [https://www.daycan.kr/](https://www.daycan.kr/)
 
-**시연 영상**: [https://www.youtube.com/watch?v=1KyvvcDd6i8](https://www.youtube.com/watch?v=1KyvvcDd6i8) (설명 음성 녹음 필요!)
+**시연 영상**: [https://youtu.be/-eId9rQBrVc](https://youtu.be/-eId9rQBrVc)
 
 </div>
 
