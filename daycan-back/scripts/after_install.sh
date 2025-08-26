@@ -51,7 +51,6 @@ SuccessExitStatus=143
 SyslogIdentifier=daycan
 KillSignal=SIGTERM
 TimeoutStopSec=30s
-CPUQuota=80%
 OOMScoreAdjust=300
 NoNewPrivileges=true
 PrivateTmp=true

@@ -70,6 +70,7 @@ dependencies {
     // thumbnailator
     implementation "net.coobird:thumbnailator:0.4.20"
 
+    implementation "software.amazon.awssdk:apache-client"
 }
 
 tasks.named('test') {

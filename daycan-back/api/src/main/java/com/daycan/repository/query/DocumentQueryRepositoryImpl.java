@@ -442,7 +442,6 @@ public class DocumentQueryRepositoryImpl implements DocumentQueryRepository {
     }
     EnumSet<DocumentStatus> set = EnumSet.noneOf(DocumentStatus.class);
     for (DocumentStatus s : statuses) {
-      log.info("status filter: {}", s);
       if (s != null) {
         set.add(s);
       }

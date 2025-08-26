@@ -3,6 +3,7 @@ package com.daycan.external.storage;
 import com.daycan.common.response.status.error.CommonErrorStatus;
 import com.daycan.api.dto.center.response.image.PresignResponse;
 import com.daycan.common.exceptions.ApplicationException;
+import jakarta.annotation.PostConstruct;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 
@@ -23,21 +24,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
-
-@Service
+@Service()
 @RequiredArgsConstructor
-public class S3Service implements StorageService{
+public class S3Service implements StorageService {
 
   private final S3Presigner presigner;
+
 
   @Value("${app.aws.s3.bucket}")
   private String bucket;
 
-  private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of("image/jpeg", "image/png", "image/jpg");
+  private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of("image/jpeg", "image/png",
+      "image/jpg");
 
   public PresignResponse presignSingle(String extension, String contentType) {
     validateImageContentType(contentType);
-    String key = "profiles/%s/origin.%s".formatted(UUID.randomUUID(),extension);
+    String key = "profiles/%s/origin.%s".formatted(UUID.randomUUID(), extension);
     return presignPut(key, contentType);
   }
 
@@ -55,7 +57,7 @@ public class S3Service implements StorageService{
 
   public String presignGet(String objectRef) {
     if (objectRef == null || objectRef.isBlank()) {
-        return null;
+      return null;
     }
     String key = toKey(objectRef);
 
@@ -70,7 +72,7 @@ public class S3Service implements StorageService{
         .build();
 
     PresignedGetObjectRequest p = presigner.presignGetObject(preq);
-    return  p.url().toString();
+    return p.url().toString();
   }
 
 
@@ -100,7 +102,9 @@ public class S3Service implements StorageService{
     if (ref.startsWith("s3://")) {
       String after = ref.substring("s3://".length());
       int slash = after.indexOf('/');
-      if (slash < 0) throw new ApplicationException(CommonErrorStatus.INVALID_URL);
+      if (slash < 0) {
+        throw new ApplicationException(CommonErrorStatus.INVALID_URL);
+      }
       String b = after.substring(0, slash);
       String k = after.substring(slash + 1);
       if (!b.equals(bucket)) {
@@ -141,7 +145,9 @@ public class S3Service implements StorageService{
   }
 
   private static String stripLeadingSlash(String s) {
-    if (s == null) return null;
+    if (s == null) {
+      return null;
+    }
     return s.startsWith("/") ? s.substring(1) : s;
   }
 
@@ -153,6 +159,15 @@ public class S3Service implements StorageService{
     }
   }
 
+  @PostConstruct
+  void warmup() {
+    try {
+      presigner.presignGetObject(b -> b
+          .getObjectRequest(r -> r.bucket(bucket).key("warmup/dummy"))
+          .signatureDuration(Duration.ofMinutes(1)));
+    } catch (Exception ignore) {
+    }
+  }
 
 
 }

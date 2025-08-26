@@ -50,7 +50,6 @@ jobs:
             exit 1
           fi
 
-      # TODO: 테스트 단계 추가
       - name: Build with Gradle
         run: |
           echo "🔨 Building Spring Boot application (api module)..."
@@ -69,9 +68,9 @@ jobs:
           DAYCAN_PORT=8080
           TZ=Asia/Seoul
 
-          JAVA_XMS=-Xms256m
+          JAVA_XMS=-Xms512m
           JAVA_XMX=-Xmx512m
-          JAVA_GC=-XX:+UseG1GC
+          JAVA_GC=-XX:+UseG1GC -XX:ParallelGCThreads=2 -XX:ConcGCThreads=1 -XX:+ParallelRefProcEnabled -XX:InitiatingHeapOccupancyPercent=30
           JAVA_OOM=-XX:+ExitOnOutOfMemoryError
           JAVA_HEAPDUMP=-XX:HeapDumpPath=/var/log/daycan/heapdump.hprof
           JAVA_GCLOG=-Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags
