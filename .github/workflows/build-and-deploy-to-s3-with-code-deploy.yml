@@ -72,8 +72,8 @@ jobs:
           JAVA_XMX=-Xmx512m
           JAVA_GC=-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200
           JAVA_OOM=-XX:+ExitOnOutOfMemoryError
-          JAVA_HEAPDUMP=-XX:HeapDumpPath=/var/log/daycan/heapdumps
-          JAVA_GCLOG=-Xlog:gc*:file=/var/log/daycan/gc-%t.log:time,uptime,level,tags:filecount=3,filesize=10M
+          JAVA_HEAPDUMP=-XX:HeapDumpPath=/var/log/daycan/heapdump.hprof
+          JAVA_GCLOG=-Xlog:gc*:file=/var/log/daycan/gc.log:time,uptime,level,tags
 
           JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
           OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}
@@ -168,5 +168,3 @@ jobs:
           echo "- Build Time: $(date)"
           echo "- Commit: ${GITHUB_SHA}"
           echo "- Branch: ${GITHUB_REF_NAME}"
-JAVA_GCLOG=-Xlog:gc*:file=/var/log/daycan/gc-%t:
-  log:time,uptime,level,tags:filecount=3,filesize=10M:
