@@ -9,3 +9,8 @@ export const itemRow = style({
   padding: "8px 0",
   borderBottom: `1px solid ${COLORS.gray[100]}`,
 });
+
+export const itemLabel = style({
+  width: "70px",
+  flexShrink: 0,
+});

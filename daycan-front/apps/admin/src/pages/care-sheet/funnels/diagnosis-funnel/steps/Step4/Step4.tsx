@@ -2,7 +2,7 @@ import { DiagnosisCardLayout, DiagnosisLayout } from "../../components";
 import { Body, COLORS } from "@daycan/ui";
 import { StepButtons } from "@/pages/care-sheet/components/StepButtons";
 import { useStep4 } from "./useStep4";
-import { itemRow } from "./Step4.css";
+import { itemRow, itemLabel } from "./Step4.css";
 
 export const Step4 = () => {
   const { sections, toPrev, toNext } = useStep4();
@@ -14,9 +14,11 @@ export const Step4 = () => {
           <DiagnosisCardLayout key={section.title} title={section.title}>
             {section.items.map((item) => (
               <div key={item.label} className={itemRow}>
-                <Body type="small" weight={500} color={COLORS.gray[700]}>
-                  {item.label}
-                </Body>
+                <div className={itemLabel}>
+                  <Body type="small" weight={500} color={COLORS.gray[700]}>
+                    {item.label}
+                  </Body>
+                </div>
                 <Body type="xsmall" weight={600} color={COLORS.gray[900]}>
                   {item.value}
                 </Body>
