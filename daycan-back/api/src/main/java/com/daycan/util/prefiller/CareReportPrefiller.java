@@ -33,7 +33,6 @@ public final class CareReportPrefiller {
     Meal lunch = (sheet != null) ? sheet.getLunch() : null;
     Meal dinner = (sheet != null) ? sheet.getDinner() : null;
     int meal15 = MealScorer.score0to15(breakfast, lunch, dinner);
-    int mealPct = toPercent(meal15, 15);
     String mealFooter = MealCommenter.comment(breakfast, lunch, dinner,
         "아침", "점심", "저녁", memberId, date);
 
@@ -44,9 +43,7 @@ public final class CareReportPrefiller {
     Integer stool = (vital != null) ? vital.getNumberOfStool() : null;
     Integer urine = (vital != null) ? vital.getNumberOfUrine() : null;
 
-    int vital35 = VitalScorer.totalVital35(sys, dia, temp);
-    int excr20 = VitalScorer.totalExcretion20(stool, urine);
-    int vitalPct = toPercent(vital35 + excr20, 55);
+    int vital55 = VitalScorer.totalVital35(sys, dia, temp)+VitalScorer.totalExcretion20(stool, urine);
     String bpTempCmt = VitalCommenter.commentBpTemp(sys, dia, temp, memberName);
     String excrCmt = VitalCommenter.commentExcretion(stool, urine);
     String healthFooter = joinNonEmpty(bpTempCmt, excrCmt, "\n");
@@ -55,8 +52,6 @@ public final class CareReportPrefiller {
 
     int physical15 = ProgramScorer.scorePhysical(pList);
     int cognitive15 = ProgramScorer.scoreCognitive(pList);
-    int physicalPct = toPercent(physical15, 15);
-    int cognitivePct = toPercent(cognitive15, 15);
 
     String cognitiveFooter = ProgramCommenter.commentFromScore(
         ProgramType.COGNITIVE, cognitive15, memberId, date, memberName);
@@ -67,10 +62,10 @@ public final class CareReportPrefiller {
     List<String> cognitiveProgramNames = namesByType(sheet, ProgramType.COGNITIVE);
     List<String> physicalProgramNames = namesByType(sheet, ProgramType.PHYSICAL);
     return new CareReportInit(
-        mealPct, mealFooter,
-        vitalPct, healthFooter,
-        cognitiveProgramNames, cognitivePct, cognitiveFooter,
-        physicalProgramNames, physicalPct, physicalFooter
+        meal15, mealFooter,
+        vital55, healthFooter,
+        cognitiveProgramNames, cognitive15, cognitiveFooter,
+        physicalProgramNames, physical15, physicalFooter
     );
   }
   private static int toPercent(int value, int base) {

@@ -65,6 +65,7 @@ public final class VitalScorer {
 
   /* 합산 */
   public static int totalVital35(Integer systolic, Integer diastolic, Double temperature) {
+    System.out.println(systolic + "/" + diastolic + " " + temperature);
     return scoreBloodPressure(systolic, diastolic) + scoreTemperature(temperature); // 0~35
   }
   public static int totalExcretion20(Integer stoolCount, Integer urineCount) {
