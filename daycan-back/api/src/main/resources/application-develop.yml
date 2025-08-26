@@ -1,3 +1,14 @@
+server:
+  shutdown: graceful
+  connection-timeout: 10s
+  tomcat:
+    threads:
+      max: 64
+      min-spare: 16
+    accept-count: 100
+    max-connections: 2048
+    keep-alive-timeout: 10s
+
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
@@ -19,9 +30,9 @@ jwt:
   custom:
     secretKey: ${JWT_SECRET_KEY}
   access-token:
-    expire-length: 604800000 #1시간
+    expire-length: 3600000
   refresh-token:
-    expire-length: 604800000 #일주일
+    expire-length: 604800000
 
 app:
   aws:
