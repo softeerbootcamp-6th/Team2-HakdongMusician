@@ -14,7 +14,6 @@ import com.daycan.domain.model.DocumentMonthlyStatusRow;
 import com.daycan.repository.jpa.DocumentRepository;
 
 import com.daycan.repository.query.DocumentQueryRepository;
-import com.daycan.service.member.MemberService;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Arrays;
@@ -34,7 +33,6 @@ public class DocumentService {
 
   private final DocumentRepository documentRepository;
   private final DocumentQueryRepository documentQueryRepository;
-  private final MemberService memberService;
 
   @Transactional
   public void upsertAll(List<Member> members, LocalDate date) {

@@ -49,7 +49,6 @@ public class CenterDocumentFacade {
   private final DocumentService documentService;
   private final CareReportService careReportService;
   private final StorageService storageService;
-  private final CareReportUpdateService careReportUpdateService;
   private final CareReportSmsService careReportSmsService;
 
   @Transactional

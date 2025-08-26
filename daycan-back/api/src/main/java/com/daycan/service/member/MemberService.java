@@ -16,6 +16,7 @@ import com.daycan.api.dto.center.response.centermanage.AdminMemberResponse;
 import com.daycan.external.storage.StorageService;
 import com.daycan.repository.jpa.CenterRepository;
 import com.daycan.repository.jpa.MemberRepository;
+import com.daycan.service.document.CareSheetWriteService;
 import com.daycan.service.document.DocumentService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,6 +36,8 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final CenterRepository centerRepository;
   private final StorageService storageService;
+  private final CareSheetWriteService careSheetWriteService;
+  private final DocumentService documentService;
 
   @Transactional(readOnly = true)
   public List<AdminMemberResponse> getMemberList(
@@ -107,6 +110,8 @@ public class MemberService {
     member.apply(buildMemberCommand(req, null));
 
     Member saved = memberRepository.save(member);
+
+    initializeTodayDocumentIfBefore9PM(saved);
     return convertToAdminMemberResponse(saved);
   }
 
@@ -148,7 +153,7 @@ public class MemberService {
     }
   }
 
-  public Member requireActiveMember(Long memberId, Long centerId){
+  public Member requireActiveMember(Long memberId, Long centerId) {
     Member m = getByMemberIdAndCenter(memberId, centerId)
         .orElseThrow(() -> new ApplicationException(MemberErrorStatus.MEMBER_NOT_FOUND));
     validateCenterMember(m, centerId);
@@ -205,6 +210,14 @@ public class MemberService {
         hashedPassword
     );
   }
+
+  private void initializeTodayDocumentIfBefore9PM(Member member) {
+    if (LocalDateTime.now()
+        .isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(21, 0)))) {
+      documentService.findOrCreateDocument(member, LocalDate.now());
+    }
+  }
+
 
   private AdminMemberResponse convertToAdminMemberResponse(Member m) {
     return AdminMemberResponse.builder()
