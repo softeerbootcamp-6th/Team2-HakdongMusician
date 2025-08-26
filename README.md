@@ -73,7 +73,7 @@ Client
 |   팀원   |   김수환    |    홍규진    |    소보길    |
 | :------: | :---------: | :----------: | :----------: |
 | **역할** | Web Backend | Web Frontend | Web Frontend |
-| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |<img width="300" alt="image" src="https://github.com/user-attachments/assets/3993389a-14be-4e7d-9aa2-1d1934154f33" />|🖼️|
+| **사진** | <img width="300" alt="image" src="https://github.com/user-attachments/assets/56e21649-aef6-499e-8ef7-a05386b4f884" />   |<img width="300" alt="image" src="https://github.com/user-attachments/assets/3993389a-14be-4e7d-9aa2-1d1934154f33" />| <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/e16b07cf-3738-4846-898f-ec65d535aef0" />|
 
 
 
