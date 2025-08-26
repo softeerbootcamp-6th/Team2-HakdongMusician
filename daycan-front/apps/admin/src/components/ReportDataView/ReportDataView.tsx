@@ -37,7 +37,11 @@ export const ReportDataView = ({ reportData }: ReportDataViewProps) => {
 
       <HealthIndexCard
         index={reportData.totalScore}
-        description={`전체 점수: ${reportData.totalScore}점, 변화량: ${reportData.changeAmount}점`}
+        description={
+          reportData.changeAmount
+            ? `전체 점수: ${reportData.totalScore}점, 변화량: ${reportData.changeAmount}점`
+            : `전체 점수: ${reportData.totalScore}점`
+        }
         changeAmount={reportData.changeAmount}
         indexCardData={[
           { title: "식사", value: reportData.mealScore },
