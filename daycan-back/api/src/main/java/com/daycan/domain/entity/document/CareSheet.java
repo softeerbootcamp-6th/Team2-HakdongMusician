@@ -55,7 +55,7 @@ public class CareSheet extends BaseTimeEntity {
   @JoinColumn(name = "id")
   private Document document;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
   @JoinColumn(name = "writer_id", nullable = true)
   private Staff writer;
 
