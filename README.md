@@ -82,7 +82,11 @@ https://github.com/user-attachments/assets/eb3bd2bc-6d65-4249-adee-a0b350ea24c9
 - **건강 지표 그래프**: 장기간 건강 상태 변화 확인
 - **리포트 몰아보기**: 기존 리포트를 확인 할 수 있습니다.
 
-https://github.com/user-attachments/assets/6c7eb330-5896-49d0-aecc-57624efc0bae
+
+
+https://github.com/user-attachments/assets/d12ff435-2df2-4e5f-8fce-3b7c111e6388
+
+
 
 
 ---
