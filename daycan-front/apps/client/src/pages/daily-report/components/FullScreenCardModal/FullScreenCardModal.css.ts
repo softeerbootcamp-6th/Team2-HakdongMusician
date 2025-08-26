@@ -3,6 +3,7 @@ import { COLORS } from "@daycan/ui";
 
 export const fullScreenCardModal = style({
   width: "90vw",
+  maxWidth: "400px",
   margin: "auto",
   borderRadius: "16px",
   display: "flex",

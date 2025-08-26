@@ -6,4 +6,5 @@ export const dailyReportModalContent = style({
   flexDirection: "column",
   gap: "16px",
   zIndex: 1000,
+  maxWidth: "400px",
 });

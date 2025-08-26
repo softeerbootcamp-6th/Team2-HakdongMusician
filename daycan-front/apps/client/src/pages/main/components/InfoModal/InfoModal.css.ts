@@ -6,6 +6,7 @@ export const infoModalContent = style({
   display: "flex",
   flexDirection: "column",
   gap: "16px",
+  maxWidth: "400px",
 });
 
 export const pointCalculateContainer = style({

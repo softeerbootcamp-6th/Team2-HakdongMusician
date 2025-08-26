@@ -116,10 +116,14 @@ export const OCRPhotoPage = () => {
               className={previewImage}
             />
             <div className={previewControls}>
-              <Button variant="unEmphasized" onClick={retakePhoto}>
+              <Button
+                variant="unEmphasized"
+                size="fullWidth"
+                onClick={retakePhoto}
+              >
                 다시 찍기
               </Button>
-              <Button variant="primary" onClick={confirmPhoto}>
+              <Button variant="primary" size="fullWidth" onClick={confirmPhoto}>
                 사용하기
               </Button>
             </div>
