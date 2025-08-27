@@ -59,7 +59,7 @@ Client
 
 - **회원 관리**: 종사자, 수급자(고령자) 조회/등록/수정/삭제
 - <details>
-    <summary>영상 보기</summary>
+    <summary>🎬 Click to Watch</summary>
     
     https://github.com/user-attachments/assets/3fc1c178-c4cf-4659-9393-67b1d71c9b6f
 </details>
@@ -67,7 +67,7 @@ Client
 
 - **기록지 작성, 관리**: 기록지를 작성하고 검토 및 관리합니다.
 - <details>
-    <summary>영상 보기</summary>
+    <summary>🎬 Click to Watch</summary>
     
     https://github.com/user-attachments/assets/d897d3bf-d60c-4371-b9ad-6cceeb1a6d70
 
@@ -76,7 +76,7 @@ Client
 
 - **리포트 전송**: 기록지 작성 내용을 토대로 생성된 리포트를 전송합니다.
 - <details>
-    <summary>영상 보기</summary>
+    <summary>🎬 Click to Watch</summary>
     
     https://github.com/user-attachments/assets/eb3bd2bc-6d65-4249-adee-a0b350ea24c9
 
@@ -88,7 +88,7 @@ Client
 - **건강 지표 그래프**: 장기간 건강 상태 변화 확인
 - **리포트 몰아보기**: 기존 리포트를 확인 할 수 있습니다.
 - <details>
-    <summary>영상 보기</summary>
+    <summary>🎬 Click to Watch</summary>
 
     https://github.com/user-attachments/assets/d12ff435-2df2-4e5f-8fce-3b7c111e6388
 
