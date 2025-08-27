@@ -95,12 +95,34 @@
 └── 📁index.tsx # 앱 진입점
 
 ```
-### 모노레포를 통한 ui components 분리시 주의할 점
-- 가능한 DesignSystem 과 재사용되는 컴포넌트를 구분지어 사용한다.
-- DesignSystem을 바꿔야하는 경우를 최소화한다. (packages/ui/~) 를 수정하는 경우를 최소화한다. 
-- DesignSystem 은 최대한 다양한 상황에 대응할 수 있도록 구현한다. 단, 너무 많은 상황을 고려하기 위해 내부적인 variants 가 많아지는 경우가 없도록 한다. 그 결과 유연하게 대응할 수 있도록 개발한다.
-<br/>
-<br/>
+## FRONTEND 기술 관련 위키 모음
+
+[FE 개발룰](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EA%B0%9C%EB%B0%9C%EB%A3%B0)
+
+[폴더 구조](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%ED%8F%B4%EB%8D%94%EA%B5%AC%EC%A1%B0)
+
+[모노레포 + pnpm 설계 과정](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EB%AA%A8%EB%85%B8%EB%A0%88%ED%8F%AC(Turborepo)-%EB%A5%BC-%ED%83%9D%ED%95%98%EB%A9%B0-%ED%95%98%EA%B2%8C-%EB%90%9C-%EA%B3%A0%EC%B0%B0)
+
+[모노레포 내 참조 단방향성](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EB%AA%A8%EB%85%B8%EB%A0%88%ED%8F%AC-%EC%B0%B8%EC%A1%B0-%EB%8B%A8%EB%B0%A9%ED%96%A5%EC%84%B1-%EA%B0%80%EC%9D%B4%EB%93%9C)
+
+[공통 fetcher 및 커스텀 에러 처리](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EA%B3%B5%ED%86%B5-fetcher-%EB%B0%8F-%EC%BB%A4%EC%8A%A4%ED%85%80-%EC%97%90%EB%9F%AC-%EC%B2%98%EB%A6%AC)
+
+[Sentry를 통한 서버 에러 로깅 시스템](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-Sentry%EB%A5%BC-%ED%86%B5%ED%95%9C-%EC%84%9C%EB%B2%84-%EC%97%90%EB%9F%AC-%EB%A1%9C%EA%B9%85-%EC%B2%98%EB%A6%AC-%EB%B0%8F-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EB%8C%80%EC%9D%91-%EC%8B%9C%EC%8A%A4%ED%85%9C)
+
+[서버 상태관리: Tanstack-Query](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EC%84%9C%EB%B2%84-%EC%83%81%ED%83%9C%EA%B4%80%EB%A6%AC-with-Tanstack%E2%80%90Query)
+
+[유저 상태관리: jotai + useFunnel](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EC%9C%A0%EC%A0%80-%EC%83%81%ED%83%9C%EA%B4%80%EB%A6%AC:-jotai---Funnel-%EC%83%81%ED%83%9C%EA%B4%80%EB%A6%AC)
+
+[디자인 시스템 : Vanilla-Extract-CSS](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EC%8A%A4%ED%83%80%EC%9D%BC%EB%A7%81-%EB%B0%8F-%EB%94%94%EC%9E%90%EC%9D%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C)
+
+[PWA 관련 설정 : OS별 아이콘 대응 및 브라우저 UI 제거](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-PWA-%EC%84%A4%EC%A0%95-%E2%80%90-iOS,-AOS-%ED%99%88-%EC%95%84%EC%9D%B4%EC%BD%98-%EC%84%A4%EC%A0%95-%EB%B0%8F-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EA%B8%B0%EB%B3%B8-UI-%EC%A0%9C%EA%B1%B0)
+
+[reissue문제 발생과 해결 과정](https://github.com/softeerbootcamp-6th/Team2-HakdongMusician/wiki/%5BFE%5D-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%9C%A0%EC%A7%80-&-%ED%86%A0%ED%81%B0-%EC%9E%AC%EB%B0%9C%EA%B8%89(reissue)-%EC%9D%B4%EC%8A%88-%EB%B6%84%EC%84%9D-%C2%B7-%ED%95%B4%EA%B2%B0-%EA%B0%80%EC%9D%B4%EB%93%9C)
+
+
+
+
+
 
 ## 📢 네이밍 컨벤션
 
