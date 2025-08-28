@@ -1,20 +1,30 @@
 import type { YearMonth, YearMonthDay } from "@/types/date";
 
 /**
- * 오늘 날짜를 (YYYY-MM-DD) 형식으로 반환
- * @returns 오늘 날짜 (YYYY-MM-DD)
+ * 오늘 날짜를 한국 시간대 기준으로 (YYYY-MM-DD) 형식으로 반환
+ * @returns 오늘 날짜 (YYYY-MM-DD) - 한국 시간대 기준
  * @author 홍규진
  */
-export const TODAY_DATE = new Date()
-  .toISOString()
-  .split("T")[0] as YearMonthDay;
+export const TODAY_DATE = (() => {
+  const now = new Date();
+  const koreaTime = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+  );
+  const year = koreaTime.getFullYear();
+  const month = String(koreaTime.getMonth() + 1).padStart(2, "0");
+  const day = String(koreaTime.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}` as YearMonthDay;
+})();
 
-export const TODAY_YYYYMM = new Date()
-  .toISOString()
-  .split("T")[0]
-  .split("-")
-  .slice(0, 2)
-  .join("-") as YearMonth;
+export const TODAY_YYYYMM = (() => {
+  const now = new Date();
+  const koreaTime = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+  );
+  const year = koreaTime.getFullYear();
+  const month = String(koreaTime.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}` as YearMonth;
+})();
 
 export const formatYYYYMMDD = (date: Date | string): YearMonthDay => {
   if (typeof date === "string") {
