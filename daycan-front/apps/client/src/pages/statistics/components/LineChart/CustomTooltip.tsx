@@ -13,7 +13,7 @@ export const CustomTooltip = ({ active, payload, unit }: any) => {
             color={entry.color}
             style={{ margin: "2px 0" }}
           >
-            {entry.name}: {entry.value} {unit}
+            {entry.name}: {entry.value.toFixed(1)} {unit}
           </Body>
         ))}
       </div>
